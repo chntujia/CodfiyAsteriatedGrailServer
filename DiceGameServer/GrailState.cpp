@@ -251,7 +251,7 @@ int StateActionPhase::handle(GameGrail* engine)
 			{				
 			case ATTACK_ACTION:
 				attack = (REPLY_ATTACK*)temp;
-				//FIXME verify card type
+				//FIXME: verify card type
 				if(GE_SUCCESS == (ret=engine->getPlayerEntity(m_currentPlayerID)->checkOneHandCard(attack->cardID))){
 					engine->popGameState();
 					return engine->setStateAttackAction(attack->cardID, attack->dstID, attack->srcID);
@@ -324,7 +324,7 @@ int StateAttacked::handle(GameGrail* engine)
 			reAttack = (REPLY_ATTACKED*)reply;
 			switch(reAttack->flag)
 			{				
-				//FIXME: verify
+				//FIXME: verify card type
 			case RA_ATTACK:
 				if(GE_SUCCESS == (ret=engine->getPlayerEntity(context->attack.dstID)->checkOneHandCard(reAttack->cardID))){
 					engine->popGameState();

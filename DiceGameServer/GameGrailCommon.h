@@ -82,14 +82,6 @@ CardEntity* getCardByID(int id);
 #define ATTACKHARM 1
 #define MAGICHARM  2
 
-//行动类别
-#define ATTACK  1
-#define ATTACKSKILL 10
-#define MAGIC   2
-#define SPECIAL 3
-#define ATTACKORMAGIC 4
-#define ALLACTION 5
-#define FINISH -1
 //攻击类别，普通、无法应战、必定命中
 #define NORMAL  0
 #define NOREPLY 1
