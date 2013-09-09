@@ -45,8 +45,22 @@ class CardEntity
 public:
     //构造,输入参数是包含卡牌信息的一列String
     CardEntity(string cardEntry);
+	int getID() { return id; }   
+    //获取攻击/法术类别
+	int getType() { return type; }
+    //获取卡牌属性
+	int getElement() { return element; }
+    //获取卡牌技、血、咏、圣、幻类别
+	int getProperty() { return property; }
+    //获取卡牌名称
+	int getName() { return name; }
+	//获取卡牌独有技信息
+	int getHasSpeciality() { return hasSpeciality; }
+    //获取卡牌独有技
+	int getSpeciality(int id) { return specialityList[id]; }
+private:
     int id;
-    int hasSpeceiality;
+    int hasSpeciality;
     int type;
     int element;
     int property;
