@@ -51,7 +51,22 @@ int PlayerEntity::addBasicEffect(int effectCard,int srcUserID)
 int PlayerEntity::checkBasicEffect(int card)
 {
 	for(list< BasicEffect >::iterator it = basicEffects.begin(); it != basicEffects.end(); it++){
-        if(it->card == card){
+		if(it->card == card){
+			return GE_SUCCESS;
+		}
+	}
+    return GE_BASIC_EFFECT_NOT_FOUND;
+}
+
+int PlayerEntity::checkBasicEffectName(int name,int* cardID, int* src)
+{
+	for(list< BasicEffect >::iterator it = basicEffects.begin(); it != basicEffects.end(); it++){
+        if(getCardByID(it->card)->getName() == name){
+			
+			*cardID = it->card;
+			if(src != NULL){
+				*src = it->srcUser;
+			}
 			return GE_SUCCESS;
 		}
 	}

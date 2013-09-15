@@ -257,7 +257,14 @@ int StateActionPhase::handle(GameGrail* engine)
 					return engine->setStateAttackAction(attack->cardID, attack->dstID, attack->srcID);
 				}
 				break;
+			
+				//FIXME: verify card type by 
+
+			default:
+				return ret;
+				//// 没看懂这里要干什么..
 			}
+			
 		}
 		else{
 			return ret;

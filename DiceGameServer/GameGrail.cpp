@@ -411,7 +411,17 @@ int GameGrail::setStateUseCard(int cardID, int dstID, int srcID, bool realCard)
 
 int GameGrail::setStateCheckBasicEffect()
 {
-	//TODO check weaken here
+	//check weaken here by Fengyu
+	PlayerEntity *player = getPlayerEntity(m_currentPlayerID);
+	int weakenCardID = -1;
+	
+	if( player->checkBasicEffectName(WEAKEN, &weakenCardID) == GE_SUCCESS )
+	{
+		int howMany = 3;		
+		pushGameState(new StateWeaken(howMany, weakenCardID));
+	}
+	////
+
 	int cardID = 0;	
 	if(false)
 	{
@@ -423,7 +433,20 @@ int GameGrail::setStateCheckBasicEffect()
 	{
 		pushGameState(new StateBeforeAction);
 	}
-	//TODO: push timeline3 states here based on basicEffect
+	//中毒 push timeline3 states here based on basicEffect by Fengyu
+	int poisonCardID = -1;
+	int poisonSrc = -1;
+	while( true )
+	{
+		if(player->checkBasicEffectName(POISON, &poisonCardID, &poisonSrc ) != GE_SUCCESS){break;}
+		
+		HARM poisonHarm ={HARM_MAGIC,1,poisonSrc}; //cause缺省
+
+		setStateTimeline3(m_currentPlayerID,poisonHarm);
+
+		setStateMoveOneCard(m_currentPlayerID,DECK_BASIC_EFFECT,-1,DECK_DISCARD,poisonCardID,true);
+
+	}
 	return GE_SUCCESS;
 }
 
@@ -444,10 +467,17 @@ int GameGrail::setStateReattack(int attackFromCard, int attackToCard, int attack
 
 int GameGrail::setStateAttackGiveUp(int cardID, int dstID, int srcID, HARM harm, bool isActive)
 {
-	//TODO check sheild here
-	if(false){
+	// FIX_ME  没有检查天使之墙 check sheild here by Fengyu
+
+	PlayerEntity *player = getPlayerEntity(dstID);
+	int shieldCardID = -1;
+	if(player->checkBasicEffectName(SHIELD, &shieldCardID) == GE_SUCCESS){
+		
+		setStateMoveOneCard(dstID,DECK_BASIC_EFFECT,-1,DECK_DISCARD,shieldCardID,true);
+
 		return setStateTimeline2Miss(cardID, dstID, srcID, isActive);		
 	}
+	
 	else{
 		return setStateTimeline2Hit(cardID, dstID, srcID, harm, isActive);
 	}
@@ -463,8 +493,14 @@ int GameGrail::setStateTimeline1(int cardID, int dstID, int srcID, bool isActive
 	con->harm.srcID = srcID;
 	con->harm.point = 2;
 	con->harm.type = HARM_ATTACK;	
-	//FIXME: 暗灭
 	con->hitRate = RATE_NORMAL;
+
+	//FIXME: 暗灭 by Fengyu 
+	if(getCardByID(cardID)->getElement() == DARKNESS){
+		con->hitRate = RATE_NOREATTACK;
+	}
+	////
+
 	pushGameState(new StateTimeline1(con));
 	return GE_SUCCESS;
 }

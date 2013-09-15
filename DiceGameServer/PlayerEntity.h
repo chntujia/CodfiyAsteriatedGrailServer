@@ -27,6 +27,8 @@ public:
     int removeBasicEffect(int card);
 	//检查基础效果
 	int checkBasicEffect(int card);
+	//检查指定名称的基础效果牌是否存在,cardID和src保存找到的牌ID和施放者
+	int checkBasicEffectName(int name,int* cardID, int* src = NULL);
     //增加手牌操作
     int addHandCards(int howMany, vector< int > newCard);
     //移除手牌操作
