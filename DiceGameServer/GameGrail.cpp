@@ -53,7 +53,6 @@ void TeamArea::setMorale(int color, int value)
         this->moraleRED = value;
     else if(color == BLUE)
         this->moraleBLUE = value;
-
 }
 
 GameGrail::GameGrail(GameGrailConfig *config)
@@ -70,10 +69,29 @@ GameGrail::GameGrail(GameGrailConfig *config)
 	pushGameState(new StateWaitForEnter);
 }
 
+GameGrail::~GameGrail()
+{
+	while(!m_states.empty()){
+		popGameState();
+	}
+	for(int i=0; i<m_maxPlayers; i++){
+		SAFE_DELETE(m_playerContexts[i]);
+	}
+	m_playerContexts.clear();
+	for(int i=0; i<m_maxPlayers; i++){
+		SAFE_DELETE(m_playerEntities[i]);
+	}
+	m_playerEntities.clear();
+
+	SAFE_DELETE(m_teamArea);
+	SAFE_DELETE(pile);
+	SAFE_DELETE(discard);
+}
+
 int GameGrail::popGameState_if(int state)
 {
 	if(topGameState()->state == state){
-		delete m_states.top(); 
+		SAFE_DELETE(m_states.top()); 
 		m_states.pop();
 		return GE_SUCCESS;
 	}
@@ -414,21 +432,14 @@ int GameGrail::setStateCheckBasicEffect()
 	//check weaken here by Fengyu
 	PlayerEntity *player = getPlayerEntity(m_currentPlayerID);
 	int weakenCardID = -1;
-	
+	//FIXME 五系束缚
 	if( player->checkBasicEffectName(WEAKEN, &weakenCardID) == GE_SUCCESS )
 	{
 		int howMany = 3;		
-		pushGameState(new StateWeaken(howMany, weakenCardID));
+		pushGameState(new StateWeaken(howMany));
+		setStateMoveOneCard(m_currentPlayerID, DECK_BASIC_EFFECT, -1, DECK_DISCARD, weakenCardID, true);
 	}
 	////
-
-	int cardID = 0;	
-	if(false)
-	{
-		//FIXME 五系束缚叠加
-		int howMany = 3;		
-		pushGameState(new StateWeaken(howMany, cardID));
-	}
 	else
 	{
 		pushGameState(new StateBeforeAction);
@@ -439,7 +450,7 @@ int GameGrail::setStateCheckBasicEffect()
 	while( true )
 	{
 		if(player->checkBasicEffectName(POISON, &poisonCardID, &poisonSrc ) != GE_SUCCESS){break;}
-		
+
 		HARM poisonHarm ={HARM_MAGIC,1,poisonSrc}; //cause缺省
 
 		setStateTimeline3(m_currentPlayerID,poisonHarm);
@@ -472,10 +483,8 @@ int GameGrail::setStateAttackGiveUp(int cardID, int dstID, int srcID, HARM harm,
 	PlayerEntity *player = getPlayerEntity(dstID);
 	int shieldCardID = -1;
 	if(player->checkBasicEffectName(SHIELD, &shieldCardID) == GE_SUCCESS){
-		
-		setStateMoveOneCard(dstID,DECK_BASIC_EFFECT,-1,DECK_DISCARD,shieldCardID,true);
-
-		return setStateTimeline2Miss(cardID, dstID, srcID, isActive);		
+		setStateTimeline2Miss(cardID, dstID, srcID, isActive);	
+		return setStateMoveOneCard(dstID,DECK_BASIC_EFFECT,-1,DECK_DISCARD,shieldCardID,true);	
 	}
 	
 	else{

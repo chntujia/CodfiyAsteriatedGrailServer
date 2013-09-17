@@ -178,10 +178,9 @@ public:
 class StateWeaken : public GrailState
 {
 public:
-	StateWeaken(int howMany, int cardID): GrailState(STATE_WEAKEN), howMany(howMany), cardID(cardID){}
+	StateWeaken(int howMany): GrailState(STATE_WEAKEN), howMany(howMany){}
 	int handle(GameGrail* engine);
 	int howMany;
-	int cardID;
 };
 
 class StateBeforeAction : public GrailState
@@ -233,7 +232,7 @@ class StateTimeline1 : public GrailState
 {
 public:
 	StateTimeline1(CONTEXT_TIMELINE_1 *con): GrailState(STATE_TIMELINE_1), context(con){}
-	~StateTimeline1(){delete context;}
+	~StateTimeline1(){ SAFE_DELETE(context); }
 	int handle(GameGrail* engine);
 	CONTEXT_TIMELINE_1 *context;
 };
@@ -242,7 +241,7 @@ class StateAttacked : public GrailState
 {
 public:
 	StateAttacked(CONTEXT_TIMELINE_1 *con): GrailState(STATE_ATTACKED), context(con){}
-	~StateAttacked(){delete context;}
+	~StateAttacked(){ SAFE_DELETE(context); }
 	int handle(GameGrail* engine);
 	CONTEXT_TIMELINE_1 *context;
 };
@@ -258,7 +257,7 @@ class StateTimeline2Hit : public GrailState
 {
 public:
 	StateTimeline2Hit(CONTEXT_TIMELINE_2_HIT *con): GrailState(STATE_TIMELINE_2_HIT), context(con){}
-	~StateTimeline2Hit(){delete context;}
+	~StateTimeline2Hit(){ SAFE_DELETE(context); }
 	int handle(GameGrail* engine);
 	CONTEXT_TIMELINE_2_HIT *context;
 };
@@ -267,7 +266,7 @@ class StateTimeline2Miss : public GrailState
 {
 public:
 	StateTimeline2Miss(CONTEXT_TIMELINE_2_MISS *con): GrailState(STATE_TIMELINE_2_MISS), context(con){}
-	~StateTimeline2Miss(){delete context;}
+	~StateTimeline2Miss(){ SAFE_DELETE(context); }
 	int handle(GameGrail* engine);
 	CONTEXT_TIMELINE_2_MISS *context;
 };
@@ -276,7 +275,7 @@ class StateTimeline3 : public GrailState
 {
 public:
 	StateTimeline3(CONTEXT_TIMELINE_3 *con): GrailState(STATE_TIMELINE_3), context(con){}
-	~StateTimeline3(){delete context;}
+	~StateTimeline3(){ SAFE_DELETE(context); }
 	int handle(GameGrail* engine);
 	CONTEXT_TIMELINE_3 *context;
 };
@@ -285,7 +284,7 @@ class StateTimeline4 : public GrailState
 {
 public:
 	StateTimeline4(CONTEXT_TIMELINE_4 *con): GrailState(STATE_TIMELINE_4), context(con){}
-	~StateTimeline4(){delete context;}
+	~StateTimeline4(){ SAFE_DELETE(context); }
 	int handle(GameGrail* engine);
 	CONTEXT_TIMELINE_4 *context;
 };
@@ -294,7 +293,7 @@ class StateTimeline5 : public GrailState
 {
 public:
 	StateTimeline5(CONTEXT_TIMELINE_5 *con): GrailState(STATE_TIMELINE_5), context(con){}
-	~StateTimeline5(){delete context;}
+	~StateTimeline5(){ SAFE_DELETE(context); }
 	int handle(GameGrail* engine);
 	CONTEXT_TIMELINE_5 *context;
 };
@@ -303,7 +302,7 @@ class StateTimeline6 : public GrailState
 {
 public:
 	StateTimeline6(CONTEXT_TIMELINE_6 *con): GrailState(STATE_TIMELINE_6), context(con){}
-	~StateTimeline6(){delete context;}
+	~StateTimeline6(){ SAFE_DELETE(context); }
 	int handle(GameGrail* engine);
 	CONTEXT_TIMELINE_6 *context;
 };
@@ -343,7 +342,7 @@ class StateTrueLoseMorale: public GrailState
 {
 public:
 	StateTrueLoseMorale(CONTEXT_LOSE_MORALE *con): GrailState(STATE_TRUE_LOSE_MORALE), context(con){}
-	~StateTrueLoseMorale(){delete context;}
+	~StateTrueLoseMorale(){ SAFE_DELETE(context); }
 	int handle(GameGrail* engine);
 	CONTEXT_LOSE_MORALE *context;
 };

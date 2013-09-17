@@ -133,7 +133,7 @@ protected:
 	bool m_ready[8];
 public:
 	GameGrail(GameGrailConfig *config);
-	~GameGrail(){}
+	~GameGrail();
 	void sendMessage(int id, string msg);
 
 	int playerEnterIntoTable(GameGrailPlayerContext *player);
@@ -142,7 +142,7 @@ public:
 	GrailState* topGameState() { return m_states.empty()? NULL: m_states.top(); }
 	void pushGameState(GrailState* state) { m_states.push(state); }
 	void popGameState() { 
-		 delete m_states.top(); 
+		 SAFE_DELETE(m_states.top()); 
 		 m_states.pop(); 
 	}
 	int popGameState_if(int state);	
@@ -205,8 +205,7 @@ public:
 	int setStateRoleStrategy();
 	int setStateCurrentPlayer(int playerID);
 protected:
-	bool isReady(int id);
-	
+	bool isReady(int id);	
 	void GameRun();
 	void kickOffNotConnectedPlayers();
 	void updateTableStatusMessage();

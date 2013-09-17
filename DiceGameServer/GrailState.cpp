@@ -78,7 +78,7 @@ int StateRoleStrategyRandom::handle(GameGrail* engine)
 			return ret;
 		}
 	}
-	delete roles;
+	SAFE_DELETE(roles);
 	engine->initPlayerEntities();
 	engine->popGameState();
 	engine->pushGameState(new StateGameStart);
@@ -147,7 +147,6 @@ int StateWeaken::handle(GameGrail* engine)
 {
 	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateWeaken", engine->getGameId());
 	int m_currentPlayerID = engine->getCurrentPlayerID();
-	engine->setStateMoveOneCard(m_currentPlayerID, DECK_BASIC_EFFECT, -1, DECK_DISCARD, cardID);
 	if(engine->waitForOne(m_currentPlayerID, Coder::askForWeak(m_currentPlayerID, howMany)))
 	{
 		//TODO set nextState based on reply
@@ -312,7 +311,7 @@ int StateTimeline1::handle(GameGrail* engine)
 		engine->pushGameState(new StateAttacked(con));
 	}
 	else{
-		delete con;
+		SAFE_DELETE(con);
 	}
 	return ret;
 }
@@ -470,6 +469,9 @@ int StateTimeline3::handle(GameGrail* engine)
 		if(GE_SUCCESS == (ret = engine->popGameState_if(STATE_TIMELINE_3))){
 			engine->pushGameState(new StateTimeline4(newCon));
 		}
+		else{
+			SAFE_DELETE(newCon);
+		}
 	}
 	else{
 		CONTEXT_TIMELINE_5* newCon = new CONTEXT_TIMELINE_5;
@@ -477,6 +479,9 @@ int StateTimeline3::handle(GameGrail* engine)
 		newCon->harm = context->harm;
 		if(GE_SUCCESS == (ret = engine->popGameState_if(STATE_TIMELINE_3))){
 			engine->pushGameState(new StateTimeline5(newCon));
+		}
+		else{
+			SAFE_DELETE(newCon);
 		}
 	}
 	return ret;
@@ -508,7 +513,10 @@ int StateTimeline4::handle(GameGrail* engine)
 		newCon->harm = context->harm;
 		if(GE_SUCCESS == (ret = engine->popGameState_if(STATE_TIMELINE_4))){
 			engine->pushGameState(new StateTimeline5(newCon));
-		}	
+		}
+		else{
+			SAFE_DELETE(newCon);
+		}
 	}
 	return ret;
 }
@@ -533,6 +541,9 @@ int StateTimeline5::handle(GameGrail* engine)
 		newCon->harm = context->harm;
 		if(GE_SUCCESS == (ret = engine->popGameState_if(STATE_TIMELINE_5))){
 			engine->pushGameState(new StateTimeline6(newCon));
+		}
+		else{
+			SAFE_DELETE(newCon);
 		}
 	}
 	else{

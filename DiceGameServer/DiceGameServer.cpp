@@ -60,7 +60,7 @@ bool DiceGameServer::grailInit()
 	}
 	string line;
 	int i = 0;
-	while (i<150)
+	while (i<CARDSUM)
     {
 		getline(cardDB,line);
 		cardList[i++] = new CardEntity(line);

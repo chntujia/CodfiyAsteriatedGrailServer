@@ -8,6 +8,10 @@
 
 using namespace boost::interprocess;
 
+#ifndef SAFE_DELETE
+#define SAFE_DELETE(x) { if (x) { delete (x); (x) = NULL; } }
+#endif
+
 enum GrailError{
 	GE_SUCCESS,
 	GE_TIMEOUT,
