@@ -174,14 +174,18 @@ public:
 	int getReply(int id, void* &reply);
 	
 	int drawCardsFromPile(int howMany, vector< int > &cards);
-	//不涉及插入状态的移牌：手牌的移入移出，盖牌的移入除外
-	int simpleMoveCards(int srcOwner, int srcArea, int dstOwner, int dstArea, int howMany, vector< int > cards);
-	int simpleMoveOneCard(int srcOwner, int srcArea, int dstOwner, int dstArea, int cardID);
-	//涉及插入状态的移牌，包括手牌的移入、移出，盖牌的移入
-	int setStateMoveCards(int srcOwner, int srcArea, int dstOwner, int dstArea, int howMany, vector< int > cards, bool isShown = false, HARM* harm = NULL);
-	int setStateMoveOneCard(int srcOwner, int srcArea, int dstOwner, int dstArea, int cardID, bool isShown = false, HARM* harm = NULL);	
-	//特指从牌堆移入
-	int setStateDrawCardsToHand(int howMany, int playerId, HARM* harm = NULL);
+	//涉及插入状态
+	//底层API原则上不直接调用
+	int setStateMoveCards(int srcOwner, int srcArea, int dstOwner, int dstArea, int howMany, vector< int > cards, HARM harm, bool isShown = false);
+	//移牌至手上，需提供HARM，若从摸牌堆上移出，cards不用赋值
+	int setStateMoveCardsToHand(int srcOwner, int srcArea, int dstOwner, int dstArea, int howMany, vector< int > cards, HARM harm, bool isShown = false);
+	//上面的简化，移1牌至手上，需提供HARM，若从摸牌堆上移出，cards不用赋值
+	int setStateMoveOneCardToHand(int srcOwner, int srcArea, int dstOwner, int dstArea, int cardID, HARM harm, bool isShown = false);
+	//移牌至手上以外的地方，需提供原因，若从摸牌堆上移出，cards不用赋值
+	int setStateMoveCardsNotToHand(int srcOwner, int srcArea, int dstOwner, int dstArea, int howMany, vector< int > cards, int doerID, int cause, bool isShown = false);
+	//上面的简化，移1牌至手上以外的地方，需提供原因，若从摸牌堆上移出，cards不用赋值
+	int setStateMoveOneCardNotToHand(int srcOwner, int srcArea, int dstOwner, int dstArea, int cardID, int doerID, int cause, bool isShown = false);
+
 	int setStateUseCard(int cardID, int dstID, int srcID, bool realCard = true);
 	int setStateHandOverLoad(int dstID, HARM harm);
 	int setStateCheckBasicEffect();

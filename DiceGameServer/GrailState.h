@@ -31,6 +31,7 @@ enum STATE{
 	STATE_TURN_END,
 	STATE_SHOW_HAND,
 	STATE_HAND_CHANGE,
+	STATE_BASIC_EFFECT_CHANGE,
 	STATE_DISCARD_HAND,
 	STATE_TRUE_LOSE_MORALE,
 	STATE_GAME_OVER
@@ -178,9 +179,10 @@ public:
 class StateWeaken : public GrailState
 {
 public:
-	StateWeaken(int howMany): GrailState(STATE_WEAKEN), howMany(howMany){}
+	StateWeaken(int srcID, int howMany): GrailState(STATE_WEAKEN), srcID(srcID), howMany(howMany){}
 	int handle(GameGrail* engine);
-	int howMany;
+	int srcID;
+	int howMany;	
 };
 
 class StateBeforeAction : public GrailState
@@ -320,9 +322,29 @@ public:
 class StateHandChange : public GrailState
 {
 public:
-	StateHandChange(int dstID): GrailState(STATE_HAND_CHANGE), dstID(dstID){}
+	StateHandChange(int dstID, int direction, int howMany, vector<int> cards, HARM h): GrailState(STATE_HAND_CHANGE), dstID(dstID), direction(direction),
+	howMany(howMany), cards(cards), harm(harm), isSet(false){}
 	int handle(GameGrail* engine);
 	int dstID;
+	int direction;
+	int howMany;
+	vector<int> cards;
+	HARM harm;
+	bool isSet;
+};
+
+class StateBasicEffectChange : public GrailState
+{
+public:
+	StateBasicEffectChange(int dstID, int direction, int card, int doerID, int cause): GrailState(STATE_BASIC_EFFECT_CHANGE), dstID(dstID), direction(direction),
+	card(card), doerID(doerID), cause(cause), isSet(false){}
+	int handle(GameGrail* engine);
+	int dstID;
+	int direction;
+	int card;
+	int doerID;
+	int cause;
+	bool isSet;
 };
 
 class StateDiscardHand : public GrailState

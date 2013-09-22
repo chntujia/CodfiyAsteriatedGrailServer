@@ -239,16 +239,15 @@ int GameGrail::getReply(int id, void* &reply)
 //FIXME: 现阶段只支持也只需支持以下情况：
 //从牌堆、基础状态、别人手牌移入手牌
 //手牌移出至弃牌堆、基础状态、别人手里、盖牌
-int GameGrail::setStateMoveCards(int srcOwner, int srcArea, int dstOwner, int dstArea, int howMany, vector< int > cards, bool isShown, HARM* harm)
+int GameGrail::setStateMoveCards(int srcOwner, int srcArea, int dstOwner, int dstArea, int howMany, vector< int > cards, HARM harm, bool isShown)
 {
-	PlayerEntity *src, *dst;
-	HARM doHarm;
+	PlayerEntity *src;
 	int ret;
 	//check whether exists
 	switch(srcArea)
 	{
 	case DECK_PILE:
-		//no need to check
+		drawCardsFromPile(howMany, cards);
 		break;
 	case DECK_HAND:
 		src = getPlayerEntity(srcOwner);
@@ -258,14 +257,11 @@ int GameGrail::setStateMoveCards(int srcOwner, int srcArea, int dstOwner, int ds
 		break;
 	case DECK_BASIC_EFFECT:
 		src = getPlayerEntity(srcOwner);
-		//FIXME up to now 1 is enough
-		if(howMany != 1){
-			return GE_NOT_SUPPORTED;
-		}
 		if(GE_SUCCESS != (ret = src->checkBasicEffect(cards[0]))){
 			return ret;
 		}
 		break;
+	case DECK_COVER:
 	default:
 		return GE_NOT_SUPPORTED;
 	}
@@ -275,97 +271,70 @@ int GameGrail::setStateMoveCards(int srcOwner, int srcArea, int dstOwner, int ds
 	switch(dstArea)
 	{
 	case DECK_DISCARD:
-		ret = discard->push(howMany,&cards[0]);
+		ret = discard->push(howMany, &cards[0]);
 		break;
 	case DECK_HAND:
-		dst = getPlayerEntity(dstOwner);
-		ret = dst->addHandCards(howMany,cards);
-		if(!harm){
-			doHarm.type = HARM_NONE;
-		}
-		else{
-			doHarm = *harm;
-		}
-		ret = setStateHandOverLoad(dstOwner, doHarm);
-		pushGameState(new StateHandChange(dstOwner));							
+		pushGameState(new StateHandChange(dstOwner, CHANGE_ADD, howMany, cards, harm));							
 		break;
 	case DECK_BASIC_EFFECT:
-		dst = getPlayerEntity(dstOwner);
-		if(howMany != 1){
-			return GE_NOT_SUPPORTED;
-		}
-		ret = dst->addBasicEffect(cards[0],srcOwner);
-		//TODO: another state? 天使羁绊
+		pushGameState(new StateBasicEffectChange(dstOwner, CHANGE_ADD, cards[0], harm.srcID, harm.cause));	
 		break;
 	case DECK_COVER:
-		dst = getPlayerEntity(dstOwner);
-		ret = dst->addCoverCards(howMany, cards);
-		//TODO: cover overload
-		//ret = setStateCoverOverLoad(dstOwner);
-		break;
 	default:
 		return GE_NOT_SUPPORTED;
 	}
 	switch(srcArea)
 	{
+	case DECK_PILE:
+		break;
 	case DECK_HAND:
-		src->removeHandCards(howMany, cards);
 		if(isShown){
 			pushGameState(new StateShowHand(srcOwner, howMany, cards));
 		}
-		pushGameState(new StateHandChange(srcOwner));
+		pushGameState(new StateHandChange(srcOwner, CHANGE_REMOVE, howMany, cards, harm));	
 		break;
 	case DECK_BASIC_EFFECT:
-		src->removeBasicEffect(cards[0]);
+		pushGameState(new StateBasicEffectChange(srcOwner, CHANGE_REMOVE, cards[0], harm.srcID, harm.cause));
 		break;
+	case DECK_COVER:
+	default:
+		return GE_NOT_SUPPORTED;
 	}
 	return GE_SUCCESS;
 }
 
-int GameGrail::simpleMoveCards(int srcOwner, int srcArea, int dstOwner, int dstArea, int howMany, vector< int > cards)
+int GameGrail::setStateMoveCardsToHand(int srcOwner, int srcArea, int dstOwner, int dstArea, int howMany, vector< int > cards, HARM harm, bool isShown)
 {
-	int ret = GE_MOVECARD_FAILED;
-	PlayerEntity *src, *dst;
-	//FIXME up to now DECK_DISCARD is not covered here
-	switch(srcArea)
-	{
-	case DECK_BASIC_EFFECT:
-		src = getPlayerEntity(srcOwner);		
-		if(!src){
-			return GE_INVALID_PLAYERID;
-		}
-		//FIXME up to now 1 is enough
-		if(howMany != 1){
-			return GE_NOT_SUPPORTED;
-		}
-		ret = src->removeBasicEffect(cards[0]);
-		break;
-	case DECK_COVER:
-		src = getPlayerEntity(srcOwner);
-		if(!src){
-			return GE_INVALID_PLAYERID;
-		}
-		ret = src->removeCoverCards(howMany,cards);
-		break;		
-	default:
-		return GE_NOT_SUPPORTED;
-	}
-	sendMessage(-1, Coder::moveCardNotice(howMany, cards, srcOwner, srcArea, dstOwner, dstArea));	
-		
-	if(dstArea == DECK_DISCARD){
-		ret = discard->push(howMany,&cards[0]);
-	}
-	else{
-		return GE_NOT_SUPPORTED;
-	}
-	return ret;
+	return setStateMoveCards(srcOwner, srcArea, dstOwner, dstArea, howMany, cards, harm, isShown);
 }
 
-int GameGrail::setStateMoveOneCard(int srcOwner, int srcArea, int dstOwner, int dstArea, int cardID, bool isShown, HARM* harm)
+int GameGrail::setStateMoveOneCardToHand(int srcOwner, int srcArea, int dstOwner, int dstArea, int cardID, HARM harm, bool isShown)
 {
 	vector< int > wrapper(1);
 	wrapper[0] = cardID;
-	return setStateMoveCards(srcOwner, srcArea, dstOwner, dstArea, 1, wrapper, isShown, harm);
+	return setStateMoveCards(srcOwner, srcArea, dstOwner, dstArea, 1, wrapper, harm, isShown);
+}
+
+int GameGrail::setStateMoveCardsNotToHand(int srcOwner, int srcArea, int dstOwner, int dstArea, int howMany, vector< int > cards, int doerID, int cause, bool isShown)
+{
+	HARM harm;
+	harm.type = HARM_NONE;
+	harm.point = howMany;
+	harm.srcID = doerID;
+	harm.cause = cause;
+	return setStateMoveCards(srcOwner, srcArea, dstOwner, dstArea, howMany, cards, harm, isShown);
+}
+
+int GameGrail::setStateMoveOneCardNotToHand(int srcOwner, int srcArea, int dstOwner, int dstArea, int cardID, int doerID, int cause, bool isShown)
+{
+	vector< int > wrapper(1);
+	wrapper[0] = cardID;
+	HARM harm;
+	harm.type = HARM_NONE;
+	harm.point = 1;
+	harm.srcID = doerID;
+	harm.cause = cause;
+	return setStateMoveCards(srcOwner, srcArea, dstOwner, dstArea, 1, wrapper, harm, isShown);
 }
 
 int GameGrail::drawCardsFromPile(int howMany, vector< int > &cards)
@@ -382,22 +351,11 @@ int GameGrail::drawCardsFromPile(int howMany, vector< int > &cards)
 		pile->randomize();
 		if(!pile->pop(howMany-outPtr,out+outPtr)){
 			ztLoggerWrite(ZONE, e_Error, "[Table %d] Running out of cards.", m_gameId);
-			return GE_CARD_NOT_ENOUGH;
+			throw GE_CARD_NOT_ENOUGH;
 		}
 	}
 	cards = vector< int >(out, out+howMany);
 	return GE_SUCCESS;
-}
-
-//Must ensure it is called through last line and must push the nextState first
-int GameGrail::setStateDrawCardsToHand(int howMany, int playerID, HARM *harm)
-{
-	int ret;
-	vector< int >cards;
-	ret = drawCardsFromPile(howMany, cards);
-	sendMessage(-1, Coder::drawNotice(playerID, howMany, cards));
-	setStateMoveCards(-1, DECK_PILE, playerID, DECK_HAND, howMany, cards, harm);
-	return ret;
 }
 
 //Must ensure it is called through last line and must push the nextState first
@@ -419,7 +377,7 @@ int GameGrail::setStateUseCard(int cardID, int dstID, int srcID, bool realCard)
 {
 	if(realCard){
 		sendMessage(-1,Coder::useCardNotice(cardID,dstID,srcID));
-		return setStateMoveOneCard(srcID, DECK_HAND, -1, DECK_DISCARD, cardID, true);
+		return setStateMoveOneCardNotToHand(srcID, DECK_HAND, -1, DECK_DISCARD, cardID, srcID, CAUSE_USE, true);
 	}
 	else{
 		sendMessage(-1,Coder::useCardNotice(cardID,dstID,srcID,0));
@@ -432,12 +390,13 @@ int GameGrail::setStateCheckBasicEffect()
 	//check weaken here by Fengyu
 	PlayerEntity *player = getPlayerEntity(m_currentPlayerID);
 	int weakenCardID = -1;
+	int weakenSrcID = -1;
 	//FIXME 五系束缚
-	if( player->checkBasicEffectName(WEAKEN, &weakenCardID) == GE_SUCCESS )
+	if( player->checkBasicEffectName(NAME_WEAKEN, &weakenCardID, &weakenSrcID) == GE_SUCCESS )
 	{
 		int howMany = 3;		
-		pushGameState(new StateWeaken(howMany));
-		setStateMoveOneCard(m_currentPlayerID, DECK_BASIC_EFFECT, -1, DECK_DISCARD, weakenCardID, true);
+		pushGameState(new StateWeaken(weakenSrcID, howMany));
+		setStateMoveOneCardNotToHand(m_currentPlayerID, DECK_BASIC_EFFECT, -1, DECK_DISCARD, weakenCardID, m_currentPlayerID, CAUSE_DEFAULT, true);
 	}
 	////
 	else
@@ -445,18 +404,20 @@ int GameGrail::setStateCheckBasicEffect()
 		pushGameState(new StateBeforeAction);
 	}
 	//中毒 push timeline3 states here based on basicEffect by Fengyu
-	int poisonCardID = -1;
-	int poisonSrc = -1;
-	while( true )
+	list<BasicEffect> basicEffects = player->getBasicEffect();
+	for(list<BasicEffect>::iterator it = basicEffects.begin(); it!=basicEffects.end(); it++)
 	{
-		if(player->checkBasicEffectName(POISON, &poisonCardID, &poisonSrc ) != GE_SUCCESS){break;}
+		if(getCardByID(it->card)->getName() == NAME_POISON)
+		{
+			HARM poisonHarm;
+			poisonHarm.type = HARM_MAGIC;
+			poisonHarm.point = 1;
+			poisonHarm.srcID = it->srcUser;
+			poisonHarm.cause = CAUSE_POISON;
 
-		HARM poisonHarm ={HARM_MAGIC,1,poisonSrc}; //cause缺省
-
-		setStateTimeline3(m_currentPlayerID,poisonHarm);
-
-		setStateMoveOneCard(m_currentPlayerID,DECK_BASIC_EFFECT,-1,DECK_DISCARD,poisonCardID,true);
-
+			setStateTimeline3(m_currentPlayerID, poisonHarm);
+			setStateMoveOneCardNotToHand(m_currentPlayerID, DECK_BASIC_EFFECT, -1, DECK_DISCARD, it->card, m_currentPlayerID, CAUSE_DEFAULT, true);
+		}
 	}
 	return GE_SUCCESS;
 }
@@ -482,9 +443,9 @@ int GameGrail::setStateAttackGiveUp(int cardID, int dstID, int srcID, HARM harm,
 
 	PlayerEntity *player = getPlayerEntity(dstID);
 	int shieldCardID = -1;
-	if(player->checkBasicEffectName(SHIELD, &shieldCardID) == GE_SUCCESS){
+	if(player->checkBasicEffectName(NAME_SHIELD, &shieldCardID) == GE_SUCCESS){
 		setStateTimeline2Miss(cardID, dstID, srcID, isActive);	
-		return setStateMoveOneCard(dstID,DECK_BASIC_EFFECT,-1,DECK_DISCARD,shieldCardID,true);	
+		return setStateMoveOneCardNotToHand(dstID, DECK_BASIC_EFFECT, -1, DECK_DISCARD, shieldCardID, dstID, CAUSE_DEFAULT, true);	
 	}
 	
 	else{
@@ -505,7 +466,7 @@ int GameGrail::setStateTimeline1(int cardID, int dstID, int srcID, bool isActive
 	con->hitRate = RATE_NORMAL;
 
 	//FIXME: 暗灭 by Fengyu 
-	if(getCardByID(cardID)->getElement() == DARKNESS){
+	if(getCardByID(cardID)->getElement() == ELEMENT_DARKNESS){
 		con->hitRate = RATE_NOREATTACK;
 	}
 	////
@@ -550,11 +511,13 @@ int GameGrail::setStateTimeline3(int dstID, HARM harm)
 
 int GameGrail::setStateTrueLoseMorale(int howMany, int dstID, HARM harm)
 {
-	CONTEXT_LOSE_MORALE *con = new CONTEXT_LOSE_MORALE;
-	con->dstID = dstID;
-	con->harm = harm;
-	con->howMany = howMany;
-	pushGameState(new StateTrueLoseMorale(con));
+	if(howMany>0){
+		CONTEXT_LOSE_MORALE *con = new CONTEXT_LOSE_MORALE;
+		con->dstID = dstID;
+		con->harm = harm;
+		con->howMany = howMany;
+		pushGameState(new StateTrueLoseMorale(con));
+	}
 	return GE_SUCCESS;
 }
 

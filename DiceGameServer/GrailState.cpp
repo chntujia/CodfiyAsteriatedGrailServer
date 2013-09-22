@@ -93,9 +93,15 @@ int StateGameStart::handle(GameGrail* engine)
 		engine->initDecks();
 	}
 	int ret;
+	vector< int > cards;
+	HARM harm;
+	harm.type = HARM_NONE;
+	harm.point = 4;
+	harm.srcID = -1;
+	harm.cause = CAUSE_DEFAULT;
 	//LIFO
 	for(int i = iterator; i < engine->getGameMaxPlayers(); i++){
-		ret = engine->setStateDrawCardsToHand(4, i);
+		ret = engine->setStateMoveCardsToHand(-1, DECK_PILE, i, DECK_HAND, 4, cards, harm);
 		iterator++;
 		return ret;
 	}
@@ -159,7 +165,13 @@ int StateWeaken::handle(GameGrail* engine)
 				engine->sendMessage(-1, Coder::weakNotice(m_currentPlayerID, 1));
 				engine->popGameState();
 				engine->pushGameState(new StateBeforeAction);
-				return engine->setStateDrawCardsToHand(howMany, m_currentPlayerID);
+				HARM harm;
+				harm.type = HARM_NONE;
+				harm.point = howMany;
+				harm.srcID = srcID;
+				harm.cause = CAUSE_WEAKEN;
+				vector< int > cards;
+				return engine->setStateMoveCardsToHand(-1, DECK_PILE, m_currentPlayerID, DECK_HAND, howMany, cards, harm);
 			}
 			else{
 				engine->sendMessage(-1, Coder::weakNotice(m_currentPlayerID, 0));
@@ -567,9 +579,10 @@ int StateTimeline6::handle(GameGrail* engine)
 		iterator++;
 	}
 	CONTEXT_TIMELINE_6 temp = *context;
+	vector<int> cards;
 	if(GE_SUCCESS == (ret = engine->popGameState_if(STATE_TIMELINE_6))){
 		if(temp.harm.point>0){
-			ret = engine->setStateDrawCardsToHand(temp.harm.point, temp.dstID, &temp.harm);
+			ret = engine->setStateMoveCardsToHand(-1, DECK_PILE, temp.dstID, DECK_HAND, temp.harm.point, cards, temp.harm);
 		}
 	}
 	return ret;
@@ -597,7 +610,18 @@ int StateAskForCross::handle(GameGrail* engine)
 int StateHandChange::handle(GameGrail* engine)
 {
 	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateHandChange", engine->getGameId());
-	int ret = GE_FATAL_ERROR;
+	int ret;
+	if(!isSet){
+		PlayerEntity* dst = engine->getPlayerEntity(dstID);
+		if(direction == CHANGE_ADD){
+			dst->addHandCards(howMany,cards);					
+		}
+		else{
+			dst->removeHandCards(howMany,cards);	
+		}
+		isSet = true;
+	}
+	ret = GE_FATAL_ERROR;
 	int m_currentPlayerID = engine->getCurrentPlayerID();
 	for(int i = iterator; i< engine->getGameMaxPlayers(); i++){
 		if(GE_SUCCESS != (ret = engine->getPlayerEntity(i)->p_hand_change(dstID))){
@@ -608,7 +632,38 @@ int StateHandChange::handle(GameGrail* engine)
 		}
 		iterator++;
 	}
-	return engine->popGameState_if(STATE_HAND_CHANGE);
+	int dstID_temp = dstID;
+	HARM harm_temp = harm;
+	engine->popGameState_if(STATE_HAND_CHANGE);
+	return engine->setStateHandOverLoad(dstID_temp, harm_temp);
+}
+
+int StateBasicEffectChange::handle(GameGrail* engine)
+{
+	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateBasicEffectChange", engine->getGameId());
+	int ret;
+	if(!isSet){
+		PlayerEntity* dst = engine->getPlayerEntity(dstID);
+		if(direction == CHANGE_ADD){
+            dst->addBasicEffect(card, doerID);					
+		}
+		else{
+			dst->removeBasicEffect(card);	
+		}
+		isSet = true;
+	}
+	ret = GE_FATAL_ERROR;
+	int m_currentPlayerID = engine->getCurrentPlayerID();
+	for(int i = iterator; i< engine->getGameMaxPlayers(); i++){
+		if(GE_SUCCESS != (ret = engine->getPlayerEntity(i)->p_basic_effect_change(dstID, card, doerID, cause))){
+			if(ret==GE_DONE_AND_URGENT){
+				iterator++;
+			}
+			return ret;
+		}
+		iterator++;
+	}
+	return engine->popGameState_if(STATE_BASIC_EFFECT_CHANGE);	 
 }
 
 int StateDiscardHand::handle(GameGrail* engine)
@@ -638,7 +693,7 @@ int StateDiscardHand::handle(GameGrail* engine)
 			toDiscard[i] = *it;
 			it++;
 		}
-		return engine->setStateMoveCards(dstID_t, DECK_HAND, -1, DECK_DISCARD, howMany_t, toDiscard, isShown_t);
+		return engine->setStateMoveCardsNotToHand(dstID_t, DECK_HAND, -1, DECK_DISCARD, howMany_t, toDiscard, harm_t.srcID, harm_t.cause, isShown_t);
 	}
 }
 

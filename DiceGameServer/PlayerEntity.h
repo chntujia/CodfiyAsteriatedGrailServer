@@ -99,6 +99,7 @@ public:
 	virtual int p_timeline_6(CONTEXT_TIMELINE_6 *con) { return GE_SUCCESS; }
 	virtual int p_true_lose_morale(CONTEXT_LOSE_MORALE *con) { return GE_SUCCESS; }
 	virtual int p_hand_change(int playerID) { return GE_SUCCESS; }
+	virtual int p_basic_effect_change(int dstID, int card, int doerID, int cause)  { return GE_SUCCESS; }
 	virtual int p_show_hand(int playerID, int howMany, vector<int> cards) { return GE_SUCCESS; }
 protected:
     int id;//Íæ¼Òid

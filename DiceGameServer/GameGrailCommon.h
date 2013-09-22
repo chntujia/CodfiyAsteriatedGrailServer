@@ -34,6 +34,20 @@ enum GrailError{
 	GE_NO_REPLY
 };
 
+enum CAUSE{
+	CAUSE_DEFAULT,
+	CAUSE_OVERFLOW,
+	CAUSE_USE,
+	CAUSE_ATTACK,
+	CAUSE_POISON,
+	CAUSE_WEAKEN
+};
+
+enum CHANGE{
+	CHANGE_ADD,
+	CHANGE_REMOVE
+};
+
 enum DECK{
 	DECK_PILE = 1, 
 	DECK_DISCARD = 2,
@@ -80,11 +94,6 @@ CardEntity* getCardByID(int id);
 #define REPLYBATTLE  0
 #define BLOCKED      1
 #define HIT          2
-
-//伤害类型
-#define NOTHARMED  0
-#define ATTACKHARM 1
-#define MAGICHARM  2
 
 //攻击类别，普通、无法应战、必定命中
 #define NORMAL  0
@@ -136,7 +145,7 @@ CardEntity* getCardByID(int id);
 #define UNACTIONALNOTICE 31
 #define NOTICE 38
 
-typedef struct{
+typedef struct{	
 	int type;
 	int point;
 	int srcID;
