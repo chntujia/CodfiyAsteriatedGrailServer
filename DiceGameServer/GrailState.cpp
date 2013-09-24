@@ -262,24 +262,22 @@ int StateActionPhase::handle(GameGrail* engine)
 			{				
 			case ATTACK_ACTION:
 				attack = (REPLY_ATTACK*)temp;
-				//FIXME: verify card type
-				if(GE_SUCCESS == (ret=engine->getPlayerEntity(m_currentPlayerID)->checkOneHandCard(attack->cardID))){
-					engine->popGameState();
-					return engine->setStateAttackAction(attack->cardID, attack->dstID, attack->srcID);
+				if(GE_SUCCESS != (ret=engine->getPlayerEntity(m_currentPlayerID)->checkOneHandCard(attack->cardID))){
+					return ret;
 				}
+				if(getCardByID(attack->cardID)->getType() != TYPE_ATTACK){
+					return GE_INVALID_CARDID;
+				}
+				engine->popGameState();
+				return engine->setStateAttackAction(attack->cardID, attack->dstID, attack->srcID);				
 				break;
-			
-				//FIXME: verify card type by 
-
-			default:
-				return ret;
-				//// 没看懂这里要干什么..
-			}
-			
+			case MAGIC_ACTION:
+				engine->popGameState();
+				return engine->setStateMagicAction();
+				break;
+			}			
 		}
-		else{
-			return ret;
-		}
+		return ret;
 	}
 	else{
 		return GE_TIMEOUT;
@@ -301,31 +299,6 @@ int StateBeforeAttack::handle(GameGrail* engine)
 		iterator++;
 	}
 	return engine->popGameState_if(STATE_BEFORE_ATTACK);
-}
-
-int StateTimeline1::handle(GameGrail* engine)
-{
-	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateTimeline1", engine->getGameId());
-	int ret = GE_FATAL_ERROR;
-	int m_currentPlayerID = engine->getCurrentPlayerID();
-	for(int i = iterator; i< engine->getGameMaxPlayers(); i++){
-		if(GE_SUCCESS != (ret = engine->getPlayerEntity(i)->p_timeline_1(context))){
-			if(ret==GE_DONE_AND_URGENT){
-				iterator++;
-			}
-			return ret;
-		}
-		iterator++;
-	}
-	CONTEXT_TIMELINE_1* con = new CONTEXT_TIMELINE_1;
-	*con = *context;
-	if(GE_SUCCESS == (ret = engine->popGameState_if(STATE_TIMELINE_1))){		
-		engine->pushGameState(new StateAttacked(con));
-	}
-	else{
-		SAFE_DELETE(con);
-	}
-	return ret;
 }
 
 int StateAttacked::handle(GameGrail* engine)
@@ -392,6 +365,108 @@ int StateAfterAttack::handle(GameGrail* engine)
 	return ret;
 }
 
+int StateBeforeMagic::handle(GameGrail* engine)
+{
+	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateBeforeMagic", engine->getGameId());
+	int ret = GE_FATAL_ERROR;
+	int m_currentPlayerID = engine->getCurrentPlayerID();
+	for(int i = iterator; i< engine->getGameMaxPlayers(); i++){
+		if(GE_SUCCESS != (ret = engine->getPlayerEntity(i)->p_before_magic(srcID))){
+			if(ret==GE_DONE_AND_URGENT){
+				iterator++;
+			}
+			return ret;
+		}
+		iterator++;
+	}
+	return engine->popGameState_if(STATE_BEFORE_MAGIC);
+}
+
+int StateMissiled::handle(GameGrail* engine)
+{
+	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateMissiled", engine->getGameId());
+	int nextTargetID = getNextTargetID(engine);
+//change
+	if(engine->waitForOne(dstID, Coder::askForMissile(dstID, srcID, harmPoint, nextTargetID)))
+	{
+		void* reply;
+		int ret;
+		REPLY_ATTACKED* reAttack;
+		if(GE_SUCCESS == (ret = engine->getReply(dstID, reply)))
+		{
+			reAttack = (REPLY_ATTACKED*)reply;
+			switch(reAttack->flag)
+			{				
+				//FIXME: verify card type
+			case RA_ATTACK:
+				if(GE_SUCCESS == (ret=engine->getPlayerEntity(dstID)->checkOneHandCard(reAttack->cardID))){
+					srcID = dstID;
+					dstID = reAttack->dstID;
+					harmPoint++;
+					return engine->setStateUseCard(reAttack->cardID, dstID, srcID, true);
+				}
+				break;
+			case RA_BLOCK:
+				if(GE_SUCCESS == (ret=engine->getPlayerEntity(dstID)->checkOneHandCard(reAttack->cardID))){
+					engine->popGameState();
+					return engine->setStateUseCard(reAttack->cardID, -1, reAttack->srcID);				
+				}
+				break;
+			case RA_GIVEUP:
+				engine->popGameState();
+				return engine->setStateMissileGiveUp(dstID, srcID, harmPoint);
+				break;
+			}
+		}
+		return ret;
+	}
+	else{
+		engine->popGameState();
+		engine->setStateMissileGiveUp(dstID, srcID, harmPoint);
+		return GE_TIMEOUT;
+	}
+}
+
+int StateMissiled::getNextTargetID(GameGrail* engine)
+{
+	int nextTargetID;
+	PlayerEntity* dst = engine->getPlayerEntity(dstID);
+	int color = dst->getColor();
+	PlayerEntity* it = dst;
+	while(true)
+	{
+		while(dst != (it = isClockwise ? it->getPre() : it->getPost()))
+		{
+			nextTargetID = it->getID();
+			if(!isMissiled[nextTargetID] && it->getColor() != color){				
+				isMissiled[nextTargetID] = true;
+				return nextTargetID;
+			}
+		}
+		memset(isMissiled, 0, sizeof(isMissiled));
+	}
+}
+
+int StateAfterMagic::handle(GameGrail* engine)
+{
+	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateAfterMagic", engine->getGameId());
+	int ret = GE_FATAL_ERROR;
+	int m_currentPlayerID = engine->getCurrentPlayerID();
+	for(int i = iterator; i< engine->getGameMaxPlayers(); i++){
+		if(GE_SUCCESS != (ret = engine->getPlayerEntity(i)->p_after_magic(srcID))){
+			if(ret==GE_DONE_AND_URGENT){
+				iterator++;
+			}
+			return ret;
+		}
+		iterator++;
+	}
+	if(GE_SUCCESS == (ret = engine->popGameState_if(STATE_AFTER_MAGIC))){
+		return engine->setStateCheckTurnEnd();
+	}
+	return ret;
+}
+
 int StateTurnEnd::handle(GameGrail* engine)
 {
 	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateTurnEnd", engine->getGameId());
@@ -414,6 +489,31 @@ int StateTurnEnd::handle(GameGrail* engine)
 		return engine->setStateCurrentPlayer(player->getPost()->getID());
 	}
 	return ret;	
+}
+
+int StateTimeline1::handle(GameGrail* engine)
+{
+	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateTimeline1", engine->getGameId());
+	int ret = GE_FATAL_ERROR;
+	int m_currentPlayerID = engine->getCurrentPlayerID();
+	for(int i = iterator; i< engine->getGameMaxPlayers(); i++){
+		if(GE_SUCCESS != (ret = engine->getPlayerEntity(i)->p_timeline_1(context))){
+			if(ret==GE_DONE_AND_URGENT){
+				iterator++;
+			}
+			return ret;
+		}
+		iterator++;
+	}
+	CONTEXT_TIMELINE_1* con = new CONTEXT_TIMELINE_1;
+	*con = *context;
+	if(GE_SUCCESS == (ret = engine->popGameState_if(STATE_TIMELINE_1))){		
+		engine->pushGameState(new StateAttacked(con));
+	}
+	else{
+		SAFE_DELETE(con);
+	}
+	return ret;
 }
 
 int StateTimeline2Hit::handle(GameGrail* engine)

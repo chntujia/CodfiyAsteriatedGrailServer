@@ -430,6 +430,15 @@ int GameGrail::setStateAttackAction(int cardID, int dstID, int srcID, bool realC
 	return setStateUseCard(cardID, dstID, srcID, realCard);
 }
 
+int GameGrail::setStateMagicAction()
+{/*
+	pushGameState(new StateAfterMagic(srcID));	
+
+	pushGameState(new StateBeforeMagic(srcID));
+	*/
+	return 0;
+}
+
 int GameGrail::setStateReattack(int attackFromCard, int attackToCard, int attackFrom, int attacked , int attackTo, bool isActive, bool realCard)
 {
 	setStateTimeline1(attackToCard, attackTo, attacked, false);
@@ -450,6 +459,24 @@ int GameGrail::setStateAttackGiveUp(int cardID, int dstID, int srcID, HARM harm,
 	
 	else{
 		return setStateTimeline2Hit(cardID, dstID, srcID, harm, isActive);
+	}
+}
+
+int GameGrail::setStateMissileGiveUp(int dstID, int srcID, int harmPoint)
+{
+	// FIX_ME  没有检查天使之墙 check sheild here by Fengyu
+	PlayerEntity *player = getPlayerEntity(dstID);
+	int shieldCardID = -1;
+	if(player->checkBasicEffectName(NAME_SHIELD, &shieldCardID) == GE_SUCCESS){	
+		return setStateMoveOneCardNotToHand(dstID, DECK_BASIC_EFFECT, -1, DECK_DISCARD, shieldCardID, dstID, CAUSE_DEFAULT, true);	
+	}	
+	else{
+		HARM harm;
+		harm.type = HARM_MAGIC;
+		harm.point = harmPoint;
+		harm.srcID = srcID;
+		harm.cause = CAUSE_MISSILE;
+		return setStateTimeline3(dstID, harm);
 	}
 }
 

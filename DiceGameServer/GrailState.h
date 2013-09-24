@@ -1,7 +1,6 @@
 #pragma once
 #include "GameGrailCommon.h"
 // game state define
-class GameGrail;
 
 enum STATE{
 	STATE_FATAL_ERROR,
@@ -18,6 +17,12 @@ enum STATE{
 	STATE_BOOT,	
 	STATE_ACTION_PHASE,
 	STATE_BEFORE_ATTACK,
+	STATE_ATTACKED,
+	STATE_AFTER_ATTACK,
+	STATE_BEFORE_MAGIC,
+	STATE_MISSILED,
+	STATE_AFTER_MAGIC,
+	STATE_TURN_END,
 	STATE_TIMELINE_1,
 	STATE_TIMELINE_2_MISS,
 	STATE_TIMELINE_2_HIT,
@@ -25,10 +30,7 @@ enum STATE{
 	STATE_TIMELINE_4,
 	STATE_TIMELINE_5,
 	STATE_TIMELINE_6,
-	STATE_ASK_FOR_CROSS,
-	STATE_ATTACKED,
-	STATE_AFTER_ATTACK,
-	STATE_TURN_END,
+	STATE_ASK_FOR_CROSS,		
 	STATE_SHOW_HAND,
 	STATE_HAND_CHANGE,
 	STATE_BASIC_EFFECT_CHANGE,
@@ -43,11 +45,6 @@ enum ROLE_STRATEGY{
 	ROLE_STRATEGY_BP
 };
 //Contexts
-
-typedef struct{
-	int actionFlag;
-	bool canGiveUp;
-}CONTEXT_ACTION_PHASE;
 
 typedef struct{
 	int cardID;
@@ -119,6 +116,8 @@ typedef struct{
 	int dstID;
 	int srcID;
 }REPLY_ATTACKED;
+
+class GameGrail;
 
 class GrailState
 {
@@ -220,6 +219,15 @@ public:
 	int srcID;
 };
 
+class StateAttacked : public GrailState
+{
+public:
+	StateAttacked(CONTEXT_TIMELINE_1 *con): GrailState(STATE_ATTACKED), context(con){}
+	~StateAttacked(){ SAFE_DELETE(context); }
+	int handle(GameGrail* engine);
+	CONTEXT_TIMELINE_1 *context;
+};
+
 class StateAfterAttack: public GrailState
 {
 public:
@@ -230,22 +238,35 @@ public:
 	int srcID;
 };
 
-class StateTimeline1 : public GrailState
+class StateBeforeMagic: public GrailState
 {
 public:
-	StateTimeline1(CONTEXT_TIMELINE_1 *con): GrailState(STATE_TIMELINE_1), context(con){}
-	~StateTimeline1(){ SAFE_DELETE(context); }
+	StateBeforeMagic(int srcID): GrailState(STATE_BEFORE_MAGIC), srcID(srcID){}
 	int handle(GameGrail* engine);
-	CONTEXT_TIMELINE_1 *context;
+	int srcID;
 };
 
-class StateAttacked : public GrailState
+class StateMissiled: public GrailState
 {
 public:
-	StateAttacked(CONTEXT_TIMELINE_1 *con): GrailState(STATE_ATTACKED), context(con){}
-	~StateAttacked(){ SAFE_DELETE(context); }
+	StateMissiled(int dstID, int srcID, bool isClockwise): GrailState(STATE_MISSILED), dstID(dstID), srcID(srcID), isClockwise(isClockwise), harmPoint(2){
+	    memset(isMissiled, 0, sizeof(isMissiled));
+	}
 	int handle(GameGrail* engine);
-	CONTEXT_TIMELINE_1 *context;
+	int getNextTargetID(GameGrail* engine);	
+	int dstID;
+	int srcID;
+	bool isClockwise;
+	int harmPoint;
+	bool isMissiled[MAXPLAYER];
+};
+
+class StateAfterMagic: public GrailState
+{
+public:
+	StateAfterMagic(int srcID): GrailState(STATE_AFTER_MAGIC), srcID(srcID){}
+	int handle(GameGrail* engine);
+	int srcID;
 };
 
 class StateTurnEnd: public GrailState
@@ -253,6 +274,15 @@ class StateTurnEnd: public GrailState
 public:
 	StateTurnEnd(): GrailState(STATE_TURN_END){}
 	int handle(GameGrail* engine);
+};
+
+class StateTimeline1 : public GrailState
+{
+public:
+	StateTimeline1(CONTEXT_TIMELINE_1 *con): GrailState(STATE_TIMELINE_1), context(con){}
+	~StateTimeline1(){ SAFE_DELETE(context); }
+	int handle(GameGrail* engine);
+	CONTEXT_TIMELINE_1 *context;
 };
 
 class StateTimeline2Hit : public GrailState

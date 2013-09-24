@@ -89,6 +89,8 @@ public:
 	virtual int p_boot(int currentPlayerID) { return GE_SUCCESS; }
 	virtual int p_before_attack(int dstID, int srcID) { return GE_SUCCESS; }
 	virtual int p_after_attack(int playerID) { return GE_SUCCESS; }
+	virtual int p_before_magic(int srcID) { return GE_SUCCESS; }
+	virtual int p_after_magic(int srcID) { return GE_SUCCESS; }
 	virtual int p_turn_end(int playerID) { return GE_SUCCESS; }
 	virtual int p_timeline_1(CONTEXT_TIMELINE_1 *con) { return GE_SUCCESS; }
 	virtual int p_timeline_2_hit(CONTEXT_TIMELINE_2_HIT *con) { return GE_SUCCESS; }

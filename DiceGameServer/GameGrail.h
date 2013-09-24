@@ -190,8 +190,10 @@ public:
 	int setStateHandOverLoad(int dstID, HARM harm);
 	int setStateCheckBasicEffect();
 	int setStateAttackAction(int cardID, int dstID, int srcID, bool realCard = true);
+	int setStateMagicAction();
 	int setStateReattack(int attackFromCard, int attackToCard, int attackFrom, int attacked , int attackTo, bool isActive, bool realCard = true);
 	int setStateAttackGiveUp(int cardID, int dstID, int srcID, HARM harm, bool isActive);
+	int setStateMissileGiveUp(int dstID, int srcID, int harmPoint);
 	int setStateTimeline1(int cardID, int dstID, int srcID, bool isActive);
 	int setStateTimeline2Miss(int cardID, int dstID, int srcID, bool isActive);
 	int setStateTimeline2Hit(int cardID, int dstID, int srcID, HARM harm, bool isActive);
