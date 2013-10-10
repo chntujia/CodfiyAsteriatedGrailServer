@@ -59,7 +59,6 @@ public:
     //设置下一个玩家
     void setPost(PlayerEntity* nextPlayer){this->postPlayer = nextPlayer;}
 	void setPre(PlayerEntity* pre){ prePlayer = pre; }
-	void setHasAdditionalAction(bool has){ hasAdditionalAction = has;}
     int getID();
     string getName();
     int getHandCardMax();
@@ -82,7 +81,8 @@ public:
     bool tapped(){return this->tap;}
     bool isHandCardsMaxFixed(){return this->handCardsMaxFixed;}
     bool getYourturn();
-	bool getHasAdditionalAction() {return hasAdditionalAction;}
+	bool hasAdditionalAction() {return !additionalActions.empty();}
+	void clearAdditionalAction() { additionalActions.clear(); }
 	virtual int p_before_turn_begin(int currentPlayerID) { return GE_SUCCESS; }
 	virtual int p_turn_begin(int currentPlayerID) { return GE_SUCCESS; }
 	virtual int p_before_action(int currentPlayerID) { return GE_SUCCESS; }
@@ -103,6 +103,13 @@ public:
 	virtual int p_hand_change(int playerID) { return GE_SUCCESS; }
 	virtual int p_basic_effect_change(int dstID, int card, int doerID, int cause)  { return GE_SUCCESS; }
 	virtual int p_show_hand(int playerID, int howMany, vector<int> cards) { return GE_SUCCESS; }
+
+	static bool is_allow_action(int claim, int allow, bool canGiveUp);
+	virtual int v_attack(int cardID, int dstID, bool realCard = true);
+	virtual int v_reattack(int cardID, int orignCardID, int dstID, int orignID, bool realCard = true);
+	virtual int v_missile(int cardID, int dstID, bool realCard = true);
+	virtual int v_remissile(int cardID, bool realCard = true);
+	virtual int v_block(int cardID);
 protected:
     int id;//玩家id
     int characterID;
@@ -120,7 +127,6 @@ protected:
     bool tap;//横置状态
     bool handCardsMaxFixed;//是否锁定手牌上限
     bool yourTurn;
-	bool hasAdditionalAction;
     int seatNum;
     int token[3];
     int tokenMax[3];
@@ -131,6 +137,7 @@ protected:
     list< BasicEffect > basicEffects;//基础效果牌
     list< int > exclusiveEffect;//专属效果
     list< int > coverCards;//盖牌区
+	list< ACTION_QUOTA > additionalActions;
 	GameGrail *engine;
 };
 

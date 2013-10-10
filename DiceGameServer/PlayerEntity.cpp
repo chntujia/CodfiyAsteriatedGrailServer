@@ -257,7 +257,122 @@ int PlayerEntity::getColor()
     return color;
 }
 
+bool PlayerEntity::is_allow_action(int claim, int allow, bool canGiveUp)
+{
+	switch(allow)
+	{
+	case ANY_ACTION:
+		if(claim == ATTACK_ACTION || claim == MAGIC_ACTION || claim == SPECIAL_ACTION){
+			return true;
+		}
+		break;
+	case ATTACK_MAGIC:
+		if(claim == ATTACK_ACTION || claim == MAGIC_ACTION){
+			return true;
+		}
+		break;
+	case ATTACK_ACTION:
+	case MAGIC_ACTION:
+	case SPECIAL_ACTION:
+	case NO_ACTION:
+		if(claim == allow){
+			return true;
+		}
+		break;
+	}
+	if(canGiveUp && NO_ACTION == claim){
+		return true;
+	}
+	return false;
+}
 
+//FIXME: Ç±ÐÐ ÌôÐÆ ¶àÖØ
+int PlayerEntity::v_attack(int cardID, int dstID, bool realCard)
+{
+	if(realCard){
+		int ret;
+		if(GE_SUCCESS != (ret = checkOneHandCard(cardID))){
+			return ret;
+		}
+	}
+	if(getCardByID(cardID)->getType() != TYPE_ATTACK){
+		return GE_INVALID_CARDID; 
+	}
 
+	PlayerEntity *dst = engine->getPlayerEntity(dstID);
+	if(dst->getColor() == color){
+		return GE_INVALID_PLAYERID;
+	}
+	return GE_SUCCESS;
+}
 
+int PlayerEntity::v_reattack(int cardID, int orignCardID, int dstID, int orignID, bool realCard)
+{
+	if(realCard){
+		int ret;
+		if(GE_SUCCESS != (ret = checkOneHandCard(cardID))){
+			return ret;
+		}
+	}
+	CardEntity* orignCard = getCardByID(orignCardID);
+	if(orignCard->getElement() == ELEMENT_DARKNESS){
+		return GE_INVALID_CARDID; 
+	}
+	CardEntity* card = getCardByID(cardID);		
+	if(card->getType() != TYPE_ATTACK){
+		return GE_INVALID_CARDID; 
+	}
+	if(card->getElement() != ELEMENT_DARKNESS && card->getElement() != orignCard->getElement()){
+		return GE_INVALID_CARDID; 
+	}
 
+	PlayerEntity *dst = engine->getPlayerEntity(dstID);
+	if(dstID == orignID || dst->getColor() == color){
+		return GE_INVALID_PLAYERID;
+	}
+	return GE_SUCCESS;
+}
+
+int PlayerEntity::v_missile(int cardID, int dstID, bool realCard)
+{
+	if(realCard){
+		int ret;
+		if(GE_SUCCESS != (ret = checkOneHandCard(cardID))){
+			return ret;
+		}
+	}
+	if(getCardByID(cardID)->getName() != NAME_MISSILE){
+		return GE_INVALID_CARDID; 
+	}
+	PlayerEntity *it = this;
+	while((it = it->getPost())->getColor() == color)
+		;
+	if(dstID != it->getID()){
+		return GE_INVALID_PLAYERID;
+	}
+	return GE_SUCCESS;
+}
+
+int PlayerEntity::v_remissile(int cardID, bool realCard)
+{
+	if(realCard){
+		int ret;
+		if(GE_SUCCESS != (ret = checkOneHandCard(cardID))){
+			return ret;
+		}
+	}
+	if(getCardByID(cardID)->getName() != NAME_MISSILE){
+		return GE_INVALID_CARDID; 
+	}
+}
+
+int PlayerEntity::v_block(int cardID)
+{
+	int ret;
+	if(GE_SUCCESS != (ret = checkOneHandCard(cardID))){
+		return ret;
+	}
+	if(getCardByID(cardID)->getName() != NAME_HOLYLIGHT){
+		return GE_INVALID_CARDID; 
+	}
+}

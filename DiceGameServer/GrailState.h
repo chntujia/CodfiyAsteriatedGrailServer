@@ -204,7 +204,7 @@ class StateActionPhase: public GrailState
 public:
 	StateActionPhase(): GrailState(STATE_ACTION_PHASE), isSet(false){}
 	int handle(GameGrail* engine);
-	int actionFlag;
+	int allowAction;
 	bool canGiveUp;
 	bool isSet;
 };
@@ -250,15 +250,18 @@ class StateMissiled: public GrailState
 {
 public:
 	StateMissiled(int dstID, int srcID, bool isClockwise): GrailState(STATE_MISSILED), dstID(dstID), srcID(srcID), isClockwise(isClockwise), harmPoint(2){
-	    memset(isMissiled, 0, sizeof(isMissiled));
+	    memset(hasMissiled, 0, sizeof(hasMissiled));
+		hasMissiled[srcID] = true;
 	}
+	static StateMissiled* create(GameGrail* engine, int cardID, int dstID, int srcID);	
 	int handle(GameGrail* engine);
-	int getNextTargetID(GameGrail* engine);	
+	int getNextTargetID(GameGrail* engine, int startID);	
+private:
 	int dstID;
 	int srcID;
 	bool isClockwise;
 	int harmPoint;
-	bool isMissiled[MAXPLAYER];
+	bool hasMissiled[MAXPLAYER];
 };
 
 class StateAfterMagic: public GrailState

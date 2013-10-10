@@ -554,7 +554,7 @@ int GameGrail::setStateCheckTurnEnd()
 	if(!player){
 		return GE_INVALID_PLAYERID;
 	}
-	if(player->getHasAdditionalAction())
+	if(player->hasAdditionalAction())
 	{
 		//TODO: additional action state
 	}
@@ -652,8 +652,8 @@ int GameGrail::setStateCurrentPlayer(int playerID)
 	if(!player){
 		return GE_INVALID_ARGUMENT;
 	}
-	player->setHasAdditionalAction(false);
 	m_currentPlayerID = playerID;
+	player->clearAdditionalAction();
 	pushGameState(new StateBeforeTurnBegin);
 	return GE_SUCCESS;
 }

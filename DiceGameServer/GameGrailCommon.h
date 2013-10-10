@@ -28,6 +28,7 @@ enum GrailError{
 	GE_FATAL_ERROR,
 	GE_INVALID_PLAYERID,
 	GE_INVALID_CARDID,
+	GE_INVALID_ACTION,
 	GE_NOT_SUPPORTED,
 	GE_INVALID_ARGUMENT,
 	GE_NO_CONTEXT,
@@ -68,7 +69,8 @@ enum ACTION_FLAG{
 	ATTACK_ACTION,
 	MAGIC_ACTION,
 	SPECIAL_ACTION,
-	ATTACK_MAGIC
+	ATTACK_MAGIC,
+	NO_ACTION
 };
 
 enum HIT_RATE{
@@ -152,6 +154,11 @@ typedef struct{
 	int srcID;
 	int cause;
 }HARM;
+
+typedef struct{	
+	int actionFlag;
+	int cause;
+}ACTION_QUOTA;
 
 #define TOQSTR(x)  boost::lexical_cast<std::string>(x)
 

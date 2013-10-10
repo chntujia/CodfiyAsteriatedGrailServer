@@ -245,12 +245,12 @@ int StateActionPhase::handle(GameGrail* engine)
 	if(!isSet)
 	{
 		//FIXME ÌôÐÆ
-		actionFlag = ANY_ACTION;
+		allowAction = ANY_ACTION;
 		canGiveUp = false;
 		isSet = true;
 	}
 	int m_currentPlayerID = engine->getCurrentPlayerID();
-	if(engine->waitForOne(m_currentPlayerID, Coder::askForAction(m_currentPlayerID, actionFlag, canGiveUp)))
+	if(engine->waitForOne(m_currentPlayerID, Coder::askForAction(m_currentPlayerID, allowAction, canGiveUp)))
 	{
 		//TODO set nextState based on reply
 		void* temp;
@@ -258,15 +258,15 @@ int StateActionPhase::handle(GameGrail* engine)
 		int ret;
 		if(GE_SUCCESS == (ret=engine->getReply(m_currentPlayerID, temp))){
 			int actionFlag = *(int*)temp;
+			if(!PlayerEntity::is_allow_action(actionFlag, allowAction, canGiveUp)){
+				return GE_INVALID_ACTION;
+			}
 			switch(actionFlag)
 			{				
 			case ATTACK_ACTION:
 				attack = (REPLY_ATTACK*)temp;
-				if(GE_SUCCESS != (ret=engine->getPlayerEntity(m_currentPlayerID)->checkOneHandCard(attack->cardID))){
+				if(GE_SUCCESS != (ret=engine->getPlayerEntity(m_currentPlayerID)->v_attack(attack->cardID,attack->dstID))){
 					return ret;
-				}
-				if(getCardByID(attack->cardID)->getType() != TYPE_ATTACK){
-					return GE_INVALID_CARDID;
 				}
 				engine->popGameState();
 				return engine->setStateAttackAction(attack->cardID, attack->dstID, attack->srcID);				
@@ -315,15 +315,14 @@ int StateAttacked::handle(GameGrail* engine)
 			reAttack = (REPLY_ATTACKED*)reply;
 			switch(reAttack->flag)
 			{				
-				//FIXME: verify card type
 			case RA_ATTACK:
-				if(GE_SUCCESS == (ret=engine->getPlayerEntity(context->attack.dstID)->checkOneHandCard(reAttack->cardID))){
+				if(GE_SUCCESS == (ret=engine->getPlayerEntity(context->attack.dstID)->v_reattack(reAttack->cardID, context->attack.cardID, reAttack->dstID, context->attack.srcID))){
 					engine->popGameState();
 					return engine->setStateReattack(temp.attack.cardID, reAttack->cardID, temp.attack.srcID, temp.attack.dstID, reAttack->dstID, temp.attack.isActive, true);
 				}
 				break;
 			case RA_BLOCK:
-				if(GE_SUCCESS == (ret=engine->getPlayerEntity(context->attack.dstID)->checkOneHandCard(reAttack->cardID))){
+				if(GE_SUCCESS == (ret=engine->getPlayerEntity(context->attack.dstID)->v_block(reAttack->cardID))){
 					engine->popGameState();
 					engine->setStateTimeline2Miss(temp.attack.cardID, temp.attack.dstID, temp.attack.srcID, temp.attack.isActive);
 					return engine->setStateUseCard(reAttack->cardID, reAttack->dstID, reAttack->srcID);				
@@ -382,10 +381,27 @@ int StateBeforeMagic::handle(GameGrail* engine)
 	return engine->popGameState_if(STATE_BEFORE_MAGIC);
 }
 
+StateMissiled* StateMissiled::create(GameGrail* engine, int cardID, int dstID, int srcID)
+{
+	int ret;
+	PlayerEntity* src = engine->getPlayerEntity(srcID);
+	if(GE_SUCCESS != (ret = src->v_missile(cardID, dstID))){
+		throw ret;
+	}
+	StateMissiled* probe = new StateMissiled(dstID, srcID, false);
+	if(dstID == probe->getNextTargetID(engine, srcID)){
+		return probe;
+	}
+	else{
+		probe->isClockwise = true;
+		return probe;
+	}
+}
+
 int StateMissiled::handle(GameGrail* engine)
 {
 	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateMissiled", engine->getGameId());
-	int nextTargetID = getNextTargetID(engine);
+	int nextTargetID = getNextTargetID(engine, dstID);
 //change
 	if(engine->waitForOne(dstID, Coder::askForMissile(dstID, srcID, harmPoint, nextTargetID)))
 	{
@@ -399,15 +415,16 @@ int StateMissiled::handle(GameGrail* engine)
 			{				
 				//FIXME: verify card type
 			case RA_ATTACK:
-				if(GE_SUCCESS == (ret=engine->getPlayerEntity(dstID)->checkOneHandCard(reAttack->cardID))){
+				if(GE_SUCCESS == (ret=engine->getPlayerEntity(dstID)->v_remissile(reAttack->cardID))){
 					srcID = dstID;
-					dstID = reAttack->dstID;
+					dstID = nextTargetID;
 					harmPoint++;
+					hasMissiled[srcID] = true;
 					return engine->setStateUseCard(reAttack->cardID, dstID, srcID, true);
 				}
 				break;
 			case RA_BLOCK:
-				if(GE_SUCCESS == (ret=engine->getPlayerEntity(dstID)->checkOneHandCard(reAttack->cardID))){
+				if(GE_SUCCESS == (ret=engine->getPlayerEntity(dstID)->v_block(reAttack->cardID))){
 					engine->popGameState();
 					return engine->setStateUseCard(reAttack->cardID, -1, reAttack->srcID);				
 				}
@@ -427,23 +444,22 @@ int StateMissiled::handle(GameGrail* engine)
 	}
 }
 
-int StateMissiled::getNextTargetID(GameGrail* engine)
+int StateMissiled::getNextTargetID(GameGrail* engine ,int startID)
 {
 	int nextTargetID;
-	PlayerEntity* dst = engine->getPlayerEntity(dstID);
-	int color = dst->getColor();
-	PlayerEntity* it = dst;
+	PlayerEntity* start = engine->getPlayerEntity(startID);
+	int color = start->getColor();
+	PlayerEntity* it = start;
 	while(true)
 	{
-		while(dst != (it = isClockwise ? it->getPre() : it->getPost()))
+		while(start != (it = isClockwise ? it->getPre() : it->getPost()))
 		{
 			nextTargetID = it->getID();
-			if(!isMissiled[nextTargetID] && it->getColor() != color){				
-				isMissiled[nextTargetID] = true;
+			if(!hasMissiled[nextTargetID] && it->getColor() != color){								
 				return nextTargetID;
 			}
 		}
-		memset(isMissiled, 0, sizeof(isMissiled));
+		memset(hasMissiled, 0, sizeof(hasMissiled));
 	}
 }
 
