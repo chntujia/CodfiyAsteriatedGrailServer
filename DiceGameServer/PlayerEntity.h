@@ -99,6 +99,10 @@ public:
 	virtual int p_timeline_4(CONTEXT_TIMELINE_4 *con) { return GE_SUCCESS; }
 	virtual int p_timeline_5(CONTEXT_TIMELINE_5 *con) { return GE_SUCCESS; }
 	virtual int p_timeline_6(CONTEXT_TIMELINE_6 *con) { return GE_SUCCESS; }
+	virtual int p_timeline_6_drawn(CONTEXT_TIMELINE_6_DRAWN *con) { return GE_SUCCESS; }
+	virtual int p_before_lose_morale(CONTEXT_LOSE_MORALE *con) { return GE_SUCCESS; }
+	virtual int p_lose_morale(CONTEXT_LOSE_MORALE *con) { return GE_SUCCESS; }
+	virtual int p_fix_morale(CONTEXT_LOSE_MORALE *con) { return GE_SUCCESS; }
 	virtual int p_true_lose_morale(CONTEXT_LOSE_MORALE *con) { return GE_SUCCESS; }
 	virtual int p_hand_change(int playerID) { return GE_SUCCESS; }
 	virtual int p_basic_effect_change(int dstID, int card, int doerID, int cause)  { return GE_SUCCESS; }

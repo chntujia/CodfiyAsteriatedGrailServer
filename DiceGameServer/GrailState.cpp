@@ -696,11 +696,39 @@ int StateTimeline6::handle(GameGrail* engine)
 	}
 	CONTEXT_TIMELINE_6 temp = *context;
 	vector<int> cards;
-	if(GE_SUCCESS == (ret = engine->popGameState_if(STATE_TIMELINE_6))){
-		if(temp.harm.point>0){
+	if(context->harm.point>0){
+		CONTEXT_TIMELINE_6_DRAWN *newCon = new CONTEXT_TIMELINE_6_DRAWN;
+		newCon->dstID = context->dstID;
+		newCon->harm = context->harm;
+		if(GE_SUCCESS == (ret = engine->popGameState_if(STATE_TIMELINE_6))){
+			engine->pushGameState(new StateTimeline6Drawn(newCon));
 			ret = engine->setStateMoveCardsToHand(-1, DECK_PILE, temp.dstID, DECK_HAND, temp.harm.point, cards, temp.harm);
 		}
+		else{
+			SAFE_DELETE(newCon);
+		}
 	}
+	else{
+		ret = engine->popGameState_if(STATE_TIMELINE_6);
+	}
+	return ret;
+}
+
+int StateTimeline6Drawn::handle(GameGrail* engine)
+{
+	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateTimeline6Drwan", engine->getGameId());
+	int ret = GE_FATAL_ERROR;
+	int m_currentPlayerID = engine->getCurrentPlayerID();
+	for(int i = iterator; i< engine->getGameMaxPlayers(); i++){
+		if(GE_SUCCESS != (ret = engine->getPlayerEntity(i)->p_timeline_6_drawn(context))){
+			if(ret==GE_DONE_AND_URGENT){
+				iterator++;
+			}
+			return ret;
+		}
+		iterator++;
+	}
+	ret = engine->popGameState_if(STATE_TIMELINE_6_DRAWN);
 	return ret;
 }
 
@@ -800,7 +828,7 @@ int StateDiscardHand::handle(GameGrail* engine)
 		bool toDemoralize_t = toDemoralize;
 		engine->popGameState();
 		if(toDemoralize_t){
-			engine->setStateTrueLoseMorale(howMany_t, dstID_t, harm_t);
+			engine->setStateStartLoseMorale(howMany_t, dstID_t, harm_t);
 		}
 		vector<int> toDiscard(howMany_t);
 		list<int> handcards = engine->getPlayerEntity(dstID_t)->getHandCards();
@@ -811,6 +839,87 @@ int StateDiscardHand::handle(GameGrail* engine)
 		}
 		return engine->setStateMoveCardsNotToHand(dstID_t, DECK_HAND, -1, DECK_DISCARD, howMany_t, toDiscard, harm_t.srcID, harm_t.cause, isShown_t);
 	}
+}
+
+int StateBeforeLoseMorale::handle(GameGrail* engine)
+{
+	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateBeforeLoseMorale", engine->getGameId());
+	int ret = GE_FATAL_ERROR;
+	int m_currentPlayerID = engine->getCurrentPlayerID();
+	for(int i = iterator;i<engine->getGameMaxPlayers();i++){
+		if(GE_SUCCESS !=(ret = engine->getPlayerEntity(i)->p_before_lose_morale(context))){
+			if(ret==GE_DONE_AND_URGENT){
+				iterator++;
+			}
+			return ret;
+		}
+		iterator++;
+	}
+	CONTEXT_LOSE_MORALE* newCon = new CONTEXT_LOSE_MORALE;
+	newCon->howMany = context->howMany;
+	newCon->dstID = context->dstID;
+	newCon->harm = context->harm;
+	if(GE_SUCCESS == (ret = engine->popGameState_if(STATE_BEFORE_LOSE_MORALE))){
+		engine->pushGameState(new StateLoseMorale(newCon));
+	}
+	else{
+		SAFE_DELETE(newCon);
+	}
+	return ret;
+}
+
+int StateLoseMorale::handle(GameGrail* engine)
+{
+	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateLoseMorale", engine->getGameId());
+	int ret = GE_FATAL_ERROR;
+	int m_currentPlayerID = engine->getCurrentPlayerID();
+	for(int i = iterator;i<engine->getGameMaxPlayers();i++){
+		if(GE_SUCCESS !=(ret = engine->getPlayerEntity(i)->p_lose_morale(context))){
+			if(ret==GE_DONE_AND_URGENT){
+				iterator++;
+			}
+			return ret;
+		}
+		iterator++;
+	}
+	CONTEXT_LOSE_MORALE* newCon = new CONTEXT_LOSE_MORALE;
+	newCon->howMany = context->howMany;
+	newCon->dstID = context->dstID;
+	newCon->harm = context->harm;
+	if(GE_SUCCESS == (ret = engine->popGameState_if(STATE_LOSE_MORALE))){
+		engine->pushGameState(new StateFixMorale(newCon));
+	}
+	else{
+		SAFE_DELETE(newCon);
+	}
+	return ret;
+}
+
+int StateFixMorale::handle(GameGrail* engine)
+{
+	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateFixMorale", engine->getGameId());
+	int ret = GE_FATAL_ERROR;
+	int m_currentPlayerID = engine->getCurrentPlayerID();
+	for(int i = iterator;i<engine->getGameMaxPlayers();i++){
+		if(GE_SUCCESS !=(ret = engine->getPlayerEntity(i)->p_fix_morale(context))){
+			if(ret==GE_DONE_AND_URGENT){
+				iterator++;
+			}
+			return ret;
+		}
+		iterator++;
+	}
+	CONTEXT_LOSE_MORALE* newCon = new CONTEXT_LOSE_MORALE;
+	newCon->howMany = context->howMany;
+	newCon->dstID = context->dstID;
+	newCon->harm = context->harm;
+	if(GE_SUCCESS == (ret = engine->popGameState_if(STATE_FIX_MORALE))){
+		engine->pushGameState(new StateTrueLoseMorale(newCon));
+	}
+	else{
+		SAFE_DELETE(newCon);
+	}
+	return ret;
 }
 
 int StateTrueLoseMorale::handle(GameGrail* engine)

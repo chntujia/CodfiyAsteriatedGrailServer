@@ -536,14 +536,14 @@ int GameGrail::setStateTimeline3(int dstID, HARM harm)
 	return GE_SUCCESS;
 }
 
-int GameGrail::setStateTrueLoseMorale(int howMany, int dstID, HARM harm)
+int GameGrail::setStateStartLoseMorale(int howMany, int dstID, HARM harm)
 {
 	if(howMany>0){
 		CONTEXT_LOSE_MORALE *con = new CONTEXT_LOSE_MORALE;
 		con->dstID = dstID;
 		con->harm = harm;
 		con->howMany = howMany;
-		pushGameState(new StateTrueLoseMorale(con));
+		pushGameState(new StateBeforeLoseMorale(con));
 	}
 	return GE_SUCCESS;
 }

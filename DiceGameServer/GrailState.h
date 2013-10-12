@@ -30,11 +30,15 @@ enum STATE{
 	STATE_TIMELINE_4,
 	STATE_TIMELINE_5,
 	STATE_TIMELINE_6,
+	STATE_TIMELINE_6_DRAWN,
 	STATE_ASK_FOR_CROSS,		
 	STATE_SHOW_HAND,
 	STATE_HAND_CHANGE,
 	STATE_BASIC_EFFECT_CHANGE,
 	STATE_DISCARD_HAND,
+	STATE_BEFORE_LOSE_MORALE,
+	STATE_LOSE_MORALE,
+	STATE_FIX_MORALE,
 	STATE_TRUE_LOSE_MORALE,
 	STATE_GAME_OVER
 };
@@ -91,6 +95,11 @@ typedef struct{
 	HARM harm;
 	int dstID;
 }CONTEXT_TIMELINE_6;
+
+typedef struct{
+	HARM harm;
+	int dstID;
+}CONTEXT_TIMELINE_6_DRAWN;
 
 typedef struct{
 	int howMany;
@@ -342,6 +351,15 @@ public:
 	CONTEXT_TIMELINE_6 *context;
 };
 
+class StateTimeline6Drawn : public GrailState
+{
+public:
+	StateTimeline6Drawn(CONTEXT_TIMELINE_6_DRAWN *con): GrailState(STATE_TIMELINE_6_DRAWN), context(con){}
+	~StateTimeline6Drawn(){ SAFE_DELETE(context); }
+	int handle(GameGrail* engine);
+	CONTEXT_TIMELINE_6_DRAWN *context;
+};
+
 class StateAskForCross: public GrailState
 {
 public:
@@ -391,6 +409,33 @@ public:
 	HARM harm;
 	bool toDemoralize;
 	bool isShown;
+};
+
+class StateBeforeLoseMorale: public GrailState
+{
+public:
+	StateBeforeLoseMorale(CONTEXT_LOSE_MORALE *con): GrailState(STATE_BEFORE_LOSE_MORALE), context(con){}
+	~StateBeforeLoseMorale(){ SAFE_DELETE(context); }
+	int handle(GameGrail* engine);
+	CONTEXT_LOSE_MORALE *context;
+};
+
+class StateLoseMorale: public GrailState
+{
+public:
+	StateLoseMorale(CONTEXT_LOSE_MORALE *con): GrailState(STATE_LOSE_MORALE), context(con){}
+	~StateLoseMorale(){ SAFE_DELETE(context); }
+	int handle(GameGrail* engine);
+	CONTEXT_LOSE_MORALE *context;
+};
+
+class StateFixMorale: public GrailState
+{
+public:
+	StateFixMorale(CONTEXT_LOSE_MORALE *con): GrailState(STATE_FIX_MORALE), context(con){}
+	~StateFixMorale(){ SAFE_DELETE(context); }
+	int handle(GameGrail* engine);
+	CONTEXT_LOSE_MORALE *context;
 };
 
 class StateTrueLoseMorale: public GrailState
