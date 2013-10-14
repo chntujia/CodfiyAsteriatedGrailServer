@@ -93,13 +93,14 @@ bool UserTask::cmdMsgParse(const char *pstrMsg, const uint32_t nCmdLen)
 		
 	case MSG_ENTER_ROOM:
 		enter_room = (EnterRoom*)proto;
-		if (enter_room->room_id() == 0){
+/*		if (enter_room->room_id() == 0){
 			//创建房间
 			config = new GameGrailConfig(2,0);
 			GameManager::getInstance().createGame(GAME_TYPE_GRAIL, config);
 			delete config;
 		}
-		else{
+		else
+		*/{
 			//进入房间
 			//FIXME temporarily disable login
 			m_bAuthen = true;

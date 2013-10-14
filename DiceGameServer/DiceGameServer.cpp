@@ -38,6 +38,9 @@ bool DiceGameServer::serverInit()
 	UserSessionManager::newInstance();
 	GameManager::newInstance();
     grailInit();
+
+			GameGrailConfig*	config = new GameGrailConfig(4,0);
+			GameManager::getInstance().createGame(GAME_TYPE_GRAIL, config);
 	// create all the game table here
 	//loadAllGameTable();
 	return true;
