@@ -17,45 +17,57 @@ int StateWaitForEnter::handle(GameGrail* engine)
 int StateSeatArrange::handle(GameGrail* engine)
 {
 	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateSeatArrange", engine->getGameId());
-	string queue="";
+	
 	int m_maxPlayers = engine->getGameMaxPlayers();
+
+	GameInfo* messages[8];
+	uint16_t proto_types[8];
+	// 直接将随机结果保存到engine中
+	GameInfo& game_info = engine->game_info;
+
 	if(!isSet)
 	{
 		if(engine->m_seatMode == 0)
 		{
+			// 随机位置玩家编号，这里用Deck只是为了使用它的打乱功能
 			Deck ids(m_maxPlayers);
 			ids.init(0, m_maxPlayers - 1);
 			ids.randomize();
 
+			// 随机玩家队伍，这里用Deck只是为了使用它的打乱功能
 			Deck colors(m_maxPlayers);
 			int temp[8];
 			memset(temp, 0, m_maxPlayers/2 * sizeof(int));
-			for(int i = m_maxPlayers/2; i<m_maxPlayers-1; i++){
-				temp[i]=1;
-			}
+			for (int i = m_maxPlayers/2; i < m_maxPlayers-1; ++i)
+				temp[i] = 1;
 			colors.push(m_maxPlayers - 1, temp);
 			colors.randomize();
 
+			
+			SinglePlayerInfo *player_info;
 			int it;
 			for(int i = 0; i < m_maxPlayers; i++){
+				game_info.add_player_infos();
+				player_info = (SinglePlayerInfo*)&(game_info.player_infos().Get(i));
+
+				player_info->set_seat(i);
+
 				ids.pop(1, &it);
-				queue += TOQSTR(it);
-			}
-			queue += "1";
-			for(int i = 0; i < m_maxPlayers - 1; i++){
+				player_info->set_id(it);
+
 				colors.pop(1, &it);
-				queue += TOQSTR(it);
+				player_info->set_team(it);
 			}
 
 			for(int i = 0; i < m_maxPlayers; i++){
-				msgs[i] = Coder::beginNotice(queue);
+				messages[i] = &game_info;
+				proto_types[i] = MSG_GAME;
 			}
 			engine->resetReady();
 		}
-		engine->queue = queue;
 		isSet = true;
 	}
-	if(engine->waitForAll(msgs, false)){
+	if(engine->waitForAll(proto_types, (void**)messages, false)){
 		engine->popGameState();	  
 		return engine->setStateRoleStrategy();
 	}
@@ -70,9 +82,14 @@ int StateRoleStrategyRandom::handle(GameGrail* engine)
 	int out;
 	Deck* roles = engine->initRoles();
 	int ret;
+	// 直接将随机结果保存到engine中
+	GameInfo& game_info = engine->game_info;
+
 	for(int i = 0; i < engine->getGameMaxPlayers(); i++){
+		// i为玩家编号，不是座号
 		if(GE_SUCCESS == (ret=roles->pop(1, &out))){
-			engine->sendMessage(-1,Coder::roleNotice(i, out, 1));
+			Coder::roleNotice(i, out, game_info);
+			engine->sendMessage(-1, MSG_GAME, game_info);
 		}
 		else{
 			return ret;
@@ -106,7 +123,7 @@ int StateGameStart::handle(GameGrail* engine)
 		return ret;
 	}
 	engine->popGameState();	
-	return engine->setStateCurrentPlayer(engine->queue[0]-'0');
+	return engine->setStateCurrentPlayer(engine->game_info.player_infos().begin()->id());
 }
 
 int StateBeforeTurnBegin::handle(GameGrail* engine)
@@ -153,16 +170,29 @@ int StateWeaken::handle(GameGrail* engine)
 {
 	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateWeaken", engine->getGameId());
 	int m_currentPlayerID = engine->getCurrentPlayerID();
-	if(engine->waitForOne(m_currentPlayerID, Coder::askForWeak(m_currentPlayerID, howMany)))
+
+	CommandRequest weaken_proto;
+	Coder::askForWeak(m_currentPlayerID, howMany, weaken_proto);
+	if(engine->waitForOne(m_currentPlayerID, network::MSG_CMD_REQ, weaken_proto))
 	{
 		//TODO set nextState based on reply
 		void* temp;
 		int ret;
 		if(GE_SUCCESS == (ret=engine->getReply(m_currentPlayerID, temp)))
 		{
-			REPLY_YESNO* reply = (REPLY_YESNO*)temp; 
-			if((REPLY_YESNO*)reply->yes){
-				engine->sendMessage(-1, Coder::weakNotice(m_currentPlayerID, 1));
+			Respond *weak_respond = (Respond*)temp;
+			weak_respond->set_src_id(m_currentPlayerID);
+
+			if(weak_respond->args().Get(0) == 1){
+				// 填写摸牌数量
+				if (weak_respond->args_size() < 2) {
+					weak_respond->add_args(howMany);
+				}
+				else {
+					weak_respond->set_args(1, howMany);
+				}
+
+				engine->sendMessage(-1, MSG_RESPOND, *weak_respond);
 				engine->popGameState();
 				engine->pushGameState(new StateBeforeAction);
 				HARM harm;
@@ -174,7 +204,7 @@ int StateWeaken::handle(GameGrail* engine)
 				return engine->setStateMoveCardsToHand(-1, DECK_PILE, m_currentPlayerID, DECK_HAND, howMany, cards, harm);
 			}
 			else{
-				engine->sendMessage(-1, Coder::weakNotice(m_currentPlayerID, 0));
+				engine->sendMessage(-1, MSG_RESPOND, *weak_respond);
 				engine->popGameState();
 				engine->pushGameState(new StateBeforeAction(false));
 				return GE_SUCCESS;
@@ -185,7 +215,11 @@ int StateWeaken::handle(GameGrail* engine)
 	else
 	{
 		//Timeout, skip to nextState
-		engine->sendMessage(-1, Coder::weakNotice(m_currentPlayerID, 0));
+		Respond weak_respond;
+		weak_respond.set_src_id(m_currentPlayerID);
+		weak_respond.add_args(0);
+
+		engine->sendMessage(-1, MSG_RESPOND, weak_respond);
 		engine->popGameState();
 		engine->pushGameState(new StateBeforeAction(false));
 		return GE_TIMEOUT;
@@ -245,37 +279,35 @@ int StateActionPhase::handle(GameGrail* engine)
 	if(!isSet)
 	{
 		//FIXME 挑衅
-		allowAction = ANY_ACTION;
+		allowAction = ACTION_ANY;
 		canGiveUp = false;
 		isSet = true;
 	}
 	int m_currentPlayerID = engine->getCurrentPlayerID();
-	if(engine->waitForOne(m_currentPlayerID, Coder::askForAction(m_currentPlayerID, allowAction, canGiveUp)))
+
+	CommandRequest cmd_req;
+	Coder::askForAction(m_currentPlayerID, allowAction, canGiveUp, cmd_req);
+	if(engine->waitForOne(m_currentPlayerID, MSG_CMD_REQ, cmd_req))
 	{
 		//TODO set nextState based on reply
 		void* temp;
-		REPLY_ATTACK* attack;
 		int ret;
 		if(GE_SUCCESS == (ret=engine->getReply(m_currentPlayerID, temp))){
-			int actionFlag = *(int*)temp;
-			if(!PlayerEntity::is_allow_action(actionFlag, allowAction, canGiveUp)){
-				return GE_INVALID_ACTION;
-			}
-			switch(actionFlag)
+			Action *action = (Action*) temp;
+			switch(action->action_id())
 			{				
-			case ATTACK_ACTION:
-				attack = (REPLY_ATTACK*)temp;
-				if(GE_SUCCESS != (ret=engine->getPlayerEntity(m_currentPlayerID)->v_attack(attack->cardID,attack->dstID))){
-					return ret;
+			case ACTION_ATTACK:
+				//FIXME verify card type
+				int card_id = action->args().Get(0);
+				if(GE_SUCCESS == (ret=engine->getPlayerEntity(m_currentPlayerID)->checkOneHandCard(card_id))){
+					action->set_src_id(m_currentPlayerID);
+					engine->sendMessage(-1, MSG_ACTION, *action);
+
+					engine->popGameState();
+					return engine->setStateAttackAction(card_id, action->dst_ids().Get(0), action->src_id());
 				}
-				engine->popGameState();
-				return engine->setStateAttackAction(attack->cardID, attack->dstID, attack->srcID);				
 				break;
-			case MAGIC_ACTION:
-				engine->popGameState();
-				return engine->setStateMagicAction();
-				break;
-			}			
+			}
 		}
 		return ret;
 	}
@@ -305,27 +337,47 @@ int StateAttacked::handle(GameGrail* engine)
 {
 	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateAttacked", engine->getGameId());
 	//FIXME: NOMISS
-	if(engine->waitForOne(context->attack.dstID, Coder::askForReBat(context->hitRate, context->attack.cardID, context->attack.dstID, context->attack.srcID)))
+	CommandRequest cmd_req;
+	Coder::askForReBat(context->hitRate, context->attack.cardID, context->attack.dstID, context->attack.srcID, cmd_req);
+
+	if(engine->waitForOne(context->attack.dstID, MSG_CMD_REQ, cmd_req))
 	{
 		void* reply;
 		int ret;
-		REPLY_ATTACKED* reAttack;
+		
+		int m_currentPlayerID = engine->getCurrentPlayerID();
 		CONTEXT_TIMELINE_1 temp = *context;
-		if(GE_SUCCESS == (ret = engine->getReply(context->attack.dstID, reply))){
-			reAttack = (REPLY_ATTACKED*)reply;
-			switch(reAttack->flag)
-			{				
+		if(GE_SUCCESS == (ret = engine->getReply(m_currentPlayerID, reply))){
+			Respond *respond_attack = (Respond*) reply;
+			if (respond_attack->respond_id() != RESPOND_REPLY_ATTACK)
+			{
+				// TODO: 非应战回复的错误处理，（或者被选为攻击目标时触发响应技能处理，暂无此类技能）
+			}
+
+			int ra = respond_attack->args().Get(0);
+			int card_id = respond_attack->args().Get(1);
+			switch(ra)
+			{
+				//FIXME: verify
 			case RA_ATTACK:
-				if(GE_SUCCESS == (ret=engine->getPlayerEntity(context->attack.dstID)->v_reattack(reAttack->cardID, context->attack.cardID, reAttack->dstID, context->attack.srcID))){
+				if(GE_SUCCESS == (ret=engine->getPlayerEntity(context->attack.dstID)->checkOneHandCard(card_id))){
+					// 反馈玩家行动
+					respond_attack->set_src_id(context->attack.dstID);
+					engine->sendMessage(-1, MSG_RESPOND, *respond_attack);
+
 					engine->popGameState();
-					return engine->setStateReattack(temp.attack.cardID, reAttack->cardID, temp.attack.srcID, temp.attack.dstID, reAttack->dstID, temp.attack.isActive, true);
+					return engine->setStateReattack(temp.attack.cardID, card_id, temp.attack.srcID, temp.attack.dstID, respond_attack->dst_ids().Get(0), temp.attack.isActive, true);
 				}
 				break;
 			case RA_BLOCK:
-				if(GE_SUCCESS == (ret=engine->getPlayerEntity(context->attack.dstID)->v_block(reAttack->cardID))){
+				if(GE_SUCCESS == (ret=engine->getPlayerEntity(context->attack.dstID)->checkOneHandCard(card_id))){
+					// 反馈玩家行动
+					respond_attack->set_src_id(context->attack.dstID);
+					engine->sendMessage(-1, MSG_RESPOND, *respond_attack);
+
 					engine->popGameState();
 					engine->setStateTimeline2Miss(temp.attack.cardID, temp.attack.dstID, temp.attack.srcID, temp.attack.isActive);
-					return engine->setStateUseCard(reAttack->cardID, reAttack->dstID, reAttack->srcID);				
+					return engine->setStateUseCard(card_id, temp.attack.dstID, temp.attack.srcID);				
 				}
 				break;
 			case RA_GIVEUP:
@@ -402,8 +454,11 @@ int StateMissiled::handle(GameGrail* engine)
 {
 	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateMissiled", engine->getGameId());
 	int nextTargetID = getNextTargetID(engine, dstID);
+
+	CommandRequest cmd_req;
+	Coder::askForMissile(dstID, srcID, harmPoint, nextTargetID, cmd_req);
 //change
-	if(engine->waitForOne(dstID, Coder::askForMissile(dstID, srcID, harmPoint, nextTargetID)))
+	if(engine->waitForOne(dstID, MSG_CMD_REQ, cmd_req))
 	{
 		void* reply;
 		int ret;
@@ -735,7 +790,11 @@ int StateTimeline6Drawn::handle(GameGrail* engine)
 int StateAskForCross::handle(GameGrail* engine)
 {
 	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateAskForCross", engine->getGameId());
-	if(engine->waitForOne(dstID, Coder::askForCross(dstID, harm.point, harm.type, crossAvailable)))
+
+	CommandRequest cmd_req;
+	Coder::askForCross(dstID, harm.point, harm.type, crossAvailable, cmd_req);
+
+	if(engine->waitForOne(dstID, MSG_CMD_REQ, cmd_req))
 	{
 		//TODO cross reply		
 	}
@@ -814,7 +873,11 @@ int StateDiscardHand::handle(GameGrail* engine)
 {
 	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateDiscardHand", engine->getGameId());
 	int ret = GE_FATAL_ERROR;
-	if(engine->waitForOne(dstID, Coder::askForDiscard(dstID, howMany, isShown)))
+
+	CommandRequest cmd_req;
+	Coder::askForDiscard(dstID, howMany, isShown, cmd_req);
+
+	if(engine->waitForOne(dstID, MSG_CMD_REQ, cmd_req))
 	{
 		//TODO: discard card based on reply
 	}
@@ -941,7 +1004,14 @@ int StateTrueLoseMorale::handle(GameGrail* engine)
 	int morale = m_teamArea->getMorale(color);
 	m_teamArea->setMorale(color, morale - context->howMany);
 	morale = m_teamArea->getMorale(color);
-	engine->sendMessage(-1, Coder::moraleNotice(color, morale));	
+
+	// 更新士气
+	GameInfo update_info;
+	if (color == RED)
+		update_info.set_red_morale(morale);
+	else
+		update_info.set_blue_morale(morale);
+	engine->sendMessage(-1, MSG_GAME, update_info);
 	if(GE_SUCCESS == (ret = engine->popGameState_if(STATE_TRUE_LOSE_MORALE))){
 		if(morale <= 0){
 			engine->pushGameState(new StateGameOver(1-color));

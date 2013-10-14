@@ -50,19 +50,6 @@ string Coder::useCardNotice(int cardID, int dstID, int srcID,int realCard)
     return combMessage("28",TOQSTR(cardID),TOQSTR(dstID),TOQSTR(srcID),TOQSTR(realCard));
 }
 
-string Coder::drawNotice(int ID,int howMany,vector < int > cards)
-{
-    string message = combMessage("9",TOQSTR(ID),TOQSTR(howMany));
-    for(int i = 0;i < howMany; i++)
-    {
-        message += TOQSTR(cards[i]);
-        if(i != cards.size() - 1)
-            message += ",";
-        else
-            message += ";";
-    }
-    return message;
-}
 string Coder::getCardNotice(int sum, vector < int > cards, int dstID, bool show)
 {
     string cardsID;
@@ -85,21 +72,6 @@ string Coder::discardNotice(int ID,int sum,string show,vector < int > cards)
         else
             message += ";";
     }
-    return message;
-}
-
-string Coder::moveCardNotice(int howMany, vector < int > cards, int srcID, int srcArea, int dstID, int dstArea)
-{
-    string message = combMessage("19",TOQSTR(howMany));
-    for(int i = 0; i < howMany; i++)
-    {
-        message += TOQSTR(cards[i]);
-        if(i != howMany - 1)
-            message += ",";
-        else
-            message += ";";
-    }
-    message += combMessage(TOQSTR(srcID),TOQSTR(srcArea),TOQSTR(dstID),TOQSTR(dstArea));
     return message;
 }
 

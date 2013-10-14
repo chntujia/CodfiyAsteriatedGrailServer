@@ -9,6 +9,7 @@
 #include "GameGrailCommon.h"
 #include <boost/random.hpp>
 #include <boost/thread/condition_variable.hpp>
+#include "codec.h"
 using namespace std;
 
 class GrailState;
@@ -65,6 +66,9 @@ public:
 			items[chosen] = temp;
 		}
 	}
+	int get_size() {
+		return size;
+	}
 private:
 	boost::random::rand48 rng;
 	int *items;
@@ -110,7 +114,7 @@ public:
 	int m_roleStrategy;
 	int m_seatMode;
 	int m_maxAttempts;
-	string queue;
+	GameInfo game_info;
 protected:
 	int m_roundId;
 	int m_maxPlayers;
@@ -134,7 +138,7 @@ protected:
 public:
 	GameGrail(GameGrailConfig *config);
 	~GameGrail();
-	void sendMessage(int id, string msg);
+	void sendMessage(int id, uint16_t proto_type, google::protobuf::Message& proto);
 
 	int playerEnterIntoTable(GameGrailPlayerContext *player);
 	bool isCanSitIntoTable() const { return m_playerContexts.size() < m_maxPlayers; }	
@@ -166,10 +170,10 @@ public:
 			m_ready[id] = 0;
 		}
 	}	
-	bool waitForOne(int id, string msg, int timeout, bool resetReady = true);
-	bool waitForOne(int id, string msg, bool toResetReady = true) { return waitForOne(id, msg, m_responseTime, toResetReady); }
-	bool waitForAll(string* msgs, int timeout, bool toResetReady = true);
-	bool waitForAll(string* msgs, bool toResetReady = true) { return waitForAll(msgs, m_responseTime, toResetReady); }
+	bool waitForOne(int id, uint16_t proto_type, google::protobuf::Message& proto, int timeout, bool resetReady = true);
+	bool waitForOne(int id, uint16_t proto_type, google::protobuf::Message& proto, bool toResetReady = true) { return waitForOne(id, proto_type, proto, m_responseTime, toResetReady); }
+	bool waitForAll(uint16_t* proto_types, void** proto_ptrs, int timeout, bool toResetReady = true);
+	bool waitForAll(uint16_t* proto_types, void** proto_ptrs, bool toResetReady = true) { return waitForAll(proto_types, proto_ptrs, m_responseTime, toResetReady); }
 	bool tryNotify(int id, int state, int step = 0, void* reply = NULL);
 	int getReply(int id, void* &reply);
 	

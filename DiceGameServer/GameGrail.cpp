@@ -100,12 +100,15 @@ int GameGrail::popGameState_if(int state)
 	return GE_INVALID_PLAYERID;
 }
 
-void GameGrail::sendMessage(int id, string msg)
+void GameGrail::sendMessage(int id, uint16_t proto_type, google::protobuf::Message& proto)
 {
 #ifdef Debug
-	ztLoggerWrite(ZONE, e_Debug, "[Table %d] send to %d, string: %s, size: %d", m_gameId, id, msg.c_str(), msg.size());
+	ztLoggerWrite(ZONE, e_Debug, "[Table %d] send to %d, string:\n%s \nsize: %d", m_gameId, id, proto.DebugString().c_str(), proto.ByteSize());
 #endif
 	UserTask *ref;
+	string msg;
+	proto_encoder(proto_type, proto, msg);
+
 	PlayerContextList::iterator it;
 	if(id == -1){
 		for(it = m_playerContexts.begin(); it !=m_playerContexts.end(); it++){
@@ -149,7 +152,7 @@ bool GameGrail::isReady(int id)
 	return false;
 } 
 
-bool GameGrail::waitForOne(int id, string msg, int sec, bool toResetReady)
+bool GameGrail::waitForOne(int id, uint16_t proto_type, google::protobuf::Message& proto, int sec, bool toResetReady)
 {
 	if(id < 0 || id >= m_maxPlayers){
 		ztLoggerWrite(ZONE, e_Error, "unvaliad player id: %d", id);
@@ -164,7 +167,7 @@ bool GameGrail::waitForOne(int id, string msg, int sec, bool toResetReady)
 	boost::mutex::scoped_lock lock(m_mutex_for_wait);
 	while(attempts < m_maxAttempts)
 	{
-		sendMessage(-1, msg);
+		sendMessage(-1, proto_type, proto);
 		boost::system_time const timeout=boost::get_system_time()+ boost::posix_time::milliseconds(sec*1000);
 		if(m_condition_for_wait.timed_wait(lock,timeout,boost::bind( &GameGrail::isReady, this, id )))
 			return true;
@@ -173,7 +176,7 @@ bool GameGrail::waitForOne(int id, string msg, int sec, bool toResetReady)
 	return false;
 }
 
-bool GameGrail::waitForAll(string* msgs, int sec, bool toResetReady)
+bool GameGrail::waitForAll(uint16_t* proto_types, void** proto_ptrs, int sec, bool toResetReady)
 {
 	m_token = -1;
 	int attempts = 0;
@@ -185,7 +188,8 @@ bool GameGrail::waitForAll(string* msgs, int sec, bool toResetReady)
 	{
 		for(int i = 0; i < m_maxPlayers; i++){
 			if(!m_ready[i]){
-				sendMessage(i, msgs[i]);
+				google::protobuf::Message* proto = (google::protobuf::Message*)proto_ptrs[i];
+				sendMessage(i, proto_types[i], *proto);
 			}
 		}
 		boost::system_time const timeout=boost::get_system_time()+ boost::posix_time::milliseconds(sec*1000);
@@ -265,41 +269,130 @@ int GameGrail::setStateMoveCards(int srcOwner, int srcArea, int dstOwner, int ds
 	default:
 		return GE_NOT_SUPPORTED;
 	}
+	
+	PlayerEntity* dst;
+
 	//FIXME should use two message instead of one moveCardNotice 
-	sendMessage(-1, Coder::moveCardNotice(howMany, cards, srcOwner, srcArea, dstOwner, dstArea));
+	GameInfo update_info;
+	SinglePlayerInfo* player_info;
+	list<int> *hands;
+	list<int>::iterator hand_it;
+	list<BasicEffect> *basic_effect;
+	list<BasicEffect>::iterator basic_it;
+	list<int> *covers;
+	list<int>::iterator cover_it;
+
 	//src hand change->show hand->dst hand change->dst hand overload, but stack is LIFO
 	switch(dstArea)
 	{
 	case DECK_DISCARD:
-		ret = discard->push(howMany, &cards[0]);
+		ret = discard->push(howMany,&cards[0]);
+		// 填写更新信息
+		update_info.set_discard(discard->get_size());
 		break;
 	case DECK_HAND:
-		pushGameState(new StateHandChange(dstOwner, CHANGE_ADD, howMany, cards, harm));							
+		dst = getPlayerEntity(dstOwner);
+		ret = dst->addHandCards(howMany,cards);
+		ret = setStateHandOverLoad(dstOwner, harm);
+		pushGameState(new StateHandChange(dstOwner, CHANGE_ADD, howMany, cards, harm));
+
+		// 填写更新信息
+		player_info = update_info.add_player_infos();
+		player_info->set_id(dstOwner);
+
+		hands = &dst->getHandCards();
+		for (hand_it = hands->begin(); hand_it != hands->end(); ++hand_it)
+			player_info->add_hands(*hand_it);
+		player_info->set_hand_count(hands->size());
+		
 		break;
 	case DECK_BASIC_EFFECT:
-		pushGameState(new StateBasicEffectChange(dstOwner, CHANGE_ADD, cards[0], harm.srcID, harm.cause));	
+		dst = getPlayerEntity(dstOwner);
+		if(howMany != 1){
+			return GE_NOT_SUPPORTED;
+		}
+		ret = dst->addBasicEffect(cards[0],srcOwner);
+
+		// 填写更新信息
+		player_info = update_info.add_player_infos();
+		player_info->set_id(dstOwner);
+
+		basic_effect = &dst->getBasicEffect();
+		for (basic_it = basic_effect->begin(); basic_it != basic_effect->end(); ++basic_it)
+			player_info->add_basic_cards(basic_it->card);
+
+		//TODO: another state? 天使羁绊
 		break;
 	case DECK_COVER:
+		dst = getPlayerEntity(dstOwner);
+		ret = dst->addCoverCards(howMany, cards);
+		//TODO: cover overload
+		//ret = setStateCoverOverLoad(dstOwner);
+
+		// 填写更新信息
+		player_info = update_info.add_player_infos();
+		player_info->set_id(dstOwner);
+
+		covers = &dst->getCoverCards();
+		for (cover_it = covers->begin(); cover_it != covers->end(); ++ cover_it)
+			player_info->add_covereds(*cover_it);
+		player_info->set_covered_count(covers->size());
+
+		break;
 	default:
 		return GE_NOT_SUPPORTED;
 	}
 	switch(srcArea)
 	{
 	case DECK_PILE:
+		update_info.set_pile(pile->get_size());
 		break;
 	case DECK_HAND:
+		src->removeHandCards(howMany, cards);
 		if(isShown){
 			pushGameState(new StateShowHand(srcOwner, howMany, cards));
 		}
-		pushGameState(new StateHandChange(srcOwner, CHANGE_REMOVE, howMany, cards, harm));	
+		pushGameState(new StateHandChange(dstOwner, CHANGE_ADD, howMany, cards, harm));
+
+		// 填写更新信息
+		player_info = update_info.add_player_infos();
+		player_info->set_id(srcOwner);
+
+		hands = &src->getHandCards();
+		if (hands->size() == 0)
+			player_info->add_delete_field("hands");
+		else
+			for (hand_it = hands->begin(); hand_it != hands->end(); ++hand_it)
+				player_info->add_hands(*hand_it);
+		player_info->set_hand_count(hands->size());
+
 		break;
 	case DECK_BASIC_EFFECT:
-		pushGameState(new StateBasicEffectChange(srcOwner, CHANGE_REMOVE, cards[0], harm.srcID, harm.cause));
+		src->removeBasicEffect(cards[0]);
+
+		// 填写更新信息
+		player_info = update_info.add_player_infos();
+		player_info->set_id(srcOwner);
+
+		basic_effect = &src->getBasicEffect();
+		if (basic_effect->size() == 0)
+			player_info->add_delete_field("basic_cards");
+		else
+			for (basic_it = basic_effect->begin(); basic_it != basic_effect->end(); ++basic_it)
+				player_info->add_basic_cards(basic_it->card);
+		
 		break;
-	case DECK_COVER:
-	default:
-		return GE_NOT_SUPPORTED;
 	}
+	
+	if (isShown)
+	{
+		vector<int>::iterator it;
+		for (it = cards.begin(); it != cards.end(); ++it)
+			update_info.add_show_cards(*it);
+	}
+
+	sendMessage(-1, MSG_GAME, update_info);
+
 	return GE_SUCCESS;
 }
 
@@ -376,11 +469,9 @@ int GameGrail::setStateHandOverLoad(int dstID, HARM harm)
 int GameGrail::setStateUseCard(int cardID, int dstID, int srcID, bool realCard)
 {
 	if(realCard){
-		sendMessage(-1,Coder::useCardNotice(cardID,dstID,srcID));
 		return setStateMoveOneCardNotToHand(srcID, DECK_HAND, -1, DECK_DISCARD, cardID, srcID, CAUSE_USE, true);
 	}
 	else{
-		sendMessage(-1,Coder::useCardNotice(cardID,dstID,srcID,0));
 		return GE_SUCCESS;
 	}
 }
@@ -515,7 +606,14 @@ int GameGrail::setStateTimeline2Miss(int cardID, int dstID, int srcID, bool isAc
 
 int GameGrail::setStateTimeline2Hit(int cardID, int dstID, int srcID, HARM harm, bool isActive)
 {
-	sendMessage(-1, Coder::hitNotice(1, isActive, dstID, srcID));
+	HitMsg hit_msg;
+	if (isActive)
+		hit_msg.set_cmd_id(ACTION_ATTACK);
+	else
+		hit_msg.set_cmd_id(RESPOND_REPLY_ATTACK);
+	hit_msg.set_hit(1);
+	hit_msg.set_damage(harm.point);
+	sendMessage(-1, MSG_HIT, hit_msg);
 	//TODO stones
 	CONTEXT_TIMELINE_2_HIT *con = new CONTEXT_TIMELINE_2_HIT;
 	con->attack.cardID = cardID;
@@ -613,10 +711,9 @@ int GameGrail::playerEnterIntoTable(GameGrailPlayerContext *player)
 				UserSession *ref = UserSessionManager::getInstance().getUser(player->getUserId());
 				ref->setPlayerID(availableID);
 				m_playerContexts.insert(PlayerContextList::value_type(availableID, player));
-				string temp = "1;";    
-                temp += TOQSTR(availableID);
-                temp += ";";
-				sendMessage(availableID, temp);
+				SingleRoom single_room;
+				single_room.set_player_id(availableID);
+				sendMessage(availableID, MSG_SINGLE_ROOM, single_room);
 				return 0;
 			}
 		}
@@ -681,27 +778,35 @@ void GameGrail::initPlayerEntities()
 		return;
 	}
 	//FIXME should init roles instead of playerEntity
+
+	//google::protobuf::RepeatedPtrField<SinglePlayerInfo>::iterator player_it = game_info.player_infos().begin();
+	SinglePlayerInfo* player_it;
+	int position2id[8];
+
 	for(int i = 0; i < m_maxPlayers; i++){
-		id = queue[i] - '0';
-		color = queue[i+m_maxPlayers] - '0';
+		player_it = (SinglePlayerInfo*)&(game_info.player_infos().Get(i));
+		id = player_it->id();
+		color = player_it->team();
 		m_playerEntities[id] = new PlayerEntity(this, id, color);
+		
+		position2id[i] = id;
 	}
 	for(int i = 1; i < m_maxPlayers-1; i++){
-		id = queue[i] - '0';
-		post = queue[i+1] - '0';
-		pre = queue[i-1] - '0';
+		id = position2id[i];
+		post = position2id[i+1];
+		pre = position2id[i-1];
 		m_playerEntities[id]->setPost(m_playerEntities[post]);
 		m_playerEntities[id]->setPre(m_playerEntities[pre]);
 	}
-	post = queue[0] - '0';
-	id = queue[m_maxPlayers-1] - '0';
-	pre = queue[m_maxPlayers-2] - '0';
+	post = position2id[0];
+	id = position2id[m_maxPlayers-1];
+	pre = position2id[m_maxPlayers-2];
 	m_playerEntities[id]->setPost(m_playerEntities[post]);
 	m_playerEntities[id]->setPre(m_playerEntities[pre]);
 
-	post = queue[1] - '0';
-	id = queue[0] - '0';
-	pre = queue[m_maxPlayers-1] - '0';
+	post = position2id[1];
+	id = position2id[0];
+	pre = position2id[m_maxPlayers-1];
 	m_playerEntities[id]->setPost(m_playerEntities[post]);
 	m_playerEntities[id]->setPre(m_playerEntities[pre]);
 	m_teamArea = new TeamArea;

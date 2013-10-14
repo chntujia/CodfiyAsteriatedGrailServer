@@ -5,8 +5,11 @@
 #include <boost/interprocess/sync/interprocess_mutex.hpp>
 #include <boost/interprocess/sync/interprocess_condition.hpp>
 #include <boost/interprocess/sync/scoped_lock.hpp>
+#include "base.pb.h"
+#include "action_respond.pb.h"
 
 using namespace boost::interprocess;
+using namespace network;
 
 #ifndef SAFE_DELETE
 #define SAFE_DELETE(x) { if (x) { delete (x); (x) = NULL; } }
@@ -169,33 +172,111 @@ class Coder
 public:
     static string beginNotice(string seatCode){return "2;" + seatCode + ";";}
     static string turnBegineNotice(int ID){return "3;" + TOQSTR(ID) + ";";}
-    static string askForReBat(int type,int cardID,int dstID,int srcID){return combMessage("5",TOQSTR(type),TOQSTR(cardID),TOQSTR(dstID),TOQSTR(srcID));}
-    static string askForDiscard(int ID,int sum, bool show){return show?combMessage("7",TOQSTR(ID),TOQSTR(sum),"1"):combMessage("7",TOQSTR(ID),TOQSTR(sum),"0");}
+    static void askForReBat(int type,int cardID,int dstID,int srcID, CommandRequest& cmd_req)
+	{
+		cmd_req.set_cmd_type(CMD_RESPOND);
+		Command *cmd;
+
+		cmd = cmd_req.add_commands();
+		cmd->set_respond_id(network::RESPOND_REPLY_ATTACK);
+		cmd->add_args(type);
+		cmd->add_args(cardID);
+		cmd->add_args(dstID);
+		cmd->add_args(srcID);
+	}
+    static void askForDiscard(int ID,int sum, bool show, CommandRequest& cmd_req)
+	{
+		cmd_req.set_cmd_type(CMD_RESPOND);
+		Command *cmd;
+
+		cmd = cmd_req.add_commands();
+		cmd->set_respond_id(network::RESPOND_DISCARD);
+		cmd->add_args(ID);
+		cmd->add_args(sum);
+		cmd->add_args(show);
+	}
     static string askForDiscover(int ID, int sum,string show){return combMessage("49",TOQSTR(ID),TOQSTR(sum),show);}
-    static string drawNotice(int ID,int howMany,vector < int > cards);
     static string reshuffleNotice(int howManyNew){return combMessage("10",TOQSTR(howManyNew));}
-    static string moraleNotice(int color,int value){return combMessage("11",TOQSTR(color),TOQSTR(value));}
     static string endNotice(int winColor){return "12;" + TOQSTR(winColor) + ";";}
     static string discardNotice(int ID,int sum,string show,vector < int > cards);
-    static string hitNotice(int result,int isActiveAttack,int dstID,int srcID){return combMessage("14",TOQSTR(result),TOQSTR(isActiveAttack),TOQSTR(dstID),TOQSTR(srcID));}
+    static void hitNotice(int result,int isActiveAttack,int dstID,int srcID, HitMsg& hit_msg)
+	{
+		hit_msg.set_cmd_id(isActiveAttack);
+		hit_msg.set_hit(result);
+		hit_msg.set_src_id(srcID);
+		hit_msg.set_dst_id(dstID);
+	}
     static string stoneNotice(int color,int gem,int crystal){return combMessage("15",TOQSTR(color),TOQSTR(gem),TOQSTR(crystal));}
     static string cupNotice(int color,int cup){return combMessage("17",TOQSTR(color),TOQSTR(cup));}
     static string energyNotice(int ID,int gem,int crystal){return combMessage("18",TOQSTR(ID),TOQSTR(gem),TOQSTR(crystal));}
-    static string moveCardNotice(int sum,vector < int > cards,int srcID,int srcArea,int dstID,int dstArea);
     static string getCardNotice(int sum,vector < int > cards,int dstID,bool show);
     static string attackHurtNotice(int dstID,int sum,int srcID){return combMessage("20",TOQSTR(dstID),TOQSTR(sum),TOQSTR(srcID));}
     static string magicHurtNotice(int dstID,int sum,int srcID,string reason){return combMessage("21",TOQSTR(dstID),TOQSTR(sum),TOQSTR(srcID),reason);}
-    static string askForWeak(int ID,int howMany){return "22;" + TOQSTR(ID) + ";"+ TOQSTR(howMany) + ";";}
-    static string weakNotice(int ID,int act,int howMany=3){return combMessage("24",TOQSTR(ID),TOQSTR(act),TOQSTR(howMany));}
+	static void askForWeak(int ID,int howMany, CommandRequest& cmd_req)
+	{
+		cmd_req.set_cmd_type(CMD_RESPOND);
+		Command *cmd;
+
+		cmd = cmd_req.add_commands();
+		cmd->set_respond_id(network::RESPOND_WEAKEN);
+		cmd->add_args(ID);
+		cmd->add_args(howMany);
+	}
+    //static string weakNotice(int ID,int act,int howMany=3){return combMessage("24",TOQSTR(ID),TOQSTR(act),TOQSTR(howMany));}
     static string shieldNotic(int ID){return "25;" + TOQSTR(ID) + ";";}
-    static string askForMissile(int dstID,int srcID,int hurtSum,int nextID){return combMessage("26",TOQSTR(dstID),TOQSTR(srcID),TOQSTR(hurtSum),TOQSTR(nextID));}
+    static void askForMissile(int dstID,int srcID,int hurtSum,int nextID, CommandRequest& cmd_req)
+	{
+		cmd_req.set_cmd_type(CMD_RESPOND);
+		Command *cmd;
+
+		cmd = cmd_req.add_commands();
+		cmd->set_respond_id(network::RESPOND_BULLET);
+		cmd->add_args(dstID);
+		cmd->add_args(srcID);
+		cmd->add_args(hurtSum);
+		cmd->add_args(nextID);
+	}
     static string useCardNotice(int cardID, int dstID, int srcID, int realCard=1);
-	static string askForAction(int playerID,int actionTypeAllowed,bool acted){return combMessage(TOQSTR(ASKFORACTION),TOQSTR(playerID),TOQSTR(actionTypeAllowed),acted?"1":"0");}
+	static void askForAction(int playerID,int actionTypeAllowed,bool acted, CommandRequest& cmd_req)
+	{
+		cmd_req.set_cmd_type(CMD_ACTION);
+		Command *cmd;
+
+		if (acted) {
+			cmd = cmd_req.add_commands();
+			cmd->set_respond_id(0);
+		}
+
+		cmd = cmd_req.add_commands();
+		cmd->set_respond_id(actionTypeAllowed);
+	}
     static string askForAdditionalAction(int playerID){return "42;"+TOQSTR(playerID)+";";}
     static string crossChangeNotice(int playerID,int newValue){return combMessage(TOQSTR(CROSSCHANGENOTICE),TOQSTR(playerID),TOQSTR(newValue));}
-    static string askForCross(int playerID,int hurtPoint,int type, int crossAvailable){return combMessage(TOQSTR(ASKFORCROSS),TOQSTR(playerID),TOQSTR(hurtPoint),TOQSTR(type),TOQSTR(crossAvailable));}
+    static void askForCross(int playerID,int hurtPoint,int type, int crossAvailable, CommandRequest& cmd_req)
+	{
+		cmd_req.set_cmd_type(CMD_RESPOND);
+		Command *cmd;
+
+		cmd = cmd_req.add_commands();
+		cmd->set_respond_id(network::RESPOND_HEAL);
+		cmd->add_args(hurtPoint);
+		cmd->add_args(type);
+		cmd->add_args(crossAvailable);
+	}
     static string askForSkill(int playerID,string content,string args=""){return combMessage(TOQSTR(ASKFORSKILL),TOQSTR(playerID),content,args);}
-    static string roleNotice(int playerID,int roleID,int show=0){return combMessage(TOQSTR(CHARACTERNOTICE),TOQSTR(playerID),TOQSTR(roleID),TOQSTR(show));}
+    static void roleNotice(int playerID,int roleID, GameInfo& game_info)
+	{
+		SinglePlayerInfo* player_info;
+		for (int i = 0; i < game_info.player_infos_size(); ++i)
+		{
+			player_info = (SinglePlayerInfo*)&(game_info.player_infos().Get(i));
+			if (player_info->id() == playerID)
+			{
+				player_info->set_role_id(roleID);
+				break;
+			}
+		}
+	}
     static string unactionalNotice(int playerID){return combMessage(TOQSTR(UNACTIONALNOTICE),TOQSTR(playerID));}
     static string notice(string content){return combMessage(TOQSTR(NOTICE),content);}
     static string askForDiscardMagic(int ID){return combMessage("850",TOQSTR(ID));}

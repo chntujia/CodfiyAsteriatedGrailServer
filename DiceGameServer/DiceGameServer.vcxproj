@@ -83,6 +83,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CardEntity.h" />
+    <ClInclude Include="codec.h" />
     <ClInclude Include="DiceGameServer.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameGrail.h" />
@@ -99,6 +100,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CardEntity.cpp" />
+    <ClCompile Include="codec.cpp" />
     <ClCompile Include="DiceGameServer.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameGrail.cpp" />

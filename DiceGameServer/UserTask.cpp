@@ -7,6 +7,7 @@
 #include <boost/algorithm/string.hpp>
 
 uint32_t UserTask::m_sIDSeq = 10000;
+using namespace network;
 
 void UserTask::Start()
 {
@@ -57,79 +58,94 @@ bool UserTask::tryNotify(int id, int state, int step, void* reply)
 {
 	GameGrail*game = getGame();
 	if(!game){
+		if (reply != NULL)
+			delete reply;  // 不需要的消息就释放掉，如果被需要，会暂时保存，直到下一个成功set进去的Reply
 		return false;
 	}
-	return game->tryNotify(id, state, step, reply);
+	bool try_notify_success = game->tryNotify(id, state, step, reply);
+	if (!try_notify_success)
+		if (reply != NULL)
+			delete reply;  // 不需要的消息就释放掉，如果被需要，会暂时保存，直到下一个成功set进去的Reply
+	return try_notify_success;
 }
 
 // 消息处理中心
 bool UserTask::cmdMsgParse(const char *pstrMsg, const uint32_t nCmdLen)
 {
-#ifdef Debug	
-	ztLoggerWrite(ZONE, e_Debug, "[%s]Receive: %s Size: %d", m_userId.c_str(), pstrMsg, nCmdLen);
+	uint16_t type;
+	::google::protobuf::Message *proto = (::google::protobuf::Message*) proto_decoder(pstrMsg, type);
+	
+#ifdef Debug
+	ztLoggerWrite(ZONE, e_Debug, "[%s]Receive: %s\n To proto: %s", m_userId.c_str(), pstrMsg, proto->DebugString().c_str());
 #endif
-	vector< string > args;
-	string message(pstrMsg);
+
 	GameGrailConfig*config;
-	GameGrail* game;
 	int ret;
 	int tableID;
 	int actionFlag;
-	REPLY_ATTACK *attack;
-	REPLY_ATTACKED *attacked;
 	m_activeTime = time(NULL);
-	boost::split(args,message,boost::is_any_of(";"));
+	EnterRoom* enter_room;
+	Action *action;
+	Respond *respond;
 
-	switch(atoi(args[0].c_str()))
+	switch(type)
 	{
-		//创建房间
-	case 60:
-		config = new GameGrailConfig(4,0);
-		GameManager::getInstance().createGame(GAME_TYPE_GRAIL, config);
-		delete config;
-		break;
-		//进入房间
-	case 0:
-		//FIXME temporarily disable login
-		m_bAuthen = true;
-		// TODO : check username & password here
-		m_userId = TOQSTR(m_iTmpId);
-		UserSessionManager::getInstance().AddUser(m_userId, this);
-		m_gameType = GAME_TYPE_GRAIL;
-		tableID = atoi(args[1].c_str());
-		ret = GameManager::getInstance().sitIntoTable(m_userId, GAME_TYPE_GRAIL, tableID);
-		if (ret == SIT_TABLE_SUCCESS){
-			m_tableId = tableID;
+		
+	case MSG_ENTER_ROOM:
+		enter_room = (EnterRoom*)proto;
+		if (enter_room->room_id() == 0){
+			//创建房间
+			config = new GameGrailConfig(2,0);
+			GameManager::getInstance().createGame(GAME_TYPE_GRAIL, config);
+			delete config;
 		}
 		else{
-			ztLoggerWrite(ZONE, e_Error, "UserTask::cmdMsgParse() userId [%s] cannot enter Table %d. Ret: %d", 
-				m_userId.c_str(), tableID, ret);
+			//进入房间
+			//FIXME temporarily disable login
+			m_bAuthen = true;
+			// TODO : check username & password here
+			m_userId = TOQSTR(m_iTmpId);
+			UserSessionManager::getInstance().AddUser(m_userId, this);
+			m_gameType = GAME_TYPE_GRAIL;
+			tableID = enter_room->room_id();
+			ret = GameManager::getInstance().sitIntoTable(m_userId, GAME_TYPE_GRAIL, tableID);
+			if (ret == SIT_TABLE_SUCCESS){
+				m_tableId = tableID;
+			}
+			else{
+				ztLoggerWrite(ZONE, e_Error, "UserTask::cmdMsgParse() userId [%s] cannot enter Table %d. Ret: %d", 
+					m_userId.c_str(), tableID, ret);
+			}
 		}
+
+		delete proto;    // 如果不需要tryNotify或者tryNotify不带reply的话，释放message对象，这一步相当重要
 		break;	
+	case MSG_START_REP:
 		//clicked start
-	case 16:
 		tryNotify(m_playerId, STATE_SEAT_ARRANGE);
+
+		delete proto;    // 如果不需要tryNotify或者tryNotify不带reply的话，释放message对象，这一步相当重要
 		break;
 	//attack
-	case 4:
-		actionFlag = atoi(args[1].c_str());
-		if(actionFlag == ATTACK_ACTION){
-			attack = new REPLY_ATTACK;
-			attack->actionFlag = ATTACK_ACTION;
-			attack->cardID = atoi(args[2].c_str());
-			attack->dstID = atoi(args[3].c_str());
-			attack->srcID = atoi(args[4].c_str());
-			tryNotify(m_playerId, STATE_ACTION_PHASE, 0, attack);
+	case MSG_ACTION:
+		action = (Action*)proto;
+		actionFlag = action->action_id();
+		if(actionFlag == ACTION_ATTACK){
+			// 攻击行动
+			tryNotify(m_playerId, STATE_ACTION_PHASE, 0, action);
+		}
+		else {
+			delete proto;
 		}
 		break;
 		//attacked
-	case 6:		
-		attacked = new REPLY_ATTACKED;
-		attacked->flag = atoi(args[1].c_str());
-		attacked->cardID = atoi(args[2].c_str());
-		attacked->dstID = atoi(args[3].c_str());
-		attacked->srcID = atoi(args[4].c_str());
-		tryNotify(m_playerId, STATE_ATTACKED, 0, attacked);
+	case MSG_RESPOND:
+		respond = (Respond*)proto;
+		if (respond->respond_id() == RESPOND_REPLY_ATTACK)
+			tryNotify(m_playerId, STATE_ATTACKED, 0, respond);
+		else {
+			delete proto;
+		}
 		break;
 	}
 	return true;
