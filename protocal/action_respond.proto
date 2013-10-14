@@ -1,0 +1,104 @@
+package network;
+
+enum MessageType2 {
+    MSG_PICK_REQ = 101;
+    MSG_PICK = 102;
+    MSG_ACTION = 103;
+    MSG_RESPOND= 104;
+    MSG_CMD_REQ = 106;
+    MSG_ERROR_INPUT = 107;
+	MSG_HIT = 108;
+	MSG_TURN_BEGIN = 109;
+}
+
+// s -> c 备选角色（31模式）
+message CharactorPickRequest {
+    repeated uint32 role_ids = 1;   // 可选角色
+}
+
+// c -> s 角色选取（31模式）
+message Pick {
+    optional uint32 role_id = 1;
+}
+
+// s -> c 回合开始消息
+message TurnBegin {
+    optional uint32 index = 1;    // 开始角色的id
+}
+
+
+// 基础行动，常量不合适随意修改
+enum BasicActionType {
+    ACTION_BUY = 1;      // 购买
+    ACTION_REFINE = 2;   // 提炼
+    ACTION_COMPOSE = 3;  // 合成
+    ACTION_ATTACK = 4;   // 斩
+    ACTION_MAGIC = 5;    // 基础法术
+	ACTION_ANY = 6;   // 用于s->c，标识可以使用任何行动
+	ACTION_ATTACK_MAGIC = 7; // 用于s->c，标识可以使用斩或法术行动
+	ACTION_NONE = 100000; // 无法行动
+}
+
+
+// c -> s, s -> c 行动，根据不同的行动填写不同长度的args
+message Action {
+    optional uint32 action_id = 1;
+    repeated uint32 args = 2;
+	optional uint32 src_id = 3;
+	repeated uint32 dst_ids = 4;
+}
+
+// 基础响应，常量不合适随意修改
+enum BasicRespondType {
+    RESPOND_REPLY_ATTACK = 10; // 应战
+    RESPOND_BULLET = 11;       // 魔弹响应
+    RESPOND_HEAL = 12;         // 治疗响应
+    RESPOND_DISCARD = 13;      // 丢弃手牌
+	RESPOND_WEAKEN = 14;       // 虚弱
+}
+
+// c -> s, s -> c 启动及技能响应及应战及治疗响应及爆牌，根据不同的行动填写不同长度的args，可以用到 s -> c
+message Respond {
+    optional uint32 respond_id = 1;    // 启动响应技能种类过多，不写常量了
+    repeated uint32 args = 2;
+	optional uint32 src_id = 3;
+	repeated uint32 dst_ids = 4;
+}
+
+
+enum CmdType {
+    CMD_ACTION = 1;
+    CMD_RESPOND = 2;
+}
+
+// 不能单独发送
+message Command {
+    optional uint32 respond_id = 1;    // 或为基础行动，或为响应，0代表此次行动可放弃
+    repeated uint32 args = 2;
+}
+
+// s -> c 动作询问
+message CommandRequest {
+    optional CmdType cmd_type = 1;
+    // CMD_ACTION时，表示有哪几种action选择
+    // CMD_RESPOND时，表示有哪几种respond选择
+    repeated Command commands = 2;
+}
+
+// s -> c 发送了错误的行动或响应或启动
+message ErrorInput {
+    optional CmdType error_type = 1;
+    // 错误为CMD_ACTION时，表示有哪几种action选择
+    // 错误为CMD_RESPOND时，表示有哪几种respond选择
+    repeated Command commands = 2;
+}
+
+
+// s -> c 命中与否，攻击或魔蛋或魔爆是否命中
+message HitMsg {
+	optional uint32 cmd_id = 1;
+	optional uint32 hit = 2;
+	optional uint32 src_id = 3;
+	optional uint32 dst_id = 4;
+	optional uint32 damage = 5;
+}

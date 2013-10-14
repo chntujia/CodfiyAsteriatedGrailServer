@@ -1,0 +1,308 @@
+// See README.txt for information and build instructions.
+
+package GameMessage;
+
+enum MsgType{
+	MG_LobbyUserLoginReq = 1;
+	MG_LobbyUserLoginRet = 2;
+	MG_LobbyHeartBeat = 3;
+	MG_LobbyEnterGame = 4;
+	MG_SicTableListRes = 5;
+	MG_SicSitIntoTableReq = 6;
+	MG_SicSitIntoTableRes = 7;
+	MG_SicBetAction = 8;
+	MG_SicBetResult = 9;
+	MG_SicRefreshTableReq = 10;
+	MG_SicTableStatus = 11;
+	MG_SicWinLoseResult = 12;
+	MG_SicGetHisReq = 13;
+	MG_SicGetHisRes = 14;
+
+	// 以下的消息没有被用到
+	MG_OxStartGame = 15;
+	MG_OxChangeTable = 16;
+	MG_OxExitTable = 17;
+	MG_OxChoiceGameMultiple = 18;
+	MG_OxGameStatus = 19;
+	MG_OxGameResult = 20;
+}
+
+enum GameType{
+	GAME_TYPE_OX = 1;
+	GAME_TYPE_SIC = 2;
+}
+
+message DiceMessage {
+  required int32 type = 1;
+  required int32 msgsize = 2;         
+  required bytes msgdata = 3;
+}
+
+// 大厅消息包
+
+// 大厅登入 c->s
+message LobbyUserLoginReq {
+	required string userId = 1;
+	required string password = 2;
+}
+
+// 大厅登入返回 s->c
+message LobbyUserLoginRet {
+	required string userId = 1;
+
+	enum LoginRet{
+		LOGIN_RESULT_SUCCESS = 1;
+		LOGIN_RESULT_FAIL = 2;
+	}
+	required LoginRet result = 2;
+}
+
+// 心跳包 c->s
+message LobbyHeartBeat{
+	required string userId = 1;
+}
+
+// 进入游戏 c->s
+message LobbyEnterGame{
+	required string userId = 1;
+	required GameType type = 2;
+}
+
+// =============================================================
+// 聊天消息包（Chat）
+// 聊天请求 (c->s)
+message UserChatReq{
+	required string userId = 1;
+	// required string targetId = 2;
+	// required int32  chtype = 3;
+	required string chatmsg = 2;
+}
+
+// 返回请求结果 (s->c)
+message UserChatRet{
+	required int32 ret = 1;
+}
+
+// 聊天返回 (s->c)
+message UserChatMsg{
+	required string userId = 1;
+	// required string targetId = 2;
+	// required int32  chtype = 3;
+	required string chatmsg = 2;
+}
+
+// =============================================================
+// 游戏骰宝消息包（SicBo）
+// 游戏桌列表 s->c
+message SicBoTableList{
+	message SicBoTableInfo{
+		required int32 tableId = 1;
+		required string tableName = 2;
+		required int32 tableMaxPlayer = 3;
+		required int32 tableEnterPlayer = 4;
+	}
+	repeated SicBoTableInfo tableInfo = 1;
+}
+
+// 加入游戏桌 c->s
+message SicBoSitIntoTableReq{
+	required string userId = 1;
+	required int32 tableId = 2;
+}
+
+// 加入游戏桌返回 s->c
+message SicBoSitIntoTableRes{
+	required string userId = 1;
+	enum SicBoSitTableResult{
+		SICBO_SIT_TABLE_SUCCESS = 1;
+		SICBO_SIT_TABLE_FULL	= 2;
+		SICBO_SIT_TABLE_NO_TABLE = 3;
+		SICBO_SIT_TABLE_OTHER	= 4;
+	}
+	required SicBoSitTableResult result = 2;
+}
+
+// 下注点
+enum SicBoBetPosition{
+	SICBO_BET_BIG			= 1;
+	SICBO_BET_SMALL			= 2;
+	SICBO_BET_TRIPLE_ANY	= 3;
+	SICBO_BET_TRIPLE_1		= 4;
+	SICBO_BET_TRIPLE_2		= 5;
+	SICBO_BET_TRIPLE_3		= 6;
+	SICBO_BET_TRIPLE_4		= 7;
+	SICBO_BET_TRIPLE_5		= 8;
+	SICBO_BET_TRIPLE_6		= 9;
+	SICBO_BET_NUMBER_4		= 10;
+	SICBO_BET_NUMBER_5		= 11;
+	SICBO_BET_NUMBER_6		= 12;
+	SICBO_BET_NUMBER_7		= 13;
+	SICBO_BET_NUMBER_8		= 14;
+	SICBO_BET_NUMBER_9		= 15;
+	SICBO_BET_NUMBER_10		= 16;
+	SICBO_BET_NUMBER_11		= 17;
+	SICBO_BET_NUMBER_12		= 18;
+	SICBO_BET_NUMBER_13		= 19;
+	SICBO_BET_NUMBER_14		= 20;
+	SICBO_BET_NUMBER_15		= 21;
+	SICBO_BET_NUMBER_16		= 22;
+	SICBO_BET_NUMBER_17		= 23;
+	SICBO_BET_DICE_1		= 24;
+	SICBO_BET_DICE_2		= 25;
+	SICBO_BET_DICE_3		= 26;
+	SICBO_BET_DICE_4		= 27;
+	SICBO_BET_DICE_5		= 28;
+	SICBO_BET_DICE_6		= 29;
+}
+
+// 下注请求
+message SicBoBetAction{
+	required string userId = 1;
+	required int32 tableId = 2;
+	required SicBoBetPosition position = 3;
+	required int32 betNumber = 4;
+}
+
+// 下注返回
+message SicBoBetResult{
+	required string userId = 1;
+	enum BetResult{
+		SICBO_BET_SUCCESS			= 1;
+		SICBO_BET_NO_ENOUGH_MONEY	= 2;
+		SICBO_BET_NOT_IN_THIS_TABLE	= 3;
+		SICBO_BET_NOT_IN_BET_TIME	= 4;
+	}
+	required BetResult result = 2;
+}
+
+// 骰桌刷新请求 c->s  （返回骰桌当前情况或是开奖结果）
+message SicBoTableRefresh{
+	required string userId = 1;
+	required int32 tableId = 2;
+}
+
+// 骰桌当前情况
+message SicBoTableStatus{
+	required int32 tableId = 1;
+	required int32 roundId = 2;
+	enum SicBoTableState{
+		SICBO_TABLE_STATE_BET		= 1;		// 押注时间
+		SICBO_TABLE_STATE_RESULT	= 2;		// 开奖时间
+	}
+	required SicBoTableState state = 3;
+	required int32 restSeonds = 4;		// 离下一次开奖时间
+	message SicBoBetInfo{
+		required SicBoBetPosition position = 1;
+		required int32 money = 2;
+	}
+	repeated SicBoBetInfo betInfo = 5;
+}
+
+// 开奖结果
+message SicBoWinLoseRes{
+	required string userId = 1;
+	repeated int32 diceNumber = 2;
+	message WinLoseInfo{
+		required SicBoBetPosition position = 1;
+		required int32 betMoney = 2;
+		required int32 winMoney = 3;
+	}
+	repeated WinLoseInfo winInfo = 3;
+}
+
+// 历史记录请求
+message SicBoGetTableHistory{
+	required string userId = 1;
+	required int32 tableId = 2;
+}
+
+// 历史记录返回
+message SicBoTableHistoryInfo{
+	required int32 tableId = 1;
+	message SicBoHistoryInfo{
+		required int32 gameId = 1;
+		repeated int32 diceNumber = 2;
+	}
+	repeated SicBoHistoryInfo historyInfo = 2;
+}
+
+// =============================================================
+// 游戏牛牛消息包（Ox）
+enum OxGameMultiple{
+	OX_GAME_MULTIPLE_1X = 1;
+	OX_GAME_MULTIPLE_3X = 2;
+	OX_GAME_MULTIPLE_5X = 3;
+	OX_GAME_MULTIPLE_10X = 4;
+}
+
+// [牛牛]开始游戏 c->s
+message OxStartGame{
+	required string userId = 1;
+}
+
+// [牛牛]换桌 c->s
+message OxChangeTable{
+	required string userId = 1;
+}
+
+// [牛牛]退出当前游戏桌 c->s
+message OxExitTable{
+	required string userId = 1;
+}
+
+// [牛牛]选择倍数 c->s
+message OxChoiceGameMultiple{
+	required string userId = 1;
+	required OxGameMultiple multiple = 2;
+}
+
+// [牛牛]游戏状态 s->c
+message OxGameStatus{
+	required string userId = 1;
+
+	enum DiceNumber{
+		DICE_NUMBER_ONE = 1;
+		DICE_NUMBER_TWO = 2;
+		DICE_NUMBER_THREE = 3;
+		DICE_NUMBER_FOUR = 4;
+		DICE_NUMBER_FIVE = 5;
+		DICE_NUMBER_SIX = 6;
+		DICE_NO_DICE = 7;
+	}
+
+	message OxGamePlayerStatus{
+		required string userName = 1;
+		required int32 seatPosition = 2;
+		required int32 gameCoins = 3;
+		optional OxGameMultiple multiple = 4;
+		repeated DiceNumber dice = 5; 
+	}
+	repeated OxGamePlayerStatus status = 2;
+}
+
+// [牛牛]游戏结果 s->c
+message OxGameResult{
+	required string userId = 1;
+
+	enum OxType{
+		OX_TYPE_NO_OX	= 1;
+		OX_TYPE_OX_1	= 2;
+		OX_TYPE_OX_2	= 3;
+		OX_TYPE_OX_3	= 4;
+		OX_TYPE_OX_4	= 5;
+		OX_TYPE_OX_5	= 6;
+		OX_TYPE_OX_6	= 7;
+		OX_TYPE_OX_7	= 8;
+		OX_TYPE_OX_8	= 9;
+		OX_TYPE_OX_9	= 10;
+		OX_TYPE_OX_OX	= 11;
+	}
+
+	message OxGamePlayerResult{
+		required string userName = 1;
+		required OxType diceType = 2;
+		required int32 winResult = 3;
+	}
+	repeated OxGamePlayerResult result = 2;
+}
+

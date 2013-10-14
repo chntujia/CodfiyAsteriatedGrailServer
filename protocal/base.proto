@@ -1,0 +1,153 @@
+package network;
+
+enum MessageType {
+    MSG_LOGIN_REQ = 1;
+    MSG_LOGIN_REP = 2;
+    MSG_READY = 3;
+    MSG_START_REP = 4;
+    MSG_SINGLE_PLAYER = 5;
+    MSG_GAME = 6;
+    MSG_TALK = 7;
+    MSG_GOSSIP = 8;
+	MSG_ENTER_ROOM = 9;
+	MSG_SINGLE_ROOM = 10;
+	MSG_ROOMS = 11;
+	MSG_LOGOUT_REQ = 12;
+	MSG_LOGOUT_REP = 13;
+	MSG_REGISTER_REQ = 14;
+	MSG_REGISTER_REP = 15;
+}
+
+// c -> s 注册请求
+message RegisterRequest {
+	optional string user_id = 1;
+	optional string user_password = 2;
+	optional string nickname = 3;
+	optional string mobile = 4;
+	optional string email = 5;
+}
+
+// s -> c 注册响应
+message RegisterReply {
+	optional uint32 state = 1;
+}
+
+// c -> s 登陆请求
+message LoginRequest {
+    optional string user_id = 1;
+    optional string user_password = 2;
+}
+
+// s -> c 登陆响应
+message LoginReply {
+    optional uint32 serial_num = 1;  // 个人id
+	optional uint32 state = 2;
+	optional string nickname = 3;
+}
+
+// c -> s 登出请求
+message LogoutRequest {
+}
+
+// s -> c 登出响应
+message LogoutReply {
+	repeated uint32 args = 1;
+}
+
+// c -> s 创建房间
+message EnterRoom {
+	optional uint32 room_id = 1; // 房间号
+}
+
+// s -> c 房间信息
+message SingleRoom {
+	optional uint32 room_id = 1;
+	optional uint32 player_id = 3;       // 玩家在该房间中的编号，如果玩家不在的房间则不填
+
+	message RoomPlayer {
+		optional uint32 player_id = 1;
+		optional uint32 player_nickname = 2;
+	}
+	repeated RoomPlayer players = 2;
+}
+
+// s -> c 所有房间信息
+message Rooms {
+	repeated SingleRoom rooms = 1;
+}
+
+// s -> c 房间满员
+message ReadyToStart {
+}
+
+// c -> s 开始信息
+message StartReply {
+}
+
+
+// s -> c 单个玩家的所有信息，不需要更新的信息可以不填写，为节省数据包大小，repeated数据编号请尽量使用16以内数字
+message SinglePlayerInfo {
+	optional uint32 seat = 21;     // 座次
+    optional uint32 id = 1;        // 编号
+    optional uint32 team = 2;      // 0：蓝队，1：红队，（2：红队first_player，可以不使用）
+    optional string nickname = 20; // 昵称，仅在首次发送时使用
+    optional uint32 role_id = 4;   // 角色
+    
+    optional uint32 hand_count = 5;     // 手牌数
+    optional uint32 heal_count = 6;     // 治疗数
+    
+    repeated uint32 my_ex_card_place = 7;  // 角色专属牌位置或状态（或两者复合）
+    repeated uint32 gain_ex_card = 8;      // 其他角色赋予的专属牌序号（及状态）
+    repeated uint32 basic_cards = 9;       // 放置在面前的基础效果卡牌id
+    
+    optional uint32 gem = 10;           // 宝石数量
+    optional uint32 crystal = 11;       // 水晶数量
+    optional uint32 yellow_energy = 12; // 黄色指示物
+    optional uint32 blue_energy = 13;   // 蓝色指示物
+    optional uint32 covered_count = 14; // 盖牌数量，暂不支持多种盖牌
+    
+    optional bool is_knelt = 3;   // 是否横置
+    
+    repeated uint32 hands = 15;    // 手牌card_id组成，仅在发送给本人时使用
+    repeated uint32 covereds = 16; // 盖牌card_id组合，仅在发送给本人时使用
+
+	optional uint32 max_hand = 22;        // 最大手牌数变更
+
+	repeated string delete_field = 30;  // 删除某个域，用于清空数组
+}
+
+// s -> c 局信息
+message GameInfo {
+    repeated SinglePlayerInfo player_infos = 1;
+    optional uint32 red_morale = 2;
+    optional uint32 blue_morale = 3;
+    optional uint32 red_gem = 4;     // 红队宝石数量
+    optional uint32 blue_gem = 5;    // 蓝队宝石数量
+    optional uint32 red_crystal = 6; // 红队水晶数量
+    optional uint32 blue_crystal = 7;// 蓝队水晶数量
+    optional uint32 red_grail = 8;   // 红队星杯数
+    optional uint32 blue_grail = 9;  // 蓝队星杯数 
+	optional uint32 pile = 10;       // 牌堆
+	optional uint32 discard = 11;    // 弃牌区
+	repeated uint32 show_cards = 12; // 当前展示
+    optional uint32 show_from = 13;  // 展示者id，也有不填写的可能
+
+	repeated string delete_field = 15;  // 删除某个域，用于清空数组
+}
+
+// c -> s 聊天
+message Talk {
+    optional string txt = 1;
+}
+
+enum GossipType {
+    GOSSIP_TALK = 1;
+    GOSSIP_NOTICE = 2;
+}
+
+// s -> c 聊天及公告等
+message Gossip {
+    optional GossipType type = 1;
+    optional string txt = 2;
+    optional uint32 id = 3;
+}
