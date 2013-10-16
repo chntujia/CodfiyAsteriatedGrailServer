@@ -4,7 +4,7 @@
 
 int StateWaitForEnter::handle(GameGrail* engine)
 {
-	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateWaitForEnter", engine->getGameId());
+	//ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateWaitForEnter", engine->getGameId());
 	if(engine->getGameNowPlayers() >= engine->getGameMaxPlayers())
 	{
 		engine->popGameState();
@@ -38,11 +38,10 @@ int StateSeatArrange::handle(GameGrail* engine)
 			Deck colors(m_maxPlayers);
 			int temp[8];
 			memset(temp, 0, m_maxPlayers/2 * sizeof(int));
-			for (int i = m_maxPlayers/2; i < m_maxPlayers-1; ++i)
+			for (int i = m_maxPlayers/2; i < m_maxPlayers; ++i)
 				temp[i] = 1;
-			colors.push(m_maxPlayers - 1, temp);
+			colors.push(m_maxPlayers, temp);
 			colors.randomize();
-
 			
 			SinglePlayerInfo *player_info;
 			int it;
@@ -67,7 +66,7 @@ int StateSeatArrange::handle(GameGrail* engine)
 		}
 		isSet = true;
 	}
-	if(engine->waitForAll(proto_types, (void**)messages, false)){
+	if(engine->waitForAll(proto_types, (void**)messages, 1000, false)){
 		engine->popGameState();	  
 		return engine->setStateRoleStrategy();
 	}
