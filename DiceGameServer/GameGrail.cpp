@@ -275,7 +275,7 @@ int GameGrail::setStateMoveCards(int srcOwner, int srcArea, int dstOwner, int ds
 	//FIXME should use two message instead of one moveCardNotice 
 	GameInfo update_info;
 	SinglePlayerInfo* player_info;
-	list<int> *hands;
+	list<int> hands;
 	list<int>::iterator hand_it;
 	list<BasicEffect> *basic_effect;
 	list<BasicEffect>::iterator basic_it;
@@ -294,16 +294,21 @@ int GameGrail::setStateMoveCards(int srcOwner, int srcArea, int dstOwner, int ds
 		dst = getPlayerEntity(dstOwner);
 		ret = dst->addHandCards(howMany,cards);
 		ret = setStateHandOverLoad(dstOwner, harm);
-		pushGameState(new StateHandChange(dstOwner, CHANGE_ADD, howMany, cards, harm));
+		// TODO:改用pushGameState，更新消息改在StateHandChange的Handle中发送
+		//pushGameState(new StateHandChange(dstOwner, CHANGE_ADD, howMany, cards, harm));
 
 		// 填写更新信息
 		player_info = update_info.add_player_infos();
 		player_info->set_id(dstOwner);
 
-		hands = &dst->getHandCards();
-		for (hand_it = hands->begin(); hand_it != hands->end(); ++hand_it)
-			player_info->add_hands(*hand_it);
-		player_info->set_hand_count(hands->size());
+		hands = dst->getHandCards();
+		if (hands.size() > 0)
+			for (hand_it = hands.begin(); hand_it != hands.end(); ++hand_it)
+			{
+				ztLoggerWrite(ZONE, e_Debug, "hand %d", *hand_it);
+				player_info->add_hands(*hand_it);
+			}
+		player_info->set_hand_count(hands.size());
 		
 		break;
 	case DECK_BASIC_EFFECT:
@@ -352,19 +357,20 @@ int GameGrail::setStateMoveCards(int srcOwner, int srcArea, int dstOwner, int ds
 		if(isShown){
 			pushGameState(new StateShowHand(srcOwner, howMany, cards));
 		}
-		pushGameState(new StateHandChange(dstOwner, CHANGE_ADD, howMany, cards, harm));
+		// TODO:改用pushGameState，更新消息改在StateHandChange的Handle中发送
+		//pushGameState(new StateHandChange(dstOwner, CHANGE_REMOVE, howMany, cards, harm));
 
 		// 填写更新信息
 		player_info = update_info.add_player_infos();
 		player_info->set_id(srcOwner);
 
-		hands = &src->getHandCards();
-		if (hands->size() == 0)
+		hands = src->getHandCards();
+		if (hands.size() == 0)
 			player_info->add_delete_field("hands");
 		else
-			for (hand_it = hands->begin(); hand_it != hands->end(); ++hand_it)
+			for (hand_it = hands.begin(); hand_it != hands.end(); ++hand_it)
 				player_info->add_hands(*hand_it);
-		player_info->set_hand_count(hands->size());
+		player_info->set_hand_count(hands.size());
 
 		break;
 	case DECK_BASIC_EFFECT:
