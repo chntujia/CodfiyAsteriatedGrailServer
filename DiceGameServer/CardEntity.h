@@ -2,6 +2,12 @@
 #include <iostream>
 using namespace std;
 
+struct BasicEffect
+{
+    int card;
+    int srcUser;
+};
+
 enum CardType{
 	TYPE_ATTACK = 1,
 	TYPE_MAGIC = 2,

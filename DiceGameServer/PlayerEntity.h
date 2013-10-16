@@ -11,11 +11,7 @@ using namespace std;
 class TeamArea;
 class GameGrail;
 //ÕÊº“¿‡
-struct BasicEffect
-{
-    int card;
-    int srcUser;
-};
+
 
 class PlayerEntity
 {

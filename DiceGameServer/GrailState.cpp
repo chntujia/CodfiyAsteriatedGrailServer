@@ -822,6 +822,11 @@ int StateHandChange::handle(GameGrail* engine)
 			dst->removeHandCards(howMany,cards);	
 		}
 		isSet = true;
+
+		GameInfo update_info;
+		Coder::handNotice(dstID, dst->getHandCards(), update_info);
+	
+		engine->sendMessage(-1, MSG_GAME, update_info);
 	}
 	ret = GE_FATAL_ERROR;
 	int m_currentPlayerID = engine->getCurrentPlayerID();
@@ -837,6 +842,7 @@ int StateHandChange::handle(GameGrail* engine)
 	int dstID_temp = dstID;
 	HARM harm_temp = harm;
 	engine->popGameState_if(STATE_HAND_CHANGE);
+
 	return engine->setStateHandOverLoad(dstID_temp, harm_temp);
 }
 
@@ -853,6 +859,11 @@ int StateBasicEffectChange::handle(GameGrail* engine)
 			dst->removeBasicEffect(card);	
 		}
 		isSet = true;
+
+		GameInfo update_info;
+		Coder::basicNotice(dstID, dst->getBasicEffect(), update_info);
+	
+		engine->sendMessage(-1, MSG_GAME, update_info);
 	}
 	ret = GE_FATAL_ERROR;
 	int m_currentPlayerID = engine->getCurrentPlayerID();
@@ -870,7 +881,7 @@ int StateBasicEffectChange::handle(GameGrail* engine)
 
 int StateDiscardHand::handle(GameGrail* engine)
 {
-	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateDiscardHand", engine->getGameId());
+	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateDiscardHand, howMany %d", engine->getGameId(), howMany);
 	int ret = GE_FATAL_ERROR;
 
 	CommandRequest cmd_req;

@@ -7,9 +7,11 @@
 #include <boost/interprocess/sync/scoped_lock.hpp>
 #include "base.pb.h"
 #include "action_respond.pb.h"
+#include <list>
 
 using namespace boost::interprocess;
 using namespace network;
+using namespace std;
 
 #ifndef SAFE_DELETE
 #define SAFE_DELETE(x) { if (x) { delete (x); (x) = NULL; } }
@@ -194,6 +196,47 @@ public:
 		cmd->add_args(ID);
 		cmd->add_args(sum);
 		cmd->add_args(show);
+	}
+	static void handNotice(int ID, list<int> handCards, GameInfo& game_info)
+	{
+		SinglePlayerInfo* player_info = game_info.add_player_infos();
+		player_info->set_id(ID);
+
+		list<int>::iterator it;
+		for (it = handCards.begin(); it != handCards.end(); ++it)
+		{
+			player_info->add_hands(*it);
+		}
+		player_info->set_hand_count(handCards.size());
+		if (handCards.size() == 0)
+			player_info->add_delete_field("hands");
+	}
+	static void coverNotice(int ID, list<int> coverCards, GameInfo& game_info)
+	{
+		SinglePlayerInfo* player_info = game_info.add_player_infos();
+		player_info->set_id(ID);
+
+		list<int>::iterator it;
+		for (it = coverCards.begin(); it != coverCards.end(); ++it)
+		{
+			player_info->add_covereds(*it);
+		}
+		player_info->set_covered_count(coverCards.size());
+		if (coverCards.size() == 0)
+			player_info->add_delete_field("covereds");
+	}
+	static void basicNotice(int ID, list<BasicEffect> basicCards, GameInfo& game_info)
+	{
+		SinglePlayerInfo* player_info = game_info.add_player_infos();
+		player_info->set_id(ID);
+
+		list<BasicEffect>::iterator it;
+		for (it = basicCards.begin(); it != basicCards.end(); ++it)
+		{
+			player_info->add_basic_cards(it->card);
+		}
+		if (basicCards.size() == 0)
+			player_info->add_delete_field("basic_cards");
 	}
     static string askForDiscover(int ID, int sum,string show){return combMessage("49",TOQSTR(ID),TOQSTR(sum),show);}
     static string reshuffleNotice(int howManyNew){return combMessage("10",TOQSTR(howManyNew));}

@@ -248,10 +248,14 @@ int GameGrail::setStateMoveCards(int srcOwner, int srcArea, int dstOwner, int ds
 	PlayerEntity *src;
 	int ret;
 	//check whether exists
+
+	GameInfo update_info;
+
 	switch(srcArea)
 	{
 	case DECK_PILE:
 		drawCardsFromPile(howMany, cards);
+		update_info.set_pile(pile->get_size());
 		break;
 	case DECK_HAND:
 		src = getPlayerEntity(srcOwner);
@@ -269,132 +273,39 @@ int GameGrail::setStateMoveCards(int srcOwner, int srcArea, int dstOwner, int ds
 	default:
 		return GE_NOT_SUPPORTED;
 	}
-	
-	PlayerEntity* dst;
-
-	//FIXME should use two message instead of one moveCardNotice 
-	GameInfo update_info;
-	SinglePlayerInfo* player_info;
-	list<int> hands;
-	list<int>::iterator hand_it;
-	list<BasicEffect> *basic_effect;
-	list<BasicEffect>::iterator basic_it;
-	list<int> *covers;
-	list<int>::iterator cover_it;
-
 	//src hand change->show hand->dst hand change->dst hand overload, but stack is LIFO
 	switch(dstArea)
 	{
 	case DECK_DISCARD:
-		ret = discard->push(howMany,&cards[0]);
-		// 填写更新信息
+		ret = discard->push(howMany, &cards[0]);
 		update_info.set_discard(discard->get_size());
 		break;
 	case DECK_HAND:
-		dst = getPlayerEntity(dstOwner);
-		ret = dst->addHandCards(howMany,cards);
-		ret = setStateHandOverLoad(dstOwner, harm);
-		// TODO:改用pushGameState，更新消息改在StateHandChange的Handle中发送
-		//pushGameState(new StateHandChange(dstOwner, CHANGE_ADD, howMany, cards, harm));
-
-		// 填写更新信息
-		player_info = update_info.add_player_infos();
-		player_info->set_id(dstOwner);
-
-		hands = dst->getHandCards();
-		if (hands.size() > 0)
-			for (hand_it = hands.begin(); hand_it != hands.end(); ++hand_it)
-			{
-				ztLoggerWrite(ZONE, e_Debug, "hand %d", *hand_it);
-				player_info->add_hands(*hand_it);
-			}
-		player_info->set_hand_count(hands.size());
-		
+		pushGameState(new StateHandChange(dstOwner, CHANGE_ADD, howMany, cards, harm));							
 		break;
 	case DECK_BASIC_EFFECT:
-		dst = getPlayerEntity(dstOwner);
-		if(howMany != 1){
-			return GE_NOT_SUPPORTED;
-		}
-		ret = dst->addBasicEffect(cards[0],srcOwner);
-
-		// 填写更新信息
-		player_info = update_info.add_player_infos();
-		player_info->set_id(dstOwner);
-
-		basic_effect = &dst->getBasicEffect();
-		for (basic_it = basic_effect->begin(); basic_it != basic_effect->end(); ++basic_it)
-			player_info->add_basic_cards(basic_it->card);
-
-		//TODO: another state? 天使羁绊
+		pushGameState(new StateBasicEffectChange(dstOwner, CHANGE_ADD, cards[0], harm.srcID, harm.cause));	
 		break;
 	case DECK_COVER:
-		dst = getPlayerEntity(dstOwner);
-		ret = dst->addCoverCards(howMany, cards);
-		//TODO: cover overload
-		//ret = setStateCoverOverLoad(dstOwner);
-
-		// 填写更新信息
-		player_info = update_info.add_player_infos();
-		player_info->set_id(dstOwner);
-
-		covers = &dst->getCoverCards();
-		for (cover_it = covers->begin(); cover_it != covers->end(); ++ cover_it)
-			player_info->add_covereds(*cover_it);
-		player_info->set_covered_count(covers->size());
-
-		break;
 	default:
 		return GE_NOT_SUPPORTED;
 	}
 	switch(srcArea)
 	{
 	case DECK_PILE:
-		update_info.set_pile(pile->get_size());
 		break;
 	case DECK_HAND:
-		src->removeHandCards(howMany, cards);
 		if(isShown){
 			pushGameState(new StateShowHand(srcOwner, howMany, cards));
 		}
-		// TODO:改用pushGameState，更新消息改在StateHandChange的Handle中发送
-		//pushGameState(new StateHandChange(dstOwner, CHANGE_REMOVE, howMany, cards, harm));
-
-		// 填写更新信息
-		player_info = update_info.add_player_infos();
-		player_info->set_id(srcOwner);
-
-		hands = src->getHandCards();
-		if (hands.size() == 0)
-			player_info->add_delete_field("hands");
-		else
-			for (hand_it = hands.begin(); hand_it != hands.end(); ++hand_it)
-				player_info->add_hands(*hand_it);
-		player_info->set_hand_count(hands.size());
-
+		pushGameState(new StateHandChange(srcOwner, CHANGE_REMOVE, howMany, cards, harm));	
 		break;
 	case DECK_BASIC_EFFECT:
-		src->removeBasicEffect(cards[0]);
-
-		// 填写更新信息
-		player_info = update_info.add_player_infos();
-		player_info->set_id(srcOwner);
-
-		basic_effect = &src->getBasicEffect();
-		if (basic_effect->size() == 0)
-			player_info->add_delete_field("basic_cards");
-		else
-			for (basic_it = basic_effect->begin(); basic_it != basic_effect->end(); ++basic_it)
-				player_info->add_basic_cards(basic_it->card);
-		
+		pushGameState(new StateBasicEffectChange(srcOwner, CHANGE_REMOVE, cards[0], harm.srcID, harm.cause));
 		break;
-	}
-	
-	if (isShown)
-	{
-		vector<int>::iterator it;
-		for (it = cards.begin(); it != cards.end(); ++it)
-			update_info.add_show_cards(*it);
+	case DECK_COVER:
+	default:
+		return GE_NOT_SUPPORTED;
 	}
 
 	sendMessage(-1, MSG_GAME, update_info);
