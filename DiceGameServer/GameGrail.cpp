@@ -64,7 +64,7 @@ GameGrail::GameGrail(GameGrailConfig *config)
 	m_maxPlayers = config->maxPlayers;
 	m_roleStrategy = config->roleStrategy;
 	m_seatMode = 0;
-	m_responseTime = 10;
+	m_responseTime = 1000;
 	m_maxAttempts = 2;
 	pushGameState(new StateWaitForEnter);
 }

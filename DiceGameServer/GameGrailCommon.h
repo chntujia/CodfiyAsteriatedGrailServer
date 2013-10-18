@@ -280,18 +280,20 @@ public:
 		cmd->add_args(nextID);
 	}
     static string useCardNotice(int cardID, int dstID, int srcID, int realCard=1);
-	static void askForAction(int playerID,int actionTypeAllowed,bool acted, CommandRequest& cmd_req)
+	static void askForAction(int playerID,int actionTypeAllowed,bool canGiveUp, CommandRequest& cmd_req)
 	{
 		cmd_req.set_cmd_type(CMD_ACTION);
 		Command *cmd;
 
-		if (acted) {
+		if (canGiveUp) {
 			cmd = cmd_req.add_commands();
 			cmd->set_respond_id(0);
 		}
 
 		cmd = cmd_req.add_commands();
 		cmd->set_respond_id(actionTypeAllowed);
+        cmd->add_args(playerID);
+
 	}
     static string askForAdditionalAction(int playerID){return "42;"+TOQSTR(playerID)+";";}
     static string crossChangeNotice(int playerID,int newValue){return combMessage(TOQSTR(CROSSCHANGENOTICE),TOQSTR(playerID),TOQSTR(newValue));}
