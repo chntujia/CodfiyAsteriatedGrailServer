@@ -353,7 +353,9 @@ int StateAttacked::handle(GameGrail* engine)
 			}
 
 			int ra = respond_attack->args(0);
-			int card_id = respond_attack->args(1);
+			int card_id = 100000;
+			if (ra != RA_GIVEUP)
+				card_id = respond_attack->args(1);
 			switch(ra)
 			{
 				//FIXME: verify
