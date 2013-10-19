@@ -529,7 +529,8 @@ int GameGrail::setStateTimeline2Hit(int cardID, int dstID, int srcID, HARM harm,
 	else
 		hit_msg.set_cmd_id(RESPOND_REPLY_ATTACK);
 	hit_msg.set_hit(1);
-	hit_msg.set_damage(harm.point);
+	hit_msg.set_src_id(srcID);
+	hit_msg.set_dst_id(dstID);
 	sendMessage(-1, MSG_HIT, hit_msg);
 	//TODO stones
 	CONTEXT_TIMELINE_2_HIT *con = new CONTEXT_TIMELINE_2_HIT;
@@ -679,7 +680,8 @@ Deck* GameGrail::initRoles()
 	roles->init(1, 24);
 	int temp[]={26, 28, 29};
 	roles->push(3, temp);
-	roles->randomize();
+	//FIXME: disable random for debug
+	//roles->randomize();
 	return roles;
 }
 
