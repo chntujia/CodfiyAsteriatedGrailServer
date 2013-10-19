@@ -23,7 +23,7 @@ message Pick {
 
 // s -> c 回合开始消息
 message TurnBegin {
-    optional uint32 index = 1;    // 开始角色的id
+    optional uint32 id = 1;    // 开始角色的id
 }
 
 

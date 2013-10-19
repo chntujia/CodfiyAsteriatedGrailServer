@@ -358,21 +358,21 @@ class TurnBegin : public ::google::protobuf::Message {
 
   // accessors -------------------------------------------------------
 
-  // optional uint32 index = 1;
-  inline bool has_index() const;
-  inline void clear_index();
-  static const int kIndexFieldNumber = 1;
-  inline ::google::protobuf::uint32 index() const;
-  inline void set_index(::google::protobuf::uint32 value);
+  // optional uint32 id = 1;
+  inline bool has_id() const;
+  inline void clear_id();
+  static const int kIdFieldNumber = 1;
+  inline ::google::protobuf::uint32 id() const;
+  inline void set_id(::google::protobuf::uint32 value);
 
   // @@protoc_insertion_point(class_scope:network.TurnBegin)
  private:
-  inline void set_has_index();
-  inline void clear_has_index();
+  inline void set_has_id();
+  inline void clear_has_id();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
-  ::google::protobuf::uint32 index_;
+  ::google::protobuf::uint32 id_;
 
   mutable int _cached_size_;
   ::google::protobuf::uint32 _has_bits_[(1 + 31) / 32];
@@ -1089,26 +1089,26 @@ inline void Pick::set_role_id(::google::protobuf::uint32 value) {
 
 // TurnBegin
 
-// optional uint32 index = 1;
-inline bool TurnBegin::has_index() const {
+// optional uint32 id = 1;
+inline bool TurnBegin::has_id() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
-inline void TurnBegin::set_has_index() {
+inline void TurnBegin::set_has_id() {
   _has_bits_[0] |= 0x00000001u;
 }
-inline void TurnBegin::clear_has_index() {
+inline void TurnBegin::clear_has_id() {
   _has_bits_[0] &= ~0x00000001u;
 }
-inline void TurnBegin::clear_index() {
-  index_ = 0u;
-  clear_has_index();
+inline void TurnBegin::clear_id() {
+  id_ = 0u;
+  clear_has_id();
 }
-inline ::google::protobuf::uint32 TurnBegin::index() const {
-  return index_;
+inline ::google::protobuf::uint32 TurnBegin::id() const {
+  return id_;
 }
-inline void TurnBegin::set_index(::google::protobuf::uint32 value) {
-  set_has_index();
-  index_ = value;
+inline void TurnBegin::set_id(::google::protobuf::uint32 value) {
+  set_has_id();
+  id_ = value;
 }
 
 // -------------------------------------------------------------------
