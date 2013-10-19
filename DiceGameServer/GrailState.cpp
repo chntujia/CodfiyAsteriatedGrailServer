@@ -343,18 +343,17 @@ int StateAttacked::handle(GameGrail* engine)
 	{
 		void* reply;
 		int ret;
-		
-		int m_currentPlayerID = engine->getCurrentPlayerID();
+
 		CONTEXT_TIMELINE_1 temp = *context;
-		if(GE_SUCCESS == (ret = engine->getReply(m_currentPlayerID, reply))){
+		if(GE_SUCCESS == (ret = engine->getReply(context->attack.dstID, reply))){
 			Respond *respond_attack = (Respond*) reply;
 			if (respond_attack->respond_id() != RESPOND_REPLY_ATTACK)
 			{
 				// TODO: 非应战回复的错误处理，（或者被选为攻击目标时触发响应技能处理，暂无此类技能）
 			}
 
-			int ra = respond_attack->args().Get(0);
-			int card_id = respond_attack->args().Get(1);
+			int ra = respond_attack->args(0);
+			int card_id = respond_attack->args(1);
 			switch(ra)
 			{
 				//FIXME: verify
