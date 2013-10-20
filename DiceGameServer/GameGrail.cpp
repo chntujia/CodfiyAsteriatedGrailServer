@@ -64,7 +64,7 @@ GameGrail::GameGrail(GameGrailConfig *config)
 	m_maxPlayers = config->maxPlayers;
 	m_roleStrategy = config->roleStrategy;
 	m_seatMode = 0;
-	m_responseTime = 1000;
+	m_responseTime = 20;
 	m_maxAttempts = 2;
 	pushGameState(new StateWaitForEnter);
 }
@@ -176,7 +176,7 @@ bool GameGrail::waitForOne(int id, uint16_t proto_type, google::protobuf::Messag
 	return false;
 }
 
-bool GameGrail::waitForAll(uint16_t* proto_types, void** proto_ptrs, int sec, bool toResetReady)
+bool GameGrail::waitForAll(uint16_t proto_types, void** proto_ptrs, int sec, bool toResetReady)
 {
 	m_token = -1;
 	int attempts = 0;
@@ -189,7 +189,7 @@ bool GameGrail::waitForAll(uint16_t* proto_types, void** proto_ptrs, int sec, bo
 		for(int i = 0; i < m_maxPlayers; i++){
 			if(!m_ready[i]){
 				google::protobuf::Message* proto = (google::protobuf::Message*)proto_ptrs[i];
-				sendMessage(i, proto_types[i], *proto);
+				sendMessage(i, proto_types, *proto);
 			}
 		}
 		boost::system_time const timeout=boost::get_system_time()+ boost::posix_time::milliseconds(sec*1000);

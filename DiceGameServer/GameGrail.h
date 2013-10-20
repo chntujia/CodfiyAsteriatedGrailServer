@@ -172,8 +172,8 @@ public:
 	}	
 	bool waitForOne(int id, uint16_t proto_type, google::protobuf::Message& proto, int timeout, bool resetReady = true);
 	bool waitForOne(int id, uint16_t proto_type, google::protobuf::Message& proto, bool toResetReady = true) { return waitForOne(id, proto_type, proto, m_responseTime, toResetReady); }
-	bool waitForAll(uint16_t* proto_types, void** proto_ptrs, int timeout, bool toResetReady = true);
-	bool waitForAll(uint16_t* proto_types, void** proto_ptrs, bool toResetReady = true) { return waitForAll(proto_types, proto_ptrs, m_responseTime, toResetReady); }
+	bool waitForAll(uint16_t proto_type, void** proto_ptrs, int timeout, bool toResetReady = true);
+	bool waitForAll(uint16_t proto_type, void** proto_ptrs, bool toResetReady = true) { return waitForAll(proto_type, proto_ptrs, m_responseTime, toResetReady); }
 	bool tryNotify(int id, int state, int step = 0, void* reply = NULL);
 	int getReply(int id, void* &reply);
 	

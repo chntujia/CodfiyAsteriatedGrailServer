@@ -151,7 +151,7 @@ public:
 	StateSeatArrange(): GrailState(STATE_SEAT_ARRANGE), isSet(false){}
 	int handle(GameGrail* engine);
 private:
-	string msgs[MAXPLAYER];
+	GameInfo* messages[MAXPLAYER];
 	bool isSet;
 };
 

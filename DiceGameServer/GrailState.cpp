@@ -19,9 +19,7 @@ int StateSeatArrange::handle(GameGrail* engine)
 	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateSeatArrange", engine->getGameId());
 	
 	int m_maxPlayers = engine->getGameMaxPlayers();
-
-	GameInfo* messages[8];
-	uint16_t proto_types[8];
+	
 	// 直接将随机结果保存到engine中
 	GameInfo& game_info = engine->game_info;
 
@@ -62,13 +60,12 @@ int StateSeatArrange::handle(GameGrail* engine)
 
 			for(int i = 0; i < m_maxPlayers; i++){
 				messages[i] = &game_info;
-				proto_types[i] = MSG_GAME;
 			}
 			engine->resetReady();
 		}
 		isSet = true;
 	}
-	if(engine->waitForAll(proto_types, (void**)messages, 1000, false)){
+	if(engine->waitForAll(MSG_GAME, (void**)messages, false)){
 		engine->popGameState();	  
 		return engine->setStateRoleStrategy();
 	}

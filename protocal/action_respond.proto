@@ -100,5 +100,4 @@ message HitMsg {
 	optional uint32 hit = 2;
 	optional uint32 src_id = 3;
 	optional uint32 dst_id = 4;
-	optional uint32 damage = 5;
 }

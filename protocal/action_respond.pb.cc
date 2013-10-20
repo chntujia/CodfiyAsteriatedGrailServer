@@ -191,12 +191,11 @@ void protobuf_AssignDesc_action_5frespond_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(ErrorInput));
   HitMsg_descriptor_ = file->message_type(8);
-  static const int HitMsg_offsets_[5] = {
+  static const int HitMsg_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(HitMsg, cmd_id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(HitMsg, hit_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(HitMsg, src_id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(HitMsg, dst_id_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(HitMsg, damage_),
   };
   HitMsg_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -287,22 +286,21 @@ void protobuf_AddDesc_action_5frespond_2eproto() {
     ".network.CmdType\022\"\n\010commands\030\002 \003(\0132\020.net"
     "work.Command\"V\n\nErrorInput\022$\n\nerror_type"
     "\030\001 \001(\0162\020.network.CmdType\022\"\n\010commands\030\002 \003"
-    "(\0132\020.network.Command\"U\n\006HitMsg\022\016\n\006cmd_id"
+    "(\0132\020.network.Command\"E\n\006HitMsg\022\016\n\006cmd_id"
     "\030\001 \001(\r\022\013\n\003hit\030\002 \001(\r\022\016\n\006src_id\030\003 \001(\r\022\016\n\006d"
-    "st_id\030\004 \001(\r\022\016\n\006damage\030\005 \001(\r*\226\001\n\014MessageT"
-    "ype2\022\020\n\014MSG_PICK_REQ\020e\022\014\n\010MSG_PICK\020f\022\016\n\n"
-    "MSG_ACTION\020g\022\017\n\013MSG_RESPOND\020h\022\017\n\013MSG_CMD"
-    "_REQ\020j\022\023\n\017MSG_ERROR_INPUT\020k\022\013\n\007MSG_HIT\020l"
-    "\022\022\n\016MSG_TURN_BEGIN\020m*\251\001\n\017BasicActionType"
-    "\022\016\n\nACTION_BUY\020\001\022\021\n\rACTION_REFINE\020\002\022\022\n\016A"
-    "CTION_COMPOSE\020\003\022\021\n\rACTION_ATTACK\020\004\022\020\n\014AC"
-    "TION_MAGIC\020\005\022\016\n\nACTION_ANY\020\006\022\027\n\023ACTION_A"
-    "TTACK_MAGIC\020\007\022\021\n\013ACTION_NONE\020\240\215\006*{\n\020Basi"
-    "cRespondType\022\030\n\024RESPOND_REPLY_ATTACK\020\n\022\022"
-    "\n\016RESPOND_BULLET\020\013\022\020\n\014RESPOND_HEAL\020\014\022\023\n\017"
-    "RESPOND_DISCARD\020\r\022\022\n\016RESPOND_WEAKEN\020\016**\n"
-    "\007CmdType\022\016\n\nCMD_ACTION\020\001\022\017\n\013CMD_RESPOND\020"
-    "\002", 1081);
+    "st_id\030\004 \001(\r*\226\001\n\014MessageType2\022\020\n\014MSG_PICK"
+    "_REQ\020e\022\014\n\010MSG_PICK\020f\022\016\n\nMSG_ACTION\020g\022\017\n\013"
+    "MSG_RESPOND\020h\022\017\n\013MSG_CMD_REQ\020j\022\023\n\017MSG_ER"
+    "ROR_INPUT\020k\022\013\n\007MSG_HIT\020l\022\022\n\016MSG_TURN_BEG"
+    "IN\020m*\251\001\n\017BasicActionType\022\016\n\nACTION_BUY\020\001"
+    "\022\021\n\rACTION_REFINE\020\002\022\022\n\016ACTION_COMPOSE\020\003\022"
+    "\021\n\rACTION_ATTACK\020\004\022\020\n\014ACTION_MAGIC\020\005\022\016\n\n"
+    "ACTION_ANY\020\006\022\027\n\023ACTION_ATTACK_MAGIC\020\007\022\021\n"
+    "\013ACTION_NONE\020\240\215\006*{\n\020BasicRespondType\022\030\n\024"
+    "RESPOND_REPLY_ATTACK\020\n\022\022\n\016RESPOND_BULLET"
+    "\020\013\022\020\n\014RESPOND_HEAL\020\014\022\023\n\017RESPOND_DISCARD\020"
+    "\r\022\022\n\016RESPOND_WEAKEN\020\016**\n\007CmdType\022\016\n\nCMD_"
+    "ACTION\020\001\022\017\n\013CMD_RESPOND\020\002", 1065);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "action_respond.proto", &protobuf_RegisterTypes);
   CharactorPickRequest::default_instance_ = new CharactorPickRequest();
@@ -2490,7 +2488,6 @@ const int HitMsg::kCmdIdFieldNumber;
 const int HitMsg::kHitFieldNumber;
 const int HitMsg::kSrcIdFieldNumber;
 const int HitMsg::kDstIdFieldNumber;
-const int HitMsg::kDamageFieldNumber;
 #endif  // !_MSC_VER
 
 HitMsg::HitMsg()
@@ -2513,7 +2510,6 @@ void HitMsg::SharedCtor() {
   hit_ = 0u;
   src_id_ = 0u;
   dst_id_ = 0u;
-  damage_ = 0u;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -2553,7 +2549,6 @@ void HitMsg::Clear() {
     hit_ = 0u;
     src_id_ = 0u;
     dst_id_ = 0u;
-    damage_ = 0u;
   }
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
   mutable_unknown_fields()->Clear();
@@ -2624,22 +2619,6 @@ bool HitMsg::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(40)) goto parse_damage;
-        break;
-      }
-
-      // optional uint32 damage = 5;
-      case 5: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
-         parse_damage:
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
-                 input, &damage_)));
-          set_has_damage();
-        } else {
-          goto handle_uninterpreted;
-        }
         if (input->ExpectAtEnd()) return true;
         break;
       }
@@ -2682,11 +2661,6 @@ void HitMsg::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteUInt32(4, this->dst_id(), output);
   }
 
-  // optional uint32 damage = 5;
-  if (has_damage()) {
-    ::google::protobuf::internal::WireFormatLite::WriteUInt32(5, this->damage(), output);
-  }
-
   if (!unknown_fields().empty()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -2713,11 +2687,6 @@ void HitMsg::SerializeWithCachedSizes(
   // optional uint32 dst_id = 4;
   if (has_dst_id()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(4, this->dst_id(), target);
-  }
-
-  // optional uint32 damage = 5;
-  if (has_damage()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(5, this->damage(), target);
   }
 
   if (!unknown_fields().empty()) {
@@ -2759,13 +2728,6 @@ int HitMsg::ByteSize() const {
           this->dst_id());
     }
 
-    // optional uint32 damage = 5;
-    if (has_damage()) {
-      total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::UInt32Size(
-          this->damage());
-    }
-
   }
   if (!unknown_fields().empty()) {
     total_size +=
@@ -2805,9 +2767,6 @@ void HitMsg::MergeFrom(const HitMsg& from) {
     if (from.has_dst_id()) {
       set_dst_id(from.dst_id());
     }
-    if (from.has_damage()) {
-      set_damage(from.damage());
-    }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
 }
@@ -2835,7 +2794,6 @@ void HitMsg::Swap(HitMsg* other) {
     std::swap(hit_, other->hit_);
     std::swap(src_id_, other->src_id_);
     std::swap(dst_id_, other->dst_id_);
-    std::swap(damage_, other->damage_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);
