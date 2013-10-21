@@ -67,7 +67,7 @@ public:
 		}
 	}
 	int get_size() {
-		return size;
+		return iterator+1;
 	}
 private:
 	boost::random::rand48 rng;

@@ -161,6 +161,10 @@ int StateTurnBegin::handle(GameGrail* engine)
 	if(GE_SUCCESS == (ret = engine->popGameState_if(STATE_TURN_BEGIN))){
 		return engine->setStateCheckBasicEffect();
 	}
+
+	network::TurnBegin turn_begin;
+	turn_begin.set_id(m_currentPlayerID);
+	engine->sendMessage(-1, network::MSG_TURN_BEGIN, turn_begin);
 	return ret;
 }
 
@@ -355,6 +359,8 @@ int StateAttacked::handle(GameGrail* engine)
 			int card_id = 100000;
 			if (ra != RA_GIVEUP)
 				card_id = respond_attack->args(1);
+
+			engine->sendMessage(-1, MSG_RESPOND, *respond_attack);
 			switch(ra)
 			{
 				//FIXME: verify
@@ -362,8 +368,7 @@ int StateAttacked::handle(GameGrail* engine)
 				if(GE_SUCCESS == (ret=engine->getPlayerEntity(context->attack.dstID)->checkOneHandCard(card_id))){
 					// 反馈玩家行动
 					respond_attack->set_src_id(context->attack.dstID);
-					engine->sendMessage(-1, MSG_RESPOND, *respond_attack);
-
+					
 					engine->popGameState();
 					return engine->setStateReattack(temp.attack.cardID, card_id, temp.attack.srcID, temp.attack.dstID, respond_attack->dst_ids().Get(0), temp.attack.isActive, true);
 				}
@@ -372,7 +377,6 @@ int StateAttacked::handle(GameGrail* engine)
 				if(GE_SUCCESS == (ret=engine->getPlayerEntity(context->attack.dstID)->checkOneHandCard(card_id))){
 					// 反馈玩家行动
 					respond_attack->set_src_id(context->attack.dstID);
-					engine->sendMessage(-1, MSG_RESPOND, *respond_attack);
 
 					engine->popGameState();
 					engine->setStateTimeline2Miss(temp.attack.cardID, temp.attack.dstID, temp.attack.srcID, temp.attack.isActive);
@@ -889,7 +893,35 @@ int StateDiscardHand::handle(GameGrail* engine)
 
 	if(engine->waitForOne(dstID, MSG_CMD_REQ, cmd_req))
 	{
-		//TODO: discard card based on reply
+		void* reply;
+		if (GE_SUCCESS == engine->getReply(dstID, reply))
+		{
+			Respond* respond = (Respond*) reply;
+
+			int howMany_t = howMany;
+			int dstID_t = dstID;
+			HARM harm_t = harm;
+			bool isShown_t = isShown;
+			vector<int> toDiscard(howMany_t);
+			list<int> handcards = engine->getPlayerEntity(dstID_t)->getHandCards();
+			int card_id;
+
+			if (respond->args_size() != howMany)
+			{
+				return ret;
+			}
+			else
+			{
+				for (int i=0; i<howMany; ++i)
+					toDiscard[i] = respond->args(i);
+			}
+			
+			return engine->setStateMoveCardsNotToHand(dstID_t, DECK_HAND, -1, DECK_DISCARD, howMany_t, toDiscard, harm_t.srcID, harm_t.cause, isShown_t);
+		}
+		else
+		{
+			return ret;
+		}
 	}
 	else
 	{

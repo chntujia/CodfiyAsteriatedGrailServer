@@ -103,7 +103,7 @@ int GameGrail::popGameState_if(int state)
 void GameGrail::sendMessage(int id, uint16_t proto_type, google::protobuf::Message& proto)
 {
 #ifdef Debug
-	ztLoggerWrite(ZONE, e_Debug, "[Table %d] send to %d, string:\n%s \nsize: %d", m_gameId, id, proto.DebugString().c_str(), proto.ByteSize());
+	ztLoggerWrite(ZONE, e_Debug, "[Table %d] send to %d, type:%d, string:\n%s \nsize: %d", m_gameId, id, proto_type, proto.DebugString().c_str(), proto.ByteSize());
 #endif
 	UserTask *ref;
 	string msg;
