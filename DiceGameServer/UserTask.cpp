@@ -74,9 +74,9 @@ bool UserTask::cmdMsgParse(const char *pstrMsg, const uint32_t nCmdLen)
 {
 	uint16_t type;
 	::google::protobuf::Message *proto = (::google::protobuf::Message*) proto_decoder(pstrMsg, type);
-	
+	uint16_t* size = (uint16_t*)pstrMsg;
 #ifdef Debug
-	ztLoggerWrite(ZONE, e_Debug, "[%s]Receive: %s\n To proto: %s", m_userId.c_str(), pstrMsg, proto->DebugString().c_str());
+	ztLoggerWrite(ZONE, e_Debug, "[%s]Receive: %s,\n size:%d, type:%d,\n To proto: %s", m_userId.c_str(), pstrMsg, *size, type, proto->DebugString().c_str());
 #endif
 
 	GameGrailConfig*config;

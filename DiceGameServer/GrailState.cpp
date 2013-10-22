@@ -924,6 +924,7 @@ int StateDiscardHand::handle(GameGrail* engine)
 			int dstID_t = dstID;
 			HARM harm_t = harm;
 			bool isShown_t = isShown;
+			bool toDemoralize_t = toDemoralize;
 			vector<int> toDiscard(howMany_t);
 			list<int> handcards = engine->getPlayerEntity(dstID_t)->getHandCards();
 			int card_id;
@@ -940,6 +941,9 @@ int StateDiscardHand::handle(GameGrail* engine)
 
 			// TODO: 增加丢弃手牌的合法性检测
 			engine->popGameState();
+			if(toDemoralize_t){
+				engine->setStateStartLoseMorale(howMany_t, dstID_t, harm_t);
+			}
 			ret = engine->setStateMoveCardsNotToHand(dstID_t, DECK_HAND, -1, DECK_DISCARD, howMany_t, toDiscard, harm_t.srcID, harm_t.cause, isShown_t);
 
 			return ret;
