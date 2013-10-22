@@ -593,6 +593,28 @@ int StateTimeline1::handle(GameGrail* engine)
 int StateTimeline2Hit::handle(GameGrail* engine)
 {
 	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateTimeline2Hit", engine->getGameId());
+
+	int color = engine->getPlayerEntity(context->attack.dstID)->getColor();
+	TeamArea* team_area = engine->getTeamArea();
+	GameInfo update_info;
+	if (context->attack.isActive)
+	{
+		team_area->setGem(color, team_area->getGem(color)+1);
+		if (color == RED)
+			update_info.set_red_gem(team_area->getGem(color));
+		else
+			update_info.set_blue_gem(team_area->getGem(color));
+	}
+	else
+	{
+		team_area->setCrystal(color, team_area->getCrystal(color)+1);
+		if (color == RED)
+			update_info.set_red_crystal(team_area->getCrystal(color));
+		else
+			update_info.set_blue_crystal(team_area->getCrystal(color));
+	}
+	engine->sendMessage(-1, MSG_GAME, update_info);
+
 	int ret = GE_FATAL_ERROR;
 	int m_currentPlayerID = engine->getCurrentPlayerID();
 	for(int i = iterator; i< engine->getGameMaxPlayers(); i++){
@@ -915,8 +937,12 @@ int StateDiscardHand::handle(GameGrail* engine)
 				for (int i=0; i<howMany; ++i)
 					toDiscard[i] = respond->args(i);
 			}
-			
-			return engine->setStateMoveCardsNotToHand(dstID_t, DECK_HAND, -1, DECK_DISCARD, howMany_t, toDiscard, harm_t.srcID, harm_t.cause, isShown_t);
+
+			// TODO: 增加丢弃手牌的合法性检测
+			engine->popGameState();
+			ret = engine->setStateMoveCardsNotToHand(dstID_t, DECK_HAND, -1, DECK_DISCARD, howMany_t, toDiscard, harm_t.srcID, harm_t.cause, isShown_t);
+
+			return ret;
 		}
 		else
 		{
