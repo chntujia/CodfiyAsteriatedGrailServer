@@ -358,7 +358,10 @@ int StateAttacked::handle(GameGrail* engine)
 			int ra = respond_attack->args(0);
 			int card_id = 100000;
 			if (ra != RA_GIVEUP)
+			{
+				// TODO: 检测手牌是否合法
 				card_id = respond_attack->args(1);
+			}
 
 			engine->sendMessage(-1, MSG_RESPOND, *respond_attack);
 			switch(ra)
@@ -380,7 +383,7 @@ int StateAttacked::handle(GameGrail* engine)
 
 					engine->popGameState();
 					engine->setStateTimeline2Miss(temp.attack.cardID, temp.attack.dstID, temp.attack.srcID, temp.attack.isActive);
-					return engine->setStateUseCard(card_id, temp.attack.dstID, temp.attack.srcID);				
+					return engine->setStateUseCard(card_id, temp.attack.srcID, temp.attack.dstID);				
 				}
 				break;
 			case RA_GIVEUP:
@@ -845,7 +848,7 @@ int StateHandChange::handle(GameGrail* engine)
 			dst->addHandCards(howMany,cards);					
 		}
 		else{
-			dst->removeHandCards(howMany,cards);	
+			dst->removeHandCards(howMany,cards);
 		}
 		isSet = true;
 
