@@ -9,6 +9,12 @@ enum MessageType2 {
     MSG_ERROR_INPUT = 107;
 	MSG_HIT = 108;
 	MSG_TURN_BEGIN = 109;
+	MSG_USE_CARD = 110;
+	MSG_HURT = 111;
+}
+
+enum PlayerIdConst {
+	PLAYER_NONE_ID = 100000;
 }
 
 // s -> c 备选角色（31模式）
@@ -100,4 +106,21 @@ message HitMsg {
 	optional uint32 hit = 2;
 	optional uint32 src_id = 3;
 	optional uint32 dst_id = 4;
+}
+
+// s -> c 卡牌使用，仅用于攻击及魔法牌的基础效果运用
+message UseCard {
+	optional uint32 src_id = 1;
+	optional uint32 dst_id = 2;
+	optional uint32 card_id = 3;
+	optional uint32 real_card = 4;
+}
+
+// s -> c 伤害消息
+message HurtMsg {
+    optional uint32 src_id = 1;
+	optional uint32 dst_id = 2[default=100000];
+	optional uint32 hurt = 3;
+	optional uint32 cause = 4;     // 技能或操作id
+	optional uint32 type = 5;      // 伤害类型，1：魔法，2：物理，暂时不用
 }

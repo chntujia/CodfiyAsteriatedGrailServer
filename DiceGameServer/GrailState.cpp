@@ -294,21 +294,25 @@ int StateActionPhase::handle(GameGrail* engine)
 		//TODO set nextState based on reply
 		void* temp;
 		int ret;
+		int card_id;
 		if(GE_SUCCESS == (ret=engine->getReply(m_currentPlayerID, temp))){
 			Action *action = (Action*) temp;
 			switch(action->action_id())
 			{				
 			case ACTION_ATTACK:
 				//FIXME verify card type
-				int card_id = action->args().Get(0);
+				card_id = action->args().Get(0);
 				if(GE_SUCCESS == (ret=engine->getPlayerEntity(m_currentPlayerID)->checkOneHandCard(card_id))){
-					action->set_src_id(m_currentPlayerID);
-					engine->sendMessage(-1, MSG_ACTION, *action);
-
 					engine->popGameState();
 					return engine->setStateAttackAction(card_id, action->dst_ids().Get(0), action->src_id());
 				}
 				break;
+			case ACTION_MAGIC:
+				card_id = action->args().Get(0);
+				if (GE_SUCCESS == (ret=engine->getPlayerEntity(m_currentPlayerID)->checkOneHandCard(card_id))){
+					engine->popGameState();
+					return engine->setStateMagicAction();
+				}
 			}
 		}
 		return ret;
@@ -363,7 +367,6 @@ int StateAttacked::handle(GameGrail* engine)
 				card_id = respond_attack->args(1);
 			}
 
-			engine->sendMessage(-1, MSG_RESPOND, *respond_attack);
 			switch(ra)
 			{
 				//FIXME: verify
@@ -882,7 +885,7 @@ int StateBasicEffectChange::handle(GameGrail* engine)
 	if(!isSet){
 		PlayerEntity* dst = engine->getPlayerEntity(dstID);
 		if(direction == CHANGE_ADD){
-            dst->addBasicEffect(card, doerID);					
+            dst->addBasicEffect(card, doerID);
 		}
 		else{
 			dst->removeBasicEffect(card);	

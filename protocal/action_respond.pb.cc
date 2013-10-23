@@ -47,7 +47,14 @@ const ::google::protobuf::internal::GeneratedMessageReflection*
 const ::google::protobuf::Descriptor* HitMsg_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   HitMsg_reflection_ = NULL;
+const ::google::protobuf::Descriptor* UseCard_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  UseCard_reflection_ = NULL;
+const ::google::protobuf::Descriptor* HurtMsg_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  HurtMsg_reflection_ = NULL;
 const ::google::protobuf::EnumDescriptor* MessageType2_descriptor_ = NULL;
+const ::google::protobuf::EnumDescriptor* PlayerIdConst_descriptor_ = NULL;
 const ::google::protobuf::EnumDescriptor* BasicActionType_descriptor_ = NULL;
 const ::google::protobuf::EnumDescriptor* BasicRespondType_descriptor_ = NULL;
 const ::google::protobuf::EnumDescriptor* CmdType_descriptor_ = NULL;
@@ -208,10 +215,48 @@ void protobuf_AssignDesc_action_5frespond_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(HitMsg));
+  UseCard_descriptor_ = file->message_type(9);
+  static const int UseCard_offsets_[4] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UseCard, src_id_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UseCard, dst_id_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UseCard, card_id_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UseCard, real_card_),
+  };
+  UseCard_reflection_ =
+    new ::google::protobuf::internal::GeneratedMessageReflection(
+      UseCard_descriptor_,
+      UseCard::default_instance_,
+      UseCard_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UseCard, _has_bits_[0]),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UseCard, _unknown_fields_),
+      -1,
+      ::google::protobuf::DescriptorPool::generated_pool(),
+      ::google::protobuf::MessageFactory::generated_factory(),
+      sizeof(UseCard));
+  HurtMsg_descriptor_ = file->message_type(10);
+  static const int HurtMsg_offsets_[5] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(HurtMsg, src_id_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(HurtMsg, dst_id_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(HurtMsg, hurt_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(HurtMsg, cause_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(HurtMsg, type_),
+  };
+  HurtMsg_reflection_ =
+    new ::google::protobuf::internal::GeneratedMessageReflection(
+      HurtMsg_descriptor_,
+      HurtMsg::default_instance_,
+      HurtMsg_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(HurtMsg, _has_bits_[0]),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(HurtMsg, _unknown_fields_),
+      -1,
+      ::google::protobuf::DescriptorPool::generated_pool(),
+      ::google::protobuf::MessageFactory::generated_factory(),
+      sizeof(HurtMsg));
   MessageType2_descriptor_ = file->enum_type(0);
-  BasicActionType_descriptor_ = file->enum_type(1);
-  BasicRespondType_descriptor_ = file->enum_type(2);
-  CmdType_descriptor_ = file->enum_type(3);
+  PlayerIdConst_descriptor_ = file->enum_type(1);
+  BasicActionType_descriptor_ = file->enum_type(2);
+  BasicRespondType_descriptor_ = file->enum_type(3);
+  CmdType_descriptor_ = file->enum_type(4);
 }
 
 namespace {
@@ -242,6 +287,10 @@ void protobuf_RegisterTypes(const ::std::string&) {
     ErrorInput_descriptor_, &ErrorInput::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
     HitMsg_descriptor_, &HitMsg::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+    UseCard_descriptor_, &UseCard::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+    HurtMsg_descriptor_, &HurtMsg::default_instance());
 }
 
 }  // namespace
@@ -265,6 +314,10 @@ void protobuf_ShutdownFile_action_5frespond_2eproto() {
   delete ErrorInput_reflection_;
   delete HitMsg::default_instance_;
   delete HitMsg_reflection_;
+  delete UseCard::default_instance_;
+  delete UseCard_reflection_;
+  delete HurtMsg::default_instance_;
+  delete HurtMsg_reflection_;
 }
 
 void protobuf_AddDesc_action_5frespond_2eproto() {
@@ -288,19 +341,25 @@ void protobuf_AddDesc_action_5frespond_2eproto() {
     "\030\001 \001(\0162\020.network.CmdType\022\"\n\010commands\030\002 \003"
     "(\0132\020.network.Command\"E\n\006HitMsg\022\016\n\006cmd_id"
     "\030\001 \001(\r\022\013\n\003hit\030\002 \001(\r\022\016\n\006src_id\030\003 \001(\r\022\016\n\006d"
-    "st_id\030\004 \001(\r*\226\001\n\014MessageType2\022\020\n\014MSG_PICK"
-    "_REQ\020e\022\014\n\010MSG_PICK\020f\022\016\n\nMSG_ACTION\020g\022\017\n\013"
-    "MSG_RESPOND\020h\022\017\n\013MSG_CMD_REQ\020j\022\023\n\017MSG_ER"
-    "ROR_INPUT\020k\022\013\n\007MSG_HIT\020l\022\022\n\016MSG_TURN_BEG"
-    "IN\020m*\251\001\n\017BasicActionType\022\016\n\nACTION_BUY\020\001"
-    "\022\021\n\rACTION_REFINE\020\002\022\022\n\016ACTION_COMPOSE\020\003\022"
-    "\021\n\rACTION_ATTACK\020\004\022\020\n\014ACTION_MAGIC\020\005\022\016\n\n"
-    "ACTION_ANY\020\006\022\027\n\023ACTION_ATTACK_MAGIC\020\007\022\021\n"
-    "\013ACTION_NONE\020\240\215\006*{\n\020BasicRespondType\022\030\n\024"
-    "RESPOND_REPLY_ATTACK\020\n\022\022\n\016RESPOND_BULLET"
-    "\020\013\022\020\n\014RESPOND_HEAL\020\014\022\023\n\017RESPOND_DISCARD\020"
-    "\r\022\022\n\016RESPOND_WEAKEN\020\016**\n\007CmdType\022\016\n\nCMD_"
-    "ACTION\020\001\022\017\n\013CMD_RESPOND\020\002", 1065);
+    "st_id\030\004 \001(\r\"M\n\007UseCard\022\016\n\006src_id\030\001 \001(\r\022\016"
+    "\n\006dst_id\030\002 \001(\r\022\017\n\007card_id\030\003 \001(\r\022\021\n\treal_"
+    "card\030\004 \001(\r\"\\\n\007HurtMsg\022\016\n\006src_id\030\001 \001(\r\022\026\n"
+    "\006dst_id\030\002 \001(\r:\006100000\022\014\n\004hurt\030\003 \001(\r\022\r\n\005c"
+    "ause\030\004 \001(\r\022\014\n\004type\030\005 \001(\r*\266\001\n\014MessageType"
+    "2\022\020\n\014MSG_PICK_REQ\020e\022\014\n\010MSG_PICK\020f\022\016\n\nMSG"
+    "_ACTION\020g\022\017\n\013MSG_RESPOND\020h\022\017\n\013MSG_CMD_RE"
+    "Q\020j\022\023\n\017MSG_ERROR_INPUT\020k\022\013\n\007MSG_HIT\020l\022\022\n"
+    "\016MSG_TURN_BEGIN\020m\022\020\n\014MSG_USE_CARD\020n\022\014\n\010M"
+    "SG_HURT\020o*%\n\rPlayerIdConst\022\024\n\016PLAYER_NON"
+    "E_ID\020\240\215\006*\251\001\n\017BasicActionType\022\016\n\nACTION_B"
+    "UY\020\001\022\021\n\rACTION_REFINE\020\002\022\022\n\016ACTION_COMPOS"
+    "E\020\003\022\021\n\rACTION_ATTACK\020\004\022\020\n\014ACTION_MAGIC\020\005"
+    "\022\016\n\nACTION_ANY\020\006\022\027\n\023ACTION_ATTACK_MAGIC\020"
+    "\007\022\021\n\013ACTION_NONE\020\240\215\006*{\n\020BasicRespondType"
+    "\022\030\n\024RESPOND_REPLY_ATTACK\020\n\022\022\n\016RESPOND_BU"
+    "LLET\020\013\022\020\n\014RESPOND_HEAL\020\014\022\023\n\017RESPOND_DISC"
+    "ARD\020\r\022\022\n\016RESPOND_WEAKEN\020\016**\n\007CmdType\022\016\n\n"
+    "CMD_ACTION\020\001\022\017\n\013CMD_RESPOND\020\002", 1309);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "action_respond.proto", &protobuf_RegisterTypes);
   CharactorPickRequest::default_instance_ = new CharactorPickRequest();
@@ -312,6 +371,8 @@ void protobuf_AddDesc_action_5frespond_2eproto() {
   CommandRequest::default_instance_ = new CommandRequest();
   ErrorInput::default_instance_ = new ErrorInput();
   HitMsg::default_instance_ = new HitMsg();
+  UseCard::default_instance_ = new UseCard();
+  HurtMsg::default_instance_ = new HurtMsg();
   CharactorPickRequest::default_instance_->InitAsDefaultInstance();
   Pick::default_instance_->InitAsDefaultInstance();
   TurnBegin::default_instance_->InitAsDefaultInstance();
@@ -321,6 +382,8 @@ void protobuf_AddDesc_action_5frespond_2eproto() {
   CommandRequest::default_instance_->InitAsDefaultInstance();
   ErrorInput::default_instance_->InitAsDefaultInstance();
   HitMsg::default_instance_->InitAsDefaultInstance();
+  UseCard::default_instance_->InitAsDefaultInstance();
+  HurtMsg::default_instance_->InitAsDefaultInstance();
   ::google::protobuf::internal::OnShutdown(&protobuf_ShutdownFile_action_5frespond_2eproto);
 }
 
@@ -344,6 +407,21 @@ bool MessageType2_IsValid(int value) {
     case 107:
     case 108:
     case 109:
+    case 110:
+    case 111:
+      return true;
+    default:
+      return false;
+  }
+}
+
+const ::google::protobuf::EnumDescriptor* PlayerIdConst_descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return PlayerIdConst_descriptor_;
+}
+bool PlayerIdConst_IsValid(int value) {
+  switch(value) {
+    case 100000:
       return true;
     default:
       return false;
@@ -2805,6 +2883,702 @@ void HitMsg::Swap(HitMsg* other) {
   ::google::protobuf::Metadata metadata;
   metadata.descriptor = HitMsg_descriptor_;
   metadata.reflection = HitMsg_reflection_;
+  return metadata;
+}
+
+
+// ===================================================================
+
+#ifndef _MSC_VER
+const int UseCard::kSrcIdFieldNumber;
+const int UseCard::kDstIdFieldNumber;
+const int UseCard::kCardIdFieldNumber;
+const int UseCard::kRealCardFieldNumber;
+#endif  // !_MSC_VER
+
+UseCard::UseCard()
+  : ::google::protobuf::Message() {
+  SharedCtor();
+}
+
+void UseCard::InitAsDefaultInstance() {
+}
+
+UseCard::UseCard(const UseCard& from)
+  : ::google::protobuf::Message() {
+  SharedCtor();
+  MergeFrom(from);
+}
+
+void UseCard::SharedCtor() {
+  _cached_size_ = 0;
+  src_id_ = 0u;
+  dst_id_ = 0u;
+  card_id_ = 0u;
+  real_card_ = 0u;
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+}
+
+UseCard::~UseCard() {
+  SharedDtor();
+}
+
+void UseCard::SharedDtor() {
+  if (this != default_instance_) {
+  }
+}
+
+void UseCard::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* UseCard::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return UseCard_descriptor_;
+}
+
+const UseCard& UseCard::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_action_5frespond_2eproto();
+  return *default_instance_;
+}
+
+UseCard* UseCard::default_instance_ = NULL;
+
+UseCard* UseCard::New() const {
+  return new UseCard;
+}
+
+void UseCard::Clear() {
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    src_id_ = 0u;
+    dst_id_ = 0u;
+    card_id_ = 0u;
+    real_card_ = 0u;
+  }
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  mutable_unknown_fields()->Clear();
+}
+
+bool UseCard::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
+  ::google::protobuf::uint32 tag;
+  while ((tag = input->ReadTag()) != 0) {
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // optional uint32 src_id = 1;
+      case 1: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &src_id_)));
+          set_has_src_id();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(16)) goto parse_dst_id;
+        break;
+      }
+
+      // optional uint32 dst_id = 2;
+      case 2: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+         parse_dst_id:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &dst_id_)));
+          set_has_dst_id();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(24)) goto parse_card_id;
+        break;
+      }
+
+      // optional uint32 card_id = 3;
+      case 3: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+         parse_card_id:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &card_id_)));
+          set_has_card_id();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(32)) goto parse_real_card;
+        break;
+      }
+
+      // optional uint32 real_card = 4;
+      case 4: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+         parse_real_card:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &real_card_)));
+          set_has_real_card();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectAtEnd()) return true;
+        break;
+      }
+
+      default: {
+      handle_uninterpreted:
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          return true;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+  return true;
+#undef DO_
+}
+
+void UseCard::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // optional uint32 src_id = 1;
+  if (has_src_id()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(1, this->src_id(), output);
+  }
+
+  // optional uint32 dst_id = 2;
+  if (has_dst_id()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(2, this->dst_id(), output);
+  }
+
+  // optional uint32 card_id = 3;
+  if (has_card_id()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(3, this->card_id(), output);
+  }
+
+  // optional uint32 real_card = 4;
+  if (has_real_card()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(4, this->real_card(), output);
+  }
+
+  if (!unknown_fields().empty()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+}
+
+::google::protobuf::uint8* UseCard::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
+  // optional uint32 src_id = 1;
+  if (has_src_id()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(1, this->src_id(), target);
+  }
+
+  // optional uint32 dst_id = 2;
+  if (has_dst_id()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(2, this->dst_id(), target);
+  }
+
+  // optional uint32 card_id = 3;
+  if (has_card_id()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(3, this->card_id(), target);
+  }
+
+  // optional uint32 real_card = 4;
+  if (has_real_card()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(4, this->real_card(), target);
+  }
+
+  if (!unknown_fields().empty()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  return target;
+}
+
+int UseCard::ByteSize() const {
+  int total_size = 0;
+
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    // optional uint32 src_id = 1;
+    if (has_src_id()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->src_id());
+    }
+
+    // optional uint32 dst_id = 2;
+    if (has_dst_id()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->dst_id());
+    }
+
+    // optional uint32 card_id = 3;
+    if (has_card_id()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->card_id());
+    }
+
+    // optional uint32 real_card = 4;
+    if (has_real_card()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->real_card());
+    }
+
+  }
+  if (!unknown_fields().empty()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void UseCard::MergeFrom(const ::google::protobuf::Message& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  const UseCard* source =
+    ::google::protobuf::internal::dynamic_cast_if_available<const UseCard*>(
+      &from);
+  if (source == NULL) {
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+    MergeFrom(*source);
+  }
+}
+
+void UseCard::MergeFrom(const UseCard& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (from.has_src_id()) {
+      set_src_id(from.src_id());
+    }
+    if (from.has_dst_id()) {
+      set_dst_id(from.dst_id());
+    }
+    if (from.has_card_id()) {
+      set_card_id(from.card_id());
+    }
+    if (from.has_real_card()) {
+      set_real_card(from.real_card());
+    }
+  }
+  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+}
+
+void UseCard::CopyFrom(const ::google::protobuf::Message& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void UseCard::CopyFrom(const UseCard& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool UseCard::IsInitialized() const {
+
+  return true;
+}
+
+void UseCard::Swap(UseCard* other) {
+  if (other != this) {
+    std::swap(src_id_, other->src_id_);
+    std::swap(dst_id_, other->dst_id_);
+    std::swap(card_id_, other->card_id_);
+    std::swap(real_card_, other->real_card_);
+    std::swap(_has_bits_[0], other->_has_bits_[0]);
+    _unknown_fields_.Swap(&other->_unknown_fields_);
+    std::swap(_cached_size_, other->_cached_size_);
+  }
+}
+
+::google::protobuf::Metadata UseCard::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = UseCard_descriptor_;
+  metadata.reflection = UseCard_reflection_;
+  return metadata;
+}
+
+
+// ===================================================================
+
+#ifndef _MSC_VER
+const int HurtMsg::kSrcIdFieldNumber;
+const int HurtMsg::kDstIdFieldNumber;
+const int HurtMsg::kHurtFieldNumber;
+const int HurtMsg::kCauseFieldNumber;
+const int HurtMsg::kTypeFieldNumber;
+#endif  // !_MSC_VER
+
+HurtMsg::HurtMsg()
+  : ::google::protobuf::Message() {
+  SharedCtor();
+}
+
+void HurtMsg::InitAsDefaultInstance() {
+}
+
+HurtMsg::HurtMsg(const HurtMsg& from)
+  : ::google::protobuf::Message() {
+  SharedCtor();
+  MergeFrom(from);
+}
+
+void HurtMsg::SharedCtor() {
+  _cached_size_ = 0;
+  src_id_ = 0u;
+  dst_id_ = 100000u;
+  hurt_ = 0u;
+  cause_ = 0u;
+  type_ = 0u;
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+}
+
+HurtMsg::~HurtMsg() {
+  SharedDtor();
+}
+
+void HurtMsg::SharedDtor() {
+  if (this != default_instance_) {
+  }
+}
+
+void HurtMsg::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* HurtMsg::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return HurtMsg_descriptor_;
+}
+
+const HurtMsg& HurtMsg::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_action_5frespond_2eproto();
+  return *default_instance_;
+}
+
+HurtMsg* HurtMsg::default_instance_ = NULL;
+
+HurtMsg* HurtMsg::New() const {
+  return new HurtMsg;
+}
+
+void HurtMsg::Clear() {
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    src_id_ = 0u;
+    dst_id_ = 100000u;
+    hurt_ = 0u;
+    cause_ = 0u;
+    type_ = 0u;
+  }
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  mutable_unknown_fields()->Clear();
+}
+
+bool HurtMsg::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
+  ::google::protobuf::uint32 tag;
+  while ((tag = input->ReadTag()) != 0) {
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // optional uint32 src_id = 1;
+      case 1: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &src_id_)));
+          set_has_src_id();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(16)) goto parse_dst_id;
+        break;
+      }
+
+      // optional uint32 dst_id = 2 [default = 100000];
+      case 2: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+         parse_dst_id:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &dst_id_)));
+          set_has_dst_id();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(24)) goto parse_hurt;
+        break;
+      }
+
+      // optional uint32 hurt = 3;
+      case 3: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+         parse_hurt:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &hurt_)));
+          set_has_hurt();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(32)) goto parse_cause;
+        break;
+      }
+
+      // optional uint32 cause = 4;
+      case 4: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+         parse_cause:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &cause_)));
+          set_has_cause();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(40)) goto parse_type;
+        break;
+      }
+
+      // optional uint32 type = 5;
+      case 5: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+         parse_type:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &type_)));
+          set_has_type();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectAtEnd()) return true;
+        break;
+      }
+
+      default: {
+      handle_uninterpreted:
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          return true;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+  return true;
+#undef DO_
+}
+
+void HurtMsg::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // optional uint32 src_id = 1;
+  if (has_src_id()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(1, this->src_id(), output);
+  }
+
+  // optional uint32 dst_id = 2 [default = 100000];
+  if (has_dst_id()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(2, this->dst_id(), output);
+  }
+
+  // optional uint32 hurt = 3;
+  if (has_hurt()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(3, this->hurt(), output);
+  }
+
+  // optional uint32 cause = 4;
+  if (has_cause()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(4, this->cause(), output);
+  }
+
+  // optional uint32 type = 5;
+  if (has_type()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(5, this->type(), output);
+  }
+
+  if (!unknown_fields().empty()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+}
+
+::google::protobuf::uint8* HurtMsg::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
+  // optional uint32 src_id = 1;
+  if (has_src_id()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(1, this->src_id(), target);
+  }
+
+  // optional uint32 dst_id = 2 [default = 100000];
+  if (has_dst_id()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(2, this->dst_id(), target);
+  }
+
+  // optional uint32 hurt = 3;
+  if (has_hurt()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(3, this->hurt(), target);
+  }
+
+  // optional uint32 cause = 4;
+  if (has_cause()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(4, this->cause(), target);
+  }
+
+  // optional uint32 type = 5;
+  if (has_type()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(5, this->type(), target);
+  }
+
+  if (!unknown_fields().empty()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  return target;
+}
+
+int HurtMsg::ByteSize() const {
+  int total_size = 0;
+
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    // optional uint32 src_id = 1;
+    if (has_src_id()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->src_id());
+    }
+
+    // optional uint32 dst_id = 2 [default = 100000];
+    if (has_dst_id()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->dst_id());
+    }
+
+    // optional uint32 hurt = 3;
+    if (has_hurt()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->hurt());
+    }
+
+    // optional uint32 cause = 4;
+    if (has_cause()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->cause());
+    }
+
+    // optional uint32 type = 5;
+    if (has_type()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->type());
+    }
+
+  }
+  if (!unknown_fields().empty()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void HurtMsg::MergeFrom(const ::google::protobuf::Message& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  const HurtMsg* source =
+    ::google::protobuf::internal::dynamic_cast_if_available<const HurtMsg*>(
+      &from);
+  if (source == NULL) {
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+    MergeFrom(*source);
+  }
+}
+
+void HurtMsg::MergeFrom(const HurtMsg& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (from.has_src_id()) {
+      set_src_id(from.src_id());
+    }
+    if (from.has_dst_id()) {
+      set_dst_id(from.dst_id());
+    }
+    if (from.has_hurt()) {
+      set_hurt(from.hurt());
+    }
+    if (from.has_cause()) {
+      set_cause(from.cause());
+    }
+    if (from.has_type()) {
+      set_type(from.type());
+    }
+  }
+  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+}
+
+void HurtMsg::CopyFrom(const ::google::protobuf::Message& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void HurtMsg::CopyFrom(const HurtMsg& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool HurtMsg::IsInitialized() const {
+
+  return true;
+}
+
+void HurtMsg::Swap(HurtMsg* other) {
+  if (other != this) {
+    std::swap(src_id_, other->src_id_);
+    std::swap(dst_id_, other->dst_id_);
+    std::swap(hurt_, other->hurt_);
+    std::swap(cause_, other->cause_);
+    std::swap(type_, other->type_);
+    std::swap(_has_bits_[0], other->_has_bits_[0]);
+    _unknown_fields_.Swap(&other->_unknown_fields_);
+    std::swap(_cached_size_, other->_cached_size_);
+  }
+}
+
+::google::protobuf::Metadata HurtMsg::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = HurtMsg_descriptor_;
+  metadata.reflection = HurtMsg_reflection_;
   return metadata;
 }
 

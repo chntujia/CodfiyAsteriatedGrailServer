@@ -386,6 +386,10 @@ int GameGrail::setStateHandOverLoad(int dstID, HARM harm)
 int GameGrail::setStateUseCard(int cardID, int dstID, int srcID, bool realCard)
 {
 	if(realCard){
+		network::UseCard use_card;
+		Coder::useCardNotice(cardID, dstID, srcID, use_card, realCard);
+		sendMessage(-1, MSG_USE_CARD, use_card);
+
 		return setStateMoveOneCardNotToHand(srcID, DECK_HAND, -1, DECK_DISCARD, cardID, srcID, CAUSE_USE, true);
 	}
 	else{

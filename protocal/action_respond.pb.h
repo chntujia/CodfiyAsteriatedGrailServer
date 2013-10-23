@@ -43,6 +43,8 @@ class Command;
 class CommandRequest;
 class ErrorInput;
 class HitMsg;
+class UseCard;
+class HurtMsg;
 
 enum MessageType2 {
   MSG_PICK_REQ = 101,
@@ -52,11 +54,13 @@ enum MessageType2 {
   MSG_CMD_REQ = 106,
   MSG_ERROR_INPUT = 107,
   MSG_HIT = 108,
-  MSG_TURN_BEGIN = 109
+  MSG_TURN_BEGIN = 109,
+  MSG_USE_CARD = 110,
+  MSG_HURT = 111
 };
 bool MessageType2_IsValid(int value);
 const MessageType2 MessageType2_MIN = MSG_PICK_REQ;
-const MessageType2 MessageType2_MAX = MSG_TURN_BEGIN;
+const MessageType2 MessageType2_MAX = MSG_HURT;
 const int MessageType2_ARRAYSIZE = MessageType2_MAX + 1;
 
 const ::google::protobuf::EnumDescriptor* MessageType2_descriptor();
@@ -68,6 +72,24 @@ inline bool MessageType2_Parse(
     const ::std::string& name, MessageType2* value) {
   return ::google::protobuf::internal::ParseNamedEnum<MessageType2>(
     MessageType2_descriptor(), name, value);
+}
+enum PlayerIdConst {
+  PLAYER_NONE_ID = 100000
+};
+bool PlayerIdConst_IsValid(int value);
+const PlayerIdConst PlayerIdConst_MIN = PLAYER_NONE_ID;
+const PlayerIdConst PlayerIdConst_MAX = PLAYER_NONE_ID;
+const int PlayerIdConst_ARRAYSIZE = PlayerIdConst_MAX + 1;
+
+const ::google::protobuf::EnumDescriptor* PlayerIdConst_descriptor();
+inline const ::std::string& PlayerIdConst_Name(PlayerIdConst value) {
+  return ::google::protobuf::internal::NameOfEnum(
+    PlayerIdConst_descriptor(), value);
+}
+inline bool PlayerIdConst_Parse(
+    const ::std::string& name, PlayerIdConst* value) {
+  return ::google::protobuf::internal::ParseNamedEnum<PlayerIdConst>(
+    PlayerIdConst_descriptor(), name, value);
 }
 enum BasicActionType {
   ACTION_BUY = 1,
@@ -1017,6 +1039,240 @@ class HitMsg : public ::google::protobuf::Message {
   void InitAsDefaultInstance();
   static HitMsg* default_instance_;
 };
+// -------------------------------------------------------------------
+
+class UseCard : public ::google::protobuf::Message {
+ public:
+  UseCard();
+  virtual ~UseCard();
+
+  UseCard(const UseCard& from);
+
+  inline UseCard& operator=(const UseCard& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const UseCard& default_instance();
+
+  void Swap(UseCard* other);
+
+  // implements Message ----------------------------------------------
+
+  UseCard* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const UseCard& from);
+  void MergeFrom(const UseCard& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional uint32 src_id = 1;
+  inline bool has_src_id() const;
+  inline void clear_src_id();
+  static const int kSrcIdFieldNumber = 1;
+  inline ::google::protobuf::uint32 src_id() const;
+  inline void set_src_id(::google::protobuf::uint32 value);
+
+  // optional uint32 dst_id = 2;
+  inline bool has_dst_id() const;
+  inline void clear_dst_id();
+  static const int kDstIdFieldNumber = 2;
+  inline ::google::protobuf::uint32 dst_id() const;
+  inline void set_dst_id(::google::protobuf::uint32 value);
+
+  // optional uint32 card_id = 3;
+  inline bool has_card_id() const;
+  inline void clear_card_id();
+  static const int kCardIdFieldNumber = 3;
+  inline ::google::protobuf::uint32 card_id() const;
+  inline void set_card_id(::google::protobuf::uint32 value);
+
+  // optional uint32 real_card = 4;
+  inline bool has_real_card() const;
+  inline void clear_real_card();
+  static const int kRealCardFieldNumber = 4;
+  inline ::google::protobuf::uint32 real_card() const;
+  inline void set_real_card(::google::protobuf::uint32 value);
+
+  // @@protoc_insertion_point(class_scope:network.UseCard)
+ private:
+  inline void set_has_src_id();
+  inline void clear_has_src_id();
+  inline void set_has_dst_id();
+  inline void clear_has_dst_id();
+  inline void set_has_card_id();
+  inline void clear_has_card_id();
+  inline void set_has_real_card();
+  inline void clear_has_real_card();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::uint32 src_id_;
+  ::google::protobuf::uint32 dst_id_;
+  ::google::protobuf::uint32 card_id_;
+  ::google::protobuf::uint32 real_card_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(4 + 31) / 32];
+
+  friend void  protobuf_AddDesc_action_5frespond_2eproto();
+  friend void protobuf_AssignDesc_action_5frespond_2eproto();
+  friend void protobuf_ShutdownFile_action_5frespond_2eproto();
+
+  void InitAsDefaultInstance();
+  static UseCard* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class HurtMsg : public ::google::protobuf::Message {
+ public:
+  HurtMsg();
+  virtual ~HurtMsg();
+
+  HurtMsg(const HurtMsg& from);
+
+  inline HurtMsg& operator=(const HurtMsg& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const HurtMsg& default_instance();
+
+  void Swap(HurtMsg* other);
+
+  // implements Message ----------------------------------------------
+
+  HurtMsg* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const HurtMsg& from);
+  void MergeFrom(const HurtMsg& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional uint32 src_id = 1;
+  inline bool has_src_id() const;
+  inline void clear_src_id();
+  static const int kSrcIdFieldNumber = 1;
+  inline ::google::protobuf::uint32 src_id() const;
+  inline void set_src_id(::google::protobuf::uint32 value);
+
+  // optional uint32 dst_id = 2 [default = 100000];
+  inline bool has_dst_id() const;
+  inline void clear_dst_id();
+  static const int kDstIdFieldNumber = 2;
+  inline ::google::protobuf::uint32 dst_id() const;
+  inline void set_dst_id(::google::protobuf::uint32 value);
+
+  // optional uint32 hurt = 3;
+  inline bool has_hurt() const;
+  inline void clear_hurt();
+  static const int kHurtFieldNumber = 3;
+  inline ::google::protobuf::uint32 hurt() const;
+  inline void set_hurt(::google::protobuf::uint32 value);
+
+  // optional uint32 cause = 4;
+  inline bool has_cause() const;
+  inline void clear_cause();
+  static const int kCauseFieldNumber = 4;
+  inline ::google::protobuf::uint32 cause() const;
+  inline void set_cause(::google::protobuf::uint32 value);
+
+  // optional uint32 type = 5;
+  inline bool has_type() const;
+  inline void clear_type();
+  static const int kTypeFieldNumber = 5;
+  inline ::google::protobuf::uint32 type() const;
+  inline void set_type(::google::protobuf::uint32 value);
+
+  // @@protoc_insertion_point(class_scope:network.HurtMsg)
+ private:
+  inline void set_has_src_id();
+  inline void clear_has_src_id();
+  inline void set_has_dst_id();
+  inline void clear_has_dst_id();
+  inline void set_has_hurt();
+  inline void clear_has_hurt();
+  inline void set_has_cause();
+  inline void clear_has_cause();
+  inline void set_has_type();
+  inline void clear_has_type();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::uint32 src_id_;
+  ::google::protobuf::uint32 dst_id_;
+  ::google::protobuf::uint32 hurt_;
+  ::google::protobuf::uint32 cause_;
+  ::google::protobuf::uint32 type_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(5 + 31) / 32];
+
+  friend void  protobuf_AddDesc_action_5frespond_2eproto();
+  friend void protobuf_AssignDesc_action_5frespond_2eproto();
+  friend void protobuf_ShutdownFile_action_5frespond_2eproto();
+
+  void InitAsDefaultInstance();
+  static HurtMsg* default_instance_;
+};
 // ===================================================================
 
 
@@ -1544,6 +1800,212 @@ inline void HitMsg::set_dst_id(::google::protobuf::uint32 value) {
   dst_id_ = value;
 }
 
+// -------------------------------------------------------------------
+
+// UseCard
+
+// optional uint32 src_id = 1;
+inline bool UseCard::has_src_id() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void UseCard::set_has_src_id() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void UseCard::clear_has_src_id() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void UseCard::clear_src_id() {
+  src_id_ = 0u;
+  clear_has_src_id();
+}
+inline ::google::protobuf::uint32 UseCard::src_id() const {
+  return src_id_;
+}
+inline void UseCard::set_src_id(::google::protobuf::uint32 value) {
+  set_has_src_id();
+  src_id_ = value;
+}
+
+// optional uint32 dst_id = 2;
+inline bool UseCard::has_dst_id() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void UseCard::set_has_dst_id() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void UseCard::clear_has_dst_id() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void UseCard::clear_dst_id() {
+  dst_id_ = 0u;
+  clear_has_dst_id();
+}
+inline ::google::protobuf::uint32 UseCard::dst_id() const {
+  return dst_id_;
+}
+inline void UseCard::set_dst_id(::google::protobuf::uint32 value) {
+  set_has_dst_id();
+  dst_id_ = value;
+}
+
+// optional uint32 card_id = 3;
+inline bool UseCard::has_card_id() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void UseCard::set_has_card_id() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void UseCard::clear_has_card_id() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void UseCard::clear_card_id() {
+  card_id_ = 0u;
+  clear_has_card_id();
+}
+inline ::google::protobuf::uint32 UseCard::card_id() const {
+  return card_id_;
+}
+inline void UseCard::set_card_id(::google::protobuf::uint32 value) {
+  set_has_card_id();
+  card_id_ = value;
+}
+
+// optional uint32 real_card = 4;
+inline bool UseCard::has_real_card() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void UseCard::set_has_real_card() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void UseCard::clear_has_real_card() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void UseCard::clear_real_card() {
+  real_card_ = 0u;
+  clear_has_real_card();
+}
+inline ::google::protobuf::uint32 UseCard::real_card() const {
+  return real_card_;
+}
+inline void UseCard::set_real_card(::google::protobuf::uint32 value) {
+  set_has_real_card();
+  real_card_ = value;
+}
+
+// -------------------------------------------------------------------
+
+// HurtMsg
+
+// optional uint32 src_id = 1;
+inline bool HurtMsg::has_src_id() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void HurtMsg::set_has_src_id() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void HurtMsg::clear_has_src_id() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void HurtMsg::clear_src_id() {
+  src_id_ = 0u;
+  clear_has_src_id();
+}
+inline ::google::protobuf::uint32 HurtMsg::src_id() const {
+  return src_id_;
+}
+inline void HurtMsg::set_src_id(::google::protobuf::uint32 value) {
+  set_has_src_id();
+  src_id_ = value;
+}
+
+// optional uint32 dst_id = 2 [default = 100000];
+inline bool HurtMsg::has_dst_id() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void HurtMsg::set_has_dst_id() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void HurtMsg::clear_has_dst_id() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void HurtMsg::clear_dst_id() {
+  dst_id_ = 100000u;
+  clear_has_dst_id();
+}
+inline ::google::protobuf::uint32 HurtMsg::dst_id() const {
+  return dst_id_;
+}
+inline void HurtMsg::set_dst_id(::google::protobuf::uint32 value) {
+  set_has_dst_id();
+  dst_id_ = value;
+}
+
+// optional uint32 hurt = 3;
+inline bool HurtMsg::has_hurt() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void HurtMsg::set_has_hurt() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void HurtMsg::clear_has_hurt() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void HurtMsg::clear_hurt() {
+  hurt_ = 0u;
+  clear_has_hurt();
+}
+inline ::google::protobuf::uint32 HurtMsg::hurt() const {
+  return hurt_;
+}
+inline void HurtMsg::set_hurt(::google::protobuf::uint32 value) {
+  set_has_hurt();
+  hurt_ = value;
+}
+
+// optional uint32 cause = 4;
+inline bool HurtMsg::has_cause() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void HurtMsg::set_has_cause() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void HurtMsg::clear_has_cause() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void HurtMsg::clear_cause() {
+  cause_ = 0u;
+  clear_has_cause();
+}
+inline ::google::protobuf::uint32 HurtMsg::cause() const {
+  return cause_;
+}
+inline void HurtMsg::set_cause(::google::protobuf::uint32 value) {
+  set_has_cause();
+  cause_ = value;
+}
+
+// optional uint32 type = 5;
+inline bool HurtMsg::has_type() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void HurtMsg::set_has_type() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void HurtMsg::clear_has_type() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void HurtMsg::clear_type() {
+  type_ = 0u;
+  clear_has_type();
+}
+inline ::google::protobuf::uint32 HurtMsg::type() const {
+  return type_;
+}
+inline void HurtMsg::set_type(::google::protobuf::uint32 value) {
+  set_has_type();
+  type_ = value;
+}
+
 
 // @@protoc_insertion_point(namespace_scope)
 
@@ -1556,6 +2018,10 @@ namespace protobuf {
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::network::MessageType2>() {
   return ::network::MessageType2_descriptor();
+}
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::network::PlayerIdConst>() {
+  return ::network::PlayerIdConst_descriptor();
 }
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::network::BasicActionType>() {

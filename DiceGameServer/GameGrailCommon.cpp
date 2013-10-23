@@ -45,11 +45,6 @@ string combMessage(string item1,string item2, string item3, string item4, string
 	return message;
 }
 
-string Coder::useCardNotice(int cardID, int dstID, int srcID,int realCard)
-{
-    return combMessage("28",TOQSTR(cardID),TOQSTR(dstID),TOQSTR(srcID),TOQSTR(realCard));
-}
-
 string Coder::getCardNotice(int sum, vector < int > cards, int dstID, bool show)
 {
     string cardsID;

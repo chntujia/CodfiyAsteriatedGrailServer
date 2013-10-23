@@ -279,7 +279,13 @@ public:
 		cmd->add_args(hurtSum);
 		cmd->add_args(nextID);
 	}
-    static string useCardNotice(int cardID, int dstID, int srcID, int realCard=1);
+    static void useCardNotice(int cardID, int dstID, int srcID, UseCard& use_card, int realCard=1)
+	{
+		use_card.set_dst_id(dstID);
+		use_card.set_src_id(srcID);
+		use_card.set_card_id(cardID);
+		use_card.set_real_card(realCard);
+	}
 	static void askForAction(int playerID,int actionTypeAllowed,bool canGiveUp, CommandRequest& cmd_req)
 	{
 		cmd_req.set_cmd_type(CMD_ACTION);

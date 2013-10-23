@@ -131,13 +131,14 @@ bool UserTask::cmdMsgParse(const char *pstrMsg, const uint32_t nCmdLen)
 	case MSG_ACTION:
 		action = (Action*)proto;
 		actionFlag = action->action_id();
-		if(actionFlag == ACTION_ATTACK){
-			// 攻击行动
+		//if(actionFlag == ACTION_ATTACK)
+		{
+			// 行动
 			tryNotify(m_playerId, STATE_ACTION_PHASE, 0, action);
 		}
-		else {
-			delete proto;
-		}
+		//else {
+		//	delete proto;
+		//}
 		break;
 		//attacked
 	case MSG_RESPOND:
@@ -146,6 +147,8 @@ bool UserTask::cmdMsgParse(const char *pstrMsg, const uint32_t nCmdLen)
 			tryNotify(m_playerId, STATE_ATTACKED, 0, respond);
 		else if (respond->respond_id() == RESPOND_DISCARD)
 			tryNotify(m_playerId, STATE_DISCARD_HAND, 0, respond);
+		else if (respond->respond_id() == RESPOND_BULLET)
+			tryNotify(m_playerId, STATE_MISSILED, 0, respond);
 		else {
 			delete proto;
 		}
