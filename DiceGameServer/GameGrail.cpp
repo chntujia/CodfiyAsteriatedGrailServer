@@ -383,14 +383,14 @@ int GameGrail::setStateHandOverLoad(int dstID, HARM harm)
 	return GE_SUCCESS;
 }
 
-int GameGrail::setStateUseCard(int cardID, int dstID, int srcID, bool realCard)
+int GameGrail::setStateUseCard(int cardID, int dstID, int srcID, bool stay, bool realCard)
 {
 	if(realCard){
 		network::UseCard use_card;
 		Coder::useCardNotice(cardID, dstID, srcID, use_card, realCard);
 		sendMessage(-1, MSG_USE_CARD, use_card);
-
-		return setStateMoveOneCardNotToHand(srcID, DECK_HAND, -1, DECK_DISCARD, cardID, srcID, CAUSE_USE, true);
+		return stay ? setStateMoveOneCardNotToHand(srcID, DECK_HAND, dstID, DECK_BASIC_EFFECT, cardID, srcID, CAUSE_USE, true)
+			        : setStateMoveOneCardNotToHand(srcID, DECK_HAND, -1, DECK_DISCARD, cardID, srcID, CAUSE_USE, true);			        
 	}
 	else{
 		return GE_SUCCESS;
@@ -440,15 +440,6 @@ int GameGrail::setStateAttackAction(int cardID, int dstID, int srcID, bool realC
 	setStateTimeline1(cardID, dstID, srcID, true);
 	pushGameState(new StateBeforeAttack(cardID, dstID, srcID));	
 	return setStateUseCard(cardID, dstID, srcID, realCard);
-}
-
-int GameGrail::setStateMagicAction()
-{/*
-	pushGameState(new StateAfterMagic(srcID));	
-
-	pushGameState(new StateBeforeMagic(srcID));
-	*/
-	return 0;
 }
 
 int GameGrail::setStateReattack(int attackFromCard, int attackToCard, int attackFrom, int attacked , int attackTo, bool isActive, bool realCard)
@@ -673,6 +664,10 @@ int GameGrail::setStateCurrentPlayer(int playerID)
 	}
 	m_currentPlayerID = playerID;
 	player->clearAdditionalAction();
+
+	network::TurnBegin turn_begin;
+	turn_begin.set_id(m_currentPlayerID);
+	sendMessage(-1, network::MSG_TURN_BEGIN, turn_begin);
 	pushGameState(new StateBeforeTurnBegin);
 	return GE_SUCCESS;
 }

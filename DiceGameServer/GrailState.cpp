@@ -161,10 +161,6 @@ int StateTurnBegin::handle(GameGrail* engine)
 	if(GE_SUCCESS == (ret = engine->popGameState_if(STATE_TURN_BEGIN))){
 		return engine->setStateCheckBasicEffect();
 	}
-
-	network::TurnBegin turn_begin;
-	turn_begin.set_id(m_currentPlayerID);
-	engine->sendMessage(-1, network::MSG_TURN_BEGIN, turn_begin);
 	return ret;
 }
 
@@ -297,22 +293,32 @@ int StateActionPhase::handle(GameGrail* engine)
 		int card_id;
 		if(GE_SUCCESS == (ret=engine->getReply(m_currentPlayerID, temp))){
 			Action *action = (Action*) temp;
+			PlayerEntity *dst;
 			switch(action->action_id())
 			{				
 			case ACTION_ATTACK:
 				//FIXME verify card type
 				card_id = action->args().Get(0);
-				if(GE_SUCCESS == (ret=engine->getPlayerEntity(m_currentPlayerID)->checkOneHandCard(card_id))){
+				if(GE_SUCCESS == (ret=engine->getPlayerEntity(m_currentPlayerID)->v_attack(card_id, action->dst_ids().Get(0)))){
 					engine->popGameState();
 					return engine->setStateAttackAction(card_id, action->dst_ids().Get(0), action->src_id());
 				}
 				break;
 			case ACTION_MAGIC:
 				card_id = action->args().Get(0);
-				if (GE_SUCCESS == (ret=engine->getPlayerEntity(m_currentPlayerID)->checkOneHandCard(card_id))){
-					engine->popGameState();
-					return engine->setStateMagicAction();
+				engine->getPlayerEntity(action->dst_ids(0));
+				switch(getCardByID(card_id)->getName())
+				{
+				case NAME_POISON:
+					if (GE_SUCCESS == (ret=engine->getPlayerEntity(m_currentPlayerID)->checkOneHandCard(card_id))){
+						engine->popGameState();
+						engine->pushGameState(new StateAfterMagic(m_currentPlayerID));
+						engine->setStateUseCard(card_id, action->dst_ids(0), m_currentPlayerID, true);
+						engine->pushGameState(new StateBeforeMagic(m_currentPlayerID));
+						return true;
+					}
 				}
+				break;
 			}
 		}
 		return ret;
@@ -354,33 +360,25 @@ int StateAttacked::handle(GameGrail* engine)
 		CONTEXT_TIMELINE_1 temp = *context;
 		if(GE_SUCCESS == (ret = engine->getReply(context->attack.dstID, reply))){
 			Respond *respond_attack = (Respond*) reply;
-			if (respond_attack->respond_id() != RESPOND_REPLY_ATTACK)
-			{
-				// TODO: 非应战回复的错误处理，（或者被选为攻击目标时触发响应技能处理，暂无此类技能）
-			}
 
 			int ra = respond_attack->args(0);
-			int card_id = 100000;
-			if (ra != RA_GIVEUP)
-			{
-				// TODO: 检测手牌是否合法
-				card_id = respond_attack->args(1);
-			}
+			int card_id;
 
 			switch(ra)
 			{
 				//FIXME: verify
 			case RA_ATTACK:
-				if(GE_SUCCESS == (ret=engine->getPlayerEntity(context->attack.dstID)->checkOneHandCard(card_id))){
+				card_id = respond_attack->args(1);
+				if(GE_SUCCESS == (ret=engine->getPlayerEntity(context->attack.dstID)->v_reattack(card_id, temp.attack.cardID, respond_attack->dst_ids().Get(0), temp.attack.srcID))){
 					// 反馈玩家行动
-					respond_attack->set_src_id(context->attack.dstID);
-					
+					respond_attack->set_src_id(context->attack.dstID);					
 					engine->popGameState();
 					return engine->setStateReattack(temp.attack.cardID, card_id, temp.attack.srcID, temp.attack.dstID, respond_attack->dst_ids().Get(0), temp.attack.isActive, true);
 				}
 				break;
 			case RA_BLOCK:
-				if(GE_SUCCESS == (ret=engine->getPlayerEntity(context->attack.dstID)->checkOneHandCard(card_id))){
+				card_id = respond_attack->args(1);
+				if(GE_SUCCESS == (ret=engine->getPlayerEntity(context->attack.dstID)->v_block(card_id))){
 					// 反馈玩家行动
 					respond_attack->set_src_id(context->attack.dstID);
 

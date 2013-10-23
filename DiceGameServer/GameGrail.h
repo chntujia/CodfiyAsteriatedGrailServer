@@ -190,11 +190,10 @@ public:
 	//上面的简化，移1牌至手上以外的地方，需提供原因，若从摸牌堆上移出，cards不用赋值
 	int setStateMoveOneCardNotToHand(int srcOwner, int srcArea, int dstOwner, int dstArea, int cardID, int doerID, int cause, bool isShown = false);
 
-	int setStateUseCard(int cardID, int dstID, int srcID, bool realCard = true);
+	int setStateUseCard(int cardID, int dstID, int srcID, bool stay = false, bool realCard = true);
 	int setStateHandOverLoad(int dstID, HARM harm);
 	int setStateCheckBasicEffect();
 	int setStateAttackAction(int cardID, int dstID, int srcID, bool realCard = true);
-	int setStateMagicAction();
 	int setStateReattack(int attackFromCard, int attackToCard, int attackFrom, int attacked , int attackTo, bool isActive, bool realCard = true);
 	int setStateAttackGiveUp(int cardID, int dstID, int srcID, HARM harm, bool isActive);
 	int setStateMissileGiveUp(int dstID, int srcID, int harmPoint);
