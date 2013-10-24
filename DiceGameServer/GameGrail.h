@@ -207,7 +207,9 @@ public:
 	void initPlayerEntities();
 	void initDecks(){
 		pile = new Deck(CARDSUM);
-		pile->init(0,CARDSUM-1);
+		//FIXME: for debug, only magic
+		//pile->init(0,CARDSUM-1);
+		pile->init(0,38);
 		pile->randomize();
 		discard = new Deck(CARDSUM);
 	}

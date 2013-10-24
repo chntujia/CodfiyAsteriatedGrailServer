@@ -62,8 +62,9 @@ int PlayerEntity::checkBasicEffectName(int name,int* cardID, int* src)
 {
 	for(list< BasicEffect >::iterator it = basicEffects.begin(); it != basicEffects.end(); it++){
         if(getCardByID(it->card)->getName() == name){
-			
-			*cardID = it->card;
+			if(cardID != NULL){
+				*cardID = it->card;
+			}
 			if(src != NULL){
 				*src = it->srcUser;
 			}
@@ -364,6 +365,7 @@ int PlayerEntity::v_remissile(int cardID, bool realCard)
 	if(getCardByID(cardID)->getName() != NAME_MISSILE){
 		return GE_INVALID_CARDID; 
 	}
+	return GE_SUCCESS;
 }
 
 int PlayerEntity::v_block(int cardID)
@@ -375,4 +377,17 @@ int PlayerEntity::v_block(int cardID)
 	if(getCardByID(cardID)->getName() != NAME_HOLYLIGHT){
 		return GE_INVALID_CARDID; 
 	}
+	return GE_SUCCESS;
+}
+
+int PlayerEntity::v_shield(int cardID, PlayerEntity* dst)
+{
+	int ret;
+	if(GE_SUCCESS != (ret = checkOneHandCard(cardID))){
+		return ret;
+	}
+	if(GE_SUCCESS == dst->checkBasicEffectName(NAME_SHIELD)){
+		return GE_BASIC_EFFECT_ALREADY_EXISTS;
+	}
+	return GE_SUCCESS;
 }

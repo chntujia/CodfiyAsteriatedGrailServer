@@ -24,7 +24,7 @@ public:
 	//检查基础效果
 	int checkBasicEffect(int card);
 	//检查指定名称的基础效果牌是否存在,cardID和src保存找到的牌ID和施放者
-	int checkBasicEffectName(int name,int* cardID, int* src = NULL);
+	int checkBasicEffectName(int name,int* cardID = NULL, int* src = NULL);
     //增加手牌操作
     int addHandCards(int howMany, vector< int > newCard);
     //移除手牌操作
@@ -110,6 +110,7 @@ public:
 	virtual int v_missile(int cardID, int dstID, bool realCard = true);
 	virtual int v_remissile(int cardID, bool realCard = true);
 	virtual int v_block(int cardID);
+	virtual int v_shield(int cardID, PlayerEntity* dst);
 protected:
     int id;//玩家id
     int characterID;

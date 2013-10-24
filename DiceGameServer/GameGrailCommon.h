@@ -28,6 +28,7 @@ enum GrailError{
 	GE_CARD_NOT_ENOUGH,
 	GE_HANDCARD_NOT_FOUND,
 	GE_BASIC_EFFECT_NOT_FOUND,
+	GE_BASIC_EFFECT_ALREADY_EXISTS,
 	GE_MOVECARD_FAILED,
     GE_INCONSISTENT_STATE,
 	GE_FATAL_ERROR,
@@ -60,7 +61,7 @@ enum DECK{
 	DECK_DISCARD = 2,
 	DECK_HAND = 4,
 	DECK_BASIC_EFFECT = 5,
-	DECK_COVER = 6,
+	DECK_COVER = 6
 };
 
 enum HARM_TYPE{
@@ -253,8 +254,14 @@ public:
     static string cupNotice(int color,int cup){return combMessage("17",TOQSTR(color),TOQSTR(cup));}
     static string energyNotice(int ID,int gem,int crystal){return combMessage("18",TOQSTR(ID),TOQSTR(gem),TOQSTR(crystal));}
     static string getCardNotice(int sum,vector < int > cards,int dstID,bool show);
-    static string attackHurtNotice(int dstID,int sum,int srcID){return combMessage("20",TOQSTR(dstID),TOQSTR(sum),TOQSTR(srcID));}
-    static string magicHurtNotice(int dstID,int sum,int srcID,string reason){return combMessage("21",TOQSTR(dstID),TOQSTR(sum),TOQSTR(srcID),reason);}
+    static void hurtNotice(int dstID, int srcID, int type, int point, int cause, HurtMsg& hurt_msg)
+	{
+		hurt_msg.set_dst_id(dstID);
+		hurt_msg.set_src_id(srcID);
+		hurt_msg.set_type(type);
+		hurt_msg.set_hurt(point);
+		hurt_msg.set_cause(cause);
+	}
 	static void askForWeak(int ID,int howMany, CommandRequest& cmd_req)
 	{
 		cmd_req.set_cmd_type(CMD_RESPOND);

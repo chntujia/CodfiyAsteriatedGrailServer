@@ -439,14 +439,14 @@ int GameGrail::setStateAttackAction(int cardID, int dstID, int srcID, bool realC
 	pushGameState(new StateAfterAttack(cardID, dstID, srcID));	
 	setStateTimeline1(cardID, dstID, srcID, true);
 	pushGameState(new StateBeforeAttack(cardID, dstID, srcID));	
-	return setStateUseCard(cardID, dstID, srcID, realCard);
+	return setStateUseCard(cardID, dstID, srcID, false, realCard);
 }
 
 int GameGrail::setStateReattack(int attackFromCard, int attackToCard, int attackFrom, int attacked , int attackTo, bool isActive, bool realCard)
 {
 	setStateTimeline1(attackToCard, attackTo, attacked, false);
 	setStateTimeline2Miss(attackFromCard, attacked, attackFrom, isActive);	
-	return setStateUseCard(attackToCard, attackTo, attacked, realCard);
+	return setStateUseCard(attackToCard, attackTo, attacked, false, realCard);
 }
 
 int GameGrail::setStateAttackGiveUp(int cardID, int dstID, int srcID, HARM harm, bool isActive)
@@ -677,8 +677,8 @@ Deck* GameGrail::initRoles()
 	Deck *roles;
 	roles = new Deck(30);
 	roles->init(1, 24);
-	int temp[]={26, 28, 29};
-	roles->push(3, temp);
+	//int temp[]={26, 28, 29};
+	//roles->push(3, temp);
 	//FIXME: disable random for debug
 	//roles->randomize();
 	return roles;
