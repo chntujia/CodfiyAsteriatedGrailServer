@@ -111,6 +111,7 @@ public:
 	virtual int v_remissile(int cardID, bool realCard = true);
 	virtual int v_block(int cardID);
 	virtual int v_shield(int cardID, PlayerEntity* dst);
+	virtual int v_weaken(int cardID, PlayerEntity* dst);
 protected:
     int id;//Íæ¼Òid
     int characterID;

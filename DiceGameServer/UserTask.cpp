@@ -149,6 +149,8 @@ bool UserTask::cmdMsgParse(const char *pstrMsg, const uint32_t nCmdLen)
 			tryNotify(m_playerId, STATE_DISCARD_HAND, 0, respond);
 		else if (respond->respond_id() == RESPOND_BULLET)
 			tryNotify(m_playerId, STATE_MISSILED, 0, respond);
+		else if (respond->respond_id() == RESPOND_WEAKEN)
+			tryNotify(m_playerId, STATE_WEAKEN, 0, respond);
 		else {
 			delete proto;
 		}

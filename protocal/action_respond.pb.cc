@@ -114,11 +114,12 @@ void protobuf_AssignDesc_action_5frespond_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(TurnBegin));
   Action_descriptor_ = file->message_type(3);
-  static const int Action_offsets_[4] = {
+  static const int Action_offsets_[5] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Action, action_id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Action, args_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Action, src_id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Action, dst_ids_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Action, card_ids_),
   };
   Action_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -132,11 +133,12 @@ void protobuf_AssignDesc_action_5frespond_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(Action));
   Respond_descriptor_ = file->message_type(4);
-  static const int Respond_offsets_[4] = {
+  static const int Respond_offsets_[5] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Respond, respond_id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Respond, args_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Respond, src_id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Respond, dst_ids_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Respond, card_ids_),
   };
   Respond_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -330,36 +332,37 @@ void protobuf_AddDesc_action_5frespond_2eproto() {
     "\n\024action_respond.proto\022\007network\"(\n\024Chara"
     "ctorPickRequest\022\020\n\010role_ids\030\001 \003(\r\"\027\n\004Pic"
     "k\022\017\n\007role_id\030\001 \001(\r\"\027\n\tTurnBegin\022\n\n\002id\030\001 "
-    "\001(\r\"J\n\006Action\022\021\n\taction_id\030\001 \001(\r\022\014\n\004args"
-    "\030\002 \003(\r\022\016\n\006src_id\030\003 \001(\r\022\017\n\007dst_ids\030\004 \003(\r\""
-    "L\n\007Respond\022\022\n\nrespond_id\030\001 \001(\r\022\014\n\004args\030\002"
-    " \003(\r\022\016\n\006src_id\030\003 \001(\r\022\017\n\007dst_ids\030\004 \003(\r\"+\n"
-    "\007Command\022\022\n\nrespond_id\030\001 \001(\r\022\014\n\004args\030\002 \003"
-    "(\r\"X\n\016CommandRequest\022\"\n\010cmd_type\030\001 \001(\0162\020"
-    ".network.CmdType\022\"\n\010commands\030\002 \003(\0132\020.net"
-    "work.Command\"V\n\nErrorInput\022$\n\nerror_type"
-    "\030\001 \001(\0162\020.network.CmdType\022\"\n\010commands\030\002 \003"
-    "(\0132\020.network.Command\"E\n\006HitMsg\022\016\n\006cmd_id"
-    "\030\001 \001(\r\022\013\n\003hit\030\002 \001(\r\022\016\n\006src_id\030\003 \001(\r\022\016\n\006d"
-    "st_id\030\004 \001(\r\"M\n\007UseCard\022\016\n\006src_id\030\001 \001(\r\022\016"
-    "\n\006dst_id\030\002 \001(\r\022\017\n\007card_id\030\003 \001(\r\022\021\n\treal_"
-    "card\030\004 \001(\r\"\\\n\007HurtMsg\022\016\n\006src_id\030\001 \001(\r\022\026\n"
-    "\006dst_id\030\002 \001(\r:\006100000\022\014\n\004hurt\030\003 \001(\r\022\r\n\005c"
-    "ause\030\004 \001(\r\022\014\n\004type\030\005 \001(\r*\266\001\n\014MessageType"
-    "2\022\020\n\014MSG_PICK_REQ\020e\022\014\n\010MSG_PICK\020f\022\016\n\nMSG"
-    "_ACTION\020g\022\017\n\013MSG_RESPOND\020h\022\017\n\013MSG_CMD_RE"
-    "Q\020j\022\023\n\017MSG_ERROR_INPUT\020k\022\013\n\007MSG_HIT\020l\022\022\n"
-    "\016MSG_TURN_BEGIN\020m\022\020\n\014MSG_USE_CARD\020n\022\014\n\010M"
-    "SG_HURT\020o*%\n\rPlayerIdConst\022\024\n\016PLAYER_NON"
-    "E_ID\020\240\215\006*\251\001\n\017BasicActionType\022\016\n\nACTION_B"
-    "UY\020\001\022\021\n\rACTION_REFINE\020\002\022\022\n\016ACTION_COMPOS"
-    "E\020\003\022\021\n\rACTION_ATTACK\020\004\022\020\n\014ACTION_MAGIC\020\005"
-    "\022\016\n\nACTION_ANY\020\006\022\027\n\023ACTION_ATTACK_MAGIC\020"
-    "\007\022\021\n\013ACTION_NONE\020\240\215\006*{\n\020BasicRespondType"
-    "\022\030\n\024RESPOND_REPLY_ATTACK\020\n\022\022\n\016RESPOND_BU"
-    "LLET\020\013\022\020\n\014RESPOND_HEAL\020\014\022\023\n\017RESPOND_DISC"
-    "ARD\020\r\022\022\n\016RESPOND_WEAKEN\020\016**\n\007CmdType\022\016\n\n"
-    "CMD_ACTION\020\001\022\017\n\013CMD_RESPOND\020\002", 1309);
+    "\001(\r\"\\\n\006Action\022\021\n\taction_id\030\001 \001(\r\022\014\n\004args"
+    "\030\002 \003(\r\022\016\n\006src_id\030\003 \001(\r\022\017\n\007dst_ids\030\004 \003(\r\022"
+    "\020\n\010card_ids\030\005 \003(\r\"^\n\007Respond\022\022\n\nrespond_"
+    "id\030\001 \001(\r\022\014\n\004args\030\002 \003(\r\022\016\n\006src_id\030\003 \001(\r\022\017"
+    "\n\007dst_ids\030\004 \003(\r\022\020\n\010card_ids\030\005 \003(\r\"+\n\007Com"
+    "mand\022\022\n\nrespond_id\030\001 \001(\r\022\014\n\004args\030\002 \003(\r\"X"
+    "\n\016CommandRequest\022\"\n\010cmd_type\030\001 \001(\0162\020.net"
+    "work.CmdType\022\"\n\010commands\030\002 \003(\0132\020.network"
+    ".Command\"V\n\nErrorInput\022$\n\nerror_type\030\001 \001"
+    "(\0162\020.network.CmdType\022\"\n\010commands\030\002 \003(\0132\020"
+    ".network.Command\"E\n\006HitMsg\022\016\n\006cmd_id\030\001 \001"
+    "(\r\022\013\n\003hit\030\002 \001(\r\022\016\n\006src_id\030\003 \001(\r\022\016\n\006dst_i"
+    "d\030\004 \001(\r\"M\n\007UseCard\022\016\n\006src_id\030\001 \001(\r\022\016\n\006ds"
+    "t_id\030\002 \001(\r\022\017\n\007card_id\030\003 \001(\r\022\021\n\treal_card"
+    "\030\004 \001(\r\"\\\n\007HurtMsg\022\016\n\006src_id\030\001 \001(\r\022\026\n\006dst"
+    "_id\030\002 \001(\r:\006100000\022\014\n\004hurt\030\003 \001(\r\022\r\n\005cause"
+    "\030\004 \001(\r\022\014\n\004type\030\005 \001(\r*\266\001\n\014MessageType2\022\020\n"
+    "\014MSG_PICK_REQ\020e\022\014\n\010MSG_PICK\020f\022\016\n\nMSG_ACT"
+    "ION\020g\022\017\n\013MSG_RESPOND\020h\022\017\n\013MSG_CMD_REQ\020j\022"
+    "\023\n\017MSG_ERROR_INPUT\020k\022\013\n\007MSG_HIT\020l\022\022\n\016MSG"
+    "_TURN_BEGIN\020m\022\020\n\014MSG_USE_CARD\020n\022\014\n\010MSG_H"
+    "URT\020o*%\n\rPlayerIdConst\022\024\n\016PLAYER_NONE_ID"
+    "\020\240\215\006*\251\001\n\017BasicActionType\022\016\n\nACTION_BUY\020\001"
+    "\022\021\n\rACTION_REFINE\020\002\022\022\n\016ACTION_COMPOSE\020\003\022"
+    "\021\n\rACTION_ATTACK\020\004\022\020\n\014ACTION_MAGIC\020\005\022\016\n\n"
+    "ACTION_ANY\020\006\022\027\n\023ACTION_ATTACK_MAGIC\020\007\022\021\n"
+    "\013ACTION_NONE\020\240\215\006*{\n\020BasicRespondType\022\030\n\024"
+    "RESPOND_REPLY_ATTACK\020\n\022\022\n\016RESPOND_BULLET"
+    "\020\013\022\020\n\014RESPOND_HEAL\020\014\022\023\n\017RESPOND_DISCARD\020"
+    "\r\022\022\n\016RESPOND_WEAKEN\020\016**\n\007CmdType\022\016\n\nCMD_"
+    "ACTION\020\001\022\017\n\013CMD_RESPOND\020\002", 1345);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "action_respond.proto", &protobuf_RegisterTypes);
   CharactorPickRequest::default_instance_ = new CharactorPickRequest();
@@ -1114,6 +1117,7 @@ const int Action::kActionIdFieldNumber;
 const int Action::kArgsFieldNumber;
 const int Action::kSrcIdFieldNumber;
 const int Action::kDstIdsFieldNumber;
+const int Action::kCardIdsFieldNumber;
 #endif  // !_MSC_VER
 
 Action::Action()
@@ -1174,6 +1178,7 @@ void Action::Clear() {
   }
   args_.Clear();
   dst_ids_.Clear();
+  card_ids_.Clear();
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
   mutable_unknown_fields()->Clear();
 }
@@ -1255,6 +1260,28 @@ bool Action::MergePartialFromCodedStream(
           goto handle_uninterpreted;
         }
         if (input->ExpectTag(32)) goto parse_dst_ids;
+        if (input->ExpectTag(40)) goto parse_card_ids;
+        break;
+      }
+
+      // repeated uint32 card_ids = 5;
+      case 5: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+         parse_card_ids:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadRepeatedPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 1, 40, input, this->mutable_card_ids())));
+        } else if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag)
+                   == ::google::protobuf::internal::WireFormatLite::
+                      WIRETYPE_LENGTH_DELIMITED) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPackedPrimitiveNoInline<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, this->mutable_card_ids())));
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(40)) goto parse_card_ids;
         if (input->ExpectAtEnd()) return true;
         break;
       }
@@ -1299,6 +1326,12 @@ void Action::SerializeWithCachedSizes(
       4, this->dst_ids(i), output);
   }
 
+  // repeated uint32 card_ids = 5;
+  for (int i = 0; i < this->card_ids_size(); i++) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(
+      5, this->card_ids(i), output);
+  }
+
   if (!unknown_fields().empty()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -1327,6 +1360,12 @@ void Action::SerializeWithCachedSizes(
   for (int i = 0; i < this->dst_ids_size(); i++) {
     target = ::google::protobuf::internal::WireFormatLite::
       WriteUInt32ToArray(4, this->dst_ids(i), target);
+  }
+
+  // repeated uint32 card_ids = 5;
+  for (int i = 0; i < this->card_ids_size(); i++) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteUInt32ToArray(5, this->card_ids(i), target);
   }
 
   if (!unknown_fields().empty()) {
@@ -1375,6 +1414,16 @@ int Action::ByteSize() const {
     total_size += 1 * this->dst_ids_size() + data_size;
   }
 
+  // repeated uint32 card_ids = 5;
+  {
+    int data_size = 0;
+    for (int i = 0; i < this->card_ids_size(); i++) {
+      data_size += ::google::protobuf::internal::WireFormatLite::
+        UInt32Size(this->card_ids(i));
+    }
+    total_size += 1 * this->card_ids_size() + data_size;
+  }
+
   if (!unknown_fields().empty()) {
     total_size +=
       ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
@@ -1402,6 +1451,7 @@ void Action::MergeFrom(const Action& from) {
   GOOGLE_CHECK_NE(&from, this);
   args_.MergeFrom(from.args_);
   dst_ids_.MergeFrom(from.dst_ids_);
+  card_ids_.MergeFrom(from.card_ids_);
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
     if (from.has_action_id()) {
       set_action_id(from.action_id());
@@ -1436,6 +1486,7 @@ void Action::Swap(Action* other) {
     args_.Swap(&other->args_);
     std::swap(src_id_, other->src_id_);
     dst_ids_.Swap(&other->dst_ids_);
+    card_ids_.Swap(&other->card_ids_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);
@@ -1458,6 +1509,7 @@ const int Respond::kRespondIdFieldNumber;
 const int Respond::kArgsFieldNumber;
 const int Respond::kSrcIdFieldNumber;
 const int Respond::kDstIdsFieldNumber;
+const int Respond::kCardIdsFieldNumber;
 #endif  // !_MSC_VER
 
 Respond::Respond()
@@ -1518,6 +1570,7 @@ void Respond::Clear() {
   }
   args_.Clear();
   dst_ids_.Clear();
+  card_ids_.Clear();
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
   mutable_unknown_fields()->Clear();
 }
@@ -1599,6 +1652,28 @@ bool Respond::MergePartialFromCodedStream(
           goto handle_uninterpreted;
         }
         if (input->ExpectTag(32)) goto parse_dst_ids;
+        if (input->ExpectTag(40)) goto parse_card_ids;
+        break;
+      }
+
+      // repeated uint32 card_ids = 5;
+      case 5: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+         parse_card_ids:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadRepeatedPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 1, 40, input, this->mutable_card_ids())));
+        } else if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag)
+                   == ::google::protobuf::internal::WireFormatLite::
+                      WIRETYPE_LENGTH_DELIMITED) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPackedPrimitiveNoInline<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, this->mutable_card_ids())));
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(40)) goto parse_card_ids;
         if (input->ExpectAtEnd()) return true;
         break;
       }
@@ -1643,6 +1718,12 @@ void Respond::SerializeWithCachedSizes(
       4, this->dst_ids(i), output);
   }
 
+  // repeated uint32 card_ids = 5;
+  for (int i = 0; i < this->card_ids_size(); i++) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(
+      5, this->card_ids(i), output);
+  }
+
   if (!unknown_fields().empty()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -1671,6 +1752,12 @@ void Respond::SerializeWithCachedSizes(
   for (int i = 0; i < this->dst_ids_size(); i++) {
     target = ::google::protobuf::internal::WireFormatLite::
       WriteUInt32ToArray(4, this->dst_ids(i), target);
+  }
+
+  // repeated uint32 card_ids = 5;
+  for (int i = 0; i < this->card_ids_size(); i++) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteUInt32ToArray(5, this->card_ids(i), target);
   }
 
   if (!unknown_fields().empty()) {
@@ -1719,6 +1806,16 @@ int Respond::ByteSize() const {
     total_size += 1 * this->dst_ids_size() + data_size;
   }
 
+  // repeated uint32 card_ids = 5;
+  {
+    int data_size = 0;
+    for (int i = 0; i < this->card_ids_size(); i++) {
+      data_size += ::google::protobuf::internal::WireFormatLite::
+        UInt32Size(this->card_ids(i));
+    }
+    total_size += 1 * this->card_ids_size() + data_size;
+  }
+
   if (!unknown_fields().empty()) {
     total_size +=
       ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
@@ -1746,6 +1843,7 @@ void Respond::MergeFrom(const Respond& from) {
   GOOGLE_CHECK_NE(&from, this);
   args_.MergeFrom(from.args_);
   dst_ids_.MergeFrom(from.dst_ids_);
+  card_ids_.MergeFrom(from.card_ids_);
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
     if (from.has_respond_id()) {
       set_respond_id(from.respond_id());
@@ -1780,6 +1878,7 @@ void Respond::Swap(Respond* other) {
     args_.Swap(&other->args_);
     std::swap(src_id_, other->src_id_);
     dst_ids_.Swap(&other->dst_ids_);
+    card_ids_.Swap(&other->card_ids_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);

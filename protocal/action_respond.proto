@@ -52,6 +52,7 @@ message Action {
     repeated uint32 args = 2;
 	optional uint32 src_id = 3;
 	repeated uint32 dst_ids = 4;
+	repeated uint32 card_ids = 5;
 }
 
 // 基础响应，常量不合适随意修改
@@ -69,6 +70,7 @@ message Respond {
     repeated uint32 args = 2;
 	optional uint32 src_id = 3;
 	repeated uint32 dst_ids = 4;
+	repeated uint32 card_ids = 5;
 }
 
 

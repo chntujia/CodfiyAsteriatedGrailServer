@@ -500,6 +500,18 @@ class Action : public ::google::protobuf::Message {
   inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
       mutable_dst_ids();
 
+  // repeated uint32 card_ids = 5;
+  inline int card_ids_size() const;
+  inline void clear_card_ids();
+  static const int kCardIdsFieldNumber = 5;
+  inline ::google::protobuf::uint32 card_ids(int index) const;
+  inline void set_card_ids(int index, ::google::protobuf::uint32 value);
+  inline void add_card_ids(::google::protobuf::uint32 value);
+  inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
+      card_ids() const;
+  inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
+      mutable_card_ids();
+
   // @@protoc_insertion_point(class_scope:network.Action)
  private:
   inline void set_has_action_id();
@@ -513,9 +525,10 @@ class Action : public ::google::protobuf::Message {
   ::google::protobuf::uint32 action_id_;
   ::google::protobuf::uint32 src_id_;
   ::google::protobuf::RepeatedField< ::google::protobuf::uint32 > dst_ids_;
+  ::google::protobuf::RepeatedField< ::google::protobuf::uint32 > card_ids_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(4 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(5 + 31) / 32];
 
   friend void  protobuf_AddDesc_action_5frespond_2eproto();
   friend void protobuf_AssignDesc_action_5frespond_2eproto();
@@ -618,6 +631,18 @@ class Respond : public ::google::protobuf::Message {
   inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
       mutable_dst_ids();
 
+  // repeated uint32 card_ids = 5;
+  inline int card_ids_size() const;
+  inline void clear_card_ids();
+  static const int kCardIdsFieldNumber = 5;
+  inline ::google::protobuf::uint32 card_ids(int index) const;
+  inline void set_card_ids(int index, ::google::protobuf::uint32 value);
+  inline void add_card_ids(::google::protobuf::uint32 value);
+  inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
+      card_ids() const;
+  inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
+      mutable_card_ids();
+
   // @@protoc_insertion_point(class_scope:network.Respond)
  private:
   inline void set_has_respond_id();
@@ -631,9 +656,10 @@ class Respond : public ::google::protobuf::Message {
   ::google::protobuf::uint32 respond_id_;
   ::google::protobuf::uint32 src_id_;
   ::google::protobuf::RepeatedField< ::google::protobuf::uint32 > dst_ids_;
+  ::google::protobuf::RepeatedField< ::google::protobuf::uint32 > card_ids_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(4 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(5 + 31) / 32];
 
   friend void  protobuf_AddDesc_action_5frespond_2eproto();
   friend void protobuf_AssignDesc_action_5frespond_2eproto();
@@ -1455,6 +1481,31 @@ Action::mutable_dst_ids() {
   return &dst_ids_;
 }
 
+// repeated uint32 card_ids = 5;
+inline int Action::card_ids_size() const {
+  return card_ids_.size();
+}
+inline void Action::clear_card_ids() {
+  card_ids_.Clear();
+}
+inline ::google::protobuf::uint32 Action::card_ids(int index) const {
+  return card_ids_.Get(index);
+}
+inline void Action::set_card_ids(int index, ::google::protobuf::uint32 value) {
+  card_ids_.Set(index, value);
+}
+inline void Action::add_card_ids(::google::protobuf::uint32 value) {
+  card_ids_.Add(value);
+}
+inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
+Action::card_ids() const {
+  return card_ids_;
+}
+inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
+Action::mutable_card_ids() {
+  return &card_ids_;
+}
+
 // -------------------------------------------------------------------
 
 // Respond
@@ -1551,6 +1602,31 @@ Respond::dst_ids() const {
 inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
 Respond::mutable_dst_ids() {
   return &dst_ids_;
+}
+
+// repeated uint32 card_ids = 5;
+inline int Respond::card_ids_size() const {
+  return card_ids_.size();
+}
+inline void Respond::clear_card_ids() {
+  card_ids_.Clear();
+}
+inline ::google::protobuf::uint32 Respond::card_ids(int index) const {
+  return card_ids_.Get(index);
+}
+inline void Respond::set_card_ids(int index, ::google::protobuf::uint32 value) {
+  card_ids_.Set(index, value);
+}
+inline void Respond::add_card_ids(::google::protobuf::uint32 value) {
+  card_ids_.Add(value);
+}
+inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
+Respond::card_ids() const {
+  return card_ids_;
+}
+inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
+Respond::mutable_card_ids() {
+  return &card_ids_;
 }
 
 // -------------------------------------------------------------------

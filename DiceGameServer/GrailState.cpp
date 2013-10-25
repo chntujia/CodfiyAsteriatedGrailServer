@@ -174,35 +174,26 @@ int StateWeaken::handle(GameGrail* engine)
 	if(engine->waitForOne(m_currentPlayerID, network::MSG_CMD_REQ, weaken_proto))
 	{
 		//TODO set nextState based on reply
-		void* temp;
+		void* reply;
 		int ret;
-		if(GE_SUCCESS == (ret=engine->getReply(m_currentPlayerID, temp)))
+		if(GE_SUCCESS == (ret=engine->getReply(m_currentPlayerID, reply)))
 		{
-			Respond *weak_respond = (Respond*)temp;
-			weak_respond->set_src_id(m_currentPlayerID);
+			Respond *weak_respond = (Respond*)reply;
 
 			if(weak_respond->args().Get(0) == 1){
-				// ÌîÐ´ÃþÅÆÊýÁ¿
-				if (weak_respond->args_size() < 2) {
-					weak_respond->add_args(howMany);
-				}
-				else {
-					weak_respond->set_args(1, howMany);
-				}
-
-				engine->sendMessage(-1, MSG_RESPOND, *weak_respond);
+				int srcID_t = srcID;
+				int howMany_t = howMany;
 				engine->popGameState();
 				engine->pushGameState(new StateBeforeAction);
 				HARM harm;
 				harm.type = HARM_NONE;
-				harm.point = howMany;
-				harm.srcID = srcID;
+				harm.point = howMany_t;
+				harm.srcID = srcID_t;
 				harm.cause = CAUSE_WEAKEN;
 				vector< int > cards;
-				return engine->setStateMoveCardsToHand(-1, DECK_PILE, m_currentPlayerID, DECK_HAND, howMany, cards, harm);
+				return engine->setStateMoveCardsToHand(-1, DECK_PILE, m_currentPlayerID, DECK_HAND, howMany_t, cards, harm);
 			}
 			else{
-				engine->sendMessage(-1, MSG_RESPOND, *weak_respond);
 				engine->popGameState();
 				engine->pushGameState(new StateBeforeAction(false));
 				return GE_SUCCESS;
@@ -331,6 +322,14 @@ int StateActionPhase::handle(GameGrail* engine)
 						engine->pushGameState(new StateAfterMagic(m_currentPlayerID));
 						engine->pushGameState(StateMissiled::create(engine, card_id, action->dst_ids(0), m_currentPlayerID));
 						engine->setStateUseCard(card_id, action->dst_ids(0), m_currentPlayerID);
+						engine->pushGameState(new StateBeforeMagic(m_currentPlayerID));
+						return true;
+					}
+				case NAME_WEAKEN:
+					if (GE_SUCCESS == (ret=engine->getPlayerEntity(m_currentPlayerID)->v_weaken(card_id, dst))){
+						engine->popGameState();
+						engine->pushGameState(new StateAfterMagic(m_currentPlayerID));
+						engine->setStateUseCard(card_id, action->dst_ids(0), m_currentPlayerID, true);
 						engine->pushGameState(new StateBeforeMagic(m_currentPlayerID));
 						return true;
 					}

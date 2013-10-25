@@ -262,7 +262,7 @@ public:
 		hurt_msg.set_hurt(point);
 		hurt_msg.set_cause(cause);
 	}
-	static void askForWeak(int ID,int howMany, CommandRequest& cmd_req)
+	static void askForWeak(int ID, int howMany, CommandRequest& cmd_req)
 	{
 		cmd_req.set_cmd_type(CMD_RESPOND);
 		Command *cmd;
