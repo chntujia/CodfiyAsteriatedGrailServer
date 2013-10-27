@@ -114,12 +114,13 @@ void protobuf_AssignDesc_action_5frespond_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(TurnBegin));
   Action_descriptor_ = file->message_type(3);
-  static const int Action_offsets_[5] = {
+  static const int Action_offsets_[6] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Action, action_type_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Action, action_id_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Action, args_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Action, src_id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Action, dst_ids_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Action, card_ids_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Action, args_),
   };
   Action_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -135,10 +136,10 @@ void protobuf_AssignDesc_action_5frespond_2eproto() {
   Respond_descriptor_ = file->message_type(4);
   static const int Respond_offsets_[5] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Respond, respond_id_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Respond, args_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Respond, src_id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Respond, dst_ids_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Respond, card_ids_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Respond, args_),
   };
   Respond_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -332,37 +333,38 @@ void protobuf_AddDesc_action_5frespond_2eproto() {
     "\n\024action_respond.proto\022\007network\"(\n\024Chara"
     "ctorPickRequest\022\020\n\010role_ids\030\001 \003(\r\"\027\n\004Pic"
     "k\022\017\n\007role_id\030\001 \001(\r\"\027\n\tTurnBegin\022\n\n\002id\030\001 "
-    "\001(\r\"\\\n\006Action\022\021\n\taction_id\030\001 \001(\r\022\014\n\004args"
-    "\030\002 \003(\r\022\016\n\006src_id\030\003 \001(\r\022\017\n\007dst_ids\030\004 \003(\r\022"
-    "\020\n\010card_ids\030\005 \003(\r\"^\n\007Respond\022\022\n\nrespond_"
-    "id\030\001 \001(\r\022\014\n\004args\030\002 \003(\r\022\016\n\006src_id\030\003 \001(\r\022\017"
-    "\n\007dst_ids\030\004 \003(\r\022\020\n\010card_ids\030\005 \003(\r\"+\n\007Com"
-    "mand\022\022\n\nrespond_id\030\001 \001(\r\022\014\n\004args\030\002 \003(\r\"X"
-    "\n\016CommandRequest\022\"\n\010cmd_type\030\001 \001(\0162\020.net"
-    "work.CmdType\022\"\n\010commands\030\002 \003(\0132\020.network"
-    ".Command\"V\n\nErrorInput\022$\n\nerror_type\030\001 \001"
-    "(\0162\020.network.CmdType\022\"\n\010commands\030\002 \003(\0132\020"
-    ".network.Command\"E\n\006HitMsg\022\016\n\006cmd_id\030\001 \001"
-    "(\r\022\013\n\003hit\030\002 \001(\r\022\016\n\006src_id\030\003 \001(\r\022\016\n\006dst_i"
-    "d\030\004 \001(\r\"M\n\007UseCard\022\016\n\006src_id\030\001 \001(\r\022\016\n\006ds"
-    "t_id\030\002 \001(\r\022\017\n\007card_id\030\003 \001(\r\022\021\n\treal_card"
-    "\030\004 \001(\r\"\\\n\007HurtMsg\022\016\n\006src_id\030\001 \001(\r\022\026\n\006dst"
-    "_id\030\002 \001(\r:\006100000\022\014\n\004hurt\030\003 \001(\r\022\r\n\005cause"
-    "\030\004 \001(\r\022\014\n\004type\030\005 \001(\r*\266\001\n\014MessageType2\022\020\n"
-    "\014MSG_PICK_REQ\020e\022\014\n\010MSG_PICK\020f\022\016\n\nMSG_ACT"
-    "ION\020g\022\017\n\013MSG_RESPOND\020h\022\017\n\013MSG_CMD_REQ\020j\022"
-    "\023\n\017MSG_ERROR_INPUT\020k\022\013\n\007MSG_HIT\020l\022\022\n\016MSG"
-    "_TURN_BEGIN\020m\022\020\n\014MSG_USE_CARD\020n\022\014\n\010MSG_H"
-    "URT\020o*%\n\rPlayerIdConst\022\024\n\016PLAYER_NONE_ID"
-    "\020\240\215\006*\251\001\n\017BasicActionType\022\016\n\nACTION_BUY\020\001"
-    "\022\021\n\rACTION_REFINE\020\002\022\022\n\016ACTION_COMPOSE\020\003\022"
-    "\021\n\rACTION_ATTACK\020\004\022\020\n\014ACTION_MAGIC\020\005\022\016\n\n"
-    "ACTION_ANY\020\006\022\027\n\023ACTION_ATTACK_MAGIC\020\007\022\021\n"
-    "\013ACTION_NONE\020\240\215\006*{\n\020BasicRespondType\022\030\n\024"
-    "RESPOND_REPLY_ATTACK\020\n\022\022\n\016RESPOND_BULLET"
-    "\020\013\022\020\n\014RESPOND_HEAL\020\014\022\023\n\017RESPOND_DISCARD\020"
-    "\r\022\022\n\016RESPOND_WEAKEN\020\016**\n\007CmdType\022\016\n\nCMD_"
-    "ACTION\020\001\022\017\n\013CMD_RESPOND\020\002", 1345);
+    "\001(\r\"q\n\006Action\022\023\n\013action_type\030\001 \001(\r\022\021\n\tac"
+    "tion_id\030\002 \001(\r\022\016\n\006src_id\030\003 \001(\r\022\017\n\007dst_ids"
+    "\030\004 \003(\r\022\020\n\010card_ids\030\005 \003(\r\022\014\n\004args\030\006 \003(\r\"^"
+    "\n\007Respond\022\022\n\nrespond_id\030\001 \001(\r\022\016\n\006src_id\030"
+    "\002 \001(\r\022\017\n\007dst_ids\030\003 \003(\r\022\020\n\010card_ids\030\004 \003(\r"
+    "\022\014\n\004args\030\005 \003(\r\"+\n\007Command\022\022\n\nrespond_id\030"
+    "\001 \001(\r\022\014\n\004args\030\002 \003(\r\"X\n\016CommandRequest\022\"\n"
+    "\010cmd_type\030\001 \001(\0162\020.network.CmdType\022\"\n\010com"
+    "mands\030\002 \003(\0132\020.network.Command\"V\n\nErrorIn"
+    "put\022$\n\nerror_type\030\001 \001(\0162\020.network.CmdTyp"
+    "e\022\"\n\010commands\030\002 \003(\0132\020.network.Command\"E\n"
+    "\006HitMsg\022\016\n\006cmd_id\030\001 \001(\r\022\013\n\003hit\030\002 \001(\r\022\016\n\006"
+    "src_id\030\003 \001(\r\022\016\n\006dst_id\030\004 \001(\r\"M\n\007UseCard\022"
+    "\016\n\006src_id\030\001 \001(\r\022\016\n\006dst_id\030\002 \001(\r\022\017\n\007card_"
+    "id\030\003 \001(\r\022\021\n\treal_card\030\004 \001(\r\"\\\n\007HurtMsg\022\016"
+    "\n\006src_id\030\001 \001(\r\022\026\n\006dst_id\030\002 \001(\r:\006100000\022\014"
+    "\n\004hurt\030\003 \001(\r\022\r\n\005cause\030\004 \001(\r\022\014\n\004type\030\005 \001("
+    "\r*\266\001\n\014MessageType2\022\020\n\014MSG_PICK_REQ\020e\022\014\n\010"
+    "MSG_PICK\020f\022\016\n\nMSG_ACTION\020g\022\017\n\013MSG_RESPON"
+    "D\020h\022\017\n\013MSG_CMD_REQ\020j\022\023\n\017MSG_ERROR_INPUT\020"
+    "k\022\013\n\007MSG_HIT\020l\022\022\n\016MSG_TURN_BEGIN\020m\022\020\n\014MS"
+    "G_USE_CARD\020n\022\014\n\010MSG_HURT\020o*%\n\rPlayerIdCo"
+    "nst\022\024\n\016PLAYER_NONE_ID\020\240\215\006*\267\001\n\017BasicActio"
+    "nType\022\021\n\rACTION_ATTACK\020\001\022\020\n\014ACTION_MAGIC"
+    "\020\002\022\022\n\016ACTION_SPECIAL\020\003\022\027\n\023ACTION_ATTACK_"
+    "SKILL\020\004\022\026\n\022ACTION_MAGIC_SKILL\020\005\022\016\n\nACTIO"
+    "N_ANY\020\006\022\027\n\023ACTION_ATTACK_MAGIC\020\007\022\021\n\013ACTI"
+    "ON_NONE\020\240\215\006*{\n\020BasicRespondType\022\030\n\024RESPO"
+    "ND_REPLY_ATTACK\020\n\022\022\n\016RESPOND_BULLET\020\013\022\020\n"
+    "\014RESPOND_HEAL\020\014\022\023\n\017RESPOND_DISCARD\020\r\022\022\n\016"
+    "RESPOND_WEAKEN\020\016**\n\007CmdType\022\016\n\nCMD_ACTIO"
+    "N\020\001\022\017\n\013CMD_RESPOND\020\002", 1380);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "action_respond.proto", &protobuf_RegisterTypes);
   CharactorPickRequest::default_instance_ = new CharactorPickRequest();
@@ -1113,11 +1115,12 @@ void TurnBegin::Swap(TurnBegin* other) {
 // ===================================================================
 
 #ifndef _MSC_VER
+const int Action::kActionTypeFieldNumber;
 const int Action::kActionIdFieldNumber;
-const int Action::kArgsFieldNumber;
 const int Action::kSrcIdFieldNumber;
 const int Action::kDstIdsFieldNumber;
 const int Action::kCardIdsFieldNumber;
+const int Action::kArgsFieldNumber;
 #endif  // !_MSC_VER
 
 Action::Action()
@@ -1136,6 +1139,7 @@ Action::Action(const Action& from)
 
 void Action::SharedCtor() {
   _cached_size_ = 0;
+  action_type_ = 0u;
   action_id_ = 0u;
   src_id_ = 0u;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
@@ -1173,12 +1177,13 @@ Action* Action::New() const {
 
 void Action::Clear() {
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    action_type_ = 0u;
     action_id_ = 0u;
     src_id_ = 0u;
   }
-  args_.Clear();
   dst_ids_.Clear();
   card_ids_.Clear();
+  args_.Clear();
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
   mutable_unknown_fields()->Clear();
 }
@@ -1189,10 +1194,26 @@ bool Action::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   while ((tag = input->ReadTag()) != 0) {
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional uint32 action_id = 1;
+      // optional uint32 action_type = 1;
       case 1: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &action_type_)));
+          set_has_action_type();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(16)) goto parse_action_id;
+        break;
+      }
+
+      // optional uint32 action_id = 2;
+      case 2: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+         parse_action_id:
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
                  input, &action_id_)));
@@ -1200,28 +1221,6 @@ bool Action::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(16)) goto parse_args;
-        break;
-      }
-
-      // repeated uint32 args = 2;
-      case 2: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
-         parse_args:
-          DO_((::google::protobuf::internal::WireFormatLite::ReadRepeatedPrimitive<
-                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
-                 1, 16, input, this->mutable_args())));
-        } else if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag)
-                   == ::google::protobuf::internal::WireFormatLite::
-                      WIRETYPE_LENGTH_DELIMITED) {
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPackedPrimitiveNoInline<
-                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
-                 input, this->mutable_args())));
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectTag(16)) goto parse_args;
         if (input->ExpectTag(24)) goto parse_src_id;
         break;
       }
@@ -1282,6 +1281,28 @@ bool Action::MergePartialFromCodedStream(
           goto handle_uninterpreted;
         }
         if (input->ExpectTag(40)) goto parse_card_ids;
+        if (input->ExpectTag(48)) goto parse_args;
+        break;
+      }
+
+      // repeated uint32 args = 6;
+      case 6: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+         parse_args:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadRepeatedPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 1, 48, input, this->mutable_args())));
+        } else if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag)
+                   == ::google::protobuf::internal::WireFormatLite::
+                      WIRETYPE_LENGTH_DELIMITED) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPackedPrimitiveNoInline<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, this->mutable_args())));
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(48)) goto parse_args;
         if (input->ExpectAtEnd()) return true;
         break;
       }
@@ -1304,15 +1325,14 @@ bool Action::MergePartialFromCodedStream(
 
 void Action::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // optional uint32 action_id = 1;
-  if (has_action_id()) {
-    ::google::protobuf::internal::WireFormatLite::WriteUInt32(1, this->action_id(), output);
+  // optional uint32 action_type = 1;
+  if (has_action_type()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(1, this->action_type(), output);
   }
 
-  // repeated uint32 args = 2;
-  for (int i = 0; i < this->args_size(); i++) {
-    ::google::protobuf::internal::WireFormatLite::WriteUInt32(
-      2, this->args(i), output);
+  // optional uint32 action_id = 2;
+  if (has_action_id()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(2, this->action_id(), output);
   }
 
   // optional uint32 src_id = 3;
@@ -1332,6 +1352,12 @@ void Action::SerializeWithCachedSizes(
       5, this->card_ids(i), output);
   }
 
+  // repeated uint32 args = 6;
+  for (int i = 0; i < this->args_size(); i++) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(
+      6, this->args(i), output);
+  }
+
   if (!unknown_fields().empty()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -1340,15 +1366,14 @@ void Action::SerializeWithCachedSizes(
 
 ::google::protobuf::uint8* Action::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
-  // optional uint32 action_id = 1;
-  if (has_action_id()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(1, this->action_id(), target);
+  // optional uint32 action_type = 1;
+  if (has_action_type()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(1, this->action_type(), target);
   }
 
-  // repeated uint32 args = 2;
-  for (int i = 0; i < this->args_size(); i++) {
-    target = ::google::protobuf::internal::WireFormatLite::
-      WriteUInt32ToArray(2, this->args(i), target);
+  // optional uint32 action_id = 2;
+  if (has_action_id()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(2, this->action_id(), target);
   }
 
   // optional uint32 src_id = 3;
@@ -1368,6 +1393,12 @@ void Action::SerializeWithCachedSizes(
       WriteUInt32ToArray(5, this->card_ids(i), target);
   }
 
+  // repeated uint32 args = 6;
+  for (int i = 0; i < this->args_size(); i++) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteUInt32ToArray(6, this->args(i), target);
+  }
+
   if (!unknown_fields().empty()) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         unknown_fields(), target);
@@ -1379,7 +1410,14 @@ int Action::ByteSize() const {
   int total_size = 0;
 
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    // optional uint32 action_id = 1;
+    // optional uint32 action_type = 1;
+    if (has_action_type()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->action_type());
+    }
+
+    // optional uint32 action_id = 2;
     if (has_action_id()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::UInt32Size(
@@ -1394,16 +1432,6 @@ int Action::ByteSize() const {
     }
 
   }
-  // repeated uint32 args = 2;
-  {
-    int data_size = 0;
-    for (int i = 0; i < this->args_size(); i++) {
-      data_size += ::google::protobuf::internal::WireFormatLite::
-        UInt32Size(this->args(i));
-    }
-    total_size += 1 * this->args_size() + data_size;
-  }
-
   // repeated uint32 dst_ids = 4;
   {
     int data_size = 0;
@@ -1422,6 +1450,16 @@ int Action::ByteSize() const {
         UInt32Size(this->card_ids(i));
     }
     total_size += 1 * this->card_ids_size() + data_size;
+  }
+
+  // repeated uint32 args = 6;
+  {
+    int data_size = 0;
+    for (int i = 0; i < this->args_size(); i++) {
+      data_size += ::google::protobuf::internal::WireFormatLite::
+        UInt32Size(this->args(i));
+    }
+    total_size += 1 * this->args_size() + data_size;
   }
 
   if (!unknown_fields().empty()) {
@@ -1449,10 +1487,13 @@ void Action::MergeFrom(const ::google::protobuf::Message& from) {
 
 void Action::MergeFrom(const Action& from) {
   GOOGLE_CHECK_NE(&from, this);
-  args_.MergeFrom(from.args_);
   dst_ids_.MergeFrom(from.dst_ids_);
   card_ids_.MergeFrom(from.card_ids_);
+  args_.MergeFrom(from.args_);
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (from.has_action_type()) {
+      set_action_type(from.action_type());
+    }
     if (from.has_action_id()) {
       set_action_id(from.action_id());
     }
@@ -1482,11 +1523,12 @@ bool Action::IsInitialized() const {
 
 void Action::Swap(Action* other) {
   if (other != this) {
+    std::swap(action_type_, other->action_type_);
     std::swap(action_id_, other->action_id_);
-    args_.Swap(&other->args_);
     std::swap(src_id_, other->src_id_);
     dst_ids_.Swap(&other->dst_ids_);
     card_ids_.Swap(&other->card_ids_);
+    args_.Swap(&other->args_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);
@@ -1506,10 +1548,10 @@ void Action::Swap(Action* other) {
 
 #ifndef _MSC_VER
 const int Respond::kRespondIdFieldNumber;
-const int Respond::kArgsFieldNumber;
 const int Respond::kSrcIdFieldNumber;
 const int Respond::kDstIdsFieldNumber;
 const int Respond::kCardIdsFieldNumber;
+const int Respond::kArgsFieldNumber;
 #endif  // !_MSC_VER
 
 Respond::Respond()
@@ -1568,9 +1610,9 @@ void Respond::Clear() {
     respond_id_ = 0u;
     src_id_ = 0u;
   }
-  args_.Clear();
   dst_ids_.Clear();
   card_ids_.Clear();
+  args_.Clear();
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
   mutable_unknown_fields()->Clear();
 }
@@ -1592,34 +1634,12 @@ bool Respond::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(16)) goto parse_args;
+        if (input->ExpectTag(16)) goto parse_src_id;
         break;
       }
 
-      // repeated uint32 args = 2;
+      // optional uint32 src_id = 2;
       case 2: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
-         parse_args:
-          DO_((::google::protobuf::internal::WireFormatLite::ReadRepeatedPrimitive<
-                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
-                 1, 16, input, this->mutable_args())));
-        } else if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag)
-                   == ::google::protobuf::internal::WireFormatLite::
-                      WIRETYPE_LENGTH_DELIMITED) {
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPackedPrimitiveNoInline<
-                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
-                 input, this->mutable_args())));
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectTag(16)) goto parse_args;
-        if (input->ExpectTag(24)) goto parse_src_id;
-        break;
-      }
-
-      // optional uint32 src_id = 3;
-      case 3: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
          parse_src_id:
@@ -1630,18 +1650,18 @@ bool Respond::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(32)) goto parse_dst_ids;
+        if (input->ExpectTag(24)) goto parse_dst_ids;
         break;
       }
 
-      // repeated uint32 dst_ids = 4;
-      case 4: {
+      // repeated uint32 dst_ids = 3;
+      case 3: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
          parse_dst_ids:
           DO_((::google::protobuf::internal::WireFormatLite::ReadRepeatedPrimitive<
                    ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
-                 1, 32, input, this->mutable_dst_ids())));
+                 1, 24, input, this->mutable_dst_ids())));
         } else if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag)
                    == ::google::protobuf::internal::WireFormatLite::
                       WIRETYPE_LENGTH_DELIMITED) {
@@ -1651,19 +1671,19 @@ bool Respond::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(32)) goto parse_dst_ids;
-        if (input->ExpectTag(40)) goto parse_card_ids;
+        if (input->ExpectTag(24)) goto parse_dst_ids;
+        if (input->ExpectTag(32)) goto parse_card_ids;
         break;
       }
 
-      // repeated uint32 card_ids = 5;
-      case 5: {
+      // repeated uint32 card_ids = 4;
+      case 4: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
          parse_card_ids:
           DO_((::google::protobuf::internal::WireFormatLite::ReadRepeatedPrimitive<
                    ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
-                 1, 40, input, this->mutable_card_ids())));
+                 1, 32, input, this->mutable_card_ids())));
         } else if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag)
                    == ::google::protobuf::internal::WireFormatLite::
                       WIRETYPE_LENGTH_DELIMITED) {
@@ -1673,7 +1693,29 @@ bool Respond::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(40)) goto parse_card_ids;
+        if (input->ExpectTag(32)) goto parse_card_ids;
+        if (input->ExpectTag(40)) goto parse_args;
+        break;
+      }
+
+      // repeated uint32 args = 5;
+      case 5: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+         parse_args:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadRepeatedPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 1, 40, input, this->mutable_args())));
+        } else if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag)
+                   == ::google::protobuf::internal::WireFormatLite::
+                      WIRETYPE_LENGTH_DELIMITED) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPackedPrimitiveNoInline<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, this->mutable_args())));
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(40)) goto parse_args;
         if (input->ExpectAtEnd()) return true;
         break;
       }
@@ -1701,27 +1743,27 @@ void Respond::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteUInt32(1, this->respond_id(), output);
   }
 
-  // repeated uint32 args = 2;
-  for (int i = 0; i < this->args_size(); i++) {
-    ::google::protobuf::internal::WireFormatLite::WriteUInt32(
-      2, this->args(i), output);
-  }
-
-  // optional uint32 src_id = 3;
+  // optional uint32 src_id = 2;
   if (has_src_id()) {
-    ::google::protobuf::internal::WireFormatLite::WriteUInt32(3, this->src_id(), output);
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(2, this->src_id(), output);
   }
 
-  // repeated uint32 dst_ids = 4;
+  // repeated uint32 dst_ids = 3;
   for (int i = 0; i < this->dst_ids_size(); i++) {
     ::google::protobuf::internal::WireFormatLite::WriteUInt32(
-      4, this->dst_ids(i), output);
+      3, this->dst_ids(i), output);
   }
 
-  // repeated uint32 card_ids = 5;
+  // repeated uint32 card_ids = 4;
   for (int i = 0; i < this->card_ids_size(); i++) {
     ::google::protobuf::internal::WireFormatLite::WriteUInt32(
-      5, this->card_ids(i), output);
+      4, this->card_ids(i), output);
+  }
+
+  // repeated uint32 args = 5;
+  for (int i = 0; i < this->args_size(); i++) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(
+      5, this->args(i), output);
   }
 
   if (!unknown_fields().empty()) {
@@ -1737,27 +1779,27 @@ void Respond::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(1, this->respond_id(), target);
   }
 
-  // repeated uint32 args = 2;
-  for (int i = 0; i < this->args_size(); i++) {
-    target = ::google::protobuf::internal::WireFormatLite::
-      WriteUInt32ToArray(2, this->args(i), target);
-  }
-
-  // optional uint32 src_id = 3;
+  // optional uint32 src_id = 2;
   if (has_src_id()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(3, this->src_id(), target);
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(2, this->src_id(), target);
   }
 
-  // repeated uint32 dst_ids = 4;
+  // repeated uint32 dst_ids = 3;
   for (int i = 0; i < this->dst_ids_size(); i++) {
     target = ::google::protobuf::internal::WireFormatLite::
-      WriteUInt32ToArray(4, this->dst_ids(i), target);
+      WriteUInt32ToArray(3, this->dst_ids(i), target);
   }
 
-  // repeated uint32 card_ids = 5;
+  // repeated uint32 card_ids = 4;
   for (int i = 0; i < this->card_ids_size(); i++) {
     target = ::google::protobuf::internal::WireFormatLite::
-      WriteUInt32ToArray(5, this->card_ids(i), target);
+      WriteUInt32ToArray(4, this->card_ids(i), target);
+  }
+
+  // repeated uint32 args = 5;
+  for (int i = 0; i < this->args_size(); i++) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteUInt32ToArray(5, this->args(i), target);
   }
 
   if (!unknown_fields().empty()) {
@@ -1778,7 +1820,7 @@ int Respond::ByteSize() const {
           this->respond_id());
     }
 
-    // optional uint32 src_id = 3;
+    // optional uint32 src_id = 2;
     if (has_src_id()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::UInt32Size(
@@ -1786,17 +1828,7 @@ int Respond::ByteSize() const {
     }
 
   }
-  // repeated uint32 args = 2;
-  {
-    int data_size = 0;
-    for (int i = 0; i < this->args_size(); i++) {
-      data_size += ::google::protobuf::internal::WireFormatLite::
-        UInt32Size(this->args(i));
-    }
-    total_size += 1 * this->args_size() + data_size;
-  }
-
-  // repeated uint32 dst_ids = 4;
+  // repeated uint32 dst_ids = 3;
   {
     int data_size = 0;
     for (int i = 0; i < this->dst_ids_size(); i++) {
@@ -1806,7 +1838,7 @@ int Respond::ByteSize() const {
     total_size += 1 * this->dst_ids_size() + data_size;
   }
 
-  // repeated uint32 card_ids = 5;
+  // repeated uint32 card_ids = 4;
   {
     int data_size = 0;
     for (int i = 0; i < this->card_ids_size(); i++) {
@@ -1814,6 +1846,16 @@ int Respond::ByteSize() const {
         UInt32Size(this->card_ids(i));
     }
     total_size += 1 * this->card_ids_size() + data_size;
+  }
+
+  // repeated uint32 args = 5;
+  {
+    int data_size = 0;
+    for (int i = 0; i < this->args_size(); i++) {
+      data_size += ::google::protobuf::internal::WireFormatLite::
+        UInt32Size(this->args(i));
+    }
+    total_size += 1 * this->args_size() + data_size;
   }
 
   if (!unknown_fields().empty()) {
@@ -1841,9 +1883,9 @@ void Respond::MergeFrom(const ::google::protobuf::Message& from) {
 
 void Respond::MergeFrom(const Respond& from) {
   GOOGLE_CHECK_NE(&from, this);
-  args_.MergeFrom(from.args_);
   dst_ids_.MergeFrom(from.dst_ids_);
   card_ids_.MergeFrom(from.card_ids_);
+  args_.MergeFrom(from.args_);
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
     if (from.has_respond_id()) {
       set_respond_id(from.respond_id());
@@ -1875,10 +1917,10 @@ bool Respond::IsInitialized() const {
 void Respond::Swap(Respond* other) {
   if (other != this) {
     std::swap(respond_id_, other->respond_id_);
-    args_.Swap(&other->args_);
     std::swap(src_id_, other->src_id_);
     dst_ids_.Swap(&other->dst_ids_);
     card_ids_.Swap(&other->card_ids_);
+    args_.Swap(&other->args_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);

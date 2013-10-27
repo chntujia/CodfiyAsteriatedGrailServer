@@ -604,7 +604,7 @@ void GameGrail::GameRun()
 				ztLoggerWrite(ZONE, e_Error, "[Table %d] Handle returns error: %d. Current state: %d", 
 					m_gameId, ret, currentState->state);
 			}
-		}catch(int error)
+		}catch(GrailError error)
 		{
 			ztLoggerWrite(ZONE, e_Error, "[Table %d] Handle throws error: %d. Current state: %d", 
 				m_gameId, error, topGameState()->state);

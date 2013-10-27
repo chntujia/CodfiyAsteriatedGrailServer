@@ -35,24 +35,25 @@ message TurnBegin {
 
 // 基础行动，常量不合适随意修改
 enum BasicActionType {
-    ACTION_BUY = 1;      // 购买
-    ACTION_REFINE = 2;   // 提炼
-    ACTION_COMPOSE = 3;  // 合成
-    ACTION_ATTACK = 4;   // 斩
-    ACTION_MAGIC = 5;    // 基础法术
+    ACTION_ATTACK = 1;   // 用于c->s，斩 / 用于s->c，标识可以执行攻击行动
+    ACTION_MAGIC = 2;    // 用于c->s，基础法术 / 用于s->c，标识可以执行法术行动
+	ACTION_SPECIAL = 3;  // 用于c->s，特殊行动 / 用于s->c，标识可以执行特殊行动
+	ACTION_ATTACK_SKILL = 4;  //用于c->s，攻击技能，非响应A，只有欺诈，多重射击
+	ACTION_MAGIC_SKILL = 5;   //用于c->s，法术技能
 	ACTION_ANY = 6;   // 用于s->c，标识可以使用任何行动
 	ACTION_ATTACK_MAGIC = 7; // 用于s->c，标识可以使用斩或法术行动
-	ACTION_NONE = 100000; // 无法行动
+	ACTION_NONE = 100000; // 用于c->s，放弃行动 / 用于s->c，无法行动
 }
 
 
 // c -> s, s -> c 行动，根据不同的行动填写不同长度的args
 message Action {
-    optional uint32 action_id = 1;
-    repeated uint32 args = 2;
-	optional uint32 src_id = 3;
+    optional uint32 action_type = 1;
+    optional uint32 action_id = 2;
+    optional uint32 src_id = 3;
 	repeated uint32 dst_ids = 4;
 	repeated uint32 card_ids = 5;
+	repeated uint32 args = 6;	
 }
 
 // 基础响应，常量不合适随意修改
@@ -67,10 +68,10 @@ enum BasicRespondType {
 // c -> s, s -> c 启动及技能响应及应战及治疗响应及爆牌，根据不同的行动填写不同长度的args，可以用到 s -> c
 message Respond {
     optional uint32 respond_id = 1;    // 启动响应技能种类过多，不写常量了
-    repeated uint32 args = 2;
-	optional uint32 src_id = 3;
-	repeated uint32 dst_ids = 4;
-	repeated uint32 card_ids = 5;
+	optional uint32 src_id = 2;
+	repeated uint32 dst_ids = 3;
+	repeated uint32 card_ids = 4;
+	repeated uint32 args = 5;
 }
 
 
@@ -102,7 +103,7 @@ message ErrorInput {
 }
 
 
-// s -> c 命中与否，攻击或魔蛋或魔爆是否命中
+// s -> c 命中与否，攻击是否命中
 message HitMsg {
 	optional uint32 cmd_id = 1;
 	optional uint32 hit = 2;
@@ -124,5 +125,5 @@ message HurtMsg {
 	optional uint32 dst_id = 2[default=100000];
 	optional uint32 hurt = 3;
 	optional uint32 cause = 4;     // 技能或操作id
-	optional uint32 type = 5;      // 伤害类型，1：魔法，2：物理，暂时不用
+	optional uint32 type = 5;      // 伤害类型，1：魔法，2：物理
 }

@@ -104,9 +104,9 @@ public:
 	virtual int p_basic_effect_change(int dstID, int card, int doerID, int cause)  { return GE_SUCCESS; }
 	virtual int p_show_hand(int playerID, int howMany, vector<int> cards) { return GE_SUCCESS; }
 
-	static bool is_allow_action(int claim, int allow, bool canGiveUp);
+	virtual int v_allow_action(int claim, int allow, bool canGiveUp);
 	virtual int v_attack(int cardID, int dstID, bool realCard = true);
-	virtual int v_reattack(int cardID, int orignCardID, int dstID, int orignID, bool realCard = true);
+	virtual int v_reattack(int cardID, int orignCardID, int dstID, int orignID, int rate, bool realCard = true);
 	virtual int v_missile(int cardID, int dstID, bool realCard = true);
 	virtual int v_remissile(int cardID, bool realCard = true);
 	virtual int v_block(int cardID);

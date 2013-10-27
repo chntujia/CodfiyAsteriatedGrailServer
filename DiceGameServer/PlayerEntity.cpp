@@ -1,6 +1,6 @@
 #include "PlayerEntity.h"
 #include "GameGrail.h"
-
+using namespace network;
 PlayerEntity::PlayerEntity(GameGrail *engine,int ID, int isRed)
 {
     //setInfo(0);
@@ -258,33 +258,33 @@ int PlayerEntity::getColor()
     return color;
 }
 
-bool PlayerEntity::is_allow_action(int claim, int allow, bool canGiveUp)
+int PlayerEntity::v_allow_action(int claim, int allow, bool canGiveUp)
 {
 	switch(allow)
 	{
-	case ANY_ACTION:
-		if(claim == ATTACK_ACTION || claim == MAGIC_ACTION || claim == SPECIAL_ACTION){
-			return true;
+	case ACTION_ANY:
+		if(claim == ACTION_ATTACK || claim == ACTION_MAGIC || claim == ACTION_SPECIAL){
+			return GE_SUCCESS;
 		}
 		break;
-	case ATTACK_MAGIC:
-		if(claim == ATTACK_ACTION || claim == MAGIC_ACTION){
-			return true;
+	case ACTION_ATTACK_MAGIC:
+		if(claim == ACTION_ATTACK || claim == ACTION_MAGIC){
+			return GE_SUCCESS;
 		}
 		break;
-	case ATTACK_ACTION:
-	case MAGIC_ACTION:
-	case SPECIAL_ACTION:
-	case NO_ACTION:
+	case ACTION_ATTACK:
+	case ACTION_MAGIC:
+	case ACTION_SPECIAL:
+	case ACTION_NONE:
 		if(claim == allow){
-			return true;
+			return GE_SUCCESS;
 		}
 		break;
 	}
-	if(canGiveUp && NO_ACTION == claim){
-		return true;
+	if(canGiveUp && ACTION_NONE == claim){
+		return GE_SUCCESS;
 	}
-	return false;
+	return GE_INVALID_ACTION;
 }
 
 //FIXME: «±–– ÃÙ–∆ ∂‡÷ÿ
@@ -307,8 +307,11 @@ int PlayerEntity::v_attack(int cardID, int dstID, bool realCard)
 	return GE_SUCCESS;
 }
 
-int PlayerEntity::v_reattack(int cardID, int orignCardID, int dstID, int orignID, bool realCard)
+int PlayerEntity::v_reattack(int cardID, int orignCardID, int dstID, int orignID, int rate, bool realCard)
 {
+	if(rate){
+		
+	}
 	if(realCard){
 		int ret;
 		if(GE_SUCCESS != (ret = checkOneHandCard(cardID))){

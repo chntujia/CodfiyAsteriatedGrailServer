@@ -282,15 +282,18 @@ int StateActionPhase::handle(GameGrail* engine)
 		void* temp;
 		int ret;
 		int card_id;
-		if(GE_SUCCESS == (ret=engine->getReply(m_currentPlayerID, temp))){
+		if(GE_SUCCESS == (ret = engine->getReply(m_currentPlayerID, temp))){
 			Action *action = (Action*) temp;
-			PlayerEntity *dst;
-			switch(action->action_id())
+			PlayerEntity *dst, *src;
+			src = engine->getPlayerEntity(m_currentPlayerID);
+			if(GE_SUCCESS != (ret = src->v_allow_action(action->action_type(), allowAction, canGiveUp))){
+				return ret;
+			}
+			switch(action->action_type())
 			{				
 			case ACTION_ATTACK:
-				//FIXME verify card type
 				card_id = action->args().Get(0);
-				if(GE_SUCCESS == (ret=engine->getPlayerEntity(m_currentPlayerID)->v_attack(card_id, action->dst_ids().Get(0)))){
+				if(GE_SUCCESS == (ret = src->v_attack(card_id, action->dst_ids().Get(0)))){
 					engine->popGameState();
 					return engine->setStateAttackAction(card_id, action->dst_ids().Get(0), action->src_id());
 				}
@@ -301,37 +304,37 @@ int StateActionPhase::handle(GameGrail* engine)
 				switch(getCardByID(card_id)->getName())
 				{
 				case NAME_POISON:
-					if (GE_SUCCESS == (ret=engine->getPlayerEntity(m_currentPlayerID)->checkOneHandCard(card_id))){
+					if (GE_SUCCESS == (ret = src->checkOneHandCard(card_id))){
 						engine->popGameState();
 						engine->pushGameState(new StateAfterMagic(m_currentPlayerID));
 						engine->setStateUseCard(card_id, action->dst_ids(0), m_currentPlayerID, true);
 						engine->pushGameState(new StateBeforeMagic(m_currentPlayerID));
-						return true;
+						return GE_SUCCESS;
 					}
 				case NAME_SHIELD:
-					if (GE_SUCCESS == (ret=engine->getPlayerEntity(m_currentPlayerID)->v_shield(card_id, dst))){
+					if (GE_SUCCESS == (ret = src->v_shield(card_id, dst))){
 						engine->popGameState();
 						engine->pushGameState(new StateAfterMagic(m_currentPlayerID));
 						engine->setStateUseCard(card_id, action->dst_ids(0), m_currentPlayerID, true);
 						engine->pushGameState(new StateBeforeMagic(m_currentPlayerID));
-						return true;
+						return GE_SUCCESS;
 					}
 				case NAME_MISSILE:
-					if (GE_SUCCESS == (ret=engine->getPlayerEntity(m_currentPlayerID)->v_missile(card_id, action->dst_ids(0)))){
+					if (GE_SUCCESS == (ret = src->v_missile(card_id, action->dst_ids(0)))){
 						engine->popGameState();
 						engine->pushGameState(new StateAfterMagic(m_currentPlayerID));
 						engine->pushGameState(StateMissiled::create(engine, card_id, action->dst_ids(0), m_currentPlayerID));
 						engine->setStateUseCard(card_id, action->dst_ids(0), m_currentPlayerID);
 						engine->pushGameState(new StateBeforeMagic(m_currentPlayerID));
-						return true;
+						return GE_SUCCESS;
 					}
 				case NAME_WEAKEN:
-					if (GE_SUCCESS == (ret=engine->getPlayerEntity(m_currentPlayerID)->v_weaken(card_id, dst))){
+					if (GE_SUCCESS == (ret = src->v_weaken(card_id, dst))){
 						engine->popGameState();
 						engine->pushGameState(new StateAfterMagic(m_currentPlayerID));
 						engine->setStateUseCard(card_id, action->dst_ids(0), m_currentPlayerID, true);
 						engine->pushGameState(new StateBeforeMagic(m_currentPlayerID));
-						return true;
+						return GE_SUCCESS;
 					}
 				}
 				break;
@@ -385,7 +388,7 @@ int StateAttacked::handle(GameGrail* engine)
 				//FIXME: verify
 			case RA_ATTACK:
 				card_id = respond_attack->args(1);
-				if(GE_SUCCESS == (ret=engine->getPlayerEntity(context->attack.dstID)->v_reattack(card_id, temp.attack.cardID, respond_attack->dst_ids().Get(0), temp.attack.srcID))){
+				if(GE_SUCCESS == (ret=engine->getPlayerEntity(context->attack.dstID)->v_reattack(card_id, temp.attack.cardID, respond_attack->dst_ids().Get(0), temp.attack.srcID, context->hitRate))){
 					// 反馈玩家行动
 					respond_attack->set_src_id(context->attack.dstID);					
 					engine->popGameState();
@@ -480,6 +483,9 @@ int StateMissiled::handle(GameGrail* engine)
 
 	CommandRequest cmd_req;
 	Coder::askForMissile(dstID, srcID, harmPoint, nextTargetID, cmd_req);
+	int dstID_t = dstID;
+	int srcID_t = srcID;
+	int harmPoint_t = harmPoint;
 //change
 	if(engine->waitForOne(dstID, MSG_CMD_REQ, cmd_req))
 	{
@@ -489,9 +495,7 @@ int StateMissiled::handle(GameGrail* engine)
 		if(GE_SUCCESS == (ret = engine->getReply(dstID, reply)))
 		{
 			reAttack = (Respond*)reply;
-			int cardID;
-			int dstID_t = dstID;
-			int srcID_t = srcID;
+			int cardID;			
 			switch(reAttack->args(0))
 			{				
 				//FIXME: verify card type
@@ -523,7 +527,7 @@ int StateMissiled::handle(GameGrail* engine)
 	}
 	else{
 		engine->popGameState();
-		engine->setStateMissileGiveUp(dstID, srcID, harmPoint);
+		engine->setStateMissileGiveUp(dstID_t, srcID_t, harmPoint_t);
 		return GE_TIMEOUT;
 	}
 }
