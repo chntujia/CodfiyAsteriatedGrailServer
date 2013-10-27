@@ -22,6 +22,8 @@ enum STATE{
 	STATE_BEFORE_MAGIC,
 	STATE_MISSILED,
 	STATE_AFTER_MAGIC,
+	STATE_BEFORE_SPECIAL,
+	STATE_AFTER_SPECIAL,
 	STATE_TURN_END,
 	STATE_TIMELINE_1,
 	STATE_TIMELINE_2_MISS,
@@ -277,6 +279,22 @@ class StateAfterMagic: public GrailState
 {
 public:
 	StateAfterMagic(int srcID): GrailState(STATE_AFTER_MAGIC), srcID(srcID){}
+	int handle(GameGrail* engine);
+	int srcID;
+};
+
+class StateBeforeSpecial: public GrailState
+{
+public:
+	StateBeforeSpecial(int srcID): GrailState(STATE_BEFORE_SPECIAL), srcID(srcID){}
+	int handle(GameGrail* engine);
+	int srcID;
+};
+
+class StateAfterSpecial: public GrailState
+{
+public:
+	StateAfterSpecial(int srcID): GrailState(STATE_AFTER_SPECIAL), srcID(srcID){}
 	int handle(GameGrail* engine);
 	int srcID;
 };

@@ -87,6 +87,8 @@ public:
 	virtual int p_after_attack(int playerID) { return GE_SUCCESS; }
 	virtual int p_before_magic(int srcID) { return GE_SUCCESS; }
 	virtual int p_after_magic(int srcID) { return GE_SUCCESS; }
+	virtual int p_before_special(int srcID) { return GE_SUCCESS; }
+	virtual int p_after_special(int srcID) { return GE_SUCCESS; }
 	virtual int p_turn_end(int playerID) { return GE_SUCCESS; }
 	virtual int p_timeline_1(CONTEXT_TIMELINE_1 *con) { return GE_SUCCESS; }
 	virtual int p_timeline_2_hit(CONTEXT_TIMELINE_2_HIT *con) { return GE_SUCCESS; }
@@ -112,6 +114,8 @@ public:
 	virtual int v_block(int cardID);
 	virtual int v_shield(int cardID, PlayerEntity* dst);
 	virtual int v_weaken(int cardID, PlayerEntity* dst);
+	virtual int v_buy();
+	virtual int v_synthesize(TeamArea* team);
 protected:
     int id;//Íæ¼Òid
     int characterID;

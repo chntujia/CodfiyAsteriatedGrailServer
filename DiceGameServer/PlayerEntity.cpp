@@ -260,6 +260,12 @@ int PlayerEntity::getColor()
 
 int PlayerEntity::v_allow_action(int claim, int allow, bool canGiveUp)
 {
+	if(claim == ACTION_ATTACK_SKILL){
+		claim = ACTION_ATTACK;
+	}
+	if(claim == ACTION_MAGIC_SKILL){
+		claim = ACTION_MAGIC;
+	}
 	switch(allow)
 	{
 	case ACTION_ANY:
@@ -309,8 +315,8 @@ int PlayerEntity::v_attack(int cardID, int dstID, bool realCard)
 
 int PlayerEntity::v_reattack(int cardID, int orignCardID, int dstID, int orignID, int rate, bool realCard)
 {
-	if(rate){
-		
+	if(rate != RATE_NORMAL){
+		return GE_INVALID_ACTION;
 	}
 	if(realCard){
 		int ret;
@@ -403,6 +409,22 @@ int PlayerEntity::v_weaken(int cardID, PlayerEntity* dst)
 	}
 	if(GE_SUCCESS == dst->checkBasicEffectName(NAME_WEAKEN)){
 		return GE_BASIC_EFFECT_ALREADY_EXISTS;
+	}
+	return GE_SUCCESS;
+}
+
+int PlayerEntity::v_buy()
+{
+	if(handCards.size()+3 > handCardsMax){
+		return GE_INVALID_ACTION;
+	}
+	return GE_SUCCESS;
+}
+
+int PlayerEntity::v_synthesize(TeamArea* team)
+{
+	if(handCards.size()+3 > handCardsMax || team->getEnergy(color) < 3){
+		return GE_INVALID_ACTION;
 	}
 	return GE_SUCCESS;
 }

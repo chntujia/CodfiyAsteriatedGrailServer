@@ -89,7 +89,7 @@ public:
     int getGem(int color){return (color == RED)?gemRED:gemBLUE;}
     int getCrystal(int color){return (color == RED)?crystalRED:crystalBLUE;}
     int getCup(int color){return (color == RED)?cupRED:cupBLUE;}
-
+	int getEnergy(int color) { return (color == RED) ? gemRED+crystalRED : gemBLUE+crystalBLUE; }
 private:
 
     int moraleRED,moraleBLUE;
@@ -178,7 +178,7 @@ public:
 	int getReply(int id, void* &reply);
 	
 	int drawCardsFromPile(int howMany, vector< int > &cards);
-	//涉及插入状态
+	//setState前缀的函数涉及插入状态
 	//底层API原则上不直接调用
 	int setStateMoveCards(int srcOwner, int srcArea, int dstOwner, int dstArea, int howMany, vector< int > cards, HARM harm, bool isShown = false);
 	//移牌至手上，需提供HARM，若从摸牌堆上移出，cards不用赋值

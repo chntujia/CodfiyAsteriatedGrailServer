@@ -338,6 +338,39 @@ int StateActionPhase::handle(GameGrail* engine)
 					}
 				}
 				break;
+			case ACTION_SPECIAL:
+				switch(action->action_id())
+				{
+				case SPECIAL_BUY:
+					if (GE_SUCCESS == (ret = src->v_buy())){
+						GameInfo update_info;
+						TeamArea *team = engine->getTeamArea();
+						int color = src->getColor();
+						team->setGem(color, team->getGem(color)+1);
+						team->setCrystal(color, team->getCrystal(color)+1);
+						if (color == RED){
+							update_info.set_red_gem(team->getGem(color));
+							update_info.set_red_crystal(team->getCrystal(color));
+						}
+						else{
+							update_info.set_blue_gem(team->getGem(color));
+							update_info.set_red_crystal(team->getCrystal(color));
+						}
+						engine->sendMessage(-1, MSG_GAME, update_info);
+						engine->popGameState();
+						engine->pushGameState(new StateAfterSpecial(m_currentPlayerID));
+						vector<int> cards;
+						HARM buy;
+						buy.cause = CAUSE_BUY;
+						buy.point = 3;
+						buy.srcID = m_currentPlayerID;
+						buy.type = HARM_NONE;
+						engine->setStateMoveCardsToHand(-1, DECK_PILE, m_currentPlayerID, DECK_HAND, 3, cards, buy);
+						engine->pushGameState(new StateBeforeSpecial(m_currentPlayerID));
+						return GE_SUCCESS;
+					}
+				}
+				break;
 			}
 		}
 		return ret;
@@ -566,6 +599,43 @@ int StateAfterMagic::handle(GameGrail* engine)
 		iterator++;
 	}
 	if(GE_SUCCESS == (ret = engine->popGameState_if(STATE_AFTER_MAGIC))){
+		return engine->setStateCheckTurnEnd();
+	}
+	return ret;
+}
+
+int StateBeforeSpecial::handle(GameGrail* engine)
+{
+	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateBeforeSpecial", engine->getGameId());
+	int ret = GE_FATAL_ERROR;
+	int m_currentPlayerID = engine->getCurrentPlayerID();
+	for(int i = iterator; i< engine->getGameMaxPlayers(); i++){
+		if(GE_SUCCESS != (ret = engine->getPlayerEntity(i)->p_before_special(srcID))){
+			if(ret==GE_DONE_AND_URGENT){
+				iterator++;
+			}
+			return ret;
+		}
+		iterator++;
+	}
+	return engine->popGameState_if(STATE_BEFORE_SPECIAL);
+}
+
+int StateAfterSpecial::handle(GameGrail* engine)
+{
+	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateAfterSpecial", engine->getGameId());
+	int ret = GE_FATAL_ERROR;
+	int m_currentPlayerID = engine->getCurrentPlayerID();
+	for(int i = iterator; i< engine->getGameMaxPlayers(); i++){
+		if(GE_SUCCESS != (ret = engine->getPlayerEntity(i)->p_after_special(srcID))){
+			if(ret==GE_DONE_AND_URGENT){
+				iterator++;
+			}
+			return ret;
+		}
+		iterator++;
+	}
+	if(GE_SUCCESS == (ret = engine->popGameState_if(STATE_AFTER_SPECIAL))){
 		return engine->setStateCheckTurnEnd();
 	}
 	return ret;
