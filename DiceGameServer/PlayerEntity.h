@@ -114,8 +114,9 @@ public:
 	virtual int v_block(int cardID);
 	virtual int v_shield(int cardID, PlayerEntity* dst);
 	virtual int v_weaken(int cardID, PlayerEntity* dst);
-	virtual int v_buy();
-	virtual int v_synthesize(TeamArea* team);
+	virtual int v_buy(Action *action);
+	virtual int v_synthesize(Action *action, TeamArea* team);
+	virtual int v_extract(Action *action, TeamArea* team);
 protected:
     int id;//Íæ¼Òid
     int characterID;

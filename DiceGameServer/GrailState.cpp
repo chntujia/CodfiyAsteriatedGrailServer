@@ -265,26 +265,22 @@ int StateBoot::handle(GameGrail* engine)
 int StateActionPhase::handle(GameGrail* engine)
 {
 	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateActionPhase", engine->getGameId());
-	if(!isSet)
-	{
-		//FIXME ÌôÐÆ
-		allowAction = ACTION_ANY;
-		canGiveUp = false;
-		isSet = true;
-	}
+
+	//FIXME: ÌôÐÆ
+	allowAction = ACTION_ANY;
+	canGiveUp = false;
+
 	int m_currentPlayerID = engine->getCurrentPlayerID();
 
 	CommandRequest cmd_req;
 	Coder::askForAction(m_currentPlayerID, allowAction, canGiveUp, cmd_req);
 	if(engine->waitForOne(m_currentPlayerID, MSG_CMD_REQ, cmd_req))
 	{
-		//TODO set nextState based on reply
 		void* temp;
 		int ret;
-		int card_id;
 		if(GE_SUCCESS == (ret = engine->getReply(m_currentPlayerID, temp))){
 			Action *action = (Action*) temp;
-			PlayerEntity *dst, *src;
+			PlayerEntity *src;
 			src = engine->getPlayerEntity(m_currentPlayerID);
 			if(GE_SUCCESS != (ret = src->v_allow_action(action->action_type(), allowAction, canGiveUp))){
 				return ret;
@@ -292,91 +288,201 @@ int StateActionPhase::handle(GameGrail* engine)
 			switch(action->action_type())
 			{				
 			case ACTION_ATTACK:
-				card_id = action->args().Get(0);
-				if(GE_SUCCESS == (ret = src->v_attack(card_id, action->dst_ids().Get(0)))){
-					engine->popGameState();
-					return engine->setStateAttackAction(card_id, action->dst_ids().Get(0), action->src_id());
-				}
-				break;
+				return basicAttack(action, engine);
 			case ACTION_MAGIC:
-				card_id = action->args().Get(0);
-				dst = engine->getPlayerEntity(action->dst_ids(0));
-				switch(getCardByID(card_id)->getName())
-				{
-				case NAME_POISON:
-					if (GE_SUCCESS == (ret = src->checkOneHandCard(card_id))){
-						engine->popGameState();
-						engine->pushGameState(new StateAfterMagic(m_currentPlayerID));
-						engine->setStateUseCard(card_id, action->dst_ids(0), m_currentPlayerID, true);
-						engine->pushGameState(new StateBeforeMagic(m_currentPlayerID));
-						return GE_SUCCESS;
-					}
-				case NAME_SHIELD:
-					if (GE_SUCCESS == (ret = src->v_shield(card_id, dst))){
-						engine->popGameState();
-						engine->pushGameState(new StateAfterMagic(m_currentPlayerID));
-						engine->setStateUseCard(card_id, action->dst_ids(0), m_currentPlayerID, true);
-						engine->pushGameState(new StateBeforeMagic(m_currentPlayerID));
-						return GE_SUCCESS;
-					}
-				case NAME_MISSILE:
-					if (GE_SUCCESS == (ret = src->v_missile(card_id, action->dst_ids(0)))){
-						engine->popGameState();
-						engine->pushGameState(new StateAfterMagic(m_currentPlayerID));
-						engine->pushGameState(StateMissiled::create(engine, card_id, action->dst_ids(0), m_currentPlayerID));
-						engine->setStateUseCard(card_id, action->dst_ids(0), m_currentPlayerID);
-						engine->pushGameState(new StateBeforeMagic(m_currentPlayerID));
-						return GE_SUCCESS;
-					}
-				case NAME_WEAKEN:
-					if (GE_SUCCESS == (ret = src->v_weaken(card_id, dst))){
-						engine->popGameState();
-						engine->pushGameState(new StateAfterMagic(m_currentPlayerID));
-						engine->setStateUseCard(card_id, action->dst_ids(0), m_currentPlayerID, true);
-						engine->pushGameState(new StateBeforeMagic(m_currentPlayerID));
-						return GE_SUCCESS;
-					}
-				}
-				break;
+				return basicMagic(action, engine);
 			case ACTION_SPECIAL:
-				switch(action->action_id())
-				{
-				case SPECIAL_BUY:
-					if (GE_SUCCESS == (ret = src->v_buy())){
-						GameInfo update_info;
-						TeamArea *team = engine->getTeamArea();
-						int color = src->getColor();
-						team->setGem(color, team->getGem(color)+1);
-						team->setCrystal(color, team->getCrystal(color)+1);
-						if (color == RED){
-							update_info.set_red_gem(team->getGem(color));
-							update_info.set_red_crystal(team->getCrystal(color));
-						}
-						else{
-							update_info.set_blue_gem(team->getGem(color));
-							update_info.set_red_crystal(team->getCrystal(color));
-						}
-						engine->sendMessage(-1, MSG_GAME, update_info);
-						engine->popGameState();
-						engine->pushGameState(new StateAfterSpecial(m_currentPlayerID));
-						vector<int> cards;
-						HARM buy;
-						buy.cause = CAUSE_BUY;
-						buy.point = 3;
-						buy.srcID = m_currentPlayerID;
-						buy.type = HARM_NONE;
-						engine->setStateMoveCardsToHand(-1, DECK_PILE, m_currentPlayerID, DECK_HAND, 3, cards, buy);
-						engine->pushGameState(new StateBeforeSpecial(m_currentPlayerID));
-						return GE_SUCCESS;
-					}
-				}
-				break;
+				return basicSpecial(action, engine);
+			default:
+				return GE_INVALID_ACTION;
 			}
 		}
 		return ret;
 	}
 	else{
 		return GE_TIMEOUT;
+	}
+}
+
+int StateActionPhase::basicAttack(Action *action, GameGrail* engine)
+{
+	int ret;
+	int card_id = action->args().Get(0);
+	int m_currentPlayerID = engine->getCurrentPlayerID();
+	PlayerEntity *src = engine->getPlayerEntity(m_currentPlayerID);
+	if(GE_SUCCESS == (ret = src->v_attack(card_id, action->dst_ids().Get(0)))){
+		engine->popGameState();
+		return engine->setStateAttackAction(card_id, action->dst_ids().Get(0), action->src_id());
+	}
+	return ret;
+}
+
+int StateActionPhase::basicMagic(Action *action, GameGrail* engine)
+{
+	int ret;
+	int card_id = action->args().Get(0);
+	int m_currentPlayerID = engine->getCurrentPlayerID();
+	PlayerEntity *src = engine->getPlayerEntity(m_currentPlayerID);
+	PlayerEntity *dst = engine->getPlayerEntity(action->dst_ids(0));
+	switch(getCardByID(card_id)->getName())
+	{
+	case NAME_POISON:
+		if (GE_SUCCESS == (ret = src->checkOneHandCard(card_id))){
+			engine->popGameState();
+			engine->pushGameState(new StateAfterMagic(m_currentPlayerID));
+			engine->setStateUseCard(card_id, action->dst_ids(0), m_currentPlayerID, true);
+			engine->pushGameState(new StateBeforeMagic(m_currentPlayerID));
+			return GE_SUCCESS;
+		}
+	case NAME_SHIELD:
+		if (GE_SUCCESS == (ret = src->v_shield(card_id, dst))){
+			engine->popGameState();
+			engine->pushGameState(new StateAfterMagic(m_currentPlayerID));
+			engine->setStateUseCard(card_id, action->dst_ids(0), m_currentPlayerID, true);
+			engine->pushGameState(new StateBeforeMagic(m_currentPlayerID));
+			return GE_SUCCESS;
+		}
+	case NAME_MISSILE:
+		if (GE_SUCCESS == (ret = src->v_missile(card_id, action->dst_ids(0)))){
+			engine->popGameState();
+			engine->pushGameState(new StateAfterMagic(m_currentPlayerID));
+			engine->pushGameState(StateMissiled::create(engine, card_id, action->dst_ids(0), m_currentPlayerID));
+			engine->setStateUseCard(card_id, action->dst_ids(0), m_currentPlayerID);
+			engine->pushGameState(new StateBeforeMagic(m_currentPlayerID));
+			return GE_SUCCESS;
+		}
+	case NAME_WEAKEN:
+		if (GE_SUCCESS == (ret = src->v_weaken(card_id, dst))){
+			engine->popGameState();
+			engine->pushGameState(new StateAfterMagic(m_currentPlayerID));
+			engine->setStateUseCard(card_id, action->dst_ids(0), m_currentPlayerID, true);
+			engine->pushGameState(new StateBeforeMagic(m_currentPlayerID));
+			return GE_SUCCESS;
+		}
+	}
+	return ret;
+}
+
+int StateActionPhase::basicSpecial(Action *action, GameGrail* engine)
+{
+	int ret;
+	int m_currentPlayerID = engine->getCurrentPlayerID();
+	PlayerEntity *src = engine->getPlayerEntity(m_currentPlayerID);
+	PlayerEntity *dst;
+	switch(action->action_id())
+	{
+	case SPECIAL_BUY:
+		if (GE_SUCCESS == (ret = src->v_buy(action))){
+			engine->sendMessage(-1, MSG_ACTION, *action);
+			GameInfo update_info;
+			TeamArea *team = engine->getTeamArea();
+			int color = src->getColor();
+			team->setGem(color, team->getGem(color)+1);
+			team->setCrystal(color, team->getCrystal(color)+1);
+			if (color == RED){
+				update_info.set_red_gem(team->getGem(color));
+				update_info.set_red_crystal(team->getCrystal(color));
+			}
+			else{
+				update_info.set_blue_gem(team->getGem(color));
+				update_info.set_blue_crystal(team->getCrystal(color));
+			}
+			engine->sendMessage(-1, MSG_GAME, update_info);
+			engine->popGameState();
+			engine->pushGameState(new StateAfterSpecial(m_currentPlayerID));
+			vector<int> cards;
+			HARM buy;
+			buy.cause = CAUSE_BUY;
+			buy.point = 3;
+			buy.srcID = m_currentPlayerID;
+			buy.type = HARM_NONE;
+			engine->setStateMoveCardsToHand(-1, DECK_PILE, m_currentPlayerID, DECK_HAND, 3, cards, buy);
+			engine->pushGameState(new StateBeforeSpecial(m_currentPlayerID));
+			return GE_SUCCESS;
+		}
+		break;
+	case SPECIAL_SYNTHESIZE:
+		if (GE_SUCCESS == (ret = src->v_synthesize(action, engine->getTeamArea()))){
+			engine->sendMessage(-1, MSG_ACTION, *action);
+			GameInfo update_info;
+			TeamArea *team = engine->getTeamArea();
+			int color = src->getColor();
+			int gem = action->args(0);
+			int crystal = action->args(1);
+			team->setGem(color, team->getGem(color)-gem);
+			team->setCrystal(color, team->getCrystal(color)-crystal);
+			team->setCup(color, team->getCup(color)+1);
+			if (color == RED){
+				update_info.set_red_gem(team->getGem(color));
+				update_info.set_red_crystal(team->getCrystal(color));
+				update_info.set_red_grail(team->getCup(color));
+			}
+			else{
+				update_info.set_blue_gem(team->getGem(color));
+				update_info.set_blue_crystal(team->getCrystal(color));
+				update_info.set_blue_grail(team->getCup(color));
+			}
+			engine->sendMessage(-1, MSG_GAME, update_info);
+			engine->popGameState();
+			engine->pushGameState(new StateAfterSpecial(m_currentPlayerID));
+			CONTEXT_LOSE_MORALE* morale = new CONTEXT_LOSE_MORALE;
+			dst = src;
+			while(dst->getColor() == src->getColor()){
+				dst = dst->getPost();
+			}
+			if(team->getCup(color) == 5){
+				engine->pushGameState(new StateGameOver(color));
+			}
+			HARM grail;
+			grail.cause = CAUSE_SYNTHESIZE;
+			grail.point = 1;
+			grail.srcID = m_currentPlayerID;
+			grail.type = HARM_NONE;
+			morale->dstID = dst->getID();
+			morale->harm = grail;
+			morale->howMany = 1;
+			engine->pushGameState(new StateTrueLoseMorale(morale));
+			vector<int> cards;
+			HARM synthesize;
+			synthesize.cause = CAUSE_SYNTHESIZE;
+			synthesize.point = 3;
+			synthesize.srcID = m_currentPlayerID;
+			synthesize.type = HARM_NONE;
+			engine->setStateMoveCardsToHand(-1, DECK_PILE, m_currentPlayerID, DECK_HAND, 3, cards, synthesize);
+			engine->pushGameState(new StateBeforeSpecial(m_currentPlayerID));
+			return GE_SUCCESS;
+		}
+		break;
+	case SPECIAL_EXTRACT:
+		if (GE_SUCCESS == (ret = src->v_extract(action, engine->getTeamArea()))){
+			engine->sendMessage(-1, MSG_ACTION, *action);
+			GameInfo update_info;
+			TeamArea *team = engine->getTeamArea();
+			int color = src->getColor();
+			int gem = action->args(0);
+			int crystal = action->args(1);
+			team->setGem(color, team->getGem(color)-gem);
+			team->setCrystal(color, team->getCrystal(color)-crystal);
+			src->setGem(src->getGem()+gem);
+			src->setCrystal(src->getCrystal()+crystal);
+			if (color == RED){
+				update_info.set_red_gem(team->getGem(color));
+				update_info.set_red_crystal(team->getCrystal(color));
+			}
+			else{
+				update_info.set_blue_gem(team->getGem(color));
+				update_info.set_blue_crystal(team->getCrystal(color));
+			}
+			SinglePlayerInfo* player_info = update_info.add_player_infos();
+		    player_info->set_id(m_currentPlayerID);
+			player_info->set_gem(src->getGem());
+			player_info->set_crystal(src->getCrystal());
+			engine->sendMessage(-1, MSG_GAME, update_info);
+			engine->popGameState();
+			engine->pushGameState(new StateAfterSpecial(m_currentPlayerID));
+			engine->pushGameState(new StateBeforeSpecial(m_currentPlayerID));
+		}
+		break;
 	}
 }
 
@@ -693,27 +799,6 @@ int StateTimeline1::handle(GameGrail* engine)
 int StateTimeline2Hit::handle(GameGrail* engine)
 {
 	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateTimeline2Hit", engine->getGameId());
-
-	int color = engine->getPlayerEntity(context->attack.dstID)->getColor();
-	TeamArea* team_area = engine->getTeamArea();
-	GameInfo update_info;
-	if (context->attack.isActive)
-	{
-		team_area->setGem(color, team_area->getGem(color)+1);
-		if (color == RED)
-			update_info.set_red_gem(team_area->getGem(color));
-		else
-			update_info.set_blue_gem(team_area->getGem(color));
-	}
-	else
-	{
-		team_area->setCrystal(color, team_area->getCrystal(color)+1);
-		if (color == RED)
-			update_info.set_red_crystal(team_area->getCrystal(color));
-		else
-			update_info.set_blue_crystal(team_area->getCrystal(color));
-	}
-	engine->sendMessage(-1, MSG_GAME, update_info);
 
 	int ret = GE_FATAL_ERROR;
 	int m_currentPlayerID = engine->getCurrentPlayerID();

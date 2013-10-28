@@ -527,7 +527,25 @@ int GameGrail::setStateTimeline2Hit(int cardID, int dstID, int srcID, HARM harm,
 	hit_msg.set_src_id(srcID);
 	hit_msg.set_dst_id(dstID);
 	sendMessage(-1, MSG_HIT, hit_msg);
-	//TODO stones
+	int color = getPlayerEntity(srcID)->getColor();
+	GameInfo update_info;
+	if (isActive)
+	{
+		m_teamArea->setGem(color, m_teamArea->getGem(color)+1);
+		if (color == RED)
+			update_info.set_red_gem(m_teamArea->getGem(color));
+		else
+			update_info.set_blue_gem(m_teamArea->getGem(color));
+	}
+	else
+	{
+		m_teamArea->setCrystal(color, m_teamArea->getCrystal(color)+1);
+		if (color == RED)
+			update_info.set_red_crystal(m_teamArea->getCrystal(color));
+		else
+			update_info.set_blue_crystal(m_teamArea->getCrystal(color));
+	}
+	sendMessage(-1, MSG_GAME, update_info);
 	CONTEXT_TIMELINE_2_HIT *con = new CONTEXT_TIMELINE_2_HIT;
 	con->attack.cardID = cardID;
 	con->attack.dstID = dstID;

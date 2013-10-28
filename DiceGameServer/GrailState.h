@@ -218,6 +218,10 @@ public:
 	int allowAction;
 	bool canGiveUp;
 	bool isSet;
+private:
+	int basicAttack(Action *action, GameGrail* engine);
+	int basicMagic(Action *action, GameGrail* engine);
+	int basicSpecial(Action *action, GameGrail* engine);
 };
 
 class StateBeforeAttack: public GrailState

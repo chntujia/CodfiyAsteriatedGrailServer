@@ -413,17 +413,37 @@ int PlayerEntity::v_weaken(int cardID, PlayerEntity* dst)
 	return GE_SUCCESS;
 }
 
-int PlayerEntity::v_buy()
+int PlayerEntity::v_buy(Action *action)
 {
 	if(handCards.size()+3 > handCardsMax){
+		return GE_INVALID_ACTION;
+	}
+	int gem = action->args(0);
+	int crystal = action->args(1);
+	if((gem==0 || gem==1) && (crystal==0 || crystal==1)){
+		return GE_SUCCESS;
+	}
+	return GE_INVALID_ACTION;
+}
+
+int PlayerEntity::v_synthesize(Action *action, TeamArea* team)
+{
+	if(handCards.size()+3 > handCardsMax || team->getEnergy(color) < 3){
+		return GE_INVALID_ACTION;
+	}
+	int gem = action->args(0);
+	int crystal = action->args(1);
+	if(gem+crystal!=3 || gem>team->getGem(color) || crystal>team->getCrystal(color)){
 		return GE_INVALID_ACTION;
 	}
 	return GE_SUCCESS;
 }
 
-int PlayerEntity::v_synthesize(TeamArea* team)
+int PlayerEntity::v_extract(Action *action, TeamArea* team)
 {
-	if(handCards.size()+3 > handCardsMax || team->getEnergy(color) < 3){
+	int gem = action->args(0);
+	int crystal = action->args(1);
+	if(gem>team->getGem(color) || crystal>team->getCrystal(color) || getGem()+getCrystal() >= energyMax){
 		return GE_INVALID_ACTION;
 	}
 	return GE_SUCCESS;
