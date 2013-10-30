@@ -79,6 +79,7 @@ public:
     bool getYourturn();
 	bool hasAdditionalAction() {return !additionalActions.empty();}
 	void clearAdditionalAction() { additionalActions.clear(); }
+	//回合限定等统一在这里初始化
 	virtual int p_before_turn_begin(int currentPlayerID) { return GE_SUCCESS; }
 	virtual int p_turn_begin(int currentPlayerID) { return GE_SUCCESS; }
 	virtual int p_before_action(int currentPlayerID) { return GE_SUCCESS; }

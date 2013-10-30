@@ -8,8 +8,6 @@
 #include "zMisc.h"
 #include "UserTask.h"
 
-using namespace std;
-
 
 #define GAME_TYPE_LOBBY		9999
 #define GAME_TYPE_SICBO		1000

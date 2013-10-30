@@ -449,13 +449,13 @@ int GameGrail::setStateReattack(int attackFromCard, int attackToCard, int attack
 	return setStateUseCard(attackToCard, attackTo, attacked, false, realCard);
 }
 
-int GameGrail::setStateAttackGiveUp(int cardID, int dstID, int srcID, HARM harm, bool isActive)
+int GameGrail::setStateAttackGiveUp(int cardID, int dstID, int srcID, HARM harm, bool isActive, bool checkSheild)
 {
 	// FIX_ME  没有检查天使之墙 check sheild here by Fengyu
 
 	PlayerEntity *player = getPlayerEntity(dstID);
 	int shieldCardID = -1;
-	if(player->checkBasicEffectName(NAME_SHIELD, &shieldCardID) == GE_SUCCESS){
+	if(checkSheild && player->checkBasicEffectName(NAME_SHIELD, &shieldCardID) == GE_SUCCESS){
 		setStateTimeline2Miss(cardID, dstID, srcID, isActive);	
 		return setStateMoveOneCardNotToHand(dstID, DECK_BASIC_EFFECT, -1, DECK_DISCARD, shieldCardID, dstID, CAUSE_DEFAULT, true);	
 	}

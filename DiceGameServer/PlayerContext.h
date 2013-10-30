@@ -2,23 +2,22 @@
 #define __PLAYER_CONTEXT_H__
 
 #include <iostream>
-using namespace std;
 
 class PlayerContext
 {
 protected:
-	string m_userId;
+	std::string m_userId;
 	int m_chips;
 	bool m_isConnected;
 	int m_tableId;
 
 public:
 	PlayerContext() {}
-	PlayerContext(string userId);
+	PlayerContext(std::string userId);
 	~PlayerContext() {}
 
 public:
-	string getUserId() const { return m_userId; }
+	std::string getUserId() const { return m_userId; }
 	bool isConnected() const { return m_isConnected; }
 	void setConnect(bool value) { m_isConnected = value; }
 	void setTableId(int value) { m_tableId = value; }

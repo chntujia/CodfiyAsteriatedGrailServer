@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "PlayerContext.h"
 
-PlayerContext::PlayerContext(string userId)
+PlayerContext::PlayerContext(std::string userId)
 {
 	m_userId = userId;
 	m_isConnected = true;
