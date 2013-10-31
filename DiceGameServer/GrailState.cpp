@@ -118,7 +118,6 @@ int StateGameStart::handle(GameGrail* engine)
 	for(int i = iterator; i < engine->getGameMaxPlayers(); i++){
 		ret = engine->setStateMoveCardsToHand(-1, DECK_PILE, i, DECK_HAND, 4, cards, harm);
 		iterator++;
-		return ret;
 	}
 	engine->popGameState();	
 	return engine->setStateCurrentPlayer(engine->game_info.player_infos().begin()->id());
@@ -130,7 +129,7 @@ int StateBeforeTurnBegin::handle(GameGrail* engine)
 	int ret = GE_FATAL_ERROR;
 	int m_currentPlayerID = engine->getCurrentPlayerID();
 	for(int i = iterator; i< engine->getGameMaxPlayers(); i++){	    
-		if(GE_SUCCESS != (ret = engine->getPlayerEntity(i)->p_before_turn_begin(m_currentPlayerID))){
+		if(GE_SUCCESS != (ret = engine->getPlayerEntity(i)->p_before_turn_begin(step, m_currentPlayerID))){
 			if(ret==GE_DONE_AND_URGENT){
 				iterator++;
 			}
@@ -150,7 +149,7 @@ int StateTurnBegin::handle(GameGrail* engine)
 	int ret = GE_FATAL_ERROR;
 	int m_currentPlayerID= engine->getCurrentPlayerID();
 	for(int i = iterator; i< engine->getGameMaxPlayers(); i++){
-		if(GE_SUCCESS != (ret = engine->getPlayerEntity(i)->p_turn_begin(m_currentPlayerID))){
+		if(GE_SUCCESS != (ret = engine->getPlayerEntity(i)->p_turn_begin(step, m_currentPlayerID))){
 			if(ret==GE_DONE_AND_URGENT){
 				iterator++;
 			}
@@ -222,7 +221,7 @@ int StateBeforeAction::handle(GameGrail* engine)
 	int ret = GE_FATAL_ERROR;
 	int m_currentPlayerID = engine->getCurrentPlayerID();
 	for(int i = iterator; i< engine->getGameMaxPlayers(); i++){
-		if(GE_SUCCESS != (ret = engine->getPlayerEntity(i)->p_before_action(m_currentPlayerID))){
+		if(GE_SUCCESS != (ret = engine->getPlayerEntity(i)->p_before_action(step, m_currentPlayerID))){
 			if(ret==GE_DONE_AND_URGENT){
 				iterator++;
 			}
@@ -248,7 +247,7 @@ int StateBoot::handle(GameGrail* engine)
 	int ret = GE_FATAL_ERROR;
 	int m_currentPlayerID = engine->getCurrentPlayerID();
 	for(int i = iterator; i< engine->getGameMaxPlayers(); i++){
-		if(GE_SUCCESS != (ret = engine->getPlayerEntity(i)->p_boot(m_currentPlayerID))){
+		if(GE_SUCCESS != (ret = engine->getPlayerEntity(i)->p_boot(step, m_currentPlayerID))){
 			if(ret==GE_DONE_AND_URGENT){
 				iterator++;
 			}
@@ -492,7 +491,7 @@ int StateBeforeAttack::handle(GameGrail* engine)
 	int ret = GE_FATAL_ERROR;
 	int m_currentPlayerID = engine->getCurrentPlayerID();
 	for(int i = iterator; i< engine->getGameMaxPlayers(); i++){
-		if(GE_SUCCESS != (ret = engine->getPlayerEntity(i)->p_before_attack(dstID, srcID))){
+		if(GE_SUCCESS != (ret = engine->getPlayerEntity(i)->p_before_attack(step, dstID, srcID))){
 			if(ret==GE_DONE_AND_URGENT){
 				iterator++;
 			}
@@ -567,7 +566,7 @@ int StateAfterAttack::handle(GameGrail* engine)
 	int ret = GE_FATAL_ERROR;
 	int m_currentPlayerID = engine->getCurrentPlayerID();
 	for(int i = iterator; i< engine->getGameMaxPlayers(); i++){
-		if(GE_SUCCESS != (ret = engine->getPlayerEntity(i)->p_after_attack(srcID))){
+		if(GE_SUCCESS != (ret = engine->getPlayerEntity(i)->p_after_attack(step, srcID))){
 			if(ret==GE_DONE_AND_URGENT){
 				iterator++;
 			}
@@ -587,7 +586,7 @@ int StateBeforeMagic::handle(GameGrail* engine)
 	int ret = GE_FATAL_ERROR;
 	int m_currentPlayerID = engine->getCurrentPlayerID();
 	for(int i = iterator; i< engine->getGameMaxPlayers(); i++){
-		if(GE_SUCCESS != (ret = engine->getPlayerEntity(i)->p_before_magic(srcID))){
+		if(GE_SUCCESS != (ret = engine->getPlayerEntity(i)->p_before_magic(step, srcID))){
 			if(ret==GE_DONE_AND_URGENT){
 				iterator++;
 			}
@@ -696,7 +695,7 @@ int StateAfterMagic::handle(GameGrail* engine)
 	int ret = GE_FATAL_ERROR;
 	int m_currentPlayerID = engine->getCurrentPlayerID();
 	for(int i = iterator; i< engine->getGameMaxPlayers(); i++){
-		if(GE_SUCCESS != (ret = engine->getPlayerEntity(i)->p_after_magic(srcID))){
+		if(GE_SUCCESS != (ret = engine->getPlayerEntity(i)->p_after_magic(step, srcID))){
 			if(ret==GE_DONE_AND_URGENT){
 				iterator++;
 			}
@@ -716,7 +715,7 @@ int StateBeforeSpecial::handle(GameGrail* engine)
 	int ret = GE_FATAL_ERROR;
 	int m_currentPlayerID = engine->getCurrentPlayerID();
 	for(int i = iterator; i< engine->getGameMaxPlayers(); i++){
-		if(GE_SUCCESS != (ret = engine->getPlayerEntity(i)->p_before_special(srcID))){
+		if(GE_SUCCESS != (ret = engine->getPlayerEntity(i)->p_before_special(step, srcID))){
 			if(ret==GE_DONE_AND_URGENT){
 				iterator++;
 			}
@@ -733,7 +732,7 @@ int StateAfterSpecial::handle(GameGrail* engine)
 	int ret = GE_FATAL_ERROR;
 	int m_currentPlayerID = engine->getCurrentPlayerID();
 	for(int i = iterator; i< engine->getGameMaxPlayers(); i++){
-		if(GE_SUCCESS != (ret = engine->getPlayerEntity(i)->p_after_special(srcID))){
+		if(GE_SUCCESS != (ret = engine->getPlayerEntity(i)->p_after_special(step, srcID))){
 			if(ret==GE_DONE_AND_URGENT){
 				iterator++;
 			}
@@ -753,7 +752,7 @@ int StateTurnEnd::handle(GameGrail* engine)
 	int ret = GE_FATAL_ERROR;
 	int m_currentPlayerID = engine->getCurrentPlayerID();
 	for(int i = iterator; i< engine->getGameMaxPlayers(); i++){
-		if(GE_SUCCESS != (ret = engine->getPlayerEntity(i)->p_turn_end(m_currentPlayerID))){
+		if(GE_SUCCESS != (ret = engine->getPlayerEntity(i)->p_turn_end(step, m_currentPlayerID))){
 			if(ret==GE_DONE_AND_URGENT){
 				iterator++;
 			}
@@ -777,7 +776,7 @@ int StateTimeline1::handle(GameGrail* engine)
 	int ret = GE_FATAL_ERROR;
 	int m_currentPlayerID = engine->getCurrentPlayerID();
 	for(int i = iterator; i< engine->getGameMaxPlayers(); i++){
-		if(GE_SUCCESS != (ret = engine->getPlayerEntity(i)->p_timeline_1(context))){
+		if(GE_SUCCESS != (ret = engine->getPlayerEntity(i)->p_timeline_1(step, context))){
 			if(ret==GE_DONE_AND_URGENT){
 				iterator++;
 			}
@@ -803,7 +802,7 @@ int StateTimeline2Hit::handle(GameGrail* engine)
 	int ret = GE_FATAL_ERROR;
 	int m_currentPlayerID = engine->getCurrentPlayerID();
 	for(int i = iterator; i< engine->getGameMaxPlayers(); i++){
-		if(GE_SUCCESS != (ret = engine->getPlayerEntity(i)->p_timeline_2_hit(context))){
+		if(GE_SUCCESS != (ret = engine->getPlayerEntity(i)->p_timeline_2_hit(step, context))){
 			if(ret==GE_DONE_AND_URGENT){
 				iterator++;
 			}
@@ -824,7 +823,7 @@ int StateTimeline2Miss::handle(GameGrail* engine)
 	int ret = GE_FATAL_ERROR;
 	int m_currentPlayerID = engine->getCurrentPlayerID();
 	for(int i = iterator; i< engine->getGameMaxPlayers(); i++){
-		if(GE_SUCCESS != (ret = engine->getPlayerEntity(i)->p_timeline_2_miss(context))){
+		if(GE_SUCCESS != (ret = engine->getPlayerEntity(i)->p_timeline_2_miss(step, context))){
 			if(ret==GE_DONE_AND_URGENT){
 				iterator++;
 			}
@@ -844,7 +843,7 @@ int StateTimeline3::handle(GameGrail* engine)
 	Coder::hurtNotice(context->dstID, context->harm.srcID, context->harm.type, context->harm.point, context->harm.cause, hurt_msg);
 	engine->sendMessage(-1, MSG_HURT, hurt_msg);
 	for(int i = iterator; i< engine->getGameMaxPlayers(); i++){
-		if(GE_SUCCESS != (ret = engine->getPlayerEntity(i)->p_timeline_3(context))){
+		if(GE_SUCCESS != (ret = engine->getPlayerEntity(i)->p_timeline_3(step, context))){
 			if(ret==GE_DONE_AND_URGENT){
 				iterator++;
 			}
@@ -889,7 +888,7 @@ int StateTimeline4::handle(GameGrail* engine)
 	int ret = GE_FATAL_ERROR;
 	int m_currentPlayerID = engine->getCurrentPlayerID();
 	for(int i = iterator; i< engine->getGameMaxPlayers(); i++){
-		if(GE_SUCCESS != (ret = engine->getPlayerEntity(i)->p_timeline_4(context))){
+		if(GE_SUCCESS != (ret = engine->getPlayerEntity(i)->p_timeline_4(step, context))){
 			if(ret==GE_DONE_AND_URGENT){
 				iterator++;
 			}
@@ -923,7 +922,7 @@ int StateTimeline5::handle(GameGrail* engine)
 	int ret = GE_FATAL_ERROR;
 	int m_currentPlayerID = engine->getCurrentPlayerID();
 	for(int i = iterator; i< engine->getGameMaxPlayers(); i++){
-		if(GE_SUCCESS != (ret = engine->getPlayerEntity(i)->p_timeline_5(context))){
+		if(GE_SUCCESS != (ret = engine->getPlayerEntity(i)->p_timeline_5(step, context))){
 			if(ret==GE_DONE_AND_URGENT){
 				iterator++;
 			}
@@ -954,7 +953,7 @@ int StateTimeline6::handle(GameGrail* engine)
 	int ret = GE_FATAL_ERROR;
 	int m_currentPlayerID = engine->getCurrentPlayerID();
 	for(int i = iterator; i< engine->getGameMaxPlayers(); i++){
-		if(GE_SUCCESS != (ret = engine->getPlayerEntity(i)->p_timeline_6(context))){
+		if(GE_SUCCESS != (ret = engine->getPlayerEntity(i)->p_timeline_6(step, context))){
 			if(ret==GE_DONE_AND_URGENT){
 				iterator++;
 			}
@@ -988,7 +987,7 @@ int StateTimeline6Drawn::handle(GameGrail* engine)
 	int ret = GE_FATAL_ERROR;
 	int m_currentPlayerID = engine->getCurrentPlayerID();
 	for(int i = iterator; i< engine->getGameMaxPlayers(); i++){
-		if(GE_SUCCESS != (ret = engine->getPlayerEntity(i)->p_timeline_6_drawn(context))){
+		if(GE_SUCCESS != (ret = engine->getPlayerEntity(i)->p_timeline_6_drawn(step, context))){
 			if(ret==GE_DONE_AND_URGENT){
 				iterator++;
 			}
@@ -1045,7 +1044,7 @@ int StateHandChange::handle(GameGrail* engine)
 	ret = GE_FATAL_ERROR;
 	int m_currentPlayerID = engine->getCurrentPlayerID();
 	for(int i = iterator; i< engine->getGameMaxPlayers(); i++){
-		if(GE_SUCCESS != (ret = engine->getPlayerEntity(i)->p_hand_change(dstID))){
+		if(GE_SUCCESS != (ret = engine->getPlayerEntity(i)->p_hand_change(step, dstID))){
 			if(ret==GE_DONE_AND_URGENT){
 				iterator++;
 			}
@@ -1082,7 +1081,7 @@ int StateBasicEffectChange::handle(GameGrail* engine)
 	ret = GE_FATAL_ERROR;
 	int m_currentPlayerID = engine->getCurrentPlayerID();
 	for(int i = iterator; i< engine->getGameMaxPlayers(); i++){
-		if(GE_SUCCESS != (ret = engine->getPlayerEntity(i)->p_basic_effect_change(dstID, card, doerID, cause))){
+		if(GE_SUCCESS != (ret = engine->getPlayerEntity(i)->p_basic_effect_change(step, dstID, card, doerID, cause))){
 			if(ret==GE_DONE_AND_URGENT){
 				iterator++;
 			}
@@ -1171,7 +1170,7 @@ int StateBeforeLoseMorale::handle(GameGrail* engine)
 	int ret = GE_FATAL_ERROR;
 	int m_currentPlayerID = engine->getCurrentPlayerID();
 	for(int i = iterator;i<engine->getGameMaxPlayers();i++){
-		if(GE_SUCCESS !=(ret = engine->getPlayerEntity(i)->p_before_lose_morale(context))){
+		if(GE_SUCCESS !=(ret = engine->getPlayerEntity(i)->p_before_lose_morale(step, context))){
 			if(ret==GE_DONE_AND_URGENT){
 				iterator++;
 			}
@@ -1198,7 +1197,7 @@ int StateLoseMorale::handle(GameGrail* engine)
 	int ret = GE_FATAL_ERROR;
 	int m_currentPlayerID = engine->getCurrentPlayerID();
 	for(int i = iterator;i<engine->getGameMaxPlayers();i++){
-		if(GE_SUCCESS !=(ret = engine->getPlayerEntity(i)->p_lose_morale(context))){
+		if(GE_SUCCESS !=(ret = engine->getPlayerEntity(i)->p_lose_morale(step, context))){
 			if(ret==GE_DONE_AND_URGENT){
 				iterator++;
 			}
@@ -1225,7 +1224,7 @@ int StateFixMorale::handle(GameGrail* engine)
 	int ret = GE_FATAL_ERROR;
 	int m_currentPlayerID = engine->getCurrentPlayerID();
 	for(int i = iterator;i<engine->getGameMaxPlayers();i++){
-		if(GE_SUCCESS !=(ret = engine->getPlayerEntity(i)->p_fix_morale(context))){
+		if(GE_SUCCESS !=(ret = engine->getPlayerEntity(i)->p_fix_morale(step, context))){
 			if(ret==GE_DONE_AND_URGENT){
 				iterator++;
 			}
@@ -1252,7 +1251,7 @@ int StateTrueLoseMorale::handle(GameGrail* engine)
 	int ret = GE_FATAL_ERROR;
 	int m_currentPlayerID = engine->getCurrentPlayerID();
 	for(int i = iterator; i< engine->getGameMaxPlayers(); i++){
-		if(GE_SUCCESS != (ret = engine->getPlayerEntity(i)->p_true_lose_morale(context))){
+		if(GE_SUCCESS != (ret = engine->getPlayerEntity(i)->p_true_lose_morale(step, context))){
 			if(ret==GE_DONE_AND_URGENT){
 				iterator++;
 			}
@@ -1287,7 +1286,7 @@ int StateShowHand::handle(GameGrail* engine)
 	int ret = GE_FATAL_ERROR;
 	int m_currentPlayerID = engine->getCurrentPlayerID();
 	for(int i = iterator; i< engine->getGameMaxPlayers(); i++){
-		if(GE_SUCCESS != (ret = engine->getPlayerEntity(i)->p_show_hand(dstID, howMany, cards))){
+		if(GE_SUCCESS != (ret = engine->getPlayerEntity(i)->p_show_hand(step, dstID, howMany, cards))){
 			if(ret==GE_DONE_AND_URGENT){
 				iterator++;
 			}

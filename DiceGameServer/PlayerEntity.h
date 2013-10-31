@@ -80,32 +80,32 @@ public:
 	bool hasAdditionalAction() {return !additionalActions.empty();}
 	void clearAdditionalAction() { additionalActions.clear(); }
 	//回合限定等统一在这里初始化
-	virtual int p_before_turn_begin(int currentPlayerID) { return GE_SUCCESS; }
-	virtual int p_turn_begin(int currentPlayerID) { return GE_SUCCESS; }
-	virtual int p_before_action(int currentPlayerID) { return GE_SUCCESS; }
-	virtual int p_boot(int currentPlayerID) { return GE_SUCCESS; }
-	virtual int p_before_attack(int dstID, int srcID) { return GE_SUCCESS; }
-	virtual int p_after_attack(int playerID) { return GE_SUCCESS; }
-	virtual int p_before_magic(int srcID) { return GE_SUCCESS; }
-	virtual int p_after_magic(int srcID) { return GE_SUCCESS; }
-	virtual int p_before_special(int srcID) { return GE_SUCCESS; }
-	virtual int p_after_special(int srcID) { return GE_SUCCESS; }
-	virtual int p_turn_end(int playerID) { return GE_SUCCESS; }
-	virtual int p_timeline_1(CONTEXT_TIMELINE_1 *con) { return GE_SUCCESS; }
-	virtual int p_timeline_2_hit(CONTEXT_TIMELINE_2_HIT *con) { return GE_SUCCESS; }
-	virtual int p_timeline_2_miss(CONTEXT_TIMELINE_2_MISS *con) { return GE_SUCCESS; }
-	virtual int p_timeline_3(CONTEXT_TIMELINE_3 *con) { return GE_SUCCESS; }
-	virtual int p_timeline_4(CONTEXT_TIMELINE_4 *con) { return GE_SUCCESS; }
-	virtual int p_timeline_5(CONTEXT_TIMELINE_5 *con) { return GE_SUCCESS; }
-	virtual int p_timeline_6(CONTEXT_TIMELINE_6 *con) { return GE_SUCCESS; }
-	virtual int p_timeline_6_drawn(CONTEXT_TIMELINE_6_DRAWN *con) { return GE_SUCCESS; }
-	virtual int p_before_lose_morale(CONTEXT_LOSE_MORALE *con) { return GE_SUCCESS; }
-	virtual int p_lose_morale(CONTEXT_LOSE_MORALE *con) { return GE_SUCCESS; }
-	virtual int p_fix_morale(CONTEXT_LOSE_MORALE *con) { return GE_SUCCESS; }
-	virtual int p_true_lose_morale(CONTEXT_LOSE_MORALE *con) { return GE_SUCCESS; }
-	virtual int p_hand_change(int playerID) { return GE_SUCCESS; }
-	virtual int p_basic_effect_change(int dstID, int card, int doerID, int cause)  { return GE_SUCCESS; }
-	virtual int p_show_hand(int playerID, int howMany, vector<int> cards) { return GE_SUCCESS; }
+	virtual int p_before_turn_begin(int &step, int currentPlayerID) { return GE_SUCCESS; }
+	virtual int p_turn_begin(int &step, int currentPlayerID) { return GE_SUCCESS; }
+	virtual int p_before_action(int &step, int currentPlayerID) { return GE_SUCCESS; }
+	virtual int p_boot(int &step, int currentPlayerID) { return GE_SUCCESS; }
+	virtual int p_before_attack(int &step, int dstID, int srcID) { return GE_SUCCESS; }
+	virtual int p_after_attack(int &step, int playerID) { return GE_SUCCESS; }
+	virtual int p_before_magic(int &step, int srcID) { return GE_SUCCESS; }
+	virtual int p_after_magic(int &step, int srcID) { return GE_SUCCESS; }
+	virtual int p_before_special(int &step, int srcID) { return GE_SUCCESS; }
+	virtual int p_after_special(int &step, int srcID) { return GE_SUCCESS; }
+	virtual int p_turn_end(int &step, int playerID) { return GE_SUCCESS; }
+	virtual int p_timeline_1(int &step, CONTEXT_TIMELINE_1 *con) { return GE_SUCCESS; }
+	virtual int p_timeline_2_hit(int &step, CONTEXT_TIMELINE_2_HIT *con) { return GE_SUCCESS; }
+	virtual int p_timeline_2_miss(int &step, CONTEXT_TIMELINE_2_MISS *con) { return GE_SUCCESS; }
+	virtual int p_timeline_3(int &step, CONTEXT_TIMELINE_3 *con) { return GE_SUCCESS; }
+	virtual int p_timeline_4(int &step, CONTEXT_TIMELINE_4 *con) { return GE_SUCCESS; }
+	virtual int p_timeline_5(int &step, CONTEXT_TIMELINE_5 *con) { return GE_SUCCESS; }
+	virtual int p_timeline_6(int &step, CONTEXT_TIMELINE_6 *con) { return GE_SUCCESS; }
+	virtual int p_timeline_6_drawn(int &step, CONTEXT_TIMELINE_6_DRAWN *con) { return GE_SUCCESS; }
+	virtual int p_before_lose_morale(int &step, CONTEXT_LOSE_MORALE *con) { return GE_SUCCESS; }
+	virtual int p_lose_morale(int &step, CONTEXT_LOSE_MORALE *con) { return GE_SUCCESS; }
+	virtual int p_fix_morale(int &step, CONTEXT_LOSE_MORALE *con) { return GE_SUCCESS; }
+	virtual int p_true_lose_morale(int &step, CONTEXT_LOSE_MORALE *con) { return GE_SUCCESS; }
+	virtual int p_hand_change(int &step, int playerID) { return GE_SUCCESS; }
+	virtual int p_basic_effect_change(int &step, int dstID, int card, int doerID, int cause)  { return GE_SUCCESS; }
+	virtual int p_show_hand(int &step, int playerID, int howMany, vector<int> cards) { return GE_SUCCESS; }
 
 	virtual int v_allow_action(int claim, int allow, bool canGiveUp);
 	virtual int v_attack(int cardID, int dstID, bool realCard = true);
