@@ -24,6 +24,7 @@ enum STATE{
 	STATE_AFTER_MAGIC,
 	STATE_BEFORE_SPECIAL,
 	STATE_AFTER_SPECIAL,
+	STATE_ADDITIONAL_ACTION,
 	STATE_TURN_END,
 	STATE_TIMELINE_1,
 	STATE_TIMELINE_2_MISS,
@@ -137,6 +138,7 @@ public:
 	int step;
 	int iterator;
 	GrailState(int s): state(s), step(0), iterator(0) {}
+	int onError(int error);
 	virtual int handle(GameGrail* engine) { return GE_EMPTY_HANDLE; }
 };
 
@@ -213,11 +215,10 @@ public:
 class StateActionPhase: public GrailState
 {
 public:
-	StateActionPhase(): GrailState(STATE_ACTION_PHASE), isSet(false){}
+	StateActionPhase(int allowAction, bool canGiveUp): GrailState(STATE_ACTION_PHASE), allowAction(allowAction), canGiveUp(canGiveUp){}
 	int handle(GameGrail* engine);
 	int allowAction;
 	bool canGiveUp;
-	bool isSet;
 private:
 	int basicAttack(Action *action, GameGrail* engine);
 	int basicMagic(Action *action, GameGrail* engine);
@@ -299,6 +300,14 @@ class StateAfterSpecial: public GrailState
 {
 public:
 	StateAfterSpecial(int srcID): GrailState(STATE_AFTER_SPECIAL), srcID(srcID){}
+	int handle(GameGrail* engine);
+	int srcID;
+};
+
+class StateAdditionalAction: public GrailState
+{
+public:
+	StateAdditionalAction(int srcID): GrailState(STATE_ADDITIONAL_ACTION), srcID(srcID){}
 	int handle(GameGrail* engine);
 	int srcID;
 };
