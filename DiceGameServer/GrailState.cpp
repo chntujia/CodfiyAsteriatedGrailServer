@@ -180,7 +180,6 @@ int StateWeaken::handle(GameGrail* engine)
 	Coder::askForWeak(m_currentPlayerID, howMany, weaken_proto);
 	if(engine->waitForOne(m_currentPlayerID, network::MSG_CMD_REQ, weaken_proto))
 	{
-		//TODO set nextState based on reply
 		void* reply;
 		int ret;
 		if(GE_SUCCESS == (ret=engine->getReply(m_currentPlayerID, reply)))
@@ -292,6 +291,9 @@ int StateActionPhase::handle(GameGrail* engine)
 				return basicMagic(action, engine);
 			case ACTION_SPECIAL:
 				return basicSpecial(action, engine);
+			case ACTION_NONE:
+				engine->popGameState_if(STATE_ACTION_PHASE);
+			    return engine->setStateCheckTurnEnd();
 			default:
 				return GE_INVALID_ACTION;
 			}
@@ -547,7 +549,7 @@ int StateAttacked::handle(GameGrail* engine)
 				break;
 			case RA_GIVEUP:
 				engine->popGameState();
-				return engine->setStateAttackGiveUp(temp.attack.cardID, temp.attack.dstID, temp.attack.srcID, temp.harm, temp.attack.isActive);
+				return engine->setStateAttackGiveUp(temp.attack.cardID, temp.attack.dstID, temp.attack.srcID, temp.harm, temp.attack.isActive, temp.checkShield);
 				break;
 			}
 		}
@@ -556,7 +558,7 @@ int StateAttacked::handle(GameGrail* engine)
 	else{
 		CONTEXT_TIMELINE_1 temp = *context;
 		engine->popGameState();
-		engine->setStateAttackGiveUp(temp.attack.cardID, temp.attack.dstID, temp.attack.srcID, temp.harm, temp.attack.isActive);
+		engine->setStateAttackGiveUp(temp.attack.cardID, temp.attack.dstID, temp.attack.srcID, temp.harm, temp.attack.isActive, temp.checkShield);
 		return GE_TIMEOUT;
 	}
 }
@@ -737,13 +739,30 @@ int StateAdditionalAction::handle(GameGrail* engine)
 	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateAdditionalAction", engine->getGameId());
 	int ret = GE_FATAL_ERROR;
 	int m_currentPlayerID = engine->getCurrentPlayerID();
-	//TODO: 询问额外行动
+	PlayerEntity *dst = engine->getPlayerEntity(m_currentPlayerID);
+	list<ACTION_QUOTA> quota = dst->getAdditionalAction();
+
 	CommandRequest cmd_req;
-	//Coder::askForDiscard(m_currentPlayerID, howMany, isShown, cmd_req);
+	Coder::askForAdditionalAction(m_currentPlayerID, quota, cmd_req);
 
 	if(engine->waitForOne(m_currentPlayerID, MSG_CMD_REQ, cmd_req))
 	{
-		;
+		void* reply;
+		int ret;
+		if(GE_SUCCESS == (ret=engine->getReply(m_currentPlayerID, reply)))
+		{
+			Respond *respond = (Respond*)reply;
+			int chosen = respond->args(0);
+			//放弃所有行动
+			if(chosen == ACTION_NONE){
+				engine->popGameState();
+				engine->pushGameState(new StateTurnEnd);
+			}
+			else{
+				return dst->p_additional_action(chosen);
+			}
+		}
+		return ret;
 	}
 	else 
 	{

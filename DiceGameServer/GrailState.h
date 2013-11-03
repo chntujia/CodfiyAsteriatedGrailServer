@@ -71,6 +71,7 @@ typedef struct{
 	CONTEXT_ATTACK_ACTION attack;
 	HARM harm;
 	int hitRate;
+    bool checkShield;
 }CONTEXT_TIMELINE_1;
 
 typedef struct{

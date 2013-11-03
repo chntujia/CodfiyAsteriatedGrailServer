@@ -72,91 +72,102 @@ bool UserTask::tryNotify(int id, int state, int step, void* reply)
 // 消息处理中心
 bool UserTask::cmdMsgParse(const char *pstrMsg, const uint32_t nCmdLen)
 {
-	uint16_t type;
-	::google::protobuf::Message *proto = (::google::protobuf::Message*) proto_decoder(pstrMsg, type);
-	uint16_t* size = (uint16_t*)pstrMsg;
+	try
+	{
+		uint16_t type;
+		::google::protobuf::Message *proto = (::google::protobuf::Message*) proto_decoder(pstrMsg, type);
+		uint16_t* size = (uint16_t*)pstrMsg;
 #ifdef Debug
-	ztLoggerWrite(ZONE, e_Debug, "[%s]Receive: %s,\n size:%d, type:%d,\n To proto: %s", m_userId.c_str(), pstrMsg, *size, type, proto->DebugString().c_str());
+		ztLoggerWrite(ZONE, e_Debug, "[%s]Receive: %s,\n size:%d, type:%d,\n To proto: %s", m_userId.c_str(), pstrMsg, *size, type, proto->DebugString().c_str());
 #endif
 
-	GameGrailConfig*config;
-	int ret;
-	int tableID;
-	int actionFlag;
-	m_activeTime = time(NULL);
-	EnterRoom* enter_room;
-	Action *action;
-	Respond *respond;
+		GameGrailConfig*config;
+		int ret;
+		int tableID;
+		int actionFlag;
+		m_activeTime = time(NULL);
+		EnterRoom* enter_room;
+		Action *action;
+		Respond *respond;
 
-	switch(type)
-	{
-		
-	case MSG_ENTER_ROOM:
-		enter_room = (EnterRoom*)proto;
-/*		if (enter_room->room_id() == 0){
+		switch(type)
+		{
+
+		case MSG_ENTER_ROOM:
+			enter_room = (EnterRoom*)proto;
+			/*		if (enter_room->room_id() == 0){
 			//创建房间
 			config = new GameGrailConfig(2,0);
 			GameManager::getInstance().createGame(GAME_TYPE_GRAIL, config);
 			delete config;
-		}
-		else
-		*/{
-			//进入房间
-			//FIXME temporarily disable login
-			m_bAuthen = true;
-			// TODO : check username & password here
-			m_userId = TOQSTR(m_iTmpId);
-			UserSessionManager::getInstance().AddUser(m_userId, this);
-			m_gameType = GAME_TYPE_GRAIL;
-			tableID = enter_room->room_id();
-			ret = GameManager::getInstance().sitIntoTable(m_userId, GAME_TYPE_GRAIL, tableID);
-			if (ret == SIT_TABLE_SUCCESS){
-				m_tableId = tableID;
 			}
-			else{
-				ztLoggerWrite(ZONE, e_Error, "UserTask::cmdMsgParse() userId [%s] cannot enter Table %d. Ret: %d", 
-					m_userId.c_str(), tableID, ret);
+			else
+			*/{
+				//进入房间
+				//FIXME temporarily disable login
+				m_bAuthen = true;
+				// TODO : check username & password here
+				m_userId = TOQSTR(m_iTmpId);
+				UserSessionManager::getInstance().AddUser(m_userId, this);
+				m_gameType = GAME_TYPE_GRAIL;
+				tableID = enter_room->room_id();
+				ret = GameManager::getInstance().sitIntoTable(m_userId, GAME_TYPE_GRAIL, tableID);
+				if (ret == SIT_TABLE_SUCCESS){
+					m_tableId = tableID;
+				}
+				else{
+					ztLoggerWrite(ZONE, e_Error, "UserTask::cmdMsgParse() userId [%s] cannot enter Table %d. Ret: %d", 
+						m_userId.c_str(), tableID, ret);
+				}
 			}
-		}
 
-		delete proto;    // 如果不需要tryNotify或者tryNotify不带reply的话，释放message对象，这一步相当重要
-		break;	
-	case MSG_START_REP:
-		//clicked start
-		tryNotify(m_playerId, STATE_SEAT_ARRANGE);
+			delete proto;    // 如果不需要tryNotify或者tryNotify不带reply的话，释放message对象，这一步相当重要
+			break;	
+		case MSG_START_REP:
+			//clicked start
+			tryNotify(m_playerId, STATE_SEAT_ARRANGE);
 
-		delete proto;    // 如果不需要tryNotify或者tryNotify不带reply的话，释放message对象，这一步相当重要
-		break;
-	//attack
-	case MSG_ACTION:
-		action = (Action*)proto;
-		actionFlag = action->action_id();
-		//if(actionFlag == ACTION_ATTACK)
-		{
+			delete proto;    // 如果不需要tryNotify或者tryNotify不带reply的话，释放message对象，这一步相当重要
+			break;
+		case MSG_ACTION:
+			action = (Action*)proto;
 			// 行动
 			tryNotify(m_playerId, STATE_ACTION_PHASE, 0, action);
-		}
-		//else {
-		//	delete proto;
-		//}
-		break;
-		//attacked
-	case MSG_RESPOND:
-		respond = (Respond*)proto;
-		if (respond->respond_id() == RESPOND_REPLY_ATTACK)
-			tryNotify(m_playerId, STATE_ATTACKED, 0, respond);
-		else if (respond->respond_id() == RESPOND_DISCARD)
-			tryNotify(m_playerId, STATE_DISCARD_HAND, 0, respond);
-		else if (respond->respond_id() == RESPOND_BULLET)
-			tryNotify(m_playerId, STATE_MISSILED, 0, respond);
-		else if (respond->respond_id() == RESPOND_WEAKEN)
-			tryNotify(m_playerId, STATE_WEAKEN, 0, respond);
-		else {
+
+			break;
+		case MSG_RESPOND:
+			respond = (Respond*)proto;
+			switch(respond->respond_id())
+			{
+			case RESPOND_REPLY_ATTACK:
+				tryNotify(m_playerId, STATE_ATTACKED, 0, respond);
+				break;
+			case RESPOND_DISCARD:
+				tryNotify(m_playerId, STATE_DISCARD_HAND, 0, respond);
+				break;
+			case RESPOND_BULLET:
+				tryNotify(m_playerId, STATE_MISSILED, 0, respond);
+				break;
+			case RESPOND_WEAKEN:
+				tryNotify(m_playerId, STATE_WEAKEN, 0, respond);
+				break;
+			default:
+				//尝试从角色的cmdMsgParse里找匹配
+				if(getGame()->getPlayerEntity(m_playerId)->cmdMsgParse(this, type, proto) == false){
+					ztLoggerWrite(ZONE, e_Error, "[%s]Received undefine MSG_RESPOND: %s,\n size:%d, type:%d,\n To proto: %s", m_userId.c_str(), pstrMsg, *size, type, proto->DebugString().c_str());
+					delete proto;
+				}
+			}		
+			break;
+		default:
+			ztLoggerWrite(ZONE, e_Error, "[%s]Received undefine MSG_TYPE: %s,\n size:%d, type:%d,\n To proto: %s", m_userId.c_str(), pstrMsg, *size, type, proto->DebugString().c_str());
 			delete proto;
 		}
-		break;
+		return true;
+	}catch(GrailError e){
+		ztLoggerWrite(ZONE, e_Error, "[%s]UserTask throws error: %d, Received Message: %s", m_userId.c_str(), e, pstrMsg);
+		return false;
 	}
-	return true;
 }
 
 bool UserTask::msgParse(const void *pstrMsg, const uint32_t nCmdLen)

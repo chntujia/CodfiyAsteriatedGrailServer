@@ -54,6 +54,9 @@ enum CAUSE{
 	CAUSE_SYNTHESIZE,
 	JI_FENG_JI = 101,
 	LIE_FENG_JI = 102,
+	LIAN_XU_JI = 103,
+	SHENG_JIAN = 104,
+	JIAN_YING = 105,
 	XUE_YING_KUANG_DAO = 201,
 	XUE_XING_PAO_XIAO = 202,
 	JING_ZHUN_SHE_JI = 301,
@@ -113,6 +116,11 @@ enum SpecialActionId{
 	SPECIAL_BUY,
 	SPECIAL_SYNTHESIZE,
 	SPECIAL_EXTRACT
+};
+
+enum STEP{
+	STEP_INIT = 0,
+	STEP_DONE = 9999
 };
 
 #define CARDSUM 150
@@ -186,7 +194,7 @@ typedef struct{
 }HARM;
 
 typedef struct{	
-	int actionFlag;
+	int allowAction;
 	int cause;
 }ACTION_QUOTA;
 
@@ -276,7 +284,13 @@ public:
 	}
     static string stoneNotice(int color,int gem,int crystal){return combMessage("15",TOQSTR(color),TOQSTR(gem),TOQSTR(crystal));}
     static string cupNotice(int color,int cup){return combMessage("17",TOQSTR(color),TOQSTR(cup));}
-    static string energyNotice(int ID,int gem,int crystal){return combMessage("18",TOQSTR(ID),TOQSTR(gem),TOQSTR(crystal));}
+    static void energyNotice(int ID, int gem, int crystal, GameInfo& update_info)
+	{
+		SinglePlayerInfo* player_info = update_info.add_player_infos();
+		player_info->set_id(ID);
+		player_info->set_gem(gem);
+		player_info->set_crystal(crystal);
+	}
     static string getCardNotice(int sum,vector < int > cards,int dstID,bool show);
     static void hurtNotice(int dstID, int srcID, int type, int point, int cause, HurtMsg& hurt_msg)
 	{
@@ -317,7 +331,7 @@ public:
 		use_card.set_card_id(cardID);
 		use_card.set_real_card(realCard);
 	}
-	static void askForAction(int playerID,int actionTypeAllowed,bool canGiveUp, CommandRequest& cmd_req)
+	static void askForAction(int playerID, int actionTypeAllowed, bool canGiveUp, CommandRequest& cmd_req)
 	{
 		cmd_req.set_cmd_type(CMD_ACTION);
 		Command *cmd;
@@ -332,8 +346,19 @@ public:
         cmd->add_args(playerID);
 
 	}
-    static string askForAdditionalAction(int playerID){return "42;"+TOQSTR(playerID)+";";}
-    static string crossChangeNotice(int playerID,int newValue){return combMessage(TOQSTR(CROSSCHANGENOTICE),TOQSTR(playerID),TOQSTR(newValue));}
+    static void askForAdditionalAction(int playerID, list<ACTION_QUOTA> quota, CommandRequest& cmd_req)
+    {
+        cmd_req.set_cmd_type(CMD_RESPOND);
+		Command *cmd;
+
+        list<ACTION_QUOTA>::iterator it;
+        cmd = cmd_req.add_commands();
+		cmd->set_respond_id(network::MSG_ADDITIONAL_ACTION);
+        for(it = quota.begin(); it != quota.end(); it++){
+            cmd->add_args(it->cause);
+        }
+		
+    }
     static void askForCross(int playerID,int hurtPoint,int type, int crossAvailable, CommandRequest& cmd_req)
 	{
 		cmd_req.set_cmd_type(CMD_RESPOND);
@@ -345,7 +370,31 @@ public:
 		cmd->add_args(type);
 		cmd->add_args(crossAvailable);
 	}
-    static string askForSkill(int playerID,string content,string args=""){return combMessage(TOQSTR(ASKFORSKILL),TOQSTR(playerID),content,args);}
+    static void askForSkill(int playerID, int skillID, CommandRequest& cmd_req)
+	{
+		cmd_req.set_cmd_type(CMD_RESPOND);
+		Command *cmd;
+
+		cmd = cmd_req.add_commands();
+		cmd->set_respond_id(skillID);
+		cmd->set_src_id(playerID);
+	}
+	static void skillNotice(int srcID, int dstID, int skillID, SkillMsg& skill_msg)
+	{
+		list<int> dstIDs;
+		dstIDs.push_back(dstID);
+		skillNotice(srcID, dstIDs, skillID, skill_msg);
+	}
+	static void skillNotice(int srcID, list<int> dstIDs, int skillID, SkillMsg& skill_msg)
+	{
+		skill_msg.set_src_id(srcID);
+		skill_msg.set_skill_id(skillID);
+		list<int>::iterator it;
+		for (it = dstIDs.begin(); it != dstIDs.end(); ++it)
+		{
+			skill_msg.add_dst_ids(*it);
+		}
+	}
     static void roleNotice(int playerID,int roleID, GameInfo& game_info)
 	{
 		SinglePlayerInfo* player_info;

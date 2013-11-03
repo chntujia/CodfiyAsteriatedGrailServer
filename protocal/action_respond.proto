@@ -11,6 +11,8 @@ enum MessageType2 {
 	MSG_TURN_BEGIN = 109;
 	MSG_USE_CARD = 110;
 	MSG_HURT = 111;
+	MSG_SKILL = 112;
+	MSG_ADDITIONAL_ACTION = 113;
 }
 
 enum PlayerIdConst {
@@ -83,7 +85,10 @@ enum CmdType {
 // 不能单独发送
 message Command {
     optional uint32 respond_id = 1;    // 或为基础行动，或为响应，0代表此次行动可放弃
-    repeated uint32 args = 2;
+    optional uint32 src_id = 2;
+	repeated uint32 dst_ids = 3;
+	repeated uint32 card_ids = 4;
+	repeated uint32 args = 5;
 }
 
 // s -> c 动作询问
@@ -126,4 +131,11 @@ message HurtMsg {
 	optional uint32 hurt = 3;
 	optional uint32 cause = 4;     // 技能或操作id
 	optional uint32 type = 5;      // 伤害类型，1：魔法，2：物理
+}
+
+// s -> c 技能消息
+message SkillMsg {
+    optional uint32 skill_id = 1;  // 同cause
+    optional uint32 src_id = 2;
+	repeated uint32 dst_ids = 3;
 }

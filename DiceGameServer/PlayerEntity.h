@@ -10,8 +10,8 @@ using namespace std;
 
 class TeamArea;
 class GameGrail;
+class UserTask;
 //玩家类
-
 
 class PlayerEntity
 {
@@ -78,7 +78,20 @@ public:
     bool isHandCardsMaxFixed(){return this->handCardsMaxFixed;}
     bool getYourturn();
 	bool hasAdditionalAction() {return !additionalActions.empty();}
+	list<ACTION_QUOTA> getAdditionalAction() { return additionalActions; }
 	void clearAdditionalAction() { additionalActions.clear(); }
+	void addAction(int allowAction, int cause) {
+		ACTION_QUOTA quota;
+		quota.allowAction = allowAction;
+		quota.cause = cause;
+		additionalActions.push_back(quota);
+	}
+	
+	bool toNextStep(int ret) {	return GE_SUCCESS == ret || GE_TIMEOUT == ret; }
+	//解析角色相关的命令
+	//return true 表示处理了
+	bool cmdMsgParse(UserTask* session, uint16_t type, ::google::protobuf::Message *proto){ return false; }
+
 	//回合限定等统一在这里初始化
 	virtual int p_before_turn_begin(int &step, int currentPlayerID) { return GE_SUCCESS; }
 	virtual int p_turn_begin(int &step, int currentPlayerID) { return GE_SUCCESS; }
@@ -106,6 +119,8 @@ public:
 	virtual int p_hand_change(int &step, int playerID) { return GE_SUCCESS; }
 	virtual int p_basic_effect_change(int &step, int dstID, int card, int doerID, int cause)  { return GE_SUCCESS; }
 	virtual int p_show_hand(int &step, int playerID, int howMany, vector<int> cards) { return GE_SUCCESS; }
+	//唯一一个v跟p混在一起，并且提供了基本实现
+	virtual int p_additional_action(int chosen);
 
 	virtual int v_allow_action(int claim, int allow, bool canGiveUp);
 	virtual int v_attack(int cardID, int dstID, bool realCard = true);
@@ -118,6 +133,7 @@ public:
 	virtual int v_buy(Action *action);
 	virtual int v_synthesize(Action *action, TeamArea* team);
 	virtual int v_extract(Action *action, TeamArea* team);
+
 protected:
     int id;//玩家id
     int characterID;

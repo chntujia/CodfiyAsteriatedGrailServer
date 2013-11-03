@@ -455,7 +455,7 @@ int GameGrail::setStateAttackGiveUp(int cardID, int dstID, int srcID, HARM harm,
 
 	PlayerEntity *player = getPlayerEntity(dstID);
 	int shieldCardID = -1;
-	if(checkSheild && player->checkBasicEffectName(NAME_SHIELD, &shieldCardID) == GE_SUCCESS){
+	if(checkSheild && GE_SUCCESS == player->checkBasicEffectName(NAME_SHIELD, &shieldCardID)){
 		setStateTimeline2Miss(cardID, dstID, srcID, isActive);	
 		return setStateMoveOneCardNotToHand(dstID, DECK_BASIC_EFFECT, -1, DECK_DISCARD, shieldCardID, dstID, CAUSE_DEFAULT, true);	
 	}
@@ -494,6 +494,7 @@ int GameGrail::setStateTimeline1(int cardID, int dstID, int srcID, bool isActive
 	con->harm.point = 2;
 	con->harm.type = HARM_ATTACK;	
 	con->hitRate = RATE_NORMAL;
+	con->checkShield = true;
 
 	//FIXME: °µÃð by Fengyu 
 	if(getCardByID(cardID)->getElement() == ELEMENT_DARKNESS){

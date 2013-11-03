@@ -448,3 +448,20 @@ int PlayerEntity::v_extract(Action *action, TeamArea* team)
 	}
 	return GE_SUCCESS;
 }
+
+int PlayerEntity::p_additional_action(int chosen)
+{
+	list<ACTION_QUOTA>::iterator it;
+	for(it = additionalActions.begin(); it != additionalActions.end(); it++){
+		if(chosen == it->cause){
+			SkillMsg skill;
+			Coder::skillNotice(id, id, chosen, skill);
+			engine->sendMessage(-1, MSG_SKILL, skill);
+			additionalActions.erase(it);
+			engine->popGameState();
+			engine->pushGameState(new StateActionPhase(it->allowAction, true));
+			return GE_SUCCESS;
+		}
+	}
+	return GE_INVALID_ACTION;
+}

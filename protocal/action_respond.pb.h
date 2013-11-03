@@ -45,6 +45,7 @@ class ErrorInput;
 class HitMsg;
 class UseCard;
 class HurtMsg;
+class SkillMsg;
 
 enum MessageType2 {
   MSG_PICK_REQ = 101,
@@ -56,11 +57,13 @@ enum MessageType2 {
   MSG_HIT = 108,
   MSG_TURN_BEGIN = 109,
   MSG_USE_CARD = 110,
-  MSG_HURT = 111
+  MSG_HURT = 111,
+  MSG_SKILL = 112,
+  MSG_ADDITIONAL_ACTION = 113
 };
 bool MessageType2_IsValid(int value);
 const MessageType2 MessageType2_MIN = MSG_PICK_REQ;
-const MessageType2 MessageType2_MAX = MSG_HURT;
+const MessageType2 MessageType2_MAX = MSG_ADDITIONAL_ACTION;
 const int MessageType2_ARRAYSIZE = MessageType2_MAX + 1;
 
 const ::google::protobuf::EnumDescriptor* MessageType2_descriptor();
@@ -741,10 +744,41 @@ class Command : public ::google::protobuf::Message {
   inline ::google::protobuf::uint32 respond_id() const;
   inline void set_respond_id(::google::protobuf::uint32 value);
 
-  // repeated uint32 args = 2;
+  // optional uint32 src_id = 2;
+  inline bool has_src_id() const;
+  inline void clear_src_id();
+  static const int kSrcIdFieldNumber = 2;
+  inline ::google::protobuf::uint32 src_id() const;
+  inline void set_src_id(::google::protobuf::uint32 value);
+
+  // repeated uint32 dst_ids = 3;
+  inline int dst_ids_size() const;
+  inline void clear_dst_ids();
+  static const int kDstIdsFieldNumber = 3;
+  inline ::google::protobuf::uint32 dst_ids(int index) const;
+  inline void set_dst_ids(int index, ::google::protobuf::uint32 value);
+  inline void add_dst_ids(::google::protobuf::uint32 value);
+  inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
+      dst_ids() const;
+  inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
+      mutable_dst_ids();
+
+  // repeated uint32 card_ids = 4;
+  inline int card_ids_size() const;
+  inline void clear_card_ids();
+  static const int kCardIdsFieldNumber = 4;
+  inline ::google::protobuf::uint32 card_ids(int index) const;
+  inline void set_card_ids(int index, ::google::protobuf::uint32 value);
+  inline void add_card_ids(::google::protobuf::uint32 value);
+  inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
+      card_ids() const;
+  inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
+      mutable_card_ids();
+
+  // repeated uint32 args = 5;
   inline int args_size() const;
   inline void clear_args();
-  static const int kArgsFieldNumber = 2;
+  static const int kArgsFieldNumber = 5;
   inline ::google::protobuf::uint32 args(int index) const;
   inline void set_args(int index, ::google::protobuf::uint32 value);
   inline void add_args(::google::protobuf::uint32 value);
@@ -757,14 +791,19 @@ class Command : public ::google::protobuf::Message {
  private:
   inline void set_has_respond_id();
   inline void clear_has_respond_id();
+  inline void set_has_src_id();
+  inline void clear_has_src_id();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
-  ::google::protobuf::RepeatedField< ::google::protobuf::uint32 > args_;
   ::google::protobuf::uint32 respond_id_;
+  ::google::protobuf::uint32 src_id_;
+  ::google::protobuf::RepeatedField< ::google::protobuf::uint32 > dst_ids_;
+  ::google::protobuf::RepeatedField< ::google::protobuf::uint32 > card_ids_;
+  ::google::protobuf::RepeatedField< ::google::protobuf::uint32 > args_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(5 + 31) / 32];
 
   friend void  protobuf_AddDesc_action_5frespond_2eproto();
   friend void protobuf_AssignDesc_action_5frespond_2eproto();
@@ -1309,6 +1348,111 @@ class HurtMsg : public ::google::protobuf::Message {
   void InitAsDefaultInstance();
   static HurtMsg* default_instance_;
 };
+// -------------------------------------------------------------------
+
+class SkillMsg : public ::google::protobuf::Message {
+ public:
+  SkillMsg();
+  virtual ~SkillMsg();
+
+  SkillMsg(const SkillMsg& from);
+
+  inline SkillMsg& operator=(const SkillMsg& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const SkillMsg& default_instance();
+
+  void Swap(SkillMsg* other);
+
+  // implements Message ----------------------------------------------
+
+  SkillMsg* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const SkillMsg& from);
+  void MergeFrom(const SkillMsg& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional uint32 skill_id = 1;
+  inline bool has_skill_id() const;
+  inline void clear_skill_id();
+  static const int kSkillIdFieldNumber = 1;
+  inline ::google::protobuf::uint32 skill_id() const;
+  inline void set_skill_id(::google::protobuf::uint32 value);
+
+  // optional uint32 src_id = 2;
+  inline bool has_src_id() const;
+  inline void clear_src_id();
+  static const int kSrcIdFieldNumber = 2;
+  inline ::google::protobuf::uint32 src_id() const;
+  inline void set_src_id(::google::protobuf::uint32 value);
+
+  // repeated uint32 dst_ids = 3;
+  inline int dst_ids_size() const;
+  inline void clear_dst_ids();
+  static const int kDstIdsFieldNumber = 3;
+  inline ::google::protobuf::uint32 dst_ids(int index) const;
+  inline void set_dst_ids(int index, ::google::protobuf::uint32 value);
+  inline void add_dst_ids(::google::protobuf::uint32 value);
+  inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
+      dst_ids() const;
+  inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
+      mutable_dst_ids();
+
+  // @@protoc_insertion_point(class_scope:network.SkillMsg)
+ private:
+  inline void set_has_skill_id();
+  inline void clear_has_skill_id();
+  inline void set_has_src_id();
+  inline void clear_has_src_id();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::uint32 skill_id_;
+  ::google::protobuf::uint32 src_id_;
+  ::google::protobuf::RepeatedField< ::google::protobuf::uint32 > dst_ids_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(3 + 31) / 32];
+
+  friend void  protobuf_AddDesc_action_5frespond_2eproto();
+  friend void protobuf_AssignDesc_action_5frespond_2eproto();
+  friend void protobuf_ShutdownFile_action_5frespond_2eproto();
+
+  void InitAsDefaultInstance();
+  static SkillMsg* default_instance_;
+};
 // ===================================================================
 
 
@@ -1687,7 +1831,79 @@ inline void Command::set_respond_id(::google::protobuf::uint32 value) {
   respond_id_ = value;
 }
 
-// repeated uint32 args = 2;
+// optional uint32 src_id = 2;
+inline bool Command::has_src_id() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void Command::set_has_src_id() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void Command::clear_has_src_id() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void Command::clear_src_id() {
+  src_id_ = 0u;
+  clear_has_src_id();
+}
+inline ::google::protobuf::uint32 Command::src_id() const {
+  return src_id_;
+}
+inline void Command::set_src_id(::google::protobuf::uint32 value) {
+  set_has_src_id();
+  src_id_ = value;
+}
+
+// repeated uint32 dst_ids = 3;
+inline int Command::dst_ids_size() const {
+  return dst_ids_.size();
+}
+inline void Command::clear_dst_ids() {
+  dst_ids_.Clear();
+}
+inline ::google::protobuf::uint32 Command::dst_ids(int index) const {
+  return dst_ids_.Get(index);
+}
+inline void Command::set_dst_ids(int index, ::google::protobuf::uint32 value) {
+  dst_ids_.Set(index, value);
+}
+inline void Command::add_dst_ids(::google::protobuf::uint32 value) {
+  dst_ids_.Add(value);
+}
+inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
+Command::dst_ids() const {
+  return dst_ids_;
+}
+inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
+Command::mutable_dst_ids() {
+  return &dst_ids_;
+}
+
+// repeated uint32 card_ids = 4;
+inline int Command::card_ids_size() const {
+  return card_ids_.size();
+}
+inline void Command::clear_card_ids() {
+  card_ids_.Clear();
+}
+inline ::google::protobuf::uint32 Command::card_ids(int index) const {
+  return card_ids_.Get(index);
+}
+inline void Command::set_card_ids(int index, ::google::protobuf::uint32 value) {
+  card_ids_.Set(index, value);
+}
+inline void Command::add_card_ids(::google::protobuf::uint32 value) {
+  card_ids_.Add(value);
+}
+inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
+Command::card_ids() const {
+  return card_ids_;
+}
+inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
+Command::mutable_card_ids() {
+  return &card_ids_;
+}
+
+// repeated uint32 args = 5;
 inline int Command::args_size() const {
   return args_.size();
 }
@@ -2112,6 +2328,79 @@ inline ::google::protobuf::uint32 HurtMsg::type() const {
 inline void HurtMsg::set_type(::google::protobuf::uint32 value) {
   set_has_type();
   type_ = value;
+}
+
+// -------------------------------------------------------------------
+
+// SkillMsg
+
+// optional uint32 skill_id = 1;
+inline bool SkillMsg::has_skill_id() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void SkillMsg::set_has_skill_id() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void SkillMsg::clear_has_skill_id() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void SkillMsg::clear_skill_id() {
+  skill_id_ = 0u;
+  clear_has_skill_id();
+}
+inline ::google::protobuf::uint32 SkillMsg::skill_id() const {
+  return skill_id_;
+}
+inline void SkillMsg::set_skill_id(::google::protobuf::uint32 value) {
+  set_has_skill_id();
+  skill_id_ = value;
+}
+
+// optional uint32 src_id = 2;
+inline bool SkillMsg::has_src_id() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void SkillMsg::set_has_src_id() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void SkillMsg::clear_has_src_id() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void SkillMsg::clear_src_id() {
+  src_id_ = 0u;
+  clear_has_src_id();
+}
+inline ::google::protobuf::uint32 SkillMsg::src_id() const {
+  return src_id_;
+}
+inline void SkillMsg::set_src_id(::google::protobuf::uint32 value) {
+  set_has_src_id();
+  src_id_ = value;
+}
+
+// repeated uint32 dst_ids = 3;
+inline int SkillMsg::dst_ids_size() const {
+  return dst_ids_.size();
+}
+inline void SkillMsg::clear_dst_ids() {
+  dst_ids_.Clear();
+}
+inline ::google::protobuf::uint32 SkillMsg::dst_ids(int index) const {
+  return dst_ids_.Get(index);
+}
+inline void SkillMsg::set_dst_ids(int index, ::google::protobuf::uint32 value) {
+  dst_ids_.Set(index, value);
+}
+inline void SkillMsg::add_dst_ids(::google::protobuf::uint32 value) {
+  dst_ids_.Add(value);
+}
+inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
+SkillMsg::dst_ids() const {
+  return dst_ids_;
+}
+inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
+SkillMsg::mutable_dst_ids() {
+  return &dst_ids_;
 }
 
 
