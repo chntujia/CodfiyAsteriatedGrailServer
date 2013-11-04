@@ -58,12 +58,11 @@ enum MessageType2 {
   MSG_TURN_BEGIN = 109,
   MSG_USE_CARD = 110,
   MSG_HURT = 111,
-  MSG_SKILL = 112,
-  MSG_ADDITIONAL_ACTION = 113
+  MSG_SKILL = 112
 };
 bool MessageType2_IsValid(int value);
 const MessageType2 MessageType2_MIN = MSG_PICK_REQ;
-const MessageType2 MessageType2_MAX = MSG_ADDITIONAL_ACTION;
+const MessageType2 MessageType2_MAX = MSG_SKILL;
 const int MessageType2_ARRAYSIZE = MessageType2_MAX + 1;
 
 const ::google::protobuf::EnumDescriptor* MessageType2_descriptor();
@@ -124,11 +123,12 @@ enum BasicRespondType {
   RESPOND_BULLET = 11,
   RESPOND_HEAL = 12,
   RESPOND_DISCARD = 13,
-  RESPOND_WEAKEN = 14
+  RESPOND_WEAKEN = 14,
+  RESPOND_ADDITIONAL_ACTION = 15
 };
 bool BasicRespondType_IsValid(int value);
 const BasicRespondType BasicRespondType_MIN = RESPOND_REPLY_ATTACK;
-const BasicRespondType BasicRespondType_MAX = RESPOND_WEAKEN;
+const BasicRespondType BasicRespondType_MAX = RESPOND_ADDITIONAL_ACTION;
 const int BasicRespondType_ARRAYSIZE = BasicRespondType_MAX + 1;
 
 const ::google::protobuf::EnumDescriptor* BasicRespondType_descriptor();

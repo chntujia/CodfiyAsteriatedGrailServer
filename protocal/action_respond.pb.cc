@@ -379,23 +379,23 @@ void protobuf_AddDesc_action_5frespond_2eproto() {
     "\n\007HurtMsg\022\016\n\006src_id\030\001 \001(\r\022\026\n\006dst_id\030\002 \001("
     "\r:\006100000\022\014\n\004hurt\030\003 \001(\r\022\r\n\005cause\030\004 \001(\r\022\014"
     "\n\004type\030\005 \001(\r\"=\n\010SkillMsg\022\020\n\010skill_id\030\001 \001"
-    "(\r\022\016\n\006src_id\030\002 \001(\r\022\017\n\007dst_ids\030\003 \003(\r*\340\001\n\014"
+    "(\r\022\016\n\006src_id\030\002 \001(\r\022\017\n\007dst_ids\030\003 \003(\r*\305\001\n\014"
     "MessageType2\022\020\n\014MSG_PICK_REQ\020e\022\014\n\010MSG_PI"
     "CK\020f\022\016\n\nMSG_ACTION\020g\022\017\n\013MSG_RESPOND\020h\022\017\n"
     "\013MSG_CMD_REQ\020j\022\023\n\017MSG_ERROR_INPUT\020k\022\013\n\007M"
     "SG_HIT\020l\022\022\n\016MSG_TURN_BEGIN\020m\022\020\n\014MSG_USE_"
-    "CARD\020n\022\014\n\010MSG_HURT\020o\022\r\n\tMSG_SKILL\020p\022\031\n\025M"
-    "SG_ADDITIONAL_ACTION\020q*%\n\rPlayerIdConst\022"
-    "\024\n\016PLAYER_NONE_ID\020\240\215\006*\267\001\n\017BasicActionTyp"
-    "e\022\021\n\rACTION_ATTACK\020\001\022\020\n\014ACTION_MAGIC\020\002\022\022"
-    "\n\016ACTION_SPECIAL\020\003\022\027\n\023ACTION_ATTACK_SKIL"
-    "L\020\004\022\026\n\022ACTION_MAGIC_SKILL\020\005\022\016\n\nACTION_AN"
-    "Y\020\006\022\027\n\023ACTION_ATTACK_MAGIC\020\007\022\021\n\013ACTION_N"
-    "ONE\020\240\215\006*{\n\020BasicRespondType\022\030\n\024RESPOND_R"
-    "EPLY_ATTACK\020\n\022\022\n\016RESPOND_BULLET\020\013\022\020\n\014RES"
-    "POND_HEAL\020\014\022\023\n\017RESPOND_DISCARD\020\r\022\022\n\016RESP"
-    "OND_WEAKEN\020\016**\n\007CmdType\022\016\n\nCMD_ACTION\020\001\022"
-    "\017\n\013CMD_RESPOND\020\002", 1536);
+    "CARD\020n\022\014\n\010MSG_HURT\020o\022\r\n\tMSG_SKILL\020p*%\n\rP"
+    "layerIdConst\022\024\n\016PLAYER_NONE_ID\020\240\215\006*\267\001\n\017B"
+    "asicActionType\022\021\n\rACTION_ATTACK\020\001\022\020\n\014ACT"
+    "ION_MAGIC\020\002\022\022\n\016ACTION_SPECIAL\020\003\022\027\n\023ACTIO"
+    "N_ATTACK_SKILL\020\004\022\026\n\022ACTION_MAGIC_SKILL\020\005"
+    "\022\016\n\nACTION_ANY\020\006\022\027\n\023ACTION_ATTACK_MAGIC\020"
+    "\007\022\021\n\013ACTION_NONE\020\240\215\006*\232\001\n\020BasicRespondTyp"
+    "e\022\030\n\024RESPOND_REPLY_ATTACK\020\n\022\022\n\016RESPOND_B"
+    "ULLET\020\013\022\020\n\014RESPOND_HEAL\020\014\022\023\n\017RESPOND_DIS"
+    "CARD\020\r\022\022\n\016RESPOND_WEAKEN\020\016\022\035\n\031RESPOND_AD"
+    "DITIONAL_ACTION\020\017**\n\007CmdType\022\016\n\nCMD_ACTI"
+    "ON\020\001\022\017\n\013CMD_RESPOND\020\002", 1541);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "action_respond.proto", &protobuf_RegisterTypes);
   CharactorPickRequest::default_instance_ = new CharactorPickRequest();
@@ -448,7 +448,6 @@ bool MessageType2_IsValid(int value) {
     case 110:
     case 111:
     case 112:
-    case 113:
       return true;
     default:
       return false;
@@ -499,6 +498,7 @@ bool BasicRespondType_IsValid(int value) {
     case 12:
     case 13:
     case 14:
+    case 15:
       return true;
     default:
       return false;

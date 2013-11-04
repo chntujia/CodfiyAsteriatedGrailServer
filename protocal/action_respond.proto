@@ -12,7 +12,6 @@ enum MessageType2 {
 	MSG_USE_CARD = 110;
 	MSG_HURT = 111;
 	MSG_SKILL = 112;
-	MSG_ADDITIONAL_ACTION = 113;
 }
 
 enum PlayerIdConst {
@@ -65,6 +64,7 @@ enum BasicRespondType {
     RESPOND_HEAL = 12;         // 治疗响应
     RESPOND_DISCARD = 13;      // 丢弃手牌
 	RESPOND_WEAKEN = 14;       // 虚弱
+	RESPOND_ADDITIONAL_ACTION = 15;       //额外行动
 }
 
 // c -> s, s -> c 启动及技能响应及应战及治疗响应及爆牌，根据不同的行动填写不同长度的args，可以用到 s -> c

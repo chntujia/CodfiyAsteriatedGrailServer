@@ -449,6 +449,17 @@ int PlayerEntity::v_extract(Action *action, TeamArea* team)
 	return GE_SUCCESS;
 }
 
+int PlayerEntity::v_additional_action(int chosen)
+{
+	list<ACTION_QUOTA>::iterator it;
+	for(it = additionalActions.begin(); it != additionalActions.end(); it++){
+		if(chosen == it->cause){
+			return GE_SUCCESS;
+		}
+	}
+	return GE_INVALID_ACTION;
+}
+
 int PlayerEntity::p_additional_action(int chosen)
 {
 	list<ACTION_QUOTA>::iterator it;

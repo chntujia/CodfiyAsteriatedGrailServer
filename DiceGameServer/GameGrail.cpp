@@ -7,6 +7,7 @@
 #include "zLogger.h"
 #include "zCommonDefine.h"
 #include "UserSessionManager.h"
+#include "role\JianSheng.h"
 using namespace boost;
 
 void TeamArea::initialTeam()
@@ -559,9 +560,14 @@ int GameGrail::setStateTimeline2Hit(int cardID, int dstID, int srcID, HARM harm,
 
 int GameGrail::setStateTimeline3(int dstID, HARM harm)
 {
+	network::HurtMsg hurt_msg;
+	Coder::hurtNotice(dstID, harm.srcID, harm.type, harm.point, harm.cause, hurt_msg);
+	sendMessage(-1, MSG_HURT, hurt_msg);
+
 	CONTEXT_TIMELINE_3 *con = new CONTEXT_TIMELINE_3;
 	con->harm = harm;
 	con->dstID = dstID;
+	
 	pushGameState(new StateTimeline3(con));
 	return GE_SUCCESS;
 }
@@ -581,12 +587,10 @@ int GameGrail::setStateStartLoseMorale(int howMany, int dstID, HARM harm)
 int GameGrail::setStateCheckTurnEnd()
 {
 	PlayerEntity *player = getPlayerEntity(m_currentPlayerID);
-	if(!player){
-		return GE_INVALID_PLAYERID;
-	}
+
 	if(player->hasAdditionalAction())
 	{
-		//TODO: additional action state
+		pushGameState(new StateAdditionalAction(m_currentPlayerID));
 	}
 	else
 	{
@@ -724,7 +728,8 @@ void GameGrail::initPlayerEntities()
 		player_it = (SinglePlayerInfo*)&(game_info.player_infos().Get(i));
 		id = player_it->id();
 		color = player_it->team();
-		m_playerEntities[id] = new PlayerEntity(this, id, color);
+		//FIXME: È«½£Ê¥Ê±´ú
+		m_playerEntities[id] = new JianSheng(this, id, color);
 		
 		position2id[i] = id;
 	}

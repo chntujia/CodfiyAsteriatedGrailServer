@@ -353,7 +353,8 @@ public:
 
         list<ACTION_QUOTA>::iterator it;
         cmd = cmd_req.add_commands();
-		cmd->set_respond_id(network::MSG_ADDITIONAL_ACTION);
+		cmd->set_respond_id(network::RESPOND_ADDITIONAL_ACTION);
+		cmd->set_src_id(playerID);
         for(it = quota.begin(); it != quota.end(); it++){
             cmd->add_args(it->cause);
         }
@@ -370,6 +371,7 @@ public:
 		cmd->add_args(type);
 		cmd->add_args(crossAvailable);
 	}
+	//只填基本信息，若需其他arg，请调用完后再自填
     static void askForSkill(int playerID, int skillID, CommandRequest& cmd_req)
 	{
 		cmd_req.set_cmd_type(CMD_RESPOND);

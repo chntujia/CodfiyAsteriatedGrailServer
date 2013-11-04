@@ -34,32 +34,39 @@ int JianSheng::p_before_turn_begin(int &step, int currentPlayerID)
 int JianSheng::p_timeline_1(int &step, CONTEXT_TIMELINE_1 *con)
 {
 	int ret = GE_INVALID_STEP;
-	//初始化step
-	if(STEP_INIT == step){
-		step = LIE_FENG_JI;
-	}
+	
 	//若成功则继续往下走，失败则返回，step会保留，下次再进来就不会重走
-	switch(step)
+	//一般超时也会继续下一步
+	while(STEP_DONE != step)
 	{
-	case LIE_FENG_JI:
-		ret = LieFengJi(con);
-		if(!toNextStep(ret)){
+		switch(step)
+		{
+		case STEP_INIT:
+			//初始化step
+			step = LIE_FENG_JI;
 			break;
-		}
-		step = JI_FENG_JI;
-	case JI_FENG_JI:
-		ret = JiFengJi(con);
-		if(!toNextStep(ret)){
+		case LIE_FENG_JI:
+			ret = LieFengJi(con);
+			if(toNextStep(ret)){
+				step = JI_FENG_JI;
+			}			
 			break;
-		}
-		step = SHENG_JIAN;
-	case SHENG_JIAN:
-		ret = ShengJian(con);
-		if(!toNextStep(ret)){
+		case JI_FENG_JI:
+			ret = JiFengJi(con);
+			if(toNextStep(ret)){
+				step = SHENG_JIAN;
+			}			
 			break;
+		case SHENG_JIAN:
+			ret = ShengJian(con);
+			if(toNextStep(ret)){
+				//全部走完后，请把step设成STEP_DONE
+			    step = STEP_DONE;
+			}			
+			break;
+		default:
+			return GE_INVALID_STEP;
 		}
-    //全部走完后，请把step设成STEP_DONE
-		step = STEP_DONE;
 	}
 	return ret;
 }
@@ -68,28 +75,56 @@ int JianSheng::p_timeline_1(int &step, CONTEXT_TIMELINE_1 *con)
 int JianSheng::p_after_attack(int &step, int playerID)
 {
 	int ret = GE_INVALID_STEP;
-	//初始化step
-	if(STEP_INIT == step){
-		step = LIAN_XU_JI;
-	}
+
 	//若成功则继续往下走，失败则返回，step会保留，下次再进来就不会重走
-	switch(step)
+	//一般超时也会继续下一步
+	while(STEP_DONE != step)
 	{
-	case LIAN_XU_JI:
-		ret = LianXuJi(playerID);
-		if(!toNextStep(ret)){
+		switch(step)
+		{
+		case STEP_INIT:
+			//初始化step
+			step = LIAN_XU_JI;
 			break;
-		}
-		step = JIAN_YING;
-	case JIAN_YING:
-		ret = JianYing(playerID);
-		if(!toNextStep(ret)){
+		case LIAN_XU_JI:
+			ret = LianXuJi(playerID);
+			if(toNextStep(ret)){
+				step = JIAN_YING;
+			}			
 			break;
+		case JIAN_YING:
+			ret = JianYing(playerID);
+			if(toNextStep(ret)){
+				//全部走完后，请把step设成STEP_DONE
+				step = STEP_DONE;
+			}			
+			break;
+		default:
+			return GE_INVALID_STEP;
 		}
-	//全部走完后，请把step设成STEP_DONE
-		step = STEP_DONE;
 	}
 	return ret;
+}
+
+int JianSheng::v_additional_action(int chosen)
+{
+	switch(chosen)
+	{
+	case LIAN_XU_JI:
+		//回合限定
+		if(used_LianXuJi){
+			return GE_INVALID_ACTION;
+		}
+		break;
+	case JIAN_YING:
+		//回合限定       || 能量
+		if(used_JianYing || getEnergy() <= 0){
+			return GE_INVALID_ACTION;
+		}
+		break;
+	}
+	//通过角色相关的检测，基本检测交给底层
+	return PlayerEntity::v_additional_action(chosen);
 }
 
 int JianSheng::p_additional_action(int chosen)
@@ -98,18 +133,10 @@ int JianSheng::p_additional_action(int chosen)
 	switch(chosen)
 	{
 	case LIAN_XU_JI:
-		//回合限定
-		if(used_LianXuJi){
-			return GE_INVALID_ACTION;
-		}
 		used_LianXuJi = true;
 		using_LianXuJi = true;
 		break;
 	case JIAN_YING:
-		//回合限定
-		if(used_JianYing || getEnergy() <= 0){
-			return GE_INVALID_ACTION;
-		}
 		used_JianYing = true;
 		using_LianXuJi = false;
 		if(crystal>0){

@@ -119,7 +119,6 @@ public:
 	virtual int p_hand_change(int &step, int playerID) { return GE_SUCCESS; }
 	virtual int p_basic_effect_change(int &step, int dstID, int card, int doerID, int cause)  { return GE_SUCCESS; }
 	virtual int p_show_hand(int &step, int playerID, int howMany, vector<int> cards) { return GE_SUCCESS; }
-	//唯一一个v跟p混在一起，并且提供了基本实现
 	virtual int p_additional_action(int chosen);
 
 	virtual int v_allow_action(int claim, int allow, bool canGiveUp);
@@ -133,6 +132,7 @@ public:
 	virtual int v_buy(Action *action);
 	virtual int v_synthesize(Action *action, TeamArea* team);
 	virtual int v_extract(Action *action, TeamArea* team);
+	virtual int v_additional_action(int chosen);
 
 protected:
     int id;//玩家id

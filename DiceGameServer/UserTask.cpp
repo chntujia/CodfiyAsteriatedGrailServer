@@ -151,6 +151,9 @@ bool UserTask::cmdMsgParse(const char *pstrMsg, const uint32_t nCmdLen)
 			case RESPOND_WEAKEN:
 				tryNotify(m_playerId, STATE_WEAKEN, 0, respond);
 				break;
+			case RESPOND_ADDITIONAL_ACTION:
+				tryNotify(m_playerId, STATE_ADDITIONAL_ACTION, 0, respond);
+				break;
 			default:
 				//尝试从角色的cmdMsgParse里找匹配
 				if(getGame()->getPlayerEntity(m_playerId)->cmdMsgParse(this, type, proto) == false){

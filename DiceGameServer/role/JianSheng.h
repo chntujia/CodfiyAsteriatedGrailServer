@@ -13,6 +13,7 @@ public:
 	int p_additional_action(int chosen);
 	//v_xxxx用来做检测，将由State调用，一般检测已实现，但是像剑圣的连续技必须是风斩这类的特殊检测，只能覆写v_xxxx
 	int v_attack(int cardID, int dstID, bool realCard = true);
+	int v_additional_action(int chosen);
 	//角色的消息处理，将由UserTask调用，只要使用了waitForXXX，基本都要覆写这个函数
 	//return true 表示处理了
 	bool cmdMsgParse(UserTask* session, uint16_t type, ::google::protobuf::Message *proto);
