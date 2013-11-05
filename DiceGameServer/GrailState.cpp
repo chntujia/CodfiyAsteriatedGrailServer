@@ -504,7 +504,11 @@ int StateBeforeAttack::handle(GameGrail* engine)
 int StateAttacked::handle(GameGrail* engine)
 {
 	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateAttacked", engine->getGameId());
-	//FIXME: NOMISS
+	if(RATE_NOMISS == context->hitRate){
+		CONTEXT_TIMELINE_1 temp = *context;
+		engine->popGameState();
+		return engine->setStateTimeline2Hit(temp.attack.cardID, temp.attack.dstID, temp.attack.srcID, temp.harm, temp.attack.isActive);
+	}
 	CommandRequest cmd_req;
 	Coder::askForReBat(context->hitRate, context->attack.cardID, context->attack.dstID, context->attack.srcID, cmd_req);
 

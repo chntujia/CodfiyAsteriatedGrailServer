@@ -258,6 +258,17 @@ int PlayerEntity::getColor()
     return color;
 }
 
+bool PlayerEntity::containsAction(int cause)
+{
+	list<ACTION_QUOTA>::iterator it;
+	for(it = additionalActions.begin(); it != additionalActions.end(); it++){
+		if(it->cause == cause){
+			return true;
+		}
+	}
+	return false;
+}
+
 int PlayerEntity::v_allow_action(int claim, int allow, bool canGiveUp)
 {
 	if(claim == ACTION_ATTACK_SKILL){
@@ -467,10 +478,10 @@ int PlayerEntity::p_additional_action(int chosen)
 		if(chosen == it->cause){
 			SkillMsg skill;
 			Coder::skillNotice(id, id, chosen, skill);
-			engine->sendMessage(-1, MSG_SKILL, skill);
-			additionalActions.erase(it);
+			engine->sendMessage(-1, MSG_SKILL, skill);			
 			engine->popGameState();
 			engine->pushGameState(new StateActionPhase(it->allowAction, true));
+			additionalActions.erase(it);
 			return GE_SUCCESS;
 		}
 	}

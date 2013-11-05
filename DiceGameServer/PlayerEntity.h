@@ -77,6 +77,7 @@ public:
     bool tapped(){return this->tap;}
     bool isHandCardsMaxFixed(){return this->handCardsMaxFixed;}
     bool getYourturn();
+	bool containsAction(int cause);
 	bool hasAdditionalAction() {return !additionalActions.empty();}
 	list<ACTION_QUOTA> getAdditionalAction() { return additionalActions; }
 	void clearAdditionalAction() { additionalActions.clear(); }
@@ -90,7 +91,7 @@ public:
 	bool toNextStep(int ret) {	return GE_SUCCESS == ret || GE_TIMEOUT == ret; }
 	//解析角色相关的命令
 	//return true 表示处理了
-	bool cmdMsgParse(UserTask* session, uint16_t type, ::google::protobuf::Message *proto){ return false; }
+	virtual bool cmdMsgParse(UserTask* session, uint16_t type, ::google::protobuf::Message *proto){ return false; }
 
 	//回合限定等统一在这里初始化
 	virtual int p_before_turn_begin(int &step, int currentPlayerID) { return GE_SUCCESS; }

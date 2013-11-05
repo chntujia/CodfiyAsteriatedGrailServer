@@ -139,14 +139,10 @@ public:
 	int step;
 	int iterator;
 	GrailState(int s): state(s), step(0), iterator(0) {}
-	void moveIterator(int& ret) {
-		if(GE_SUCCESS == ret || GE_URGENT_AND_DONE == ret || STEP_DONE == step){
+	void moveIterator(int ret) {
+		if(GE_SUCCESS == ret || STEP_DONE == step){
 			iterator++;
 			step = STEP_INIT;
-			ret = GE_SUCCESS;
-		}
-		else if(GE_URGENT == ret){
-			ret = GE_SUCCESS;
 		}
 	}
 	virtual int handle(GameGrail* engine) { return GE_EMPTY_HANDLE; }

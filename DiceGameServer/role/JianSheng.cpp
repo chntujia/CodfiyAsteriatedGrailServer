@@ -34,7 +34,10 @@ int JianSheng::p_before_turn_begin(int &step, int currentPlayerID)
 int JianSheng::p_timeline_1(int &step, CONTEXT_TIMELINE_1 *con)
 {
 	int ret = GE_INVALID_STEP;
-	
+	//剑圣的技能都是要作为攻击方
+	if(con->attack.srcID != id){
+		return GE_SUCCESS;
+	}
 	//若成功则继续往下走，失败则返回，step会保留，下次再进来就不会重走
 	//一般超时也会继续下一步
 	while(STEP_DONE != step)
@@ -75,7 +78,10 @@ int JianSheng::p_timeline_1(int &step, CONTEXT_TIMELINE_1 *con)
 int JianSheng::p_after_attack(int &step, int playerID)
 {
 	int ret = GE_INVALID_STEP;
-
+	//不是剑圣就不用跑了
+	if(playerID != id){
+		return GE_SUCCESS;
+	}
 	//若成功则继续往下走，失败则返回，step会保留，下次再进来就不会重走
 	//一般超时也会继续下一步
 	while(STEP_DONE != step)
@@ -234,21 +240,21 @@ int JianSheng::ShengJian(CONTEXT_TIMELINE_1 *con)
 	if(srcID != id || !con->attack.isActive){
 		return GE_SUCCESS;
 	}
+	attackCount++;
 	if(3 == attackCount){
 		SkillMsg skill;
 		Coder::skillNotice(id, con->attack.dstID, SHENG_JIAN, skill);
 		engine->sendMessage(-1, MSG_SKILL, skill);
 		con->hitRate = RATE_NOMISS;
-	}
-	attackCount++;
+	}	
 	return GE_SUCCESS;
 }
 
 //旁观者视角，只要有牌就有可能发动，先加上额外行动
 int JianSheng::LianXuJi(int playerID)
 {
-	//是不是剑圣      || 有没有手牌
-	if(playerID != id || handCards.empty()){
+	//是不是剑圣      || 有没有手牌        || 回合限定      || 已经算上连续技了
+	if(playerID != id || handCards.empty() || used_LianXuJi || containsAction(LIAN_XU_JI)){
 		return GE_SUCCESS;
 	}
 	addAction(ACTION_ATTACK, LIAN_XU_JI);
@@ -257,8 +263,8 @@ int JianSheng::LianXuJi(int playerID)
 
 int JianSheng::JianYing(int playerID)
 {
-	//是不是剑圣      || 有没有手牌        || 有没有能量
-	if(playerID != id || handCards.empty() || getEnergy() <= 0){
+	//是不是剑圣      || 有没有手牌        || 有没有能量       || 回合限定      || 已经算上剑影了
+	if(playerID != id || handCards.empty() || getEnergy() <= 0 || used_JianYing || containsAction(JIAN_YING)){
 		return GE_SUCCESS;
 	}
 	addAction(ACTION_ATTACK, JIAN_YING);

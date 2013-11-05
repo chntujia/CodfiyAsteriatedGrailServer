@@ -21,7 +21,6 @@ enum GrailError{
 	GE_SUCCESS,
 	GE_TIMEOUT,
 	GE_URGENT,
-	GE_URGENT_AND_DONE,
 	GE_EMPTY_HANDLE,
 	GE_NO_STATE,
 	GE_DECK_OVERFLOW,
@@ -338,13 +337,13 @@ public:
 
 		if (canGiveUp) {
 			cmd = cmd_req.add_commands();
-			cmd->set_respond_id(0);
+			cmd->set_respond_id(ACTION_NONE);
+			cmd->set_src_id(playerID);
 		}
 
 		cmd = cmd_req.add_commands();
 		cmd->set_respond_id(actionTypeAllowed);
-        cmd->add_args(playerID);
-
+		cmd->set_src_id(playerID);
 	}
     static void askForAdditionalAction(int playerID, list<ACTION_QUOTA> quota, CommandRequest& cmd_req)
     {

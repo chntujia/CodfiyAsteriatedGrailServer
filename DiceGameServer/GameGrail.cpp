@@ -493,7 +493,8 @@ int GameGrail::setStateTimeline1(int cardID, int dstID, int srcID, bool isActive
 	con->attack.isActive = isActive;
 	con->harm.srcID = srcID;
 	con->harm.point = 2;
-	con->harm.type = HARM_ATTACK;	
+	con->harm.type = HARM_ATTACK;
+	con->harm.cause = CAUSE_ATTACK;
 	con->hitRate = RATE_NORMAL;
 	con->checkShield = true;
 

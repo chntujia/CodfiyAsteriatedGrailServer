@@ -133,7 +133,6 @@ bool UserTask::cmdMsgParse(const char *pstrMsg, const uint32_t nCmdLen)
 			action = (Action*)proto;
 			// 行动
 			tryNotify(m_playerId, STATE_ACTION_PHASE, 0, action);
-
 			break;
 		case MSG_RESPOND:
 			respond = (Respond*)proto;
@@ -153,7 +152,7 @@ bool UserTask::cmdMsgParse(const char *pstrMsg, const uint32_t nCmdLen)
 				break;
 			case RESPOND_ADDITIONAL_ACTION:
 				tryNotify(m_playerId, STATE_ADDITIONAL_ACTION, 0, respond);
-				break;
+				break;			
 			default:
 				//尝试从角色的cmdMsgParse里找匹配
 				if(getGame()->getPlayerEntity(m_playerId)->cmdMsgParse(this, type, proto) == false){
