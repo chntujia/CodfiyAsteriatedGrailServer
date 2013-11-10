@@ -86,8 +86,8 @@ int StateRoleStrategyRandom::handle(GameGrail* engine)
 	for(int i = 0; i < engine->getGameMaxPlayers(); i++){
 		// i为玩家编号，不是座号		
 		if(GE_SUCCESS == (ret=roles->pop(1, &out))){
-			//FIXME: 全剑圣时代
-			Coder::roleNotice(i, 1, game_info);
+			//FIXME: 全封印时代
+			Coder::roleNotice(i, 4, game_info);
 			engine->sendMessage(-1, MSG_GAME, game_info);
 		}
 		else{
@@ -285,6 +285,8 @@ int StateActionPhase::handle(GameGrail* engine)
 				return basicMagic(action, engine);
 			case ACTION_SPECIAL:
 				return basicSpecial(action, engine);
+			case ACTION_MAGIC_SKILL:
+				return magicSkill(action, engine);
 			case ACTION_NONE:
 				engine->popGameState_if(STATE_ACTION_PHASE);
 			    return engine->setStateCheckTurnEnd();
@@ -483,6 +485,21 @@ int StateActionPhase::basicSpecial(Action *action, GameGrail* engine)
 		}
 		break;
 	}
+}
+
+int StateActionPhase::magicSkill(Action *action, GameGrail* engine)
+{
+	int ret;
+	int m_currentPlayerID = engine->getCurrentPlayerID();
+	PlayerEntity *src = engine->getPlayerEntity(m_currentPlayerID);
+	if(GE_SUCCESS == (ret = src->v_magic_skill(action))){
+		engine->popGameState();
+		engine->pushGameState(new StateAfterMagic(m_currentPlayerID));
+		engine->pushGameState(new StateMagicSkill(action));
+		engine->pushGameState(new StateBeforeMagic(m_currentPlayerID));
+		return GE_SUCCESS;
+	}
+	return ret;
 }
 
 int StateBeforeAttack::handle(GameGrail* engine)
@@ -688,6 +705,21 @@ int StateMissiled::getNextTargetID(GameGrail* engine ,int startID)
 		}
 		memset(hasMissiled, 0, sizeof(hasMissiled));
 	}
+}
+
+int StateMagicSkill::handle(GameGrail* engine)
+{
+	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateMagicSkill", engine->getGameId());
+	int ret = GE_FATAL_ERROR;
+	int m_currentPlayerID = engine->getCurrentPlayerID();
+	PlayerEntity *src = engine->getPlayerEntity(m_currentPlayerID);
+	if(step != STEP_DONE){
+		ret = src->p_magic_skill(step, action);
+		if(GE_SUCCESS != ret){
+			return ret;		
+		}
+	}
+	return engine->popGameState_if(STATE_MAGIC_SKILL);
 }
 
 int StateAfterMagic::handle(GameGrail* engine)
@@ -1055,10 +1087,10 @@ int StateHandChange::handle(GameGrail* engine)
 	if(!isSet){
 		PlayerEntity* dst = engine->getPlayerEntity(dstID);
 		if(direction == CHANGE_ADD){
-			dst->addHandCards(howMany,cards);					
+			dst->addHandCards(howMany, cards);					
 		}
 		else{
-			dst->removeHandCards(howMany,cards);
+			dst->removeHandCards(howMany, cards);
 		}
 		isSet = true;
 

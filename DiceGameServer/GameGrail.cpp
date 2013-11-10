@@ -8,6 +8,7 @@
 #include "zCommonDefine.h"
 #include "UserSessionManager.h"
 #include "role\JianSheng.h"
+#include "role\FengYin.h"
 using namespace boost;
 
 void TeamArea::initialTeam()
@@ -266,7 +267,7 @@ int GameGrail::setStateMoveCards(int srcOwner, int srcArea, int dstOwner, int ds
 		break;
 	case DECK_BASIC_EFFECT:
 		src = getPlayerEntity(srcOwner);
-		if(GE_SUCCESS != (ret = src->checkBasicEffect(cards[0]))){
+		if(GE_SUCCESS != (ret = src->checkBasicEffectByCard(cards[0]))){
 			return ret;
 		}
 		break;
@@ -400,18 +401,17 @@ int GameGrail::setStateUseCard(int cardID, int dstID, int srcID, bool stay, bool
 
 int GameGrail::setStateCheckBasicEffect()
 {
-	//check weaken here by Fengyu
 	PlayerEntity *player = getPlayerEntity(m_currentPlayerID);
 	int weakenCardID = -1;
 	int weakenSrcID = -1;
-	//FIXME 五系束缚
-	if( player->checkBasicEffectName(NAME_WEAKEN, &weakenCardID, &weakenSrcID) == GE_SUCCESS )
-	{
-		int howMany = 3;		
+	int howMany = FengYin::WuXiShuFu_Effect(this);
+	if( player->checkBasicEffectByName(NAME_WEAKEN, &weakenCardID, &weakenSrcID) == GE_SUCCESS ){
+		howMany += 3;				
+	}
+	if(howMany > 0){
 		pushGameState(new StateWeaken(weakenSrcID, howMany));
 		setStateMoveOneCardNotToHand(m_currentPlayerID, DECK_BASIC_EFFECT, -1, DECK_DISCARD, weakenCardID, m_currentPlayerID, CAUSE_DEFAULT, true);
 	}
-	////
 	else
 	{
 		pushGameState(new StateBeforeAction);
@@ -456,7 +456,7 @@ int GameGrail::setStateAttackGiveUp(int cardID, int dstID, int srcID, HARM harm,
 
 	PlayerEntity *player = getPlayerEntity(dstID);
 	int shieldCardID = -1;
-	if(checkSheild && GE_SUCCESS == player->checkBasicEffectName(NAME_SHIELD, &shieldCardID)){
+	if(checkSheild && GE_SUCCESS == player->checkBasicEffectByName(NAME_SHIELD, &shieldCardID)){
 		setStateTimeline2Miss(cardID, dstID, srcID, isActive);	
 		return setStateMoveOneCardNotToHand(dstID, DECK_BASIC_EFFECT, -1, DECK_DISCARD, shieldCardID, dstID, CAUSE_DEFAULT, true);	
 	}
@@ -471,7 +471,7 @@ int GameGrail::setStateMissileGiveUp(int dstID, int srcID, int harmPoint)
 	// FIX_ME  没有检查天使之墙 check sheild here by Fengyu
 	PlayerEntity *player = getPlayerEntity(dstID);
 	int shieldCardID = -1;
-	if(player->checkBasicEffectName(NAME_SHIELD, &shieldCardID) == GE_SUCCESS){	
+	if(player->checkBasicEffectByName(NAME_SHIELD, &shieldCardID) == GE_SUCCESS){	
 		return setStateMoveOneCardNotToHand(dstID, DECK_BASIC_EFFECT, -1, DECK_DISCARD, shieldCardID, dstID, CAUSE_DEFAULT, true);	
 	}	
 	else{
@@ -729,8 +729,8 @@ void GameGrail::initPlayerEntities()
 		player_it = (SinglePlayerInfo*)&(game_info.player_infos().Get(i));
 		id = player_it->id();
 		color = player_it->team();
-		//FIXME: 全剑圣时代
-		m_playerEntities[id] = new JianSheng(this, id, color);
+		//FIXME: 全封印时代
+		m_playerEntities[id] = new FengYin(this, id, color);
 		
 		position2id[i] = id;
 	}

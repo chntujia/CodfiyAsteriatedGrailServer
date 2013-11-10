@@ -72,6 +72,9 @@
     <ClInclude Include="role\JianSheng.h">
       <Filter>role</Filter>
     </ClInclude>
+    <ClInclude Include="role\FengYin.h">
+      <Filter>role</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -120,6 +123,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="role\JianSheng.cpp">
+      <Filter>role</Filter>
+    </ClCompile>
+    <ClCompile Include="role\FengYin.cpp">
       <Filter>role</Filter>
     </ClCompile>
   </ItemGroup>

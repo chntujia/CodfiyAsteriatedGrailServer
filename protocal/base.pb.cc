@@ -268,7 +268,7 @@ void protobuf_AssignDesc_base_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(StartReply));
   SinglePlayerInfo_descriptor_ = file->message_type(11);
-  static const int SinglePlayerInfo_offsets_[20] = {
+  static const int SinglePlayerInfo_offsets_[19] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SinglePlayerInfo, seat_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SinglePlayerInfo, id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SinglePlayerInfo, team_),
@@ -276,8 +276,7 @@ void protobuf_AssignDesc_base_2eproto() {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SinglePlayerInfo, role_id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SinglePlayerInfo, hand_count_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SinglePlayerInfo, heal_count_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SinglePlayerInfo, my_ex_card_place_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SinglePlayerInfo, gain_ex_card_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SinglePlayerInfo, ex_cards_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SinglePlayerInfo, basic_cards_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SinglePlayerInfo, gem_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SinglePlayerInfo, crystal_),
@@ -467,36 +466,35 @@ void protobuf_AddDesc_base_2eproto() {
     "ingleRoom.RoomPlayer\0328\n\nRoomPlayer\022\021\n\tpl"
     "ayer_id\030\001 \001(\r\022\027\n\017player_nickname\030\002 \001(\r\"+"
     "\n\005Rooms\022\"\n\005rooms\030\001 \003(\0132\023.network.SingleR"
-    "oom\"\016\n\014ReadyToStart\"\014\n\nStartReply\"\206\003\n\020Si"
+    "oom\"\016\n\014ReadyToStart\"\014\n\nStartReply\"\350\002\n\020Si"
     "nglePlayerInfo\022\014\n\004seat\030\025 \001(\r\022\n\n\002id\030\001 \001(\r"
     "\022\014\n\004team\030\002 \001(\r\022\020\n\010nickname\030\024 \001(\t\022\017\n\007role"
     "_id\030\004 \001(\r\022\022\n\nhand_count\030\005 \001(\r\022\022\n\nheal_co"
-    "unt\030\006 \001(\r\022\030\n\020my_ex_card_place\030\007 \003(\r\022\024\n\014g"
-    "ain_ex_card\030\010 \003(\r\022\023\n\013basic_cards\030\t \003(\r\022\013"
-    "\n\003gem\030\n \001(\r\022\017\n\007crystal\030\013 \001(\r\022\025\n\ryellow_e"
-    "nergy\030\014 \001(\r\022\023\n\013blue_energy\030\r \001(\r\022\025\n\rcove"
-    "red_count\030\016 \001(\r\022\020\n\010is_knelt\030\003 \001(\010\022\r\n\005han"
-    "ds\030\017 \003(\r\022\020\n\010covereds\030\020 \003(\r\022\020\n\010max_hand\030\026"
-    " \001(\r\022\024\n\014delete_field\030\036 \003(\t\"\265\002\n\010GameInfo\022"
-    "/\n\014player_infos\030\001 \003(\0132\031.network.SinglePl"
-    "ayerInfo\022\022\n\nred_morale\030\002 \001(\r\022\023\n\013blue_mor"
-    "ale\030\003 \001(\r\022\017\n\007red_gem\030\004 \001(\r\022\020\n\010blue_gem\030\005"
-    " \001(\r\022\023\n\013red_crystal\030\006 \001(\r\022\024\n\014blue_crysta"
-    "l\030\007 \001(\r\022\021\n\tred_grail\030\010 \001(\r\022\022\n\nblue_grail"
-    "\030\t \001(\r\022\014\n\004pile\030\n \001(\r\022\017\n\007discard\030\013 \001(\r\022\022\n"
-    "\nshow_cards\030\014 \003(\r\022\021\n\tshow_from\030\r \001(\r\022\024\n\014"
-    "delete_field\030\017 \003(\t\"\023\n\004Talk\022\013\n\003txt\030\001 \001(\t\""
-    "D\n\006Gossip\022!\n\004type\030\001 \001(\0162\023.network.Gossip"
-    "Type\022\013\n\003txt\030\002 \001(\t\022\n\n\002id\030\003 \001(\r*\244\002\n\013Messag"
-    "eType\022\021\n\rMSG_LOGIN_REQ\020\001\022\021\n\rMSG_LOGIN_RE"
-    "P\020\002\022\r\n\tMSG_READY\020\003\022\021\n\rMSG_START_REP\020\004\022\025\n"
-    "\021MSG_SINGLE_PLAYER\020\005\022\014\n\010MSG_GAME\020\006\022\014\n\010MS"
-    "G_TALK\020\007\022\016\n\nMSG_GOSSIP\020\010\022\022\n\016MSG_ENTER_RO"
-    "OM\020\t\022\023\n\017MSG_SINGLE_ROOM\020\n\022\r\n\tMSG_ROOMS\020\013"
-    "\022\022\n\016MSG_LOGOUT_REQ\020\014\022\022\n\016MSG_LOGOUT_REP\020\r"
-    "\022\024\n\020MSG_REGISTER_REQ\020\016\022\024\n\020MSG_REGISTER_R"
-    "EP\020\017*0\n\nGossipType\022\017\n\013GOSSIP_TALK\020\001\022\021\n\rG"
-    "OSSIP_NOTICE\020\002", 1734);
+    "unt\030\006 \001(\r\022\020\n\010ex_cards\030\010 \003(\r\022\023\n\013basic_car"
+    "ds\030\t \003(\r\022\013\n\003gem\030\n \001(\r\022\017\n\007crystal\030\013 \001(\r\022\025"
+    "\n\ryellow_energy\030\014 \001(\r\022\023\n\013blue_energy\030\r \001"
+    "(\r\022\025\n\rcovered_count\030\016 \001(\r\022\020\n\010is_knelt\030\003 "
+    "\001(\010\022\r\n\005hands\030\017 \003(\r\022\020\n\010covereds\030\020 \003(\r\022\020\n\010"
+    "max_hand\030\026 \001(\r\022\024\n\014delete_field\030\036 \003(\t\"\265\002\n"
+    "\010GameInfo\022/\n\014player_infos\030\001 \003(\0132\031.networ"
+    "k.SinglePlayerInfo\022\022\n\nred_morale\030\002 \001(\r\022\023"
+    "\n\013blue_morale\030\003 \001(\r\022\017\n\007red_gem\030\004 \001(\r\022\020\n\010"
+    "blue_gem\030\005 \001(\r\022\023\n\013red_crystal\030\006 \001(\r\022\024\n\014b"
+    "lue_crystal\030\007 \001(\r\022\021\n\tred_grail\030\010 \001(\r\022\022\n\n"
+    "blue_grail\030\t \001(\r\022\014\n\004pile\030\n \001(\r\022\017\n\007discar"
+    "d\030\013 \001(\r\022\022\n\nshow_cards\030\014 \003(\r\022\021\n\tshow_from"
+    "\030\r \001(\r\022\024\n\014delete_field\030\017 \003(\t\"\023\n\004Talk\022\013\n\003"
+    "txt\030\001 \001(\t\"D\n\006Gossip\022!\n\004type\030\001 \001(\0162\023.netw"
+    "ork.GossipType\022\013\n\003txt\030\002 \001(\t\022\n\n\002id\030\003 \001(\r*"
+    "\244\002\n\013MessageType\022\021\n\rMSG_LOGIN_REQ\020\001\022\021\n\rMS"
+    "G_LOGIN_REP\020\002\022\r\n\tMSG_READY\020\003\022\021\n\rMSG_STAR"
+    "T_REP\020\004\022\025\n\021MSG_SINGLE_PLAYER\020\005\022\014\n\010MSG_GA"
+    "ME\020\006\022\014\n\010MSG_TALK\020\007\022\016\n\nMSG_GOSSIP\020\010\022\022\n\016MS"
+    "G_ENTER_ROOM\020\t\022\023\n\017MSG_SINGLE_ROOM\020\n\022\r\n\tM"
+    "SG_ROOMS\020\013\022\022\n\016MSG_LOGOUT_REQ\020\014\022\022\n\016MSG_LO"
+    "GOUT_REP\020\r\022\024\n\020MSG_REGISTER_REQ\020\016\022\024\n\020MSG_"
+    "REGISTER_REP\020\017*0\n\nGossipType\022\017\n\013GOSSIP_T"
+    "ALK\020\001\022\021\n\rGOSSIP_NOTICE\020\002", 1704);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "base.proto", &protobuf_RegisterTypes);
   RegisterRequest::default_instance_ = new RegisterRequest();
@@ -3466,8 +3464,7 @@ const int SinglePlayerInfo::kNicknameFieldNumber;
 const int SinglePlayerInfo::kRoleIdFieldNumber;
 const int SinglePlayerInfo::kHandCountFieldNumber;
 const int SinglePlayerInfo::kHealCountFieldNumber;
-const int SinglePlayerInfo::kMyExCardPlaceFieldNumber;
-const int SinglePlayerInfo::kGainExCardFieldNumber;
+const int SinglePlayerInfo::kExCardsFieldNumber;
 const int SinglePlayerInfo::kBasicCardsFieldNumber;
 const int SinglePlayerInfo::kGemFieldNumber;
 const int SinglePlayerInfo::kCrystalFieldNumber;
@@ -3561,7 +3558,7 @@ void SinglePlayerInfo::Clear() {
     hand_count_ = 0u;
     heal_count_ = 0u;
   }
-  if (_has_bits_[10 / 32] & (0xffu << (10 % 32))) {
+  if (_has_bits_[9 / 32] & (0xffu << (9 % 32))) {
     gem_ = 0u;
     crystal_ = 0u;
     yellow_energy_ = 0u;
@@ -3569,11 +3566,10 @@ void SinglePlayerInfo::Clear() {
     covered_count_ = 0u;
     is_knelt_ = false;
   }
-  if (_has_bits_[18 / 32] & (0xffu << (18 % 32))) {
+  if (_has_bits_[17 / 32] & (0xffu << (17 % 32))) {
     max_hand_ = 0u;
   }
-  my_ex_card_place_.Clear();
-  gain_ex_card_.Clear();
+  ex_cards_.Clear();
   basic_cards_.Clear();
   hands_.Clear();
   covereds_.Clear();
@@ -3679,50 +3675,28 @@ bool SinglePlayerInfo::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(56)) goto parse_my_ex_card_place;
+        if (input->ExpectTag(64)) goto parse_ex_cards;
         break;
       }
 
-      // repeated uint32 my_ex_card_place = 7;
-      case 7: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
-         parse_my_ex_card_place:
-          DO_((::google::protobuf::internal::WireFormatLite::ReadRepeatedPrimitive<
-                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
-                 1, 56, input, this->mutable_my_ex_card_place())));
-        } else if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag)
-                   == ::google::protobuf::internal::WireFormatLite::
-                      WIRETYPE_LENGTH_DELIMITED) {
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPackedPrimitiveNoInline<
-                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
-                 input, this->mutable_my_ex_card_place())));
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectTag(56)) goto parse_my_ex_card_place;
-        if (input->ExpectTag(64)) goto parse_gain_ex_card;
-        break;
-      }
-
-      // repeated uint32 gain_ex_card = 8;
+      // repeated uint32 ex_cards = 8;
       case 8: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
-         parse_gain_ex_card:
+         parse_ex_cards:
           DO_((::google::protobuf::internal::WireFormatLite::ReadRepeatedPrimitive<
                    ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
-                 1, 64, input, this->mutable_gain_ex_card())));
+                 1, 64, input, this->mutable_ex_cards())));
         } else if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag)
                    == ::google::protobuf::internal::WireFormatLite::
                       WIRETYPE_LENGTH_DELIMITED) {
           DO_((::google::protobuf::internal::WireFormatLite::ReadPackedPrimitiveNoInline<
                    ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
-                 input, this->mutable_gain_ex_card())));
+                 input, this->mutable_ex_cards())));
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(64)) goto parse_gain_ex_card;
+        if (input->ExpectTag(64)) goto parse_ex_cards;
         if (input->ExpectTag(72)) goto parse_basic_cards;
         break;
       }
@@ -3989,16 +3963,10 @@ void SinglePlayerInfo::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteUInt32(6, this->heal_count(), output);
   }
 
-  // repeated uint32 my_ex_card_place = 7;
-  for (int i = 0; i < this->my_ex_card_place_size(); i++) {
+  // repeated uint32 ex_cards = 8;
+  for (int i = 0; i < this->ex_cards_size(); i++) {
     ::google::protobuf::internal::WireFormatLite::WriteUInt32(
-      7, this->my_ex_card_place(i), output);
-  }
-
-  // repeated uint32 gain_ex_card = 8;
-  for (int i = 0; i < this->gain_ex_card_size(); i++) {
-    ::google::protobuf::internal::WireFormatLite::WriteUInt32(
-      8, this->gain_ex_card(i), output);
+      8, this->ex_cards(i), output);
   }
 
   // repeated uint32 basic_cards = 9;
@@ -4110,16 +4078,10 @@ void SinglePlayerInfo::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(6, this->heal_count(), target);
   }
 
-  // repeated uint32 my_ex_card_place = 7;
-  for (int i = 0; i < this->my_ex_card_place_size(); i++) {
+  // repeated uint32 ex_cards = 8;
+  for (int i = 0; i < this->ex_cards_size(); i++) {
     target = ::google::protobuf::internal::WireFormatLite::
-      WriteUInt32ToArray(7, this->my_ex_card_place(i), target);
-  }
-
-  // repeated uint32 gain_ex_card = 8;
-  for (int i = 0; i < this->gain_ex_card_size(); i++) {
-    target = ::google::protobuf::internal::WireFormatLite::
-      WriteUInt32ToArray(8, this->gain_ex_card(i), target);
+      WriteUInt32ToArray(8, this->ex_cards(i), target);
   }
 
   // repeated uint32 basic_cards = 9;
@@ -4255,7 +4217,7 @@ int SinglePlayerInfo::ByteSize() const {
     }
 
   }
-  if (_has_bits_[10 / 32] & (0xffu << (10 % 32))) {
+  if (_has_bits_[9 / 32] & (0xffu << (9 % 32))) {
     // optional uint32 gem = 10;
     if (has_gem()) {
       total_size += 1 +
@@ -4297,7 +4259,7 @@ int SinglePlayerInfo::ByteSize() const {
     }
 
   }
-  if (_has_bits_[18 / 32] & (0xffu << (18 % 32))) {
+  if (_has_bits_[17 / 32] & (0xffu << (17 % 32))) {
     // optional uint32 max_hand = 22;
     if (has_max_hand()) {
       total_size += 2 +
@@ -4306,24 +4268,14 @@ int SinglePlayerInfo::ByteSize() const {
     }
 
   }
-  // repeated uint32 my_ex_card_place = 7;
+  // repeated uint32 ex_cards = 8;
   {
     int data_size = 0;
-    for (int i = 0; i < this->my_ex_card_place_size(); i++) {
+    for (int i = 0; i < this->ex_cards_size(); i++) {
       data_size += ::google::protobuf::internal::WireFormatLite::
-        UInt32Size(this->my_ex_card_place(i));
+        UInt32Size(this->ex_cards(i));
     }
-    total_size += 1 * this->my_ex_card_place_size() + data_size;
-  }
-
-  // repeated uint32 gain_ex_card = 8;
-  {
-    int data_size = 0;
-    for (int i = 0; i < this->gain_ex_card_size(); i++) {
-      data_size += ::google::protobuf::internal::WireFormatLite::
-        UInt32Size(this->gain_ex_card(i));
-    }
-    total_size += 1 * this->gain_ex_card_size() + data_size;
+    total_size += 1 * this->ex_cards_size() + data_size;
   }
 
   // repeated uint32 basic_cards = 9;
@@ -4388,8 +4340,7 @@ void SinglePlayerInfo::MergeFrom(const ::google::protobuf::Message& from) {
 
 void SinglePlayerInfo::MergeFrom(const SinglePlayerInfo& from) {
   GOOGLE_CHECK_NE(&from, this);
-  my_ex_card_place_.MergeFrom(from.my_ex_card_place_);
-  gain_ex_card_.MergeFrom(from.gain_ex_card_);
+  ex_cards_.MergeFrom(from.ex_cards_);
   basic_cards_.MergeFrom(from.basic_cards_);
   hands_.MergeFrom(from.hands_);
   covereds_.MergeFrom(from.covereds_);
@@ -4417,7 +4368,7 @@ void SinglePlayerInfo::MergeFrom(const SinglePlayerInfo& from) {
       set_heal_count(from.heal_count());
     }
   }
-  if (from._has_bits_[10 / 32] & (0xffu << (10 % 32))) {
+  if (from._has_bits_[9 / 32] & (0xffu << (9 % 32))) {
     if (from.has_gem()) {
       set_gem(from.gem());
     }
@@ -4437,7 +4388,7 @@ void SinglePlayerInfo::MergeFrom(const SinglePlayerInfo& from) {
       set_is_knelt(from.is_knelt());
     }
   }
-  if (from._has_bits_[18 / 32] & (0xffu << (18 % 32))) {
+  if (from._has_bits_[17 / 32] & (0xffu << (17 % 32))) {
     if (from.has_max_hand()) {
       set_max_hand(from.max_hand());
     }
@@ -4471,8 +4422,7 @@ void SinglePlayerInfo::Swap(SinglePlayerInfo* other) {
     std::swap(role_id_, other->role_id_);
     std::swap(hand_count_, other->hand_count_);
     std::swap(heal_count_, other->heal_count_);
-    my_ex_card_place_.Swap(&other->my_ex_card_place_);
-    gain_ex_card_.Swap(&other->gain_ex_card_);
+    ex_cards_.Swap(&other->ex_cards_);
     basic_cards_.Swap(&other->basic_cards_);
     std::swap(gem_, other->gem_);
     std::swap(crystal_, other->crystal_);

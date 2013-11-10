@@ -96,8 +96,7 @@ message SinglePlayerInfo {
     optional uint32 hand_count = 5;     // 手牌数
     optional uint32 heal_count = 6;     // 治疗数
     
-    repeated uint32 my_ex_card_place = 7;  // 角色专属牌位置或状态（或两者复合）
-    repeated uint32 gain_ex_card = 8;      // 其他角色赋予的专属牌序号（及状态）
+    repeated uint32 ex_cards = 8;      // 其他角色赋予的专属牌序号（及状态）
     repeated uint32 basic_cards = 9;       // 放置在面前的基础效果卡牌id
     
     optional uint32 gem = 10;           // 宝石数量

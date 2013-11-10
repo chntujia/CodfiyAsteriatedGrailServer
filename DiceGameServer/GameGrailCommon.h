@@ -28,6 +28,7 @@ enum GrailError{
 	GE_HANDCARD_NOT_FOUND,
 	GE_BASIC_EFFECT_NOT_FOUND,
 	GE_BASIC_EFFECT_ALREADY_EXISTS,
+	GE_EXCLUSIVE_EFFECT_NOT_FOUND,
 	GE_MOVECARD_FAILED,
     GE_INCONSISTENT_STATE,
 	GE_FATAL_ERROR,
@@ -35,6 +36,7 @@ enum GrailError{
 	GE_INVALID_CARDID,
 	GE_INVALID_ACTION,
 	GE_INVALID_STEP,
+	GE_INVALID_EXCLUSIVE_EFFECT,
 	GE_NOT_SUPPORTED,
 	GE_INVALID_ARGUMENT,
 	GE_NO_CONTEXT,
@@ -65,6 +67,9 @@ enum CAUSE{
 	HUO_ZHI_FENG_YIN = 403,
 	DI_ZHI_FENG_YIN = 404,
 	LEI_ZHI_FENG_YIN = 405,
+	FA_SHU_JI_DONG = 406,
+	WU_XI_SHU_FU = 407,
+	FENG_YIN_PO_SUI = 408,
 	ZHI_LIAO_SHU = 601,
 	ZHI_YU_ZHI_GUANG = 602,
 	TIAN_SHI_ZHI_QIANG = 701,
@@ -269,6 +274,21 @@ public:
 		}
 		if (basicCards.size() == 0)
 			player_info->add_delete_field("basic_cards");
+	}
+	static void exclusiveNotice(int ID, bool* exclusive, GameInfo& game_info)
+	{
+		SinglePlayerInfo* player_info = game_info.add_player_infos();
+		player_info->set_id(ID);
+		bool hasEx = false;
+		for (int i = 0; i < EXCLUSIVE_NUM; i++)
+		{
+			if(exclusive[i]){
+				player_info->add_ex_cards(i);
+				hasEx = true;
+			}
+		}
+		if (!hasEx)
+			player_info->add_delete_field("ex_cards");
 	}
     static string askForDiscover(int ID, int sum,string show){return combMessage("49",TOQSTR(ID),TOQSTR(sum),show);}
     static string reshuffleNotice(int howManyNew){return combMessage("10",TOQSTR(howManyNew));}

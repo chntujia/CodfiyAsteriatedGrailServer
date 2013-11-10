@@ -18,13 +18,20 @@ class PlayerEntity
 public:
     PlayerEntity(GameGrail *engine, int id, int color);
 	//在该玩家前增加基础效果
-    int addBasicEffect(int effectCard,int srcUserID=-1);
+    int addBasicEffect(int effectCard, int srcUserID=-1);
     //移除基础效果
     int removeBasicEffect(int card);
 	//检查基础效果
-	int checkBasicEffect(int card);
+	int checkBasicEffectByCard(int card);
 	//检查指定名称的基础效果牌是否存在,cardID和src保存找到的牌ID和施放者
-	int checkBasicEffectName(int name,int* cardID = NULL, int* src = NULL);
+	int checkBasicEffectByName(int name, int* cardID = NULL, int* src = NULL);
+	//检查指定独有技的基础效果牌是否存在,cardID和src保存找到的牌ID和施放者
+	int checkBasicEffectBySpeciality(int speciality, int* cardID = NULL, int* src = NULL);
+	//专属
+	int checkExclusiveEffect(int exclusive);
+	void addExclusiveEffect(int exclusive);
+    void removeExclusiveEffect(int exclusive);
+	bool* getExclusiveEffect() { return exclusiveEffects; }
     //增加手牌操作
     int addHandCards(int howMany, vector< int > newCard);
     //移除手牌操作
@@ -121,6 +128,7 @@ public:
 	virtual int p_basic_effect_change(int &step, int dstID, int card, int doerID, int cause)  { return GE_SUCCESS; }
 	virtual int p_show_hand(int &step, int playerID, int howMany, vector<int> cards) { return GE_SUCCESS; }
 	virtual int p_additional_action(int chosen);
+	virtual int p_magic_skill(int &step, Action *action) { return GE_EMPTY_HANDLE; }
 
 	virtual int v_allow_action(int claim, int allow, bool canGiveUp);
 	virtual int v_attack(int cardID, int dstID, bool realCard = true);
@@ -134,7 +142,7 @@ public:
 	virtual int v_synthesize(Action *action, TeamArea* team);
 	virtual int v_extract(Action *action, TeamArea* team);
 	virtual int v_additional_action(int chosen);
-
+	virtual int v_magic_skill(Action *action) { return GE_EMPTY_HANDLE; }
 protected:
     int id;//玩家id
     int characterID;
@@ -160,7 +168,7 @@ protected:
     TeamArea* teamArea;
     list< int > handCards;//手牌
     list< BasicEffect > basicEffects;//基础效果牌
-    list< int > exclusiveEffect;//专属效果
+    bool exclusiveEffects[EXCLUSIVE_NUM];//专属效果
     list< int > coverCards;//盖牌区
 	list< ACTION_QUOTA > additionalActions;
 	GameGrail *engine;

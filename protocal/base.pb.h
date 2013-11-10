@@ -1317,29 +1317,17 @@ class SinglePlayerInfo : public ::google::protobuf::Message {
   inline ::google::protobuf::uint32 heal_count() const;
   inline void set_heal_count(::google::protobuf::uint32 value);
 
-  // repeated uint32 my_ex_card_place = 7;
-  inline int my_ex_card_place_size() const;
-  inline void clear_my_ex_card_place();
-  static const int kMyExCardPlaceFieldNumber = 7;
-  inline ::google::protobuf::uint32 my_ex_card_place(int index) const;
-  inline void set_my_ex_card_place(int index, ::google::protobuf::uint32 value);
-  inline void add_my_ex_card_place(::google::protobuf::uint32 value);
+  // repeated uint32 ex_cards = 8;
+  inline int ex_cards_size() const;
+  inline void clear_ex_cards();
+  static const int kExCardsFieldNumber = 8;
+  inline ::google::protobuf::uint32 ex_cards(int index) const;
+  inline void set_ex_cards(int index, ::google::protobuf::uint32 value);
+  inline void add_ex_cards(::google::protobuf::uint32 value);
   inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
-      my_ex_card_place() const;
+      ex_cards() const;
   inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
-      mutable_my_ex_card_place();
-
-  // repeated uint32 gain_ex_card = 8;
-  inline int gain_ex_card_size() const;
-  inline void clear_gain_ex_card();
-  static const int kGainExCardFieldNumber = 8;
-  inline ::google::protobuf::uint32 gain_ex_card(int index) const;
-  inline void set_gain_ex_card(int index, ::google::protobuf::uint32 value);
-  inline void add_gain_ex_card(::google::protobuf::uint32 value);
-  inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
-      gain_ex_card() const;
-  inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
-      mutable_gain_ex_card();
+      mutable_ex_cards();
 
   // repeated uint32 basic_cards = 9;
   inline int basic_cards_size() const;
@@ -1482,8 +1470,7 @@ class SinglePlayerInfo : public ::google::protobuf::Message {
   ::google::protobuf::uint32 role_id_;
   ::google::protobuf::uint32 hand_count_;
   ::google::protobuf::uint32 heal_count_;
-  ::google::protobuf::RepeatedField< ::google::protobuf::uint32 > my_ex_card_place_;
-  ::google::protobuf::RepeatedField< ::google::protobuf::uint32 > gain_ex_card_;
+  ::google::protobuf::RepeatedField< ::google::protobuf::uint32 > ex_cards_;
   ::google::protobuf::RepeatedField< ::google::protobuf::uint32 > basic_cards_;
   ::google::protobuf::uint32 gem_;
   ::google::protobuf::uint32 crystal_;
@@ -1497,7 +1484,7 @@ class SinglePlayerInfo : public ::google::protobuf::Message {
   ::google::protobuf::uint32 max_hand_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(20 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(19 + 31) / 32];
 
   friend void  protobuf_AddDesc_base_2eproto();
   friend void protobuf_AssignDesc_base_2eproto();
@@ -2993,54 +2980,29 @@ inline void SinglePlayerInfo::set_heal_count(::google::protobuf::uint32 value) {
   heal_count_ = value;
 }
 
-// repeated uint32 my_ex_card_place = 7;
-inline int SinglePlayerInfo::my_ex_card_place_size() const {
-  return my_ex_card_place_.size();
+// repeated uint32 ex_cards = 8;
+inline int SinglePlayerInfo::ex_cards_size() const {
+  return ex_cards_.size();
 }
-inline void SinglePlayerInfo::clear_my_ex_card_place() {
-  my_ex_card_place_.Clear();
+inline void SinglePlayerInfo::clear_ex_cards() {
+  ex_cards_.Clear();
 }
-inline ::google::protobuf::uint32 SinglePlayerInfo::my_ex_card_place(int index) const {
-  return my_ex_card_place_.Get(index);
+inline ::google::protobuf::uint32 SinglePlayerInfo::ex_cards(int index) const {
+  return ex_cards_.Get(index);
 }
-inline void SinglePlayerInfo::set_my_ex_card_place(int index, ::google::protobuf::uint32 value) {
-  my_ex_card_place_.Set(index, value);
+inline void SinglePlayerInfo::set_ex_cards(int index, ::google::protobuf::uint32 value) {
+  ex_cards_.Set(index, value);
 }
-inline void SinglePlayerInfo::add_my_ex_card_place(::google::protobuf::uint32 value) {
-  my_ex_card_place_.Add(value);
-}
-inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
-SinglePlayerInfo::my_ex_card_place() const {
-  return my_ex_card_place_;
-}
-inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
-SinglePlayerInfo::mutable_my_ex_card_place() {
-  return &my_ex_card_place_;
-}
-
-// repeated uint32 gain_ex_card = 8;
-inline int SinglePlayerInfo::gain_ex_card_size() const {
-  return gain_ex_card_.size();
-}
-inline void SinglePlayerInfo::clear_gain_ex_card() {
-  gain_ex_card_.Clear();
-}
-inline ::google::protobuf::uint32 SinglePlayerInfo::gain_ex_card(int index) const {
-  return gain_ex_card_.Get(index);
-}
-inline void SinglePlayerInfo::set_gain_ex_card(int index, ::google::protobuf::uint32 value) {
-  gain_ex_card_.Set(index, value);
-}
-inline void SinglePlayerInfo::add_gain_ex_card(::google::protobuf::uint32 value) {
-  gain_ex_card_.Add(value);
+inline void SinglePlayerInfo::add_ex_cards(::google::protobuf::uint32 value) {
+  ex_cards_.Add(value);
 }
 inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
-SinglePlayerInfo::gain_ex_card() const {
-  return gain_ex_card_;
+SinglePlayerInfo::ex_cards() const {
+  return ex_cards_;
 }
 inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
-SinglePlayerInfo::mutable_gain_ex_card() {
-  return &gain_ex_card_;
+SinglePlayerInfo::mutable_ex_cards() {
+  return &ex_cards_;
 }
 
 // repeated uint32 basic_cards = 9;
@@ -3070,13 +3032,13 @@ SinglePlayerInfo::mutable_basic_cards() {
 
 // optional uint32 gem = 10;
 inline bool SinglePlayerInfo::has_gem() const {
-  return (_has_bits_[0] & 0x00000400u) != 0;
+  return (_has_bits_[0] & 0x00000200u) != 0;
 }
 inline void SinglePlayerInfo::set_has_gem() {
-  _has_bits_[0] |= 0x00000400u;
+  _has_bits_[0] |= 0x00000200u;
 }
 inline void SinglePlayerInfo::clear_has_gem() {
-  _has_bits_[0] &= ~0x00000400u;
+  _has_bits_[0] &= ~0x00000200u;
 }
 inline void SinglePlayerInfo::clear_gem() {
   gem_ = 0u;
@@ -3092,13 +3054,13 @@ inline void SinglePlayerInfo::set_gem(::google::protobuf::uint32 value) {
 
 // optional uint32 crystal = 11;
 inline bool SinglePlayerInfo::has_crystal() const {
-  return (_has_bits_[0] & 0x00000800u) != 0;
+  return (_has_bits_[0] & 0x00000400u) != 0;
 }
 inline void SinglePlayerInfo::set_has_crystal() {
-  _has_bits_[0] |= 0x00000800u;
+  _has_bits_[0] |= 0x00000400u;
 }
 inline void SinglePlayerInfo::clear_has_crystal() {
-  _has_bits_[0] &= ~0x00000800u;
+  _has_bits_[0] &= ~0x00000400u;
 }
 inline void SinglePlayerInfo::clear_crystal() {
   crystal_ = 0u;
@@ -3114,13 +3076,13 @@ inline void SinglePlayerInfo::set_crystal(::google::protobuf::uint32 value) {
 
 // optional uint32 yellow_energy = 12;
 inline bool SinglePlayerInfo::has_yellow_energy() const {
-  return (_has_bits_[0] & 0x00001000u) != 0;
+  return (_has_bits_[0] & 0x00000800u) != 0;
 }
 inline void SinglePlayerInfo::set_has_yellow_energy() {
-  _has_bits_[0] |= 0x00001000u;
+  _has_bits_[0] |= 0x00000800u;
 }
 inline void SinglePlayerInfo::clear_has_yellow_energy() {
-  _has_bits_[0] &= ~0x00001000u;
+  _has_bits_[0] &= ~0x00000800u;
 }
 inline void SinglePlayerInfo::clear_yellow_energy() {
   yellow_energy_ = 0u;
@@ -3136,13 +3098,13 @@ inline void SinglePlayerInfo::set_yellow_energy(::google::protobuf::uint32 value
 
 // optional uint32 blue_energy = 13;
 inline bool SinglePlayerInfo::has_blue_energy() const {
-  return (_has_bits_[0] & 0x00002000u) != 0;
+  return (_has_bits_[0] & 0x00001000u) != 0;
 }
 inline void SinglePlayerInfo::set_has_blue_energy() {
-  _has_bits_[0] |= 0x00002000u;
+  _has_bits_[0] |= 0x00001000u;
 }
 inline void SinglePlayerInfo::clear_has_blue_energy() {
-  _has_bits_[0] &= ~0x00002000u;
+  _has_bits_[0] &= ~0x00001000u;
 }
 inline void SinglePlayerInfo::clear_blue_energy() {
   blue_energy_ = 0u;
@@ -3158,13 +3120,13 @@ inline void SinglePlayerInfo::set_blue_energy(::google::protobuf::uint32 value) 
 
 // optional uint32 covered_count = 14;
 inline bool SinglePlayerInfo::has_covered_count() const {
-  return (_has_bits_[0] & 0x00004000u) != 0;
+  return (_has_bits_[0] & 0x00002000u) != 0;
 }
 inline void SinglePlayerInfo::set_has_covered_count() {
-  _has_bits_[0] |= 0x00004000u;
+  _has_bits_[0] |= 0x00002000u;
 }
 inline void SinglePlayerInfo::clear_has_covered_count() {
-  _has_bits_[0] &= ~0x00004000u;
+  _has_bits_[0] &= ~0x00002000u;
 }
 inline void SinglePlayerInfo::clear_covered_count() {
   covered_count_ = 0u;
@@ -3180,13 +3142,13 @@ inline void SinglePlayerInfo::set_covered_count(::google::protobuf::uint32 value
 
 // optional bool is_knelt = 3;
 inline bool SinglePlayerInfo::has_is_knelt() const {
-  return (_has_bits_[0] & 0x00008000u) != 0;
+  return (_has_bits_[0] & 0x00004000u) != 0;
 }
 inline void SinglePlayerInfo::set_has_is_knelt() {
-  _has_bits_[0] |= 0x00008000u;
+  _has_bits_[0] |= 0x00004000u;
 }
 inline void SinglePlayerInfo::clear_has_is_knelt() {
-  _has_bits_[0] &= ~0x00008000u;
+  _has_bits_[0] &= ~0x00004000u;
 }
 inline void SinglePlayerInfo::clear_is_knelt() {
   is_knelt_ = false;
@@ -3252,13 +3214,13 @@ SinglePlayerInfo::mutable_covereds() {
 
 // optional uint32 max_hand = 22;
 inline bool SinglePlayerInfo::has_max_hand() const {
-  return (_has_bits_[0] & 0x00040000u) != 0;
+  return (_has_bits_[0] & 0x00020000u) != 0;
 }
 inline void SinglePlayerInfo::set_has_max_hand() {
-  _has_bits_[0] |= 0x00040000u;
+  _has_bits_[0] |= 0x00020000u;
 }
 inline void SinglePlayerInfo::clear_has_max_hand() {
-  _has_bits_[0] &= ~0x00040000u;
+  _has_bits_[0] &= ~0x00020000u;
 }
 inline void SinglePlayerInfo::clear_max_hand() {
   max_hand_ = 0u;

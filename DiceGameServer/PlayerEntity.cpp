@@ -14,6 +14,7 @@ PlayerEntity::PlayerEntity(GameGrail *engine,int ID, int isRed)
     token[0]=tokenMax[0]=0;
     token[1]=tokenMax[1]=0;
     token[2]=tokenMax[2]=0;
+	memset(exclusiveEffects, 0, sizeof(exclusiveEffects));
     this->setTap(false);
     this->setHandCardsMaxFixed(false);
 
@@ -48,7 +49,7 @@ int PlayerEntity::addBasicEffect(int effectCard,int srcUserID)
 	return GE_SUCCESS;
 }
 
-int PlayerEntity::checkBasicEffect(int card)
+int PlayerEntity::checkBasicEffectByCard(int card)
 {
 	for(list< BasicEffect >::iterator it = basicEffects.begin(); it != basicEffects.end(); it++){
 		if(it->card == card){
@@ -58,7 +59,7 @@ int PlayerEntity::checkBasicEffect(int card)
     return GE_BASIC_EFFECT_NOT_FOUND;
 }
 
-int PlayerEntity::checkBasicEffectName(int name,int* cardID, int* src)
+int PlayerEntity::checkBasicEffectByName(int name, int* cardID, int* src)
 {
 	for(list< BasicEffect >::iterator it = basicEffects.begin(); it != basicEffects.end(); it++){
         if(getCardByID(it->card)->getName() == name){
@@ -72,6 +73,46 @@ int PlayerEntity::checkBasicEffectName(int name,int* cardID, int* src)
 		}
 	}
     return GE_BASIC_EFFECT_NOT_FOUND;
+}
+
+int PlayerEntity::checkBasicEffectBySpeciality(int speciality, int* cardID, int* src)
+{
+	for(list< BasicEffect >::iterator it = basicEffects.begin(); it != basicEffects.end(); it++){
+		if(getCardByID(it->card)->checkSpeciality(speciality)){
+			if(cardID != NULL){
+				*cardID = it->card;
+			}
+			if(src != NULL){
+				*src = it->srcUser;
+			}
+			return GE_SUCCESS;
+		}
+	}
+    return GE_BASIC_EFFECT_NOT_FOUND;
+}
+
+int PlayerEntity::checkExclusiveEffect(int name)
+{
+	if(name < 0 || name > EXCLUSIVE_NUM){
+		return GE_INVALID_EXCLUSIVE_EFFECT;
+	}
+    return exclusiveEffects[name] ? GE_SUCCESS : GE_EXCLUSIVE_EFFECT_NOT_FOUND;
+}
+
+void PlayerEntity::addExclusiveEffect(int name)
+{
+	if(name < 0 || name > EXCLUSIVE_NUM){
+		throw GE_INVALID_EXCLUSIVE_EFFECT;
+	}
+	exclusiveEffects[name] = true;
+}
+
+void PlayerEntity::removeExclusiveEffect(int name)
+{
+	if(name < 0 || name > EXCLUSIVE_NUM){
+		throw GE_INVALID_EXCLUSIVE_EFFECT;
+	}
+	exclusiveEffects[name] = false;
 }
 
 //ÒÆ³ýÊÖÅÆ
@@ -406,7 +447,7 @@ int PlayerEntity::v_shield(int cardID, PlayerEntity* dst)
 	if(GE_SUCCESS != (ret = checkOneHandCard(cardID))){
 		return ret;
 	}
-	if(GE_SUCCESS == dst->checkBasicEffectName(NAME_SHIELD)){
+	if(GE_SUCCESS == dst->checkBasicEffectByName(NAME_SHIELD)){
 		return GE_BASIC_EFFECT_ALREADY_EXISTS;
 	}
 	return GE_SUCCESS;
@@ -418,7 +459,7 @@ int PlayerEntity::v_weaken(int cardID, PlayerEntity* dst)
 	if(GE_SUCCESS != (ret = checkOneHandCard(cardID))){
 		return ret;
 	}
-	if(GE_SUCCESS == dst->checkBasicEffectName(NAME_WEAKEN)){
+	if(GE_SUCCESS == dst->checkBasicEffectByName(NAME_WEAKEN)){
 		return GE_BASIC_EFFECT_ALREADY_EXISTS;
 	}
 	return GE_SUCCESS;

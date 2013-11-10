@@ -157,7 +157,7 @@ int JianSheng::p_additional_action(int chosen)
 	default:
 		using_LianXuJi = false;
 	}
-	//通过角色相关的检测，基本检测、扣除额外行动交给底层
+	//做完角色相关的操作，扣除额外行动交给底层
 	return PlayerEntity::p_additional_action(chosen);
 }
 
@@ -187,7 +187,7 @@ int JianSheng::LieFengJi(CONTEXT_TIMELINE_1 *con)
 	PlayerEntity* dst = engine->getPlayerEntity(dstID);
 	//目标有没盾
 	//FIXME: 天使之墙
-	if(GE_SUCCESS != dst->checkBasicEffectName(NAME_SHIELD)){
+	if(GE_SUCCESS != dst->checkBasicEffectByName(NAME_SHIELD)){
 		return GE_SUCCESS;
 	}
 	//满足发动条件，询问客户端是否发动

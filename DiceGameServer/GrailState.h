@@ -21,6 +21,7 @@ enum STATE{
 	STATE_AFTER_ATTACK,
 	STATE_BEFORE_MAGIC,
 	STATE_MISSILED,
+	STATE_MAGIC_SKILL,
 	STATE_AFTER_MAGIC,
 	STATE_BEFORE_SPECIAL,
 	STATE_AFTER_SPECIAL,
@@ -229,6 +230,7 @@ private:
 	int basicAttack(Action *action, GameGrail* engine);
 	int basicMagic(Action *action, GameGrail* engine);
 	int basicSpecial(Action *action, GameGrail* engine);
+	int magicSkill(Action *action, GameGrail* engine);
 };
 
 class StateBeforeAttack: public GrailState
@@ -284,6 +286,15 @@ private:
 	bool isClockwise;
 	int harmPoint;
 	bool hasMissiled[MAXPLAYER];
+};
+
+class StateMagicSkill: public GrailState
+{
+public:
+	StateMagicSkill(Action *action): GrailState(STATE_MAGIC_SKILL), action(action) {}
+	int handle(GameGrail* engine);
+private:
+	Action *action;
 };
 
 class StateAfterMagic: public GrailState
