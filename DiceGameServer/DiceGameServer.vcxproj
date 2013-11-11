@@ -51,13 +51,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\base\; ..\boost; ..\protocal; ..\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\base;..\boost;..\protocal;..\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>base.lib;tinyxml.lib;protocal.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>D:\Codify\vs_codify\boost_1_52_0\stage\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>base.lib;tinyxml.lib;protocal.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\lib;D:\boost_1_52_0\stage\lib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -95,6 +95,8 @@
     <ClInclude Include="GrailState.h" />
     <ClInclude Include="PlayerContext.h" />
     <ClInclude Include="PlayerEntity.h" />
+    <ClInclude Include="role\JianSheng.h" />
+    <ClInclude Include="role\KuangZhan.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="UserSessionManager.h" />
@@ -113,6 +115,8 @@
     <ClCompile Include="PlayerContext.cpp" />
     <ClCompile Include="PlayerEntity.cpp" />
     <ClCompile Include="prebuild.cpp" />
+    <ClCompile Include="role\JianSheng.cpp" />
+    <ClCompile Include="role\KuangZhan.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="UserSessionManager.cpp" />
     <ClCompile Include="UserTask.cpp" />

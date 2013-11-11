@@ -8,6 +8,7 @@
 #include "zCommonDefine.h"
 #include "UserSessionManager.h"
 #include "role\JianSheng.h"
+#include "role\KuangZhan.h"
 #include "role\FengYin.h"
 using namespace boost;
 

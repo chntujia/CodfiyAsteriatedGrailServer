@@ -7,6 +7,7 @@
 #include <boost/interprocess/sync/scoped_lock.hpp>
 #include "base.pb.h"
 #include "action_respond.pb.h"
+
 #include <list>
 
 using namespace boost::interprocess;
@@ -60,6 +61,9 @@ enum CAUSE{
 	JIAN_YING = 105,
 	XUE_YING_KUANG_DAO = 201,
 	XUE_XING_PAO_XIAO = 202,
+	KUANG_HUA = 203,
+	XUE_YING_KUANG_DAO_USED = 204,
+	SI_LIE = 205,
 	JING_ZHUN_SHE_JI = 301,
 	SHAN_GUANG_XIAN_JIN = 302,
 	FENG_ZHI_FENG_YIN = 401,
