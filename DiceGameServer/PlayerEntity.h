@@ -132,6 +132,7 @@ public:
 
 	virtual int v_allow_action(int claim, int allow, bool canGiveUp);
 	virtual int v_attack(int cardID, int dstID, bool realCard = true);
+	virtual int v_attacked() { return GE_SUCCESS; }
 	virtual int v_reattack(int cardID, int orignCardID, int dstID, int orignID, int rate, bool realCard = true);
 	virtual int v_missile(int cardID, int dstID, bool realCard = true);
 	virtual int v_remissile(int cardID, bool realCard = true);

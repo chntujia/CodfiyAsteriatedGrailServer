@@ -348,8 +348,14 @@ int PlayerEntity::v_allow_action(int claim, int allow, bool canGiveUp)
 //FIXME: Ç±ÐÐ ÌôÐÆ ¶àÖØ
 int PlayerEntity::v_attack(int cardID, int dstID, bool realCard)
 {
+	PlayerEntity* dst = engine->getPlayerEntity(dstID);
+
+	int ret;
+	if (GE_SUCCESS != (ret = dst->v_attacked()))
+	{
+		return ret;
+	}
 	if(realCard){
-		int ret;
 		if(GE_SUCCESS != (ret = checkOneHandCard(cardID))){
 			return ret;
 		}
@@ -357,8 +363,7 @@ int PlayerEntity::v_attack(int cardID, int dstID, bool realCard)
 	if(getCardByID(cardID)->getType() != TYPE_ATTACK){
 		return GE_INVALID_CARDID; 
 	}
-
-	PlayerEntity *dst = engine->getPlayerEntity(dstID);
+	
 	if(dst->getColor() == color){
 		return GE_INVALID_PLAYERID;
 	}

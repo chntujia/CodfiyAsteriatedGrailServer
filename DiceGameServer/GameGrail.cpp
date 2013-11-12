@@ -8,6 +8,7 @@
 #include "zCommonDefine.h"
 #include "UserSessionManager.h"
 #include "role\JianSheng.h"
+#include "role\AnSha.h"
 #include "role\KuangZhan.h"
 #include "role\FengYin.h"
 using namespace boost;
@@ -350,6 +351,26 @@ int GameGrail::setStateMoveOneCardNotToHand(int srcOwner, int srcArea, int dstOw
 	return setStateMoveCards(srcOwner, srcArea, dstOwner, dstArea, 1, wrapper, harm, isShown);
 }
 
+int GameGrail::ChangeMaxHand(int dstID, bool fixed, int howmany, int handCardsRange)
+{
+	PlayerEntity *dst = getPlayerEntity(dstID);
+
+	if (fixed)
+		dst->setHandCardsMaxFixed(fixed, howmany);
+	else
+		dst->addHandCardsRange(handCardsRange);
+	GameInfo game_info;
+	Coder::handcardMaxNotice(dstID, dst->getHandCardMax(), game_info);
+	sendMessage(-1, MSG_GAME, game_info);
+
+	HARM harm;
+	harm.cause = 0;
+	harm.point = 0;
+	harm.srcID = dstID;
+	harm.type = HARM_NONE;
+	return setStateHandOverLoad(dstID, harm);
+}
+
 int GameGrail::drawCardsFromPile(int howMany, vector< int > &cards)
 {	
 	int out[CARDBUF];
@@ -383,7 +404,7 @@ int GameGrail::setStateHandOverLoad(int dstID, HARM harm)
 		return GE_SUCCESS;
 	}
 	pushGameState(new StateDiscardHand(dstID,overNum, harm, true, false));
-	return GE_SUCCESS;
+	return GE_URGENT;
 }
 
 int GameGrail::setStateUseCard(int cardID, int dstID, int srcID, bool stay, bool realCard)
@@ -730,8 +751,8 @@ void GameGrail::initPlayerEntities()
 		player_it = (SinglePlayerInfo*)&(game_info.player_infos().Get(i));
 		id = player_it->id();
 		color = player_it->team();
-		//FIXME: 全封印时代
-		m_playerEntities[id] = new FengYin(this, id, color);
+		//FIXME: 全剑圣时代
+		m_playerEntities[id] = new AnSha(this, id, color);
 		
 		position2id[i] = id;
 	}

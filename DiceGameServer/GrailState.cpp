@@ -87,7 +87,7 @@ int StateRoleStrategyRandom::handle(GameGrail* engine)
 		// i为玩家编号，不是座号		
 		if(GE_SUCCESS == (ret=roles->pop(1, &out))){
 			//FIXME: 全封印时代
-			Coder::roleNotice(i, 4, game_info);
+			Coder::roleNotice(i, 5, game_info);
 			engine->sendMessage(-1, MSG_GAME, game_info);
 		}
 		else{
@@ -278,7 +278,7 @@ int StateActionPhase::handle(GameGrail* engine)
 				return ret;
 			}
 			switch(action->action_type())
-			{				
+			{
 			case ACTION_ATTACK:
 				return basicAttack(action, engine);
 			case ACTION_MAGIC:

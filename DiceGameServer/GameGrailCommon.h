@@ -74,6 +74,9 @@ enum CAUSE{
 	FA_SHU_JI_DONG = 406,
 	WU_XI_SHU_FU = 407,
 	FENG_YIN_PO_SUI = 408,
+	FAN_SHI = 501,
+	SHUI_YING = 502,
+	QIAN_XING = 503,
 	ZHI_LIAO_SHU = 601,
 	ZHI_YU_ZHI_GUANG = 602,
 	TIAN_SHI_ZHI_QIANG = 701,
@@ -438,8 +441,18 @@ public:
     static string askForDiscardMagic(int ID){return combMessage("850",TOQSTR(ID));}
     static string askToGiveCard(int ID,int n){return combMessage("750",TOQSTR(ID),TOQSTR(n));}
     static string askForChongYing(int ID,int color){return combMessage("2950",TOQSTR(ID),TOQSTR(color));}
-    static string handcardMaxNotice(int ID,int howMany){return combMessage("40",TOQSTR(ID),TOQSTR(howMany));}
-    static string tapNotice(int ID,int flag,string content){return combMessage("39",TOQSTR(ID),TOQSTR(flag),content);}
+    static void handcardMaxNotice(int ID,int howMany, GameInfo& game_info)
+	{
+		SinglePlayerInfo* player_info = game_info.add_player_infos();
+		player_info->set_id(ID);
+		player_info->set_max_hand(howMany);
+	}
+    static void tapNotice(int ID,int flag,string content, GameInfo& game_info)
+	{
+		SinglePlayerInfo* player_info = game_info.add_player_infos();
+		player_info->set_id(ID);
+		player_info->set_is_knelt(flag);
+	}
     static string specialNotice(int ID,int type,int flag){return combMessage("43",TOQSTR(ID),TOQSTR(type),TOQSTR(flag));}
     static string tokenNotice(int ID,int tokenID,int howMany){return combMessage("45",TOQSTR(ID),TOQSTR(tokenID),TOQSTR(howMany));}
     static string askForRolePick(int howMany,int *roles);
