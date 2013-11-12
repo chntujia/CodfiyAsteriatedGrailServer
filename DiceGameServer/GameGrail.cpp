@@ -351,11 +351,11 @@ int GameGrail::setStateMoveOneCardNotToHand(int srcOwner, int srcArea, int dstOw
 	return setStateMoveCards(srcOwner, srcArea, dstOwner, dstArea, 1, wrapper, harm, isShown);
 }
 
-int GameGrail::setStateChangeMaxHand(int dstID, bool fixed, int howmany, int handCardsRange)
+int GameGrail::setStateChangeMaxHand(int dstID, bool using_fixed, bool fixed, int howmany, int handCardsRange)
 {
 	PlayerEntity *dst = getPlayerEntity(dstID);
 
-	if (fixed)
+	if (using_fixed)
 		dst->setHandCardsMaxFixed(fixed, howmany);
 	else
 		dst->addHandCardsRange(handCardsRange);

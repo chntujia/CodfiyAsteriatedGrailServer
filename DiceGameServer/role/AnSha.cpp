@@ -86,9 +86,9 @@ int AnSha::v_attacked()
 		return GE_INVALID_PLAYERID;
 }
 
-int AnSha::p_turn_end(int &step, int playerID)
+int AnSha::p_turn_begin(int &step, int currentPlayerID)
 {
-	if (playerID != id || !tap)
+	if (currentPlayerID != id || !tap)
 		return GE_SUCCESS;
 
 	int ret = QianXingReset();
@@ -178,11 +178,11 @@ int AnSha::QianXingBoot()
 				tap = true;
 				gem -= 1;
 				GameInfo game_info;
-				Coder::tapNotice(id, true, "Ç±ÐÐ", game_info);
+				Coder::tapNotice(id, true, game_info);
 				Coder::energyNotice(id, gem, crystal, game_info);
 				engine->sendMessage(-1, MSG_GAME, game_info);
 
-				engine->setStateChangeMaxHand(id, true, 5, 0);
+				return engine->setStateChangeMaxHand(id, false, false, 6, -1);
 			}
 		}
 	}
@@ -215,9 +215,9 @@ int AnSha::QianXingReset()
 {
 	tap = false;
 	GameInfo game_info;
-	Coder::tapNotice(id, false, "", game_info);
+	Coder::tapNotice(id, false, game_info);
 	engine->sendMessage(-1, MSG_GAME, game_info);
 
-	engine->setStateChangeMaxHand(id, true, 6, 0);
+	engine->setStateChangeMaxHand(id, false, false, 6, 1);
 	return GE_SUCCESS;
 }

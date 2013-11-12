@@ -447,7 +447,7 @@ public:
 		player_info->set_id(ID);
 		player_info->set_max_hand(howMany);
 	}
-    static void tapNotice(int ID,int flag,string content, GameInfo& game_info)
+    static void tapNotice(int ID,int flag, GameInfo& game_info)
 	{
 		SinglePlayerInfo* player_info = game_info.add_player_infos();
 		player_info->set_id(ID);
