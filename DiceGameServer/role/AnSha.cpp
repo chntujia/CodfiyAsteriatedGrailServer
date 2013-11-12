@@ -60,7 +60,9 @@ int AnSha::p_timeline_3(int &step, CONTEXT_TIMELINE_3 *con)
 	{
 		// Ë®Ó°
 		step = SHUI_YING;
-		return ShuiYing(con);
+		int ret = ShuiYing(con);
+		step = STEP_DONE;
+		return ret;
 	}
 	return GE_SUCCESS;
 }
@@ -71,7 +73,9 @@ int AnSha::p_timeline_6_drawn(int &step, CONTEXT_TIMELINE_6_DRAWN *con)
 	{
 		return GE_SUCCESS;
 	}
-	return FanShi(con);
+	int ret = FanShi(con);
+	step = STEP_DONE;
+	return ret;
 }
 
 int AnSha::v_attacked()
@@ -86,10 +90,13 @@ int AnSha::p_turn_end(int &step, int playerID)
 {
 	if (playerID != id || !tap)
 		return GE_SUCCESS;
-	return QianXingReset();
+
+	int ret = QianXingReset();
+	step = STEP_DONE;
+	return ret;
 }
 
-int AnSha::FanShi( CONTEXT_TIMELINE_6_DRAWN *con)
+int AnSha::FanShi(CONTEXT_TIMELINE_6_DRAWN *con)
 {
 	
 	vector<int> cards;
@@ -169,12 +176,13 @@ int AnSha::QianXingBoot()
 				engine->sendMessage(-1, MSG_SKILL, skill);
 
 				tap = true;
+				gem -= 1;
 				GameInfo game_info;
 				Coder::tapNotice(id, true, "Ç±ÐÐ", game_info);
 				Coder::energyNotice(id, gem, crystal, game_info);
 				engine->sendMessage(-1, MSG_GAME, game_info);
 
-				engine->ChangeMaxHand(id, true, 5, 0);
+				engine->setStateChangeMaxHand(id, true, 5, 0);
 			}
 		}
 	}
@@ -198,7 +206,7 @@ int AnSha::QianXingDamage(CONTEXT_TIMELINE_2_HIT *con)
 {
 	if (tap)
 	{
-		con->harm.cause += crystal + gem;
+		con->harm.point += crystal + gem;
 	}
 	return GE_SUCCESS;
 }
@@ -209,5 +217,7 @@ int AnSha::QianXingReset()
 	GameInfo game_info;
 	Coder::tapNotice(id, false, "", game_info);
 	engine->sendMessage(-1, MSG_GAME, game_info);
+
+	engine->setStateChangeMaxHand(id, true, 6, 0);
 	return GE_SUCCESS;
 }

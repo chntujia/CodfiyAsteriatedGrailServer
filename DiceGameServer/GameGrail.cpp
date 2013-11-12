@@ -351,7 +351,7 @@ int GameGrail::setStateMoveOneCardNotToHand(int srcOwner, int srcArea, int dstOw
 	return setStateMoveCards(srcOwner, srcArea, dstOwner, dstArea, 1, wrapper, harm, isShown);
 }
 
-int GameGrail::ChangeMaxHand(int dstID, bool fixed, int howmany, int handCardsRange)
+int GameGrail::setStateChangeMaxHand(int dstID, bool fixed, int howmany, int handCardsRange)
 {
 	PlayerEntity *dst = getPlayerEntity(dstID);
 

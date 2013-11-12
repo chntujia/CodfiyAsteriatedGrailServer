@@ -191,7 +191,7 @@ public:
 	int setStateMoveOneCardNotToHand(int srcOwner, int srcArea, int dstOwner, int dstArea, int cardID, int doerID, int cause, bool isShown = false);
 
 	int setStateUseCard(int cardID, int dstID, int srcID, bool stay = false, bool realCard = true);
-	int ChangeMaxHand(int dstID, bool fixed = false, int howmany = 6, int handCardsRange = 0);
+	int setStateChangeMaxHand(int dstID, bool fixed = false, int howmany = 6, int handCardsRange = 0);
 	int setStateHandOverLoad(int dstID, HARM harm);
 	int setStateCheckBasicEffect();
 	int setStateAttackAction(int cardID, int dstID, int srcID, bool realCard = true);
