@@ -29,6 +29,8 @@ int AnSha::p_boot(int &step, int currentPlayerID)
 	if (currentPlayerID != id || gem == 0)
 		return GE_SUCCESS;
 	step = QIAN_XING;
+	int ret = QianXingBoot();
+	step = STEP_DONE;
 	return QianXingBoot();
 }
 
