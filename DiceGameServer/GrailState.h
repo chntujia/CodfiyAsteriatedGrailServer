@@ -39,7 +39,7 @@ enum STATE{
 	STATE_SHOW_HAND,
 	STATE_HAND_CHANGE,
 	STATE_BASIC_EFFECT_CHANGE,
-	STATE_DISCARD_HAND,
+	STATE_REQUEST_HAND,
 	STATE_BEFORE_LOSE_MORALE,
 	STATE_LOSE_MORALE,
 	STATE_FIX_MORALE,
@@ -421,7 +421,7 @@ public:
 class StateHandChange : public GrailState
 {
 public:
-	StateHandChange(int dstID, int direction, int howMany, vector<int> cards, HARM h): GrailState(STATE_HAND_CHANGE), dstID(dstID), direction(direction),
+	StateHandChange(int dstID, int direction, int howMany, vector<int> cards, HARM harm): GrailState(STATE_HAND_CHANGE), dstID(dstID), direction(direction),
 	howMany(howMany), cards(cards), harm(harm), isSet(false){}
 	int handle(GameGrail* engine);
 	int dstID;
@@ -446,17 +446,20 @@ public:
 	bool isSet;
 };
 
-class StateDiscardHand : public GrailState
+class StateRequestHand : public GrailState
 {
 public:
-	StateDiscardHand(int dstID, int howMany, HARM harm, bool toDemoralize, bool isShown = false): GrailState(STATE_DISCARD_HAND),
-	dstID(dstID), howMany(howMany), harm(harm), toDemoralize(toDemoralize), isShown(isShown){}
+	StateRequestHand(int targetID, HARM harm, int dstOwner = -1, int dstArea = DECK_DISCARD, bool isShown = false, bool canGiveUp = false): GrailState(STATE_REQUEST_HAND),
+		targetID(targetID), howMany(harm.point), cause(harm.cause), harm(harm), dstOwner(dstOwner), dstArea(dstArea), isShown(isShown), canGiveUp(canGiveUp){}
 	int handle(GameGrail* engine);
-	int dstID;
+	int targetID;
 	int howMany;
+	int cause;
 	HARM harm;
-	bool toDemoralize;
+	int dstOwner;
+	int dstArea;
 	bool isShown;
+	bool canGiveUp;
 };
 
 class StateBeforeLoseMorale: public GrailState

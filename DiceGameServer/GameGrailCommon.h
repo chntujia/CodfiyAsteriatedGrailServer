@@ -230,14 +230,15 @@ public:
 		cmd->add_args(dstID);
 		cmd->add_args(srcID);
 	}
-    static void askForDiscard(int ID,int sum, bool show, CommandRequest& cmd_req)
+    static void askForDiscard(int ID, int sum, int cause, bool show, CommandRequest& cmd_req)
 	{
 		cmd_req.set_cmd_type(CMD_RESPOND);
 		Command *cmd;
 
 		cmd = cmd_req.add_commands();
 		cmd->set_respond_id(network::RESPOND_DISCARD);
-		cmd->add_args(ID);
+		cmd->add_dst_ids(ID);
+		cmd->add_args(cause);
 		cmd->add_args(sum);
 		cmd->add_args(show);
 	}

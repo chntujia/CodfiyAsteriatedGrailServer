@@ -403,7 +403,9 @@ int GameGrail::setStateHandOverLoad(int dstID, HARM harm)
 	if (overNum <= 0){
 		return GE_SUCCESS;
 	}
-	pushGameState(new StateDiscardHand(dstID,overNum, harm, true, false));
+	setStateStartLoseMorale(overNum, dstID, harm);
+	harm.point = overNum;
+	pushGameState(new StateRequestHand(dstID, harm));
 	return GE_URGENT;
 }
 
@@ -751,8 +753,8 @@ void GameGrail::initPlayerEntities()
 		player_it = (SinglePlayerInfo*)&(game_info.player_infos().Get(i));
 		id = player_it->id();
 		color = player_it->team();
-		//FIXME: 全剑圣时代
-		m_playerEntities[id] = new AnSha(this, id, color);
+		//FIXME: 全封印时代
+		m_playerEntities[id] = new KuangZhan(this, id, color);
 		
 		position2id[i] = id;
 	}

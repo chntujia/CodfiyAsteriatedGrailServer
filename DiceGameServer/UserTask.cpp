@@ -142,7 +142,7 @@ bool UserTask::cmdMsgParse(const char *pstrMsg, const uint32_t nCmdLen)
 				tryNotify(m_playerId, STATE_ATTACKED, 0, respond);
 				break;
 			case RESPOND_DISCARD:
-				tryNotify(m_playerId, STATE_DISCARD_HAND, 0, respond);
+				tryNotify(m_playerId, STATE_REQUEST_HAND, 0, respond);
 				break;
 			case RESPOND_BULLET:
 				tryNotify(m_playerId, STATE_MISSILED, 0, respond);

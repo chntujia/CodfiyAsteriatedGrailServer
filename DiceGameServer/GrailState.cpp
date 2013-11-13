@@ -87,7 +87,7 @@ int StateRoleStrategyRandom::handle(GameGrail* engine)
 		// i为玩家编号，不是座号		
 		if(GE_SUCCESS == (ret=roles->pop(1, &out))){
 			//FIXME: 全封印时代
-			Coder::roleNotice(i, 5, game_info);
+			Coder::roleNotice(i, 2, game_info);
 			engine->sendMessage(-1, MSG_GAME, game_info);
 		}
 		else{
@@ -1149,75 +1149,86 @@ int StateBasicEffectChange::handle(GameGrail* engine)
 	return engine->popGameState_if(STATE_BASIC_EFFECT_CHANGE);	 
 }
 
-int StateDiscardHand::handle(GameGrail* engine)
+int StateRequestHand::handle(GameGrail* engine)
 {
-	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateDiscardHand, howMany %d", engine->getGameId(), howMany);
+	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateRequestHand, howMany %d", engine->getGameId(), howMany);
 	int ret = GE_FATAL_ERROR;
 
 	CommandRequest cmd_req;
-	Coder::askForDiscard(dstID, howMany, isShown, cmd_req);
+	Coder::askForDiscard(targetID, howMany, cause, isShown, cmd_req);
 
-	if(engine->waitForOne(dstID, MSG_CMD_REQ, cmd_req))
+	int howMany_t = howMany;
+	int targetID_t = targetID;
+	int dstOwner_t = dstOwner;
+	int dstArea_t = dstArea;
+	HARM harm_t = harm;
+	bool isShown_t = isShown;
+	vector<int> toDiscard(howMany);
+	PlayerEntity *target = engine->getPlayerEntity(targetID);
+	PlayerEntity *causer = engine->getPlayerEntity(harm.srcID);
+	int card_id;
+	if(engine->waitForOne(targetID, MSG_CMD_REQ, cmd_req))
 	{
 		void* reply;
-		if (GE_SUCCESS == (ret = engine->getReply(dstID, reply)))
+		if (GE_SUCCESS == (ret = engine->getReply(targetID, reply)))
 		{
 			Respond* respond = (Respond*) reply;
 
-			int howMany_t = howMany;
-			int dstID_t = dstID;
-			HARM harm_t = harm;
-			bool isShown_t = isShown;
-			bool toDemoralize_t = toDemoralize;
-			vector<int> toDiscard(howMany_t);
-			PlayerEntity *dst = engine->getPlayerEntity(dstID_t);
-			int card_id;
-
-			if (respond->args_size() != howMany)
+			if(respond->args(0) == 1)
 			{
-				return ret;
+				if (respond->card_ids_size() != howMany){
+					return GE_MOVECARD_FAILED;
+				}
+				else {
+					for (int i=0; i<respond->card_ids_size(); ++i)
+						toDiscard[i] = respond->card_ids(i);
+				}
+				if(GE_SUCCESS != (ret = target->checkHandCards(howMany, toDiscard)) ||
+				   GE_SUCCESS != (ret = causer->v_request_hand(howMany, toDiscard))){
+					return ret;
+				}
+				engine->popGameState();
+				if(dstArea_t != DECK_HAND){
+					return engine->setStateMoveCardsNotToHand(targetID_t, DECK_HAND, dstOwner_t, dstArea_t, howMany_t, toDiscard, harm_t.srcID, harm_t.cause, isShown_t);
+				}
+				else{
+					return engine->setStateMoveCardsToHand(targetID_t, DECK_HAND, dstOwner_t, dstArea_t, howMany_t, toDiscard, harm_t, isShown_t);
+				}
 			}
-			else
-			{
-				for (int i=0; i<howMany; ++i)
-					toDiscard[i] = respond->args(i);
+			else if(canGiveUp){	
+				engine->popGameState();
+				return causer->p_request_hand_give_up(step);
 			}
-
-			if(GE_SUCCESS != (ret = dst->checkHandCards(howMany, toDiscard)))
-				return ret;
-			engine->popGameState();
-			if(toDemoralize_t){
-				engine->setStateStartLoseMorale(howMany_t, dstID_t, harm_t);
+			else{
+				return GE_INVALID_ACTION;
 			}
-			ret = engine->setStateMoveCardsNotToHand(dstID_t, DECK_HAND, -1, DECK_DISCARD, howMany_t, toDiscard, harm_t.srcID, harm_t.cause, isShown_t);
-
-			return ret;
 		}
-		else
-		{
-			return ret;
-		}
+	    return ret;
 	}
 	else
 	{
 		//Timeout auto discard
-		int howMany_t = howMany;
-		int dstID_t = dstID;
-		HARM harm_t = harm;
-		bool isShown_t = isShown;
-		bool toDemoralize_t = toDemoralize;
-		engine->popGameState();
-		if(toDemoralize_t){
-			engine->setStateStartLoseMorale(howMany_t, dstID_t, harm_t);
+		if(!canGiveUp)
+		{
+			engine->popGameState();
+			list<int> handcards = engine->getPlayerEntity(targetID_t)->getHandCards();
+			list<int>::iterator it = handcards.begin();
+			for(int i = 0; i < howMany_t && it != handcards.end(); i++){
+				toDiscard[i] = *it;
+				it++;
+			}
+			if(dstArea != DECK_HAND){
+				engine->setStateMoveCardsNotToHand(targetID_t, DECK_HAND, dstOwner_t, dstArea_t, howMany_t, toDiscard, harm_t.srcID, harm_t.cause, isShown_t);
+			}
+			else{
+				engine->setStateMoveCardsToHand(targetID_t, DECK_HAND, dstOwner_t, dstArea_t, howMany_t, toDiscard, harm_t, isShown_t);
+			}
 		}
-		vector<int> toDiscard(howMany_t);
-		list<int> handcards = engine->getPlayerEntity(dstID_t)->getHandCards();
-		list<int>::iterator it = handcards.begin();
-		for(int i = 0; i < howMany_t && it != handcards.end(); i++){
-			toDiscard[i] = *it;
-			it++;
+		else{
+			engine->popGameState();
+		    causer->p_request_hand_give_up(step);
 		}
-		return engine->setStateMoveCardsNotToHand(dstID_t, DECK_HAND, -1, DECK_DISCARD, howMany_t, toDiscard, harm_t.srcID, harm_t.cause, isShown_t);
+		return GE_TIMEOUT;
 	}
 }
 
