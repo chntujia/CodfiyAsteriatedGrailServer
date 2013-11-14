@@ -57,7 +57,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>base.lib;tinyxml.lib;protocal.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\lib;D:\boost_1_52_0\stage\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\lib;..\boost\stage\lib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

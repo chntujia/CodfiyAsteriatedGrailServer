@@ -126,10 +126,10 @@ public:
 	virtual int p_true_lose_morale(int &step, CONTEXT_LOSE_MORALE *con) { return GE_SUCCESS; }
 	virtual int p_hand_change(int &step, int playerID) { return GE_SUCCESS; }
 	virtual int p_basic_effect_change(int &step, int dstID, int card, int doerID, int cause)  { return GE_SUCCESS; }
-	virtual int p_show_hand(int &step, int playerID, int howMany, vector<int> cards) { return GE_SUCCESS; }
+	virtual int p_show_hand(int &step, int playerID, int howMany, vector<int> cards, HARM harm) { return GE_SUCCESS; }
 	virtual int p_additional_action(int chosen);
 	virtual int p_magic_skill(int &step, Action *action) { return GE_EMPTY_HANDLE; }
-	virtual int p_request_hand_give_up(int &step) { return GE_SUCCESS; }
+	virtual int p_request_hand_give_up(int &step, int cause) { return GE_SUCCESS; }
 
 	virtual int v_allow_action(int claim, int allow, bool canGiveUp);
 	virtual int v_attack(int cardID, int dstID, bool realCard = true);

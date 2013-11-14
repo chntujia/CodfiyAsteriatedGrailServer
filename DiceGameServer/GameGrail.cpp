@@ -300,7 +300,7 @@ int GameGrail::setStateMoveCards(int srcOwner, int srcArea, int dstOwner, int ds
 		break;
 	case DECK_HAND:
 		if(isShown){
-			pushGameState(new StateShowHand(srcOwner, howMany, cards));
+			pushGameState(new StateShowHand(srcOwner, howMany, cards, harm));
 		}
 		pushGameState(new StateHandChange(srcOwner, CHANGE_REMOVE, howMany, cards, harm));	
 		break;
@@ -754,7 +754,7 @@ void GameGrail::initPlayerEntities()
 		id = player_it->id();
 		color = player_it->team();
 		//FIXME: È«·âÓ¡Ê±´ú
-		m_playerEntities[id] = new KuangZhan(this, id, color);
+		m_playerEntities[id] = new FengYin(this, id, color);
 		
 		position2id[i] = id;
 	}

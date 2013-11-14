@@ -87,7 +87,7 @@ int StateRoleStrategyRandom::handle(GameGrail* engine)
 		// i为玩家编号，不是座号		
 		if(GE_SUCCESS == (ret=roles->pop(1, &out))){
 			//FIXME: 全封印时代
-			Coder::roleNotice(i, 2, game_info);
+			Coder::roleNotice(i, 4, game_info);
 			engine->sendMessage(-1, MSG_GAME, game_info);
 		}
 		else{
@@ -191,7 +191,7 @@ int StateWeaken::handle(GameGrail* engine)
 			}
 			else{
 				engine->popGameState();
-				engine->pushGameState(new StateBeforeAction(false));
+				engine->pushGameState(new StateTurnEnd);
 				return GE_SUCCESS;
 			}
 		}
@@ -206,7 +206,7 @@ int StateWeaken::handle(GameGrail* engine)
 
 		engine->sendMessage(-1, MSG_RESPOND, weak_respond);
 		engine->popGameState();
-		engine->pushGameState(new StateBeforeAction(false));
+		engine->pushGameState(new StateBeforeAction);
 		return GE_TIMEOUT;
 	}
 
@@ -225,14 +225,8 @@ int StateBeforeAction::handle(GameGrail* engine)
 			return ret;
 		}		
 	}
-	bool toAction = this->toAction;
 	if(GE_SUCCESS == (ret = engine->popGameState_if(STATE_BEFORE_ACTION))){
-		if(toAction){
-			engine->pushGameState(new StateBoot);
-		}
-		else{
-			engine->pushGameState(new StateTurnEnd);
-		}
+		engine->pushGameState(new StateBoot);
 	}
 	return ret;
 }
@@ -1197,7 +1191,7 @@ int StateRequestHand::handle(GameGrail* engine)
 			}
 			else if(canGiveUp){	
 				engine->popGameState();
-				return causer->p_request_hand_give_up(step);
+				return causer->p_request_hand_give_up(step, harm_t.cause);
 			}
 			else{
 				return GE_INVALID_ACTION;
@@ -1226,7 +1220,7 @@ int StateRequestHand::handle(GameGrail* engine)
 		}
 		else{
 			engine->popGameState();
-		    causer->p_request_hand_give_up(step);
+			causer->p_request_hand_give_up(step, harm_t.cause);
 		}
 		return GE_TIMEOUT;
 	}
@@ -1355,7 +1349,7 @@ int StateShowHand::handle(GameGrail* engine)
 	int m_currentPlayerID = engine->getCurrentPlayerID();
 
 	while(iterator < engine->getGameMaxPlayers()){
-		ret = engine->getPlayerEntity(iterator)->p_show_hand(step, dstID, howMany, cards);
+		ret = engine->getPlayerEntity(iterator)->p_show_hand(step, dstID, howMany, cards, harm);
 		moveIterator(ret);
 		if(GE_SUCCESS != ret){
 			return ret;

@@ -17,7 +17,7 @@ int FengYin::p_after_magic(int &step, int playerID)
 	return ret;
 }
 
-int FengYin::p_show_hand(int &step, int playerID, int howMany, vector<int> cards)
+int FengYin::p_show_hand(int &step, int playerID, int howMany, vector<int> cards, HARM harm)
 {
 	int ret = GE_INVALID_STEP;
 	ret = FengYin_Effect(playerID, howMany, cards);

@@ -207,9 +207,8 @@ public:
 class StateBeforeAction : public GrailState
 {
 public:
-	StateBeforeAction(bool to = true): GrailState(STATE_BEFORE_ACTION), toAction(to){}
+	StateBeforeAction(): GrailState(STATE_BEFORE_ACTION){}
 	int handle(GameGrail* engine);
-	bool toAction;
 };
 
 class StateBoot : public GrailState
@@ -501,11 +500,12 @@ public:
 class StateShowHand: public GrailState
 {
 public:
-	StateShowHand(int dstID, int howMany, vector<int> cards): GrailState(STATE_SHOW_HAND), dstID(dstID), howMany(howMany), cards(cards){}
+	StateShowHand(int dstID, int howMany, vector<int> cards, HARM harm): GrailState(STATE_SHOW_HAND), dstID(dstID), howMany(howMany), cards(cards), harm(harm){}
 	int handle(GameGrail* engine);
 	int dstID;
 	int howMany;
 	vector<int> cards;
+	HARM harm;
 };
 
 class StateGameOver: public GrailState
