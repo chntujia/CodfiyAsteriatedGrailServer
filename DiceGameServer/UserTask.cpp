@@ -2,7 +2,7 @@
 #include "UserTask.h"
 #include "UserSessionManager.h"
 #include "GameManager.h"
-#include "GameGrail.h"
+#include "Communication.h"
 
 #include <boost/algorithm/string.hpp>
 
@@ -89,6 +89,7 @@ bool UserTask::cmdMsgParse(const char *pstrMsg, const uint32_t nCmdLen)
 		EnterRoom* enter_room;
 		Action *action;
 		Respond *respond;
+		Talk *talk;
 
 		switch(type)
 		{
@@ -160,6 +161,11 @@ bool UserTask::cmdMsgParse(const char *pstrMsg, const uint32_t nCmdLen)
 					delete proto;
 				}
 			}		
+			break;
+		case MSG_TALK:
+			talk = (Talk*) proto;
+			player_talk(getGame(), m_playerId, talk);
+			delete proto;
 			break;
 		default:
 			ztLoggerWrite(ZONE, e_Error, "[%s]Received undefine MSG_TYPE: %s,\n size:%d, type:%d,\n To proto: %s", m_userId.c_str(), pstrMsg, *size, type, proto->DebugString().c_str());

@@ -358,6 +358,13 @@ public:
 		use_card.set_card_id(cardID);
 		use_card.set_real_card(realCard);
 	}
+	static void showCardNotice(int ID, vector<int> cards, GameInfo& game_info)
+	{
+		vector<int>::iterator card_id_iter;
+		for (card_id_iter = cards.begin(); card_id_iter != cards.end(); ++card_id_iter)
+			game_info.add_show_cards(*card_id_iter);
+		game_info.set_show_from(ID);
+	}
 	static void askForAction(int playerID, int actionTypeAllowed, bool canGiveUp, CommandRequest& cmd_req)
 	{
 		cmd_req.set_cmd_type(CMD_ACTION);

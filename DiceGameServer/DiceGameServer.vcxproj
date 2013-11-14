@@ -86,15 +86,19 @@
   <ItemGroup>
     <ClInclude Include="CardEntity.h" />
     <ClInclude Include="codec.h" />
+    <ClInclude Include="Communication.h" />
     <ClInclude Include="DiceGameServer.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameGrail.h" />
     <ClInclude Include="GameGrailCommon.h" />
     <ClInclude Include="GameGrailPlayerContext.h" />
     <ClInclude Include="GameManager.h" />
+    <ClInclude Include="GMCommand.h" />
     <ClInclude Include="GrailState.h" />
     <ClInclude Include="PlayerContext.h" />
     <ClInclude Include="PlayerEntity.h" />
+    <ClInclude Include="role\AnSha.h" />
+    <ClInclude Include="role\FengYin.h" />
     <ClInclude Include="role\JianSheng.h" />
     <ClInclude Include="role\KuangZhan.h" />
     <ClInclude Include="stdafx.h" />
@@ -105,16 +109,20 @@
   <ItemGroup>
     <ClCompile Include="CardEntity.cpp" />
     <ClCompile Include="codec.cpp" />
+    <ClCompile Include="Communication.cpp" />
     <ClCompile Include="DiceGameServer.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameGrail.cpp" />
     <ClCompile Include="GameGrailCommon.cpp" />
     <ClCompile Include="GameManager.cpp" />
+    <ClCompile Include="GMCommand.cpp" />
     <ClCompile Include="GrailState.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PlayerContext.cpp" />
     <ClCompile Include="PlayerEntity.cpp" />
     <ClCompile Include="prebuild.cpp" />
+    <ClCompile Include="role\AnSha.cpp" />
+    <ClCompile Include="role\FengYin.cpp" />
     <ClCompile Include="role\JianSheng.cpp" />
     <ClCompile Include="role\KuangZhan.cpp" />
     <ClCompile Include="stdafx.cpp" />

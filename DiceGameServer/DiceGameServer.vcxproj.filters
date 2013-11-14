@@ -72,8 +72,20 @@
     <ClInclude Include="role\JianSheng.h">
       <Filter>role</Filter>
     </ClInclude>
+    <ClInclude Include="role\AnSha.h">
+      <Filter>role</Filter>
+    </ClInclude>
     <ClInclude Include="role\FengYin.h">
       <Filter>role</Filter>
+    </ClInclude>
+    <ClInclude Include="role\KuangZhan.h">
+      <Filter>role</Filter>
+    </ClInclude>
+    <ClInclude Include="Communication.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GMCommand.h">
+      <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -125,8 +137,20 @@
     <ClCompile Include="role\JianSheng.cpp">
       <Filter>role</Filter>
     </ClCompile>
+    <ClCompile Include="role\AnSha.cpp">
+      <Filter>role</Filter>
+    </ClCompile>
     <ClCompile Include="role\FengYin.cpp">
       <Filter>role</Filter>
+    </ClCompile>
+    <ClCompile Include="role\KuangZhan.cpp">
+      <Filter>role</Filter>
+    </ClCompile>
+    <ClCompile Include="Communication.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="GMCommand.cpp">
+      <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

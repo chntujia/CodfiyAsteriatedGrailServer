@@ -6,9 +6,13 @@
 #include <libs/system/src/error_code.cpp>
 #include "GameGrailCommon.h"
 #include "DiceGameServer.h"
+#include "GMCommand.h"
 CardEntity* cardList[150];
 int _tmain(int argc, _TCHAR* argv[])
 {
+	// ≥ı ºªØgm÷∏¡Ó
+	initialize_gm_command();
+
 	DiceGameServer::newInstance();
 	if(!DiceGameServer::getInstance().serverInit())
 	{
@@ -18,7 +22,7 @@ int _tmain(int argc, _TCHAR* argv[])
  
 	ztLoggerWrite(ZONE, e_Information, "GameServer Start ");
 	DiceGameServer::getInstance().main();
-	DiceGameServer::delInstance();  
+	DiceGameServer::delInstance();
 	return 0;
 }
 

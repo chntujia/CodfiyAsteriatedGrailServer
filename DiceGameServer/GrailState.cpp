@@ -1354,13 +1354,16 @@ int StateShowHand::handle(GameGrail* engine)
 	int ret = GE_FATAL_ERROR;
 	int m_currentPlayerID = engine->getCurrentPlayerID();
 
-	while(iterator < engine->getGameMaxPlayers()){	    
+	while(iterator < engine->getGameMaxPlayers()){
 		ret = engine->getPlayerEntity(iterator)->p_show_hand(step, dstID, howMany, cards);
 		moveIterator(ret);
 		if(GE_SUCCESS != ret){
 			return ret;
 		}		
 	}
+
+	GameInfo game_info;
+	Coder::showCardNotice(dstID, cards, game_info);
 	return engine->popGameState_if(STATE_SHOW_HAND);
 }
 
