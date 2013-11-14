@@ -18,11 +18,29 @@ void setEnergy(GameGrail* engine, PlayerEntity* player, vector<string>& ss)
 }
 
 /*
+card: 往手上添加牌，参数数量不定，为添加的牌id
+*/
+void addCard(GameGrail* engine, PlayerEntity* player, vector<string>& ss)
+{
+	int howmany;
+	vector<int> cards;
+	for (int i = 1; i < ss.size(); ++i)
+		cards.push_back(atoi(ss[i].c_str()));
+	howmany = ss.size() - 1;
+	player->addHandCards(howmany, cards);
+
+	GameInfo game_info;
+	Coder::handNotice(player->getID(), player->getHandCards(), game_info);
+	engine->sendMessage(-1, MSG_GAME, game_info);
+}
+
+/*
 录入gm指令，将gm指令放入cmd_mapping中，key为gm指令格式的字符串，value是处理函数的指针
 */
 void initialize_gm_command()
 {
 	cmd_mapping["!`energy"] = setEnergy;  // 设置能量
+	cmd_mapping["!`card"] = addCard;     // 添加手牌
 }
 
 /*
