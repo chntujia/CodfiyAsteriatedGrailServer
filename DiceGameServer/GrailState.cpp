@@ -206,7 +206,7 @@ int StateWeaken::handle(GameGrail* engine)
 
 		engine->sendMessage(-1, MSG_RESPOND, weak_respond);
 		engine->popGameState();
-		engine->pushGameState(new StateBeforeAction);
+		engine->pushGameState(new StateTurnEnd);
 		return GE_TIMEOUT;
 	}
 

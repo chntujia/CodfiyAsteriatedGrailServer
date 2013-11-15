@@ -12,7 +12,7 @@ public:
 	int p_timeline_3(int &step, CONTEXT_TIMELINE_3 *con);
 	int p_timeline_6_drawn(int &step, CONTEXT_TIMELINE_6_DRAWN *con);
 	int v_attacked();
-	int p_turn_begin(int &step, int currentPlayerID);
+	int p_before_action(int &step, int currentPlayerID);
 private:
 	int FanShi( CONTEXT_TIMELINE_6_DRAWN *con);
 	int ShuiYing(CONTEXT_TIMELINE_3 *con);

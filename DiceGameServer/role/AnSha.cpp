@@ -31,7 +31,7 @@ int AnSha::p_boot(int &step, int currentPlayerID)
 	step = QIAN_XING;
 	int ret = QianXingBoot();
 	step = STEP_DONE;
-	return QianXingBoot();
+	return ret;
 }
 
 int AnSha::p_timeline_1(int &step, CONTEXT_TIMELINE_1 *con)
@@ -88,7 +88,7 @@ int AnSha::v_attacked()
 		return GE_INVALID_PLAYERID;
 }
 
-int AnSha::p_turn_begin(int &step, int currentPlayerID)
+int AnSha::p_before_action(int &step, int currentPlayerID)
 {
 	if (currentPlayerID != id || !tap)
 		return GE_SUCCESS;
@@ -151,6 +151,7 @@ int AnSha::ShuiYing(CONTEXT_TIMELINE_3 *con)
 				return GE_SUCCESS;
 			}
 		}
+		return ret;
 	}
 	else{
 		//超时啥都不用做
@@ -187,6 +188,7 @@ int AnSha::QianXingBoot()
 				return engine->setStateChangeMaxHand(id, false, false, 6, -1);
 			}
 		}
+		return ret;
 	}
 	else{
 		//超时啥都不用做
