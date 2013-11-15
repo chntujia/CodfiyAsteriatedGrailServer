@@ -1178,7 +1178,7 @@ int StateRequestHand::handle(GameGrail* engine)
 						toDiscard[i] = respond->card_ids(i);
 				}
 				if(GE_SUCCESS != (ret = target->checkHandCards(howMany, toDiscard)) ||
-				   GE_SUCCESS != (ret = causer->v_request_hand(howMany, toDiscard))){
+				   GE_SUCCESS != (ret = causer->v_request_hand(howMany, toDiscard, harm))){
 					return ret;
 				}
 				engine->popGameState();
@@ -1191,7 +1191,7 @@ int StateRequestHand::handle(GameGrail* engine)
 			}
 			else if(canGiveUp){	
 				engine->popGameState();
-				return causer->p_request_hand_give_up(step, harm_t.cause);
+				return causer->p_request_hand_give_up(step, targetID_t, harm_t.cause);
 			}
 			else{
 				return GE_INVALID_ACTION;
@@ -1220,7 +1220,7 @@ int StateRequestHand::handle(GameGrail* engine)
 		}
 		else{
 			engine->popGameState();
-			causer->p_request_hand_give_up(step, harm_t.cause);
+			causer->p_request_hand_give_up(step, targetID_t, harm_t.cause);
 		}
 		return GE_TIMEOUT;
 	}

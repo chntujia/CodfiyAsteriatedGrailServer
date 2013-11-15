@@ -160,6 +160,7 @@ int FengYin::FengYin_Cast(Action *action)
 	//宣告技能
 	network::SkillMsg skill;
 	Coder::skillNotice(id, dstID, actionID, skill);
+	engine->sendMessage(-1, MSG_SKILL, skill);
     //所有移牌操作都要用setStateMoveXXXX，ToHand的话要填好HARM，就算不是伤害
 	engine->setStateMoveOneCardNotToHand(id, DECK_HAND, dstID, DECK_BASIC_EFFECT, cardID, id, actionID, true);
 	//插入了新状态，请return GE_URGENT
