@@ -30,7 +30,10 @@ int AnSha::p_boot(int &step, int currentPlayerID)
 		return GE_SUCCESS;
 	step = QIAN_XING;
 	int ret = QianXingBoot();
-	step = STEP_DONE;
+	if(toNextStep(ret) || ret == GE_URGENT){
+		//全部走完后，请把step设成STEP_DONE
+		step = STEP_DONE;
+	}
 	return ret;
 }
 
@@ -63,7 +66,10 @@ int AnSha::p_timeline_3(int &step, CONTEXT_TIMELINE_3 *con)
 		// 水影
 		step = SHUI_YING;
 		int ret = ShuiYing(con);
-		step = STEP_DONE;
+		if(toNextStep(ret) || ret == GE_URGENT){
+			//全部走完后，请把step设成STEP_DONE
+			step = STEP_DONE;
+		}
 		return ret;
 	}
 	return GE_SUCCESS;
@@ -76,7 +82,10 @@ int AnSha::p_timeline_6_drawn(int &step, CONTEXT_TIMELINE_6_DRAWN *con)
 		return GE_SUCCESS;
 	}
 	int ret = FanShi(con);
-	step = STEP_DONE;
+	if(toNextStep(ret) || ret == GE_URGENT){
+		//全部走完后，请把step设成STEP_DONE
+		step = STEP_DONE;
+	}
 	return ret;
 }
 
@@ -94,7 +103,10 @@ int AnSha::p_before_action(int &step, int currentPlayerID)
 		return GE_SUCCESS;
 
 	int ret = QianXingReset();
-	step = STEP_DONE;
+	if(toNextStep(ret) || ret == GE_URGENT){
+		//全部走完后，请把step设成STEP_DONE
+		step = STEP_DONE;
+	}
 	return ret;
 }
 
