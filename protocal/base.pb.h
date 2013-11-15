@@ -1355,19 +1355,19 @@ class SinglePlayerInfo : public ::google::protobuf::Message {
   inline ::google::protobuf::uint32 crystal() const;
   inline void set_crystal(::google::protobuf::uint32 value);
 
-  // optional uint32 yellow_energy = 12;
-  inline bool has_yellow_energy() const;
-  inline void clear_yellow_energy();
-  static const int kYellowEnergyFieldNumber = 12;
-  inline ::google::protobuf::uint32 yellow_energy() const;
-  inline void set_yellow_energy(::google::protobuf::uint32 value);
+  // optional uint32 yellow_token = 12;
+  inline bool has_yellow_token() const;
+  inline void clear_yellow_token();
+  static const int kYellowTokenFieldNumber = 12;
+  inline ::google::protobuf::uint32 yellow_token() const;
+  inline void set_yellow_token(::google::protobuf::uint32 value);
 
-  // optional uint32 blue_energy = 13;
-  inline bool has_blue_energy() const;
-  inline void clear_blue_energy();
-  static const int kBlueEnergyFieldNumber = 13;
-  inline ::google::protobuf::uint32 blue_energy() const;
-  inline void set_blue_energy(::google::protobuf::uint32 value);
+  // optional uint32 blue_token = 13;
+  inline bool has_blue_token() const;
+  inline void clear_blue_token();
+  static const int kBlueTokenFieldNumber = 13;
+  inline ::google::protobuf::uint32 blue_token() const;
+  inline void set_blue_token(::google::protobuf::uint32 value);
 
   // optional uint32 covered_count = 14;
   inline bool has_covered_count() const;
@@ -1450,10 +1450,10 @@ class SinglePlayerInfo : public ::google::protobuf::Message {
   inline void clear_has_gem();
   inline void set_has_crystal();
   inline void clear_has_crystal();
-  inline void set_has_yellow_energy();
-  inline void clear_has_yellow_energy();
-  inline void set_has_blue_energy();
-  inline void clear_has_blue_energy();
+  inline void set_has_yellow_token();
+  inline void clear_has_yellow_token();
+  inline void set_has_blue_token();
+  inline void clear_has_blue_token();
   inline void set_has_covered_count();
   inline void clear_has_covered_count();
   inline void set_has_is_knelt();
@@ -1474,8 +1474,8 @@ class SinglePlayerInfo : public ::google::protobuf::Message {
   ::google::protobuf::RepeatedField< ::google::protobuf::uint32 > basic_cards_;
   ::google::protobuf::uint32 gem_;
   ::google::protobuf::uint32 crystal_;
-  ::google::protobuf::uint32 yellow_energy_;
-  ::google::protobuf::uint32 blue_energy_;
+  ::google::protobuf::uint32 yellow_token_;
+  ::google::protobuf::uint32 blue_token_;
   ::google::protobuf::uint32 covered_count_;
   bool is_knelt_;
   ::google::protobuf::RepeatedField< ::google::protobuf::uint32 > hands_;
@@ -3074,48 +3074,48 @@ inline void SinglePlayerInfo::set_crystal(::google::protobuf::uint32 value) {
   crystal_ = value;
 }
 
-// optional uint32 yellow_energy = 12;
-inline bool SinglePlayerInfo::has_yellow_energy() const {
+// optional uint32 yellow_token = 12;
+inline bool SinglePlayerInfo::has_yellow_token() const {
   return (_has_bits_[0] & 0x00000800u) != 0;
 }
-inline void SinglePlayerInfo::set_has_yellow_energy() {
+inline void SinglePlayerInfo::set_has_yellow_token() {
   _has_bits_[0] |= 0x00000800u;
 }
-inline void SinglePlayerInfo::clear_has_yellow_energy() {
+inline void SinglePlayerInfo::clear_has_yellow_token() {
   _has_bits_[0] &= ~0x00000800u;
 }
-inline void SinglePlayerInfo::clear_yellow_energy() {
-  yellow_energy_ = 0u;
-  clear_has_yellow_energy();
+inline void SinglePlayerInfo::clear_yellow_token() {
+  yellow_token_ = 0u;
+  clear_has_yellow_token();
 }
-inline ::google::protobuf::uint32 SinglePlayerInfo::yellow_energy() const {
-  return yellow_energy_;
+inline ::google::protobuf::uint32 SinglePlayerInfo::yellow_token() const {
+  return yellow_token_;
 }
-inline void SinglePlayerInfo::set_yellow_energy(::google::protobuf::uint32 value) {
-  set_has_yellow_energy();
-  yellow_energy_ = value;
+inline void SinglePlayerInfo::set_yellow_token(::google::protobuf::uint32 value) {
+  set_has_yellow_token();
+  yellow_token_ = value;
 }
 
-// optional uint32 blue_energy = 13;
-inline bool SinglePlayerInfo::has_blue_energy() const {
+// optional uint32 blue_token = 13;
+inline bool SinglePlayerInfo::has_blue_token() const {
   return (_has_bits_[0] & 0x00001000u) != 0;
 }
-inline void SinglePlayerInfo::set_has_blue_energy() {
+inline void SinglePlayerInfo::set_has_blue_token() {
   _has_bits_[0] |= 0x00001000u;
 }
-inline void SinglePlayerInfo::clear_has_blue_energy() {
+inline void SinglePlayerInfo::clear_has_blue_token() {
   _has_bits_[0] &= ~0x00001000u;
 }
-inline void SinglePlayerInfo::clear_blue_energy() {
-  blue_energy_ = 0u;
-  clear_has_blue_energy();
+inline void SinglePlayerInfo::clear_blue_token() {
+  blue_token_ = 0u;
+  clear_has_blue_token();
 }
-inline ::google::protobuf::uint32 SinglePlayerInfo::blue_energy() const {
-  return blue_energy_;
+inline ::google::protobuf::uint32 SinglePlayerInfo::blue_token() const {
+  return blue_token_;
 }
-inline void SinglePlayerInfo::set_blue_energy(::google::protobuf::uint32 value) {
-  set_has_blue_energy();
-  blue_energy_ = value;
+inline void SinglePlayerInfo::set_blue_token(::google::protobuf::uint32 value) {
+  set_has_blue_token();
+  blue_token_ = value;
 }
 
 // optional uint32 covered_count = 14;

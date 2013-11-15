@@ -280,8 +280,8 @@ void protobuf_AssignDesc_base_2eproto() {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SinglePlayerInfo, basic_cards_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SinglePlayerInfo, gem_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SinglePlayerInfo, crystal_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SinglePlayerInfo, yellow_energy_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SinglePlayerInfo, blue_energy_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SinglePlayerInfo, yellow_token_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SinglePlayerInfo, blue_token_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SinglePlayerInfo, covered_count_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SinglePlayerInfo, is_knelt_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SinglePlayerInfo, hands_),
@@ -466,35 +466,35 @@ void protobuf_AddDesc_base_2eproto() {
     "ingleRoom.RoomPlayer\0328\n\nRoomPlayer\022\021\n\tpl"
     "ayer_id\030\001 \001(\r\022\027\n\017player_nickname\030\002 \001(\r\"+"
     "\n\005Rooms\022\"\n\005rooms\030\001 \003(\0132\023.network.SingleR"
-    "oom\"\016\n\014ReadyToStart\"\014\n\nStartReply\"\350\002\n\020Si"
+    "oom\"\016\n\014ReadyToStart\"\014\n\nStartReply\"\346\002\n\020Si"
     "nglePlayerInfo\022\014\n\004seat\030\025 \001(\r\022\n\n\002id\030\001 \001(\r"
     "\022\014\n\004team\030\002 \001(\r\022\020\n\010nickname\030\024 \001(\t\022\017\n\007role"
     "_id\030\004 \001(\r\022\022\n\nhand_count\030\005 \001(\r\022\022\n\nheal_co"
     "unt\030\006 \001(\r\022\020\n\010ex_cards\030\010 \003(\r\022\023\n\013basic_car"
-    "ds\030\t \003(\r\022\013\n\003gem\030\n \001(\r\022\017\n\007crystal\030\013 \001(\r\022\025"
-    "\n\ryellow_energy\030\014 \001(\r\022\023\n\013blue_energy\030\r \001"
-    "(\r\022\025\n\rcovered_count\030\016 \001(\r\022\020\n\010is_knelt\030\003 "
-    "\001(\010\022\r\n\005hands\030\017 \003(\r\022\020\n\010covereds\030\020 \003(\r\022\020\n\010"
-    "max_hand\030\026 \001(\r\022\024\n\014delete_field\030\036 \003(\t\"\265\002\n"
-    "\010GameInfo\022/\n\014player_infos\030\001 \003(\0132\031.networ"
-    "k.SinglePlayerInfo\022\022\n\nred_morale\030\002 \001(\r\022\023"
-    "\n\013blue_morale\030\003 \001(\r\022\017\n\007red_gem\030\004 \001(\r\022\020\n\010"
-    "blue_gem\030\005 \001(\r\022\023\n\013red_crystal\030\006 \001(\r\022\024\n\014b"
-    "lue_crystal\030\007 \001(\r\022\021\n\tred_grail\030\010 \001(\r\022\022\n\n"
-    "blue_grail\030\t \001(\r\022\014\n\004pile\030\n \001(\r\022\017\n\007discar"
-    "d\030\013 \001(\r\022\022\n\nshow_cards\030\014 \003(\r\022\021\n\tshow_from"
-    "\030\r \001(\r\022\024\n\014delete_field\030\017 \003(\t\"\023\n\004Talk\022\013\n\003"
-    "txt\030\001 \001(\t\"D\n\006Gossip\022!\n\004type\030\001 \001(\0162\023.netw"
-    "ork.GossipType\022\013\n\003txt\030\002 \001(\t\022\n\n\002id\030\003 \001(\r*"
-    "\244\002\n\013MessageType\022\021\n\rMSG_LOGIN_REQ\020\001\022\021\n\rMS"
-    "G_LOGIN_REP\020\002\022\r\n\tMSG_READY\020\003\022\021\n\rMSG_STAR"
-    "T_REP\020\004\022\025\n\021MSG_SINGLE_PLAYER\020\005\022\014\n\010MSG_GA"
-    "ME\020\006\022\014\n\010MSG_TALK\020\007\022\016\n\nMSG_GOSSIP\020\010\022\022\n\016MS"
-    "G_ENTER_ROOM\020\t\022\023\n\017MSG_SINGLE_ROOM\020\n\022\r\n\tM"
-    "SG_ROOMS\020\013\022\022\n\016MSG_LOGOUT_REQ\020\014\022\022\n\016MSG_LO"
-    "GOUT_REP\020\r\022\024\n\020MSG_REGISTER_REQ\020\016\022\024\n\020MSG_"
-    "REGISTER_REP\020\017*0\n\nGossipType\022\017\n\013GOSSIP_T"
-    "ALK\020\001\022\021\n\rGOSSIP_NOTICE\020\002", 1704);
+    "ds\030\t \003(\r\022\013\n\003gem\030\n \001(\r\022\017\n\007crystal\030\013 \001(\r\022\024"
+    "\n\014yellow_token\030\014 \001(\r\022\022\n\nblue_token\030\r \001(\r"
+    "\022\025\n\rcovered_count\030\016 \001(\r\022\020\n\010is_knelt\030\003 \001("
+    "\010\022\r\n\005hands\030\017 \003(\r\022\020\n\010covereds\030\020 \003(\r\022\020\n\010ma"
+    "x_hand\030\026 \001(\r\022\024\n\014delete_field\030\036 \003(\t\"\265\002\n\010G"
+    "ameInfo\022/\n\014player_infos\030\001 \003(\0132\031.network."
+    "SinglePlayerInfo\022\022\n\nred_morale\030\002 \001(\r\022\023\n\013"
+    "blue_morale\030\003 \001(\r\022\017\n\007red_gem\030\004 \001(\r\022\020\n\010bl"
+    "ue_gem\030\005 \001(\r\022\023\n\013red_crystal\030\006 \001(\r\022\024\n\014blu"
+    "e_crystal\030\007 \001(\r\022\021\n\tred_grail\030\010 \001(\r\022\022\n\nbl"
+    "ue_grail\030\t \001(\r\022\014\n\004pile\030\n \001(\r\022\017\n\007discard\030"
+    "\013 \001(\r\022\022\n\nshow_cards\030\014 \003(\r\022\021\n\tshow_from\030\r"
+    " \001(\r\022\024\n\014delete_field\030\017 \003(\t\"\023\n\004Talk\022\013\n\003tx"
+    "t\030\001 \001(\t\"D\n\006Gossip\022!\n\004type\030\001 \001(\0162\023.networ"
+    "k.GossipType\022\013\n\003txt\030\002 \001(\t\022\n\n\002id\030\003 \001(\r*\244\002"
+    "\n\013MessageType\022\021\n\rMSG_LOGIN_REQ\020\001\022\021\n\rMSG_"
+    "LOGIN_REP\020\002\022\r\n\tMSG_READY\020\003\022\021\n\rMSG_START_"
+    "REP\020\004\022\025\n\021MSG_SINGLE_PLAYER\020\005\022\014\n\010MSG_GAME"
+    "\020\006\022\014\n\010MSG_TALK\020\007\022\016\n\nMSG_GOSSIP\020\010\022\022\n\016MSG_"
+    "ENTER_ROOM\020\t\022\023\n\017MSG_SINGLE_ROOM\020\n\022\r\n\tMSG"
+    "_ROOMS\020\013\022\022\n\016MSG_LOGOUT_REQ\020\014\022\022\n\016MSG_LOGO"
+    "UT_REP\020\r\022\024\n\020MSG_REGISTER_REQ\020\016\022\024\n\020MSG_RE"
+    "GISTER_REP\020\017*0\n\nGossipType\022\017\n\013GOSSIP_TAL"
+    "K\020\001\022\021\n\rGOSSIP_NOTICE\020\002", 1702);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "base.proto", &protobuf_RegisterTypes);
   RegisterRequest::default_instance_ = new RegisterRequest();
@@ -3468,8 +3468,8 @@ const int SinglePlayerInfo::kExCardsFieldNumber;
 const int SinglePlayerInfo::kBasicCardsFieldNumber;
 const int SinglePlayerInfo::kGemFieldNumber;
 const int SinglePlayerInfo::kCrystalFieldNumber;
-const int SinglePlayerInfo::kYellowEnergyFieldNumber;
-const int SinglePlayerInfo::kBlueEnergyFieldNumber;
+const int SinglePlayerInfo::kYellowTokenFieldNumber;
+const int SinglePlayerInfo::kBlueTokenFieldNumber;
 const int SinglePlayerInfo::kCoveredCountFieldNumber;
 const int SinglePlayerInfo::kIsKneltFieldNumber;
 const int SinglePlayerInfo::kHandsFieldNumber;
@@ -3503,8 +3503,8 @@ void SinglePlayerInfo::SharedCtor() {
   heal_count_ = 0u;
   gem_ = 0u;
   crystal_ = 0u;
-  yellow_energy_ = 0u;
-  blue_energy_ = 0u;
+  yellow_token_ = 0u;
+  blue_token_ = 0u;
   covered_count_ = 0u;
   is_knelt_ = false;
   max_hand_ = 0u;
@@ -3561,8 +3561,8 @@ void SinglePlayerInfo::Clear() {
   if (_has_bits_[9 / 32] & (0xffu << (9 % 32))) {
     gem_ = 0u;
     crystal_ = 0u;
-    yellow_energy_ = 0u;
-    blue_energy_ = 0u;
+    yellow_token_ = 0u;
+    blue_token_ = 0u;
     covered_count_ = 0u;
     is_knelt_ = false;
   }
@@ -3751,35 +3751,35 @@ bool SinglePlayerInfo::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(96)) goto parse_yellow_energy;
+        if (input->ExpectTag(96)) goto parse_yellow_token;
         break;
       }
 
-      // optional uint32 yellow_energy = 12;
+      // optional uint32 yellow_token = 12;
       case 12: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
-         parse_yellow_energy:
+         parse_yellow_token:
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
-                 input, &yellow_energy_)));
-          set_has_yellow_energy();
+                 input, &yellow_token_)));
+          set_has_yellow_token();
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(104)) goto parse_blue_energy;
+        if (input->ExpectTag(104)) goto parse_blue_token;
         break;
       }
 
-      // optional uint32 blue_energy = 13;
+      // optional uint32 blue_token = 13;
       case 13: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
-         parse_blue_energy:
+         parse_blue_token:
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
-                 input, &blue_energy_)));
-          set_has_blue_energy();
+                 input, &blue_token_)));
+          set_has_blue_token();
         } else {
           goto handle_uninterpreted;
         }
@@ -3985,14 +3985,14 @@ void SinglePlayerInfo::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteUInt32(11, this->crystal(), output);
   }
 
-  // optional uint32 yellow_energy = 12;
-  if (has_yellow_energy()) {
-    ::google::protobuf::internal::WireFormatLite::WriteUInt32(12, this->yellow_energy(), output);
+  // optional uint32 yellow_token = 12;
+  if (has_yellow_token()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(12, this->yellow_token(), output);
   }
 
-  // optional uint32 blue_energy = 13;
-  if (has_blue_energy()) {
-    ::google::protobuf::internal::WireFormatLite::WriteUInt32(13, this->blue_energy(), output);
+  // optional uint32 blue_token = 13;
+  if (has_blue_token()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(13, this->blue_token(), output);
   }
 
   // optional uint32 covered_count = 14;
@@ -4100,14 +4100,14 @@ void SinglePlayerInfo::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(11, this->crystal(), target);
   }
 
-  // optional uint32 yellow_energy = 12;
-  if (has_yellow_energy()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(12, this->yellow_energy(), target);
+  // optional uint32 yellow_token = 12;
+  if (has_yellow_token()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(12, this->yellow_token(), target);
   }
 
-  // optional uint32 blue_energy = 13;
-  if (has_blue_energy()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(13, this->blue_energy(), target);
+  // optional uint32 blue_token = 13;
+  if (has_blue_token()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(13, this->blue_token(), target);
   }
 
   // optional uint32 covered_count = 14;
@@ -4232,18 +4232,18 @@ int SinglePlayerInfo::ByteSize() const {
           this->crystal());
     }
 
-    // optional uint32 yellow_energy = 12;
-    if (has_yellow_energy()) {
+    // optional uint32 yellow_token = 12;
+    if (has_yellow_token()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::UInt32Size(
-          this->yellow_energy());
+          this->yellow_token());
     }
 
-    // optional uint32 blue_energy = 13;
-    if (has_blue_energy()) {
+    // optional uint32 blue_token = 13;
+    if (has_blue_token()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::UInt32Size(
-          this->blue_energy());
+          this->blue_token());
     }
 
     // optional uint32 covered_count = 14;
@@ -4375,11 +4375,11 @@ void SinglePlayerInfo::MergeFrom(const SinglePlayerInfo& from) {
     if (from.has_crystal()) {
       set_crystal(from.crystal());
     }
-    if (from.has_yellow_energy()) {
-      set_yellow_energy(from.yellow_energy());
+    if (from.has_yellow_token()) {
+      set_yellow_token(from.yellow_token());
     }
-    if (from.has_blue_energy()) {
-      set_blue_energy(from.blue_energy());
+    if (from.has_blue_token()) {
+      set_blue_token(from.blue_token());
     }
     if (from.has_covered_count()) {
       set_covered_count(from.covered_count());
@@ -4426,8 +4426,8 @@ void SinglePlayerInfo::Swap(SinglePlayerInfo* other) {
     basic_cards_.Swap(&other->basic_cards_);
     std::swap(gem_, other->gem_);
     std::swap(crystal_, other->crystal_);
-    std::swap(yellow_energy_, other->yellow_energy_);
-    std::swap(blue_energy_, other->blue_energy_);
+    std::swap(yellow_token_, other->yellow_token_);
+    std::swap(blue_token_, other->blue_token_);
     std::swap(covered_count_, other->covered_count_);
     std::swap(is_knelt_, other->is_knelt_);
     hands_.Swap(&other->hands_);

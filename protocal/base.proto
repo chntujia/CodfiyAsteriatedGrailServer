@@ -101,8 +101,8 @@ message SinglePlayerInfo {
     
     optional uint32 gem = 10;           // 宝石数量
     optional uint32 crystal = 11;       // 水晶数量
-    optional uint32 yellow_energy = 12; // 黄色指示物
-    optional uint32 blue_energy = 13;   // 蓝色指示物
+    optional uint32 yellow_token = 12; // 黄色指示物
+    optional uint32 blue_token = 13;   // 蓝色指示物
     optional uint32 covered_count = 14; // 盖牌数量，暂不支持多种盖牌
     
     optional bool is_knelt = 3;   // 是否横置
