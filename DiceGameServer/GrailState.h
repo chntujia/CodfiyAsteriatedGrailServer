@@ -290,8 +290,16 @@ private:
 class StateMagicSkill: public GrailState
 {
 public:
-	StateMagicSkill(Action *action): GrailState(STATE_MAGIC_SKILL), action(action) {}
+	StateMagicSkill(Action *_action): GrailState(STATE_MAGIC_SKILL)
+	{
+		action = new Action;
+		action->CopyFrom(*_action);
+	}
 	int handle(GameGrail* engine);
+	~StateMagicSkill()
+	{
+		delete action;
+	}
 private:
 	Action *action;
 };

@@ -11,6 +11,7 @@
 #include "role\AnSha.h"
 #include "role\KuangZhan.h"
 #include "role\FengYin.h"
+#include "role\YuanSu.h"
 using namespace boost;
 
 void TeamArea::initialTeam()
@@ -754,7 +755,7 @@ void GameGrail::initPlayerEntities()
 		id = player_it->id();
 		color = player_it->team();
 		//FIXME: È«·âÓ¡Ê±´ú
-		m_playerEntities[id] = new FengYin(this, id, color);
+		m_playerEntities[id] = new YuanSu(this, id, color);
 		
 		position2id[i] = id;
 	}

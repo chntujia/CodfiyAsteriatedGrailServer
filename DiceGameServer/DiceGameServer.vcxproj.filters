@@ -87,6 +87,9 @@
     <ClInclude Include="GMCommand.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="role\YuanSu.h">
+      <Filter>role</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -151,6 +154,9 @@
     </ClCompile>
     <ClCompile Include="GMCommand.cpp">
       <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="role\YuanSu.cpp">
+      <Filter>role</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

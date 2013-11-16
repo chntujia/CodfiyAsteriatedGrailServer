@@ -87,7 +87,7 @@ int StateRoleStrategyRandom::handle(GameGrail* engine)
 		// i为玩家编号，不是座号		
 		if(GE_SUCCESS == (ret=roles->pop(1, &out))){
 			//FIXME: 全封印时代
-			Coder::roleNotice(i, 4, game_info);
+			Coder::roleNotice(i, 11, game_info);
 			engine->sendMessage(-1, MSG_GAME, game_info);
 		}
 		else{
@@ -315,7 +315,7 @@ int StateActionPhase::basicAttack(Action *action, GameGrail* engine)
 int StateActionPhase::basicMagic(Action *action, GameGrail* engine)
 {
 	int ret;
-	int card_id = action->args().Get(0);
+	int card_id = action->card_ids(0);
 	int m_currentPlayerID = engine->getCurrentPlayerID();
 	PlayerEntity *src = engine->getPlayerEntity(m_currentPlayerID);
 	PlayerEntity *dst = engine->getPlayerEntity(action->dst_ids(0));
@@ -354,6 +354,8 @@ int StateActionPhase::basicMagic(Action *action, GameGrail* engine)
 			engine->pushGameState(new StateBeforeMagic(m_currentPlayerID));
 			return GE_SUCCESS;
 		}
+	default:
+		return GE_INVALID_ACTION;
 	}
 	return ret;
 }
