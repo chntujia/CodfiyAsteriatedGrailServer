@@ -240,7 +240,7 @@ int GameGrail::getReply(int id, void* &reply)
 	reply = iter->second->getBuf();
 	if(!reply){
 		return GE_NO_REPLY;
-	}	
+	}
 	return GE_SUCCESS;
 }
 

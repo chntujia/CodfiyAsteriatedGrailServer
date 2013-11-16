@@ -85,6 +85,9 @@ enum CAUSE{
 	HUO_QIU = 1103,
 	YUN_SHI = 1104,
 	LEI_JI = 1105,
+	YUAN_SU_DIAN_RAN = 1106,
+	YUE_GUANG = 1107,
+	YUAN_SU_XI_SHOU = 1108,
 	XUN_JIE_CI_FU = 1601,
 	WEI_LI_CI_FU = 1602,
 	LING_HUN_ZHEN_BAO = 2201,
@@ -318,6 +321,12 @@ public:
 		player_info->set_gem(gem);
 		player_info->set_crystal(crystal);
 	}
+	static void crossNotice(int ID, int cross, GameInfo& game_info)
+	{
+		SinglePlayerInfo* player_info = game_info.add_player_infos();
+		player_info->set_id(ID);
+		player_info->set_heal_count(cross);
+	}
     static string getCardNotice(int sum,vector < int > cards,int dstID,bool show);
     static void hurtNotice(int dstID, int srcID, int type, int point, int cause, HurtMsg& hurt_msg)
 	{
@@ -462,8 +471,16 @@ public:
 		player_info->set_is_knelt(flag);
 	}
     static string specialNotice(int ID,int type,int flag){return combMessage("43",TOQSTR(ID),TOQSTR(type),TOQSTR(flag));}
-    static string tokenNotice(int ID,int tokenID,int howMany){return combMessage("45",TOQSTR(ID),TOQSTR(tokenID),TOQSTR(howMany));}
-    static string askForRolePick(int howMany,int *roles);
+    static void tokenNotice(int ID,int tokenID,int howMany, GameInfo& game_info)
+	{
+		SinglePlayerInfo* player_info = game_info.add_player_infos();
+		player_info->set_id(ID);
+		if (tokenID == 0)
+			player_info->set_yellow_token(howMany);
+		else
+			player_info->set_blue_token(howMany);
+	}
+	static string askForRolePick(int howMany,int *roles);
     static string coverCardNotice(int playerID,int howMany,vector < int > cards,bool remove,bool show);
     static string askForSkillNumber(int playerID,int skillNum){return combMessage(TOQSTR(skillNum));}
     static string optionalRoleNotice(int num, int *roles);
