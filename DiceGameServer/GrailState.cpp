@@ -87,7 +87,7 @@ int StateRoleStrategyRandom::handle(GameGrail* engine)
 		// i为玩家编号，不是座号		
 		if(GE_SUCCESS == (ret=roles->pop(1, &out))){
 			//FIXME: 全封印时代
-			Coder::roleNotice(i, 11, game_info);
+			Coder::roleNotice(i, 8, game_info);
 			engine->sendMessage(-1, MSG_GAME, game_info);
 		}
 		else{
@@ -329,6 +329,7 @@ int StateActionPhase::basicMagic(Action *action, GameGrail* engine)
 			engine->pushGameState(new StateBeforeMagic(m_currentPlayerID));
 			return GE_SUCCESS;
 		}
+		break;
 	case NAME_SHIELD:
 		if (GE_SUCCESS == (ret = src->v_shield(card_id, dst))){
 			engine->popGameState();
@@ -337,6 +338,7 @@ int StateActionPhase::basicMagic(Action *action, GameGrail* engine)
 			engine->pushGameState(new StateBeforeMagic(m_currentPlayerID));
 			return GE_SUCCESS;
 		}
+		break;
 	case NAME_MISSILE:
 		if (GE_SUCCESS == (ret = src->v_missile(card_id, action->dst_ids(0)))){
 			engine->popGameState();
@@ -346,6 +348,7 @@ int StateActionPhase::basicMagic(Action *action, GameGrail* engine)
 			engine->pushGameState(new StateBeforeMagic(m_currentPlayerID));
 			return GE_SUCCESS;
 		}
+		break;
 	case NAME_WEAKEN:
 		if (GE_SUCCESS == (ret = src->v_weaken(card_id, dst))){
 			engine->popGameState();
@@ -616,7 +619,7 @@ StateMissiled* StateMissiled::create(GameGrail* engine, int cardID, int dstID, i
 	int ret;
 	PlayerEntity* src = engine->getPlayerEntity(srcID);
 	if(GE_SUCCESS != (ret = src->v_missile(cardID, dstID))){
-		throw ret;
+		throw (GrailError)ret;
 	}
 	StateMissiled* probe = new StateMissiled(dstID, srcID, false);
 	if(dstID == probe->getNextTargetID(engine, srcID)){
@@ -650,7 +653,6 @@ int StateMissiled::handle(GameGrail* engine)
 			int cardID;			
 			switch(reAttack->args(0))
 			{				
-				//FIXME: verify card type
 			case RA_ATTACK:
 				cardID = reAttack->args(1);
 				if(GE_SUCCESS == (ret=engine->getPlayerEntity(dstID)->v_remissile(cardID))){

@@ -11,6 +11,7 @@
 #include "role\AnSha.h"
 #include "role\KuangZhan.h"
 #include "role\FengYin.h"
+#include "role\MoDao.h"
 #include "role\YuanSu.h"
 using namespace boost;
 
@@ -406,6 +407,7 @@ int GameGrail::setStateHandOverLoad(int dstID, HARM harm)
 	}
 	setStateStartLoseMorale(overNum, dstID, harm);
 	harm.point = overNum;
+	harm.cause = CAUSE_OVERLOAD;
 	pushGameState(new StateRequestHand(dstID, harm));
 	return GE_URGENT;
 }
@@ -755,7 +757,7 @@ void GameGrail::initPlayerEntities()
 		id = player_it->id();
 		color = player_it->team();
 		//FIXME: È«·âÓ¡Ê±´ú
-		m_playerEntities[id] = new YuanSu(this, id, color);
+		m_playerEntities[id] = new MoDao(this, id, color);
 		
 		position2id[i] = id;
 	}
