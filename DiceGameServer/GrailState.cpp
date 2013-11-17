@@ -315,7 +315,7 @@ int StateActionPhase::basicAttack(Action *action, GameGrail* engine)
 int StateActionPhase::basicMagic(Action *action, GameGrail* engine)
 {
 	int ret;
-	int card_id = action->card_ids(0);
+	int card_id = action->args().Get(0);
 	int m_currentPlayerID = engine->getCurrentPlayerID();
 	PlayerEntity *src = engine->getPlayerEntity(m_currentPlayerID);
 	PlayerEntity *dst = engine->getPlayerEntity(action->dst_ids(0));
@@ -357,8 +357,6 @@ int StateActionPhase::basicMagic(Action *action, GameGrail* engine)
 			engine->pushGameState(new StateBeforeMagic(m_currentPlayerID));
 			return GE_SUCCESS;
 		}
-	default:
-		return GE_INVALID_ACTION;
 	}
 	return ret;
 }
@@ -1061,10 +1059,43 @@ int StateAskForCross::handle(GameGrail* engine)
 
 	CommandRequest cmd_req;
 	Coder::askForCross(dstID, harm.point, harm.type, crossAvailable, cmd_req);
-
+	int ret;
 	if(engine->waitForOne(dstID, MSG_CMD_REQ, cmd_req))
 	{
-		//TODO cross reply		
+		void* reply;
+		if (GE_SUCCESS == (ret = engine->getReply(dstID, reply)))
+		{
+			Respond* reCross = (Respond*) reply;
+			int usedCross = reCross->args(0);
+			if(usedCross>0)
+			{
+				PlayerEntity *dstPlayer = engine->getPlayerEntity(dstID);
+				dstPlayer->subCrossNum(usedCross);
+				GameInfo update_info;
+				Coder::crossNotice(dstID, dstPlayer->getCrossNum(), update_info);
+				engine->sendMessage(-1, MSG_GAME, update_info);
+				CONTEXT_TIMELINE_5* newCon = new CONTEXT_TIMELINE_5;
+				newCon->dstID = dstID;
+				HARM newHarm = harm;
+				newHarm.point -= usedCross;
+				newCon->dstID = dstID;
+				newCon->harm = newHarm;
+				engine->popGameState();
+				engine->pushGameState(new StateTimeline5(newCon));
+				return ret;
+			}
+			else
+			{
+				CONTEXT_TIMELINE_5* newCon = new CONTEXT_TIMELINE_5;
+				newCon->dstID = dstID;
+				newCon->harm = harm;
+				engine->popGameState();
+				engine->pushGameState(new StateTimeline5(newCon));
+				return ret;
+			}
+		}
+		else
+			return ret;
 	}
 	else
 	{
@@ -1182,7 +1213,7 @@ int StateRequestHand::handle(GameGrail* engine)
 						toDiscard[i] = respond->card_ids(i);
 				}
 				if(GE_SUCCESS != (ret = target->checkHandCards(howMany, toDiscard)) ||
-				   GE_SUCCESS != (ret = causer->v_request_hand(howMany, toDiscard, harm))){
+				   GE_SUCCESS != (ret = causer->v_request_hand(howMany, toDiscard, harm_t))){
 					return ret;
 				}
 				engine->popGameState();

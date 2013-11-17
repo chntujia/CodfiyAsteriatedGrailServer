@@ -13,6 +13,8 @@
 #include "role\FengYin.h"
 #include "role\MoDao.h"
 #include "role\YuanSu.h"
+#include "role\ShengNv.h"
+
 using namespace boost;
 
 void TeamArea::initialTeam()
@@ -242,7 +244,7 @@ int GameGrail::getReply(int id, void* &reply)
 	reply = iter->second->getBuf();
 	if(!reply){
 		return GE_NO_REPLY;
-	}
+	}	
 	return GE_SUCCESS;
 }
 

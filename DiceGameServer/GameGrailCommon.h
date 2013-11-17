@@ -79,6 +79,9 @@ enum CAUSE{
 	QIAN_XING = 503,
 	ZHI_LIAO_SHU = 601,
 	ZHI_YU_ZHI_GUANG = 602,
+	BING_SHUANG_DAO_YAN = 603,
+	LIAN_MIN = 604,
+	SHENG_LIAO = 605,
 	TIAN_SHI_ZHI_QIANG = 701,
 	MO_BAO_CHONG_JI = 801,
 	MO_DAN_ZHANG_WO = 802,
@@ -414,6 +417,7 @@ public:
 
 		cmd = cmd_req.add_commands();
 		cmd->set_respond_id(network::RESPOND_HEAL);
+		cmd->add_args(playerID);
 		cmd->add_args(hurtPoint);
 		cmd->add_args(type);
 		cmd->add_args(crossAvailable);

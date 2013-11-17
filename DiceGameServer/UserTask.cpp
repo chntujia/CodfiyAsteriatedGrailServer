@@ -153,6 +153,9 @@ bool UserTask::cmdMsgParse(const char *pstrMsg, const uint32_t nCmdLen)
 				break;
 			case RESPOND_ADDITIONAL_ACTION:
 				tryNotify(m_playerId, STATE_ADDITIONAL_ACTION, 0, respond);
+				break;
+			case RESPOND_HEAL:
+				tryNotify(m_playerId, STATE_ASK_FOR_CROSS, 0, respond);
 				break;			
 			default:
 				//尝试从角色的cmdMsgParse里找匹配
