@@ -87,12 +87,6 @@
     <ClInclude Include="GMCommand.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="role\ShengNv.h">
-      <Filter>role</Filter>
-    </ClInclude>
-    <ClInclude Include="role\MoDao.h">
-      <Filter>role</Filter>
-    </ClInclude>
     <ClInclude Include="role\YuanSu.h">
       <Filter>role</Filter>
     </ClInclude>
@@ -160,12 +154,6 @@
     </ClCompile>
     <ClCompile Include="GMCommand.cpp">
       <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="role\ShengNv.cpp">
-      <Filter>role</Filter>
-    </ClCompile>
-    <ClCompile Include="role\MoDao.cpp">
-      <Filter>role</Filter>
     </ClCompile>
     <ClCompile Include="role\YuanSu.cpp">
       <Filter>role</Filter>

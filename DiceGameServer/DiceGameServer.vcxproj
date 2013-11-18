@@ -101,7 +101,6 @@
     <ClInclude Include="role\FengYin.h" />
     <ClInclude Include="role\JianSheng.h" />
     <ClInclude Include="role\KuangZhan.h" />
-    <ClInclude Include="role\MoDao.h" />
     <ClInclude Include="role\YuanSu.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -127,7 +126,6 @@
     <ClCompile Include="role\FengYin.cpp" />
     <ClCompile Include="role\JianSheng.cpp" />
     <ClCompile Include="role\KuangZhan.cpp" />
-    <ClCompile Include="role\MoDao.cpp" />
     <ClCompile Include="role\YuanSu.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="UserSessionManager.cpp" />
