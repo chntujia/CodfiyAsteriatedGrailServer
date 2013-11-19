@@ -209,6 +209,11 @@ void PlayerEntity::addCrossNum(int howMany, int atMost)
     if(atMost==-1){
         atMost=crossMax;
 	}
+	else if (atMost == -2) {
+		// 完全无视上限
+		crossNum=(crossNum+howMany);
+		return;
+	}
     if(crossNum>=atMost){
         return;
 	}

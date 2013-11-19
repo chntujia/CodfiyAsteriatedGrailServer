@@ -35,12 +35,26 @@ void addCard(GameGrail* engine, PlayerEntity* player, vector<string>& ss)
 }
 
 /*
+cross: 设置治疗
+*/
+void setCross(GameGrail* engine, PlayerEntity* player, vector<string>& ss)
+{
+	int howmany = atoi(ss[1].c_str());
+	player->addCrossNum(howmany-player->getCrossNum(), -2);   // 1000以内随便加
+
+	GameInfo game_info;
+	Coder::crossNotice(player->getID(), player->getCrossNum(), game_info);
+	engine->sendMessage(-1, MSG_GAME, game_info);
+}
+
+/*
 录入gm指令，将gm指令放入cmd_mapping中，key为gm指令格式的字符串，value是处理函数的指针
 */
 void initialize_gm_command()
 {
 	cmd_mapping["!`energy"] = setEnergy;  // 设置能量
-	cmd_mapping["!`card"] = addCard;     // 添加手牌
+	cmd_mapping["!`card"] = addCard;      // 添加手牌
+	cmd_mapping["!`cross"] = setCross;    // 添加手牌
 }
 
 /*
