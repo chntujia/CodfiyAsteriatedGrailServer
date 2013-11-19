@@ -12,8 +12,8 @@ public:
 	int v_magic_skill(Action *action);
 	int p_magic_skill(int &step, Action* action);
 private:
-	int ZhiLiaoShu(Action* action);
-	int ZhiYuZhiGuang(Action* action);
+	int ZhiLiaoShu(int &step, Action* action);
+	int ZhiYuZhiGuang(int &step, Action* action);
 	int ShengLiao(Action* action);
 	int LianMin();
 	int BingShuangDaoYan(CONTEXT_TIMELINE_1 *con);

@@ -14,6 +14,7 @@
 #include "role\MoDao.h"
 #include "role\YuanSu.h"
 #include "role\ShengNv.h"
+#include "role\SiLing.h"
 
 using namespace boost;
 
@@ -759,7 +760,7 @@ void GameGrail::initPlayerEntities()
 		id = player_it->id();
 		color = player_it->team();
 		//FIXME: È«·âÓ¡Ê±´ú
-		m_playerEntities[id] = new MoDao(this, id, color);
+		m_playerEntities[id] = new ShengNv(this, id, color);
 		
 		position2id[i] = id;
 	}

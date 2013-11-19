@@ -104,20 +104,26 @@ int ShengNv::p_magic_skill(int &step, Action* action)
 	switch(action->action_id())
 	{
 	case ZHI_LIAO_SHU:
-		ret = ZhiLiaoShu(action);
+		ret = ZhiLiaoShu(step, action);
 		if(GE_URGENT == ret){
+			step = ZHI_LIAO_SHU;
+		}
+		else if (GE_SUCCESS == ret){
 			step = STEP_DONE;
 		}
 		break;
 	case ZHI_YU_ZHI_GUANG:
-		ret = ZhiYuZhiGuang(action);
+		ret = ZhiYuZhiGuang(step, action);
 		if(GE_URGENT == ret){
+			step = ZHI_YU_ZHI_GUANG;
+		}
+		else if (GE_SUCCESS == ret){
 			step = STEP_DONE;
 		}
 		break;
 	case SHENG_LIAO:
 		ret = ShengLiao(action);
-		if(GE_SUCCESS == ret){
+		if (GE_SUCCESS == ret){
 			step = STEP_DONE;
 		}
 		break;
@@ -205,27 +211,32 @@ int ShengNv::BingShuangDaoYan(CONTEXT_TIMELINE_1 *con)
 	}
 }
 
-int ShengNv::ZhiLiaoShu(Action* action)
+int ShengNv::ZhiLiaoShu(int &step, Action* action)
 {
 	int dstID = action->dst_ids(0);
 	int cardID = action->card_ids(0);
 	PlayerEntity * dstPlayer = engine->getPlayerEntity(dstID);
-	
-	SkillMsg skill_msg;
-	Coder::skillNotice(id, dstID, ZHI_LIAO_SHU, skill_msg);
-	engine->sendMessage(-1, MSG_SKILL, skill_msg);
+	if(step != ZHI_LIAO_SHU)
+	{
+		SkillMsg skill_msg;
+		Coder::skillNotice(id, dstID, ZHI_LIAO_SHU, skill_msg);
+		engine->sendMessage(-1, MSG_SKILL, skill_msg);
 
-	engine->setStateMoveOneCardNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardID, ZHI_LIAO_SHU, true);
-
-	dstPlayer->addCrossNum(2);
-	GameInfo update_info;
-	Coder::crossNotice(dstID, dstPlayer->getCrossNum(), update_info);
-	engine->sendMessage(-1, MSG_GAME, update_info);
-	//插入了新状态，请return GE_URGENT
-	return GE_URGENT;
+		engine->setStateMoveOneCardNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardID, ZHI_LIAO_SHU, true);
+		//插入了新状态，请return GE_URGENT
+		return GE_URGENT;
+	}
+	else
+	{
+		dstPlayer->addCrossNum(2);
+		GameInfo update_info;
+		Coder::crossNotice(dstID, dstPlayer->getCrossNum(), update_info);
+		engine->sendMessage(-1, MSG_GAME, update_info);
+		return GE_SUCCESS;
+	}
 }
 
-int ShengNv::ZhiYuZhiGuang(Action* action)
+int ShengNv::ZhiYuZhiGuang(int &step, Action* action)
 {
 	int cardID = action->card_ids(0);
 	SkillMsg skill_msg;
@@ -236,21 +247,27 @@ int ShengNv::ZhiYuZhiGuang(Action* action)
 	{
 		dsts.push_back(action->dst_ids(i));
 	}
-	Coder::skillNotice(id, dsts, ZHI_YU_ZHI_GUANG, skill_msg);
-	engine->sendMessage(-1, MSG_SKILL, skill_msg);
-	engine->setStateMoveOneCardNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardID, ZHI_YU_ZHI_GUANG, true);
-
-	for(int i=0; i < action->dst_ids_size(); i ++)
+	if(step!=ZHI_YU_ZHI_GUANG)
 	{
-		dstID = action->dst_ids(i);
-		dstPlayer = engine->getPlayerEntity(dstID);
-		dstPlayer->addCrossNum(1);
-		GameInfo update_info;
-		Coder::crossNotice(dstID, dstPlayer->getCrossNum(), update_info);
-		engine->sendMessage(-1, MSG_GAME, update_info);
+		Coder::skillNotice(id, dsts, ZHI_YU_ZHI_GUANG, skill_msg);
+		engine->sendMessage(-1, MSG_SKILL, skill_msg);
+		engine->setStateMoveOneCardNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardID, ZHI_YU_ZHI_GUANG, true);
+		//插入了新状态，请return GE_URGENT
+		return GE_URGENT;
 	}
-	//插入了新状态，请return GE_URGENT
-	return GE_URGENT;
+	else
+	{
+		for(int i=0; i < action->dst_ids_size(); i ++)
+		{
+			dstID = action->dst_ids(i);
+			dstPlayer = engine->getPlayerEntity(dstID);
+			dstPlayer->addCrossNum(1);
+			GameInfo update_info;
+			Coder::crossNotice(dstID, dstPlayer->getCrossNum(), update_info);
+			engine->sendMessage(-1, MSG_GAME, update_info);
+		}
+		return GE_SUCCESS;
+	}
 }
 
 int ShengNv::ShengLiao(Action* action)
