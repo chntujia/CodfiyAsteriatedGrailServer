@@ -302,7 +302,7 @@ int StateActionPhase::handle(GameGrail* engine)
 int StateActionPhase::basicAttack(Action *action, GameGrail* engine)
 {
 	int ret;
-	int card_id = action->args().Get(0);
+	int card_id = action->card_ids(0);
 	int m_currentPlayerID = engine->getCurrentPlayerID();
 	PlayerEntity *src = engine->getPlayerEntity(m_currentPlayerID);
 	if(GE_SUCCESS == (ret = src->v_attack(card_id, action->dst_ids().Get(0)))){
@@ -315,7 +315,7 @@ int StateActionPhase::basicAttack(Action *action, GameGrail* engine)
 int StateActionPhase::basicMagic(Action *action, GameGrail* engine)
 {
 	int ret;
-	int card_id = action->args().Get(0);
+	int card_id = action->card_ids(0);
 	int m_currentPlayerID = engine->getCurrentPlayerID();
 	PlayerEntity *src = engine->getPlayerEntity(m_currentPlayerID);
 	PlayerEntity *dst = engine->getPlayerEntity(action->dst_ids(0));
@@ -357,6 +357,8 @@ int StateActionPhase::basicMagic(Action *action, GameGrail* engine)
 			engine->pushGameState(new StateBeforeMagic(m_currentPlayerID));
 			return GE_SUCCESS;
 		}
+	default:
+		return GE_INVALID_ACTION;
 	}
 	return ret;
 }
@@ -533,28 +535,28 @@ int StateAttacked::handle(GameGrail* engine)
 
 		CONTEXT_TIMELINE_1 temp = *context;
 		if(GE_SUCCESS == (ret = engine->getReply(context->attack.dstID, reply))){
-			Respond *respond_attack = (Respond*) reply;
+			Respond *reply_attack = (Respond*) reply;
 
-			int ra = respond_attack->args(0);
+			int ra = reply_attack->args(0);
 			int card_id;
 
 			switch(ra)
 			{
 				//FIXME: verify
 			case RA_ATTACK:
-				card_id = respond_attack->args(1);
-				if(GE_SUCCESS == (ret=engine->getPlayerEntity(context->attack.dstID)->v_reattack(card_id, temp.attack.cardID, respond_attack->dst_ids().Get(0), temp.attack.srcID, context->hitRate))){
+				card_id = reply_attack->card_ids(0);
+				if(GE_SUCCESS == (ret=engine->getPlayerEntity(context->attack.dstID)->v_reattack(card_id, temp.attack.cardID, reply_attack->dst_ids().Get(0), temp.attack.srcID, context->hitRate))){
 					// 反馈玩家行动
-					respond_attack->set_src_id(context->attack.dstID);					
+					reply_attack->set_src_id(context->attack.dstID);					
 					engine->popGameState();
-					return engine->setStateReattack(temp.attack.cardID, card_id, temp.attack.srcID, temp.attack.dstID, respond_attack->dst_ids().Get(0), temp.attack.isActive, true);
+					return engine->setStateReattack(temp.attack.cardID, card_id, temp.attack.srcID, temp.attack.dstID, reply_attack->dst_ids().Get(0), temp.attack.isActive, true);
 				}
 				break;
 			case RA_BLOCK:
-				card_id = respond_attack->args(1);
+				card_id = reply_attack->card_ids(0);
 				if(GE_SUCCESS == (ret=engine->getPlayerEntity(context->attack.dstID)->v_block(card_id))){
 					// 反馈玩家行动
-					respond_attack->set_src_id(context->attack.dstID);
+					reply_attack->set_src_id(context->attack.dstID);
 
 					engine->popGameState();
 					engine->setStateTimeline2Miss(temp.attack.cardID, temp.attack.dstID, temp.attack.srcID, temp.attack.isActive);
@@ -644,15 +646,15 @@ int StateMissiled::handle(GameGrail* engine)
 	{
 		void* reply;
 		int ret;
-		Respond* reAttack;
+		Respond* respond;
 		if(GE_SUCCESS == (ret = engine->getReply(dstID, reply)))
 		{
-			reAttack = (Respond*)reply;
+			respond = (Respond*)reply;
 			int cardID;			
-			switch(reAttack->args(0))
+			switch(respond->args(0))
 			{				
 			case RA_ATTACK:
-				cardID = reAttack->args(1);
+				cardID = respond->card_ids(0);
 				if(GE_SUCCESS == (ret=engine->getPlayerEntity(dstID)->v_remissile(cardID))){
 					srcID = dstID;
 					dstID = nextTargetID;
@@ -662,7 +664,7 @@ int StateMissiled::handle(GameGrail* engine)
 				}
 				break;
 			case RA_BLOCK:
-				cardID = reAttack->args(1);
+				cardID = respond->card_ids(0);
 				if(GE_SUCCESS == (ret=engine->getPlayerEntity(dstID)->v_block(cardID))){
 					engine->popGameState();
 					return engine->setStateUseCard(cardID, srcID_t, dstID_t);				
