@@ -467,9 +467,9 @@ int GameGrail::setStateCheckBasicEffect()
 
 int GameGrail::setStateAttackAction(int cardID, int dstID, int srcID, bool realCard)
 {
-	pushGameState(new StateAfterAttack(cardID, dstID, srcID));	
+	pushGameState(new StateAfterAttack(srcID));	
 	setStateTimeline1(cardID, dstID, srcID, true);
-	pushGameState(new StateBeforeAttack(cardID, dstID, srcID));	
+	pushGameState(new StateBeforeAttack(dstID, srcID));	
 	return setStateUseCard(cardID, dstID, srcID, false, realCard);
 }
 

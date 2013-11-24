@@ -128,7 +128,9 @@ public:
 	virtual int p_basic_effect_change(int &step, int dstID, int card, int doerID, int cause)  { return GE_SUCCESS; }
 	virtual int p_show_hand(int &step, int playerID, int howMany, vector<int> cards, HARM harm) { return GE_SUCCESS; }
 	virtual int p_additional_action(int chosen);
+	virtual int p_attack_skill(int &step, Action *action) { return GE_EMPTY_HANDLE; }
 	virtual int p_magic_skill(int &step, Action *action) { return GE_EMPTY_HANDLE; }
+	virtual int p_special_skill(int &step, Action *action) { return GE_EMPTY_HANDLE; }
 	virtual int p_request_hand_give_up(int &step, int targetID, int cause) { return GE_SUCCESS; }
 
 	virtual int v_allow_action(int claim, int allow, bool canGiveUp);
@@ -144,7 +146,9 @@ public:
 	virtual int v_synthesize(Action *action, TeamArea* team);
 	virtual int v_extract(Action *action, TeamArea* team);
 	virtual int v_additional_action(int chosen);
+	virtual int v_attack_skill(Action *action) { return GE_EMPTY_HANDLE; }
 	virtual int v_magic_skill(Action *action) { return GE_EMPTY_HANDLE; }
+	virtual int v_special_skill(Action *action) { return GE_EMPTY_HANDLE; }
 	virtual int v_request_hand(int howMany, vector<int> cards, HARM harm) { return GE_SUCCESS; }
 protected:
     int id;//Íæ¼Òid

@@ -18,12 +18,14 @@ enum STATE{
 	STATE_ACTION_PHASE,
 	STATE_BEFORE_ATTACK,
 	STATE_ATTACKED,
+	STATE_ATTACK_SKILL,
 	STATE_AFTER_ATTACK,
 	STATE_BEFORE_MAGIC,
 	STATE_MISSILED,
 	STATE_MAGIC_SKILL,
 	STATE_AFTER_MAGIC,
 	STATE_BEFORE_SPECIAL,
+	STATE_SPECIAL_SKILL,
 	STATE_AFTER_SPECIAL,
 	STATE_ADDITIONAL_ACTION,
 	STATE_TURN_END,
@@ -230,14 +232,15 @@ private:
 	int basicMagic(Action *action, GameGrail* engine);
 	int basicSpecial(Action *action, GameGrail* engine);
 	int magicSkill(Action *action, GameGrail* engine);
+	int attackSkill(Action *action, GameGrail* engine);
+	int specialSkill(Action *action, GameGrail* engine);
 };
 
 class StateBeforeAttack: public GrailState
 {
 public:
-	StateBeforeAttack(int cardID, int dstID, int srcID): GrailState(STATE_BEFORE_ATTACK), cardID(cardID), dstID(dstID), srcID(srcID){}
+	StateBeforeAttack(int dstID, int srcID): GrailState(STATE_BEFORE_ATTACK), dstID(dstID), srcID(srcID){}
 	int handle(GameGrail* engine);
-	int cardID;
 	int dstID;
 	int srcID;
 };
@@ -251,13 +254,28 @@ public:
 	CONTEXT_TIMELINE_1 *context;
 };
 
+class StateAttackSkill: public GrailState
+{
+public:
+	StateAttackSkill(Action *_action): GrailState(STATE_ATTACK_SKILL)
+	{
+		action = new Action;
+		action->CopyFrom(*_action);
+	}
+	int handle(GameGrail* engine);
+	~StateAttackSkill()
+	{
+		delete action;
+	}
+private:
+	Action *action;
+};
+
 class StateAfterAttack: public GrailState
 {
 public:
-	StateAfterAttack(int cardID, int dstID, int srcID): GrailState(STATE_AFTER_ATTACK), cardID(cardID), dstID(dstID), srcID(srcID){}
+	StateAfterAttack(int srcID): GrailState(STATE_AFTER_ATTACK), srcID(srcID){}
 	int handle(GameGrail* engine);
-	int cardID;
-	int dstID;
 	int srcID;
 };
 
@@ -318,6 +336,23 @@ public:
 	StateBeforeSpecial(int srcID): GrailState(STATE_BEFORE_SPECIAL), srcID(srcID){}
 	int handle(GameGrail* engine);
 	int srcID;
+};
+
+class StateSpecialSkill: public GrailState
+{
+public:
+	StateSpecialSkill(Action *_action): GrailState(STATE_SPECIAL_SKILL)
+	{
+		action = new Action;
+		action->CopyFrom(*_action);
+	}
+	int handle(GameGrail* engine);
+	~StateSpecialSkill()
+	{
+		delete action;
+	}
+private:
+	Action *action;
 };
 
 class StateAfterSpecial: public GrailState

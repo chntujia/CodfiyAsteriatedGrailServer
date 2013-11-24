@@ -99,8 +99,9 @@ enum BasicActionType {
   ACTION_SPECIAL = 3,
   ACTION_ATTACK_SKILL = 4,
   ACTION_MAGIC_SKILL = 5,
-  ACTION_ANY = 6,
-  ACTION_ATTACK_MAGIC = 7,
+  ACTION_SPECIAL_SKILL = 6,
+  ACTION_ANY = 7,
+  ACTION_ATTACK_MAGIC = 8,
   ACTION_NONE = 100000
 };
 bool BasicActionType_IsValid(int value);

@@ -1,10 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="源文件">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
     <Filter Include="头文件">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
@@ -15,6 +11,10 @@
     </Filter>
     <Filter Include="role">
       <UniqueIdentifier>{df69035c-7aa7-424e-ac9a-1505fc87b4b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -90,13 +90,16 @@
     <ClInclude Include="role\YuanSu.h">
       <Filter>role</Filter>
     </ClInclude>
-    <ClInclude Include="role\SiLing.h">
+    <ClInclude Include="role\MoDao.h">
       <Filter>role</Filter>
     </ClInclude>
     <ClInclude Include="role\ShengNv.h">
       <Filter>role</Filter>
     </ClInclude>
-    <ClInclude Include="role\MoDao.h">
+    <ClInclude Include="role\SiLing.h">
+      <Filter>role</Filter>
+    </ClInclude>
+    <ClInclude Include="role\ShengQiang.h">
       <Filter>role</Filter>
     </ClInclude>
   </ItemGroup>
@@ -167,13 +170,16 @@
     <ClCompile Include="role\YuanSu.cpp">
       <Filter>role</Filter>
     </ClCompile>
+    <ClCompile Include="role\MoDao.cpp">
+      <Filter>role</Filter>
+    </ClCompile>
     <ClCompile Include="role\SiLing.cpp">
       <Filter>role</Filter>
     </ClCompile>
     <ClCompile Include="role\ShengNv.cpp">
       <Filter>role</Filter>
     </ClCompile>
-    <ClCompile Include="role\MoDao.cpp">
+    <ClCompile Include="role\ShengQiang.cpp">
       <Filter>role</Filter>
     </ClCompile>
   </ItemGroup>

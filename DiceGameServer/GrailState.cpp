@@ -281,6 +281,10 @@ int StateActionPhase::handle(GameGrail* engine)
 				return basicSpecial(action, engine);
 			case ACTION_MAGIC_SKILL:
 				return magicSkill(action, engine);
+			case ACTION_ATTACK_SKILL:
+				return attackSkill(action, engine);
+			case ACTION_SPECIAL_SKILL:
+				return specialSkill(action, engine);
 			case ACTION_NONE:
 				engine->popGameState_if(STATE_ACTION_PHASE);
 			    return engine->setStateCheckTurnEnd();
@@ -501,6 +505,36 @@ int StateActionPhase::magicSkill(Action *action, GameGrail* engine)
 	return ret;
 }
 
+int StateActionPhase::attackSkill(Action *action, GameGrail* engine)
+{
+	int ret;
+	int m_currentPlayerID = engine->getCurrentPlayerID();
+	PlayerEntity *src = engine->getPlayerEntity(m_currentPlayerID);
+	if(GE_SUCCESS == (ret = src->v_attack_skill(action))){
+		engine->popGameState();
+		engine->pushGameState(new StateAfterAttack(m_currentPlayerID));
+		engine->pushGameState(new StateAttackSkill(action));
+		engine->pushGameState(new StateBeforeAttack(action->dst_ids(0), m_currentPlayerID));
+		return GE_SUCCESS;
+	}
+	return ret;
+}
+
+int StateActionPhase::specialSkill(Action *action, GameGrail* engine)
+{
+	int ret;
+	int m_currentPlayerID = engine->getCurrentPlayerID();
+	PlayerEntity *src = engine->getPlayerEntity(m_currentPlayerID);
+	if(GE_SUCCESS == (ret = src->v_special_skill(action))){
+		engine->popGameState();
+		engine->pushGameState(new StateAfterSpecial(m_currentPlayerID));
+		engine->pushGameState(new StateSpecialSkill(action));
+		engine->pushGameState(new StateBeforeSpecial(m_currentPlayerID));
+		return GE_SUCCESS;
+	}
+	return ret;
+}
+
 int StateBeforeAttack::handle(GameGrail* engine)
 {
 	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateBeforeAttack", engine->getGameId());
@@ -577,6 +611,21 @@ int StateAttacked::handle(GameGrail* engine)
 		engine->setStateAttackGiveUp(temp.attack.cardID, temp.attack.dstID, temp.attack.srcID, temp.harm, temp.attack.isActive, temp.checkShield);
 		return GE_TIMEOUT;
 	}
+}
+
+int StateAttackSkill::handle(GameGrail* engine)
+{
+	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateAttackSkill", engine->getGameId());
+	int ret = GE_FATAL_ERROR;
+	int m_currentPlayerID = engine->getCurrentPlayerID();
+	PlayerEntity *src = engine->getPlayerEntity(m_currentPlayerID);
+	if(step != STEP_DONE){
+		ret = src->p_attack_skill(step, action);
+		if(GE_SUCCESS != ret){
+			return ret;		
+		}
+	}
+	return engine->popGameState_if(STATE_ATTACK_SKILL);
 }
 
 int StateAfterAttack::handle(GameGrail* engine)
@@ -753,6 +802,21 @@ int StateBeforeSpecial::handle(GameGrail* engine)
 		}		
 	}
 	return engine->popGameState_if(STATE_BEFORE_SPECIAL);
+}
+
+int StateSpecialSkill::handle(GameGrail* engine)
+{
+	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateSpecialSkill", engine->getGameId());
+	int ret = GE_FATAL_ERROR;
+	int m_currentPlayerID = engine->getCurrentPlayerID();
+	PlayerEntity *src = engine->getPlayerEntity(m_currentPlayerID);
+	if(step != STEP_DONE){
+		ret = src->p_special_skill(step, action);
+		if(GE_SUCCESS != ret){
+			return ret;		
+		}
+	}
+	return engine->popGameState_if(STATE_SPECIAL_SKILL);
 }
 
 int StateAfterSpecial::handle(GameGrail* engine)
