@@ -47,9 +47,9 @@ const ::google::protobuf::internal::GeneratedMessageReflection*
 const ::google::protobuf::Descriptor* HitMsg_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   HitMsg_reflection_ = NULL;
-const ::google::protobuf::Descriptor* UseCard_descriptor_ = NULL;
+const ::google::protobuf::Descriptor* CardMsg_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
-  UseCard_reflection_ = NULL;
+  CardMsg_reflection_ = NULL;
 const ::google::protobuf::Descriptor* HurtMsg_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   HurtMsg_reflection_ = NULL;
@@ -61,6 +61,7 @@ const ::google::protobuf::EnumDescriptor* PlayerIdConst_descriptor_ = NULL;
 const ::google::protobuf::EnumDescriptor* BasicActionType_descriptor_ = NULL;
 const ::google::protobuf::EnumDescriptor* BasicRespondType_descriptor_ = NULL;
 const ::google::protobuf::EnumDescriptor* CmdType_descriptor_ = NULL;
+const ::google::protobuf::EnumDescriptor* CardMsgType_descriptor_ = NULL;
 
 }  // namespace
 
@@ -224,24 +225,25 @@ void protobuf_AssignDesc_action_5frespond_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(HitMsg));
-  UseCard_descriptor_ = file->message_type(9);
-  static const int UseCard_offsets_[4] = {
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UseCard, src_id_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UseCard, dst_id_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UseCard, card_id_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UseCard, real_card_),
+  CardMsg_descriptor_ = file->message_type(9);
+  static const int CardMsg_offsets_[5] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CardMsg, type_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CardMsg, src_id_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CardMsg, dst_id_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CardMsg, card_ids_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CardMsg, is_real_),
   };
-  UseCard_reflection_ =
+  CardMsg_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
-      UseCard_descriptor_,
-      UseCard::default_instance_,
-      UseCard_offsets_,
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UseCard, _has_bits_[0]),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UseCard, _unknown_fields_),
+      CardMsg_descriptor_,
+      CardMsg::default_instance_,
+      CardMsg_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CardMsg, _has_bits_[0]),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CardMsg, _unknown_fields_),
       -1,
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
-      sizeof(UseCard));
+      sizeof(CardMsg));
   HurtMsg_descriptor_ = file->message_type(10);
   static const int HurtMsg_offsets_[5] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(HurtMsg, src_id_),
@@ -283,6 +285,7 @@ void protobuf_AssignDesc_action_5frespond_2eproto() {
   BasicActionType_descriptor_ = file->enum_type(2);
   BasicRespondType_descriptor_ = file->enum_type(3);
   CmdType_descriptor_ = file->enum_type(4);
+  CardMsgType_descriptor_ = file->enum_type(5);
 }
 
 namespace {
@@ -314,7 +317,7 @@ void protobuf_RegisterTypes(const ::std::string&) {
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
     HitMsg_descriptor_, &HitMsg::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
-    UseCard_descriptor_, &UseCard::default_instance());
+    CardMsg_descriptor_, &CardMsg::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
     HurtMsg_descriptor_, &HurtMsg::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
@@ -342,8 +345,8 @@ void protobuf_ShutdownFile_action_5frespond_2eproto() {
   delete ErrorInput_reflection_;
   delete HitMsg::default_instance_;
   delete HitMsg_reflection_;
-  delete UseCard::default_instance_;
-  delete UseCard_reflection_;
+  delete CardMsg::default_instance_;
+  delete CardMsg_reflection_;
   delete HurtMsg::default_instance_;
   delete HurtMsg_reflection_;
   delete SkillMsg::default_instance_;
@@ -374,29 +377,30 @@ void protobuf_AddDesc_action_5frespond_2eproto() {
     "work.CmdType\022\"\n\010commands\030\002 \003(\0132\020.network"
     ".Command\"E\n\006HitMsg\022\016\n\006cmd_id\030\001 \001(\r\022\013\n\003hi"
     "t\030\002 \001(\r\022\016\n\006src_id\030\003 \001(\r\022\016\n\006dst_id\030\004 \001(\r\""
-    "M\n\007UseCard\022\016\n\006src_id\030\001 \001(\r\022\016\n\006dst_id\030\002 \001"
-    "(\r\022\017\n\007card_id\030\003 \001(\r\022\021\n\treal_card\030\004 \001(\r\"\\"
-    "\n\007HurtMsg\022\016\n\006src_id\030\001 \001(\r\022\026\n\006dst_id\030\002 \001("
-    "\r:\006100000\022\014\n\004hurt\030\003 \001(\r\022\r\n\005cause\030\004 \001(\r\022\014"
-    "\n\004type\030\005 \001(\r\"=\n\010SkillMsg\022\020\n\010skill_id\030\001 \001"
-    "(\r\022\016\n\006src_id\030\002 \001(\r\022\017\n\007dst_ids\030\003 \003(\r*\305\001\n\014"
-    "MessageType2\022\020\n\014MSG_PICK_REQ\020e\022\014\n\010MSG_PI"
-    "CK\020f\022\016\n\nMSG_ACTION\020g\022\017\n\013MSG_RESPOND\020h\022\017\n"
-    "\013MSG_CMD_REQ\020j\022\023\n\017MSG_ERROR_INPUT\020k\022\013\n\007M"
-    "SG_HIT\020l\022\022\n\016MSG_TURN_BEGIN\020m\022\020\n\014MSG_USE_"
-    "CARD\020n\022\014\n\010MSG_HURT\020o\022\r\n\tMSG_SKILL\020p*%\n\rP"
-    "layerIdConst\022\024\n\016PLAYER_NONE_ID\020\240\215\006*\321\001\n\017B"
-    "asicActionType\022\021\n\rACTION_ATTACK\020\001\022\020\n\014ACT"
-    "ION_MAGIC\020\002\022\022\n\016ACTION_SPECIAL\020\003\022\027\n\023ACTIO"
-    "N_ATTACK_SKILL\020\004\022\026\n\022ACTION_MAGIC_SKILL\020\005"
-    "\022\030\n\024ACTION_SPECIAL_SKILL\020\006\022\016\n\nACTION_ANY"
-    "\020\007\022\027\n\023ACTION_ATTACK_MAGIC\020\010\022\021\n\013ACTION_NO"
-    "NE\020\240\215\006*\232\001\n\020BasicRespondType\022\030\n\024RESPOND_R"
-    "EPLY_ATTACK\020\n\022\022\n\016RESPOND_BULLET\020\013\022\020\n\014RES"
-    "POND_HEAL\020\014\022\023\n\017RESPOND_DISCARD\020\r\022\022\n\016RESP"
-    "OND_WEAKEN\020\016\022\035\n\031RESPOND_ADDITIONAL_ACTIO"
-    "N\020\017**\n\007CmdType\022\016\n\nCMD_ACTION\020\001\022\017\n\013CMD_RE"
-    "SPOND\020\002", 1567);
+    "Z\n\007CardMsg\022\014\n\004type\030\001 \001(\r\022\016\n\006src_id\030\002 \001(\r"
+    "\022\016\n\006dst_id\030\003 \001(\r\022\020\n\010card_ids\030\004 \003(\r\022\017\n\007is"
+    "_real\030\005 \001(\010\"\\\n\007HurtMsg\022\016\n\006src_id\030\001 \001(\r\022\026"
+    "\n\006dst_id\030\002 \001(\r:\006100000\022\014\n\004hurt\030\003 \001(\r\022\r\n\005"
+    "cause\030\004 \001(\r\022\014\n\004type\030\005 \001(\r\"=\n\010SkillMsg\022\020\n"
+    "\010skill_id\030\001 \001(\r\022\016\n\006src_id\030\002 \001(\r\022\017\n\007dst_i"
+    "ds\030\003 \003(\r*\301\001\n\014MessageType2\022\020\n\014MSG_PICK_RE"
+    "Q\020e\022\014\n\010MSG_PICK\020f\022\016\n\nMSG_ACTION\020g\022\017\n\013MSG"
+    "_RESPOND\020h\022\017\n\013MSG_CMD_REQ\020j\022\023\n\017MSG_ERROR"
+    "_INPUT\020k\022\013\n\007MSG_HIT\020l\022\022\n\016MSG_TURN_BEGIN\020"
+    "m\022\014\n\010MSG_CARD\020n\022\014\n\010MSG_HURT\020o\022\r\n\tMSG_SKI"
+    "LL\020p*%\n\rPlayerIdConst\022\024\n\016PLAYER_NONE_ID\020"
+    "\240\215\006*\321\001\n\017BasicActionType\022\021\n\rACTION_ATTACK"
+    "\020\001\022\020\n\014ACTION_MAGIC\020\002\022\022\n\016ACTION_SPECIAL\020\003"
+    "\022\027\n\023ACTION_ATTACK_SKILL\020\004\022\026\n\022ACTION_MAGI"
+    "C_SKILL\020\005\022\030\n\024ACTION_SPECIAL_SKILL\020\006\022\016\n\nA"
+    "CTION_ANY\020\007\022\027\n\023ACTION_ATTACK_MAGIC\020\010\022\021\n\013"
+    "ACTION_NONE\020\240\215\006*\232\001\n\020BasicRespondType\022\030\n\024"
+    "RESPOND_REPLY_ATTACK\020\n\022\022\n\016RESPOND_BULLET"
+    "\020\013\022\020\n\014RESPOND_HEAL\020\014\022\023\n\017RESPOND_DISCARD\020"
+    "\r\022\022\n\016RESPOND_WEAKEN\020\016\022\035\n\031RESPOND_ADDITIO"
+    "NAL_ACTION\020\017**\n\007CmdType\022\016\n\nCMD_ACTION\020\001\022"
+    "\017\n\013CMD_RESPOND\020\002*&\n\013CardMsgType\022\n\n\006CM_US"
+    "E\020\001\022\013\n\007CM_SHOW\020\002", 1616);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "action_respond.proto", &protobuf_RegisterTypes);
   CharactorPickRequest::default_instance_ = new CharactorPickRequest();
@@ -408,7 +412,7 @@ void protobuf_AddDesc_action_5frespond_2eproto() {
   CommandRequest::default_instance_ = new CommandRequest();
   ErrorInput::default_instance_ = new ErrorInput();
   HitMsg::default_instance_ = new HitMsg();
-  UseCard::default_instance_ = new UseCard();
+  CardMsg::default_instance_ = new CardMsg();
   HurtMsg::default_instance_ = new HurtMsg();
   SkillMsg::default_instance_ = new SkillMsg();
   CharactorPickRequest::default_instance_->InitAsDefaultInstance();
@@ -420,7 +424,7 @@ void protobuf_AddDesc_action_5frespond_2eproto() {
   CommandRequest::default_instance_->InitAsDefaultInstance();
   ErrorInput::default_instance_->InitAsDefaultInstance();
   HitMsg::default_instance_->InitAsDefaultInstance();
-  UseCard::default_instance_->InitAsDefaultInstance();
+  CardMsg::default_instance_->InitAsDefaultInstance();
   HurtMsg::default_instance_->InitAsDefaultInstance();
   SkillMsg::default_instance_->InitAsDefaultInstance();
   ::google::protobuf::internal::OnShutdown(&protobuf_ShutdownFile_action_5frespond_2eproto);
@@ -512,6 +516,20 @@ const ::google::protobuf::EnumDescriptor* CmdType_descriptor() {
   return CmdType_descriptor_;
 }
 bool CmdType_IsValid(int value) {
+  switch(value) {
+    case 1:
+    case 2:
+      return true;
+    default:
+      return false;
+  }
+}
+
+const ::google::protobuf::EnumDescriptor* CardMsgType_descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return CardMsgType_descriptor_;
+}
+bool CardMsgType_IsValid(int value) {
   switch(value) {
     case 1:
     case 2:
@@ -3204,86 +3222,104 @@ void HitMsg::Swap(HitMsg* other) {
 // ===================================================================
 
 #ifndef _MSC_VER
-const int UseCard::kSrcIdFieldNumber;
-const int UseCard::kDstIdFieldNumber;
-const int UseCard::kCardIdFieldNumber;
-const int UseCard::kRealCardFieldNumber;
+const int CardMsg::kTypeFieldNumber;
+const int CardMsg::kSrcIdFieldNumber;
+const int CardMsg::kDstIdFieldNumber;
+const int CardMsg::kCardIdsFieldNumber;
+const int CardMsg::kIsRealFieldNumber;
 #endif  // !_MSC_VER
 
-UseCard::UseCard()
+CardMsg::CardMsg()
   : ::google::protobuf::Message() {
   SharedCtor();
 }
 
-void UseCard::InitAsDefaultInstance() {
+void CardMsg::InitAsDefaultInstance() {
 }
 
-UseCard::UseCard(const UseCard& from)
+CardMsg::CardMsg(const CardMsg& from)
   : ::google::protobuf::Message() {
   SharedCtor();
   MergeFrom(from);
 }
 
-void UseCard::SharedCtor() {
+void CardMsg::SharedCtor() {
   _cached_size_ = 0;
+  type_ = 0u;
   src_id_ = 0u;
   dst_id_ = 0u;
-  card_id_ = 0u;
-  real_card_ = 0u;
+  is_real_ = false;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
-UseCard::~UseCard() {
+CardMsg::~CardMsg() {
   SharedDtor();
 }
 
-void UseCard::SharedDtor() {
+void CardMsg::SharedDtor() {
   if (this != default_instance_) {
   }
 }
 
-void UseCard::SetCachedSize(int size) const {
+void CardMsg::SetCachedSize(int size) const {
   GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
   _cached_size_ = size;
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
-const ::google::protobuf::Descriptor* UseCard::descriptor() {
+const ::google::protobuf::Descriptor* CardMsg::descriptor() {
   protobuf_AssignDescriptorsOnce();
-  return UseCard_descriptor_;
+  return CardMsg_descriptor_;
 }
 
-const UseCard& UseCard::default_instance() {
+const CardMsg& CardMsg::default_instance() {
   if (default_instance_ == NULL) protobuf_AddDesc_action_5frespond_2eproto();
   return *default_instance_;
 }
 
-UseCard* UseCard::default_instance_ = NULL;
+CardMsg* CardMsg::default_instance_ = NULL;
 
-UseCard* UseCard::New() const {
-  return new UseCard;
+CardMsg* CardMsg::New() const {
+  return new CardMsg;
 }
 
-void UseCard::Clear() {
+void CardMsg::Clear() {
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    type_ = 0u;
     src_id_ = 0u;
     dst_id_ = 0u;
-    card_id_ = 0u;
-    real_card_ = 0u;
+    is_real_ = false;
   }
+  card_ids_.Clear();
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
   mutable_unknown_fields()->Clear();
 }
 
-bool UseCard::MergePartialFromCodedStream(
+bool CardMsg::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
 #define DO_(EXPRESSION) if (!(EXPRESSION)) return false
   ::google::protobuf::uint32 tag;
   while ((tag = input->ReadTag()) != 0) {
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional uint32 src_id = 1;
+      // optional uint32 type = 1;
       case 1: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &type_)));
+          set_has_type();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(16)) goto parse_src_id;
+        break;
+      }
+
+      // optional uint32 src_id = 2;
+      case 2: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+         parse_src_id:
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
                  input, &src_id_)));
@@ -3291,12 +3327,12 @@ bool UseCard::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(16)) goto parse_dst_id;
+        if (input->ExpectTag(24)) goto parse_dst_id;
         break;
       }
 
-      // optional uint32 dst_id = 2;
-      case 2: {
+      // optional uint32 dst_id = 3;
+      case 3: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
          parse_dst_id:
@@ -3307,35 +3343,41 @@ bool UseCard::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(24)) goto parse_card_id;
+        if (input->ExpectTag(32)) goto parse_card_ids;
         break;
       }
 
-      // optional uint32 card_id = 3;
-      case 3: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
-         parse_card_id:
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
-                 input, &card_id_)));
-          set_has_card_id();
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectTag(32)) goto parse_real_card;
-        break;
-      }
-
-      // optional uint32 real_card = 4;
+      // repeated uint32 card_ids = 4;
       case 4: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
-         parse_real_card:
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+         parse_card_ids:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadRepeatedPrimitive<
                    ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
-                 input, &real_card_)));
-          set_has_real_card();
+                 1, 32, input, this->mutable_card_ids())));
+        } else if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag)
+                   == ::google::protobuf::internal::WireFormatLite::
+                      WIRETYPE_LENGTH_DELIMITED) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPackedPrimitiveNoInline<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, this->mutable_card_ids())));
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(32)) goto parse_card_ids;
+        if (input->ExpectTag(40)) goto parse_is_real;
+        break;
+      }
+
+      // optional bool is_real = 5;
+      case 5: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+         parse_is_real:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
+                 input, &is_real_)));
+          set_has_is_real();
         } else {
           goto handle_uninterpreted;
         }
@@ -3359,26 +3401,32 @@ bool UseCard::MergePartialFromCodedStream(
 #undef DO_
 }
 
-void UseCard::SerializeWithCachedSizes(
+void CardMsg::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // optional uint32 src_id = 1;
+  // optional uint32 type = 1;
+  if (has_type()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(1, this->type(), output);
+  }
+
+  // optional uint32 src_id = 2;
   if (has_src_id()) {
-    ::google::protobuf::internal::WireFormatLite::WriteUInt32(1, this->src_id(), output);
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(2, this->src_id(), output);
   }
 
-  // optional uint32 dst_id = 2;
+  // optional uint32 dst_id = 3;
   if (has_dst_id()) {
-    ::google::protobuf::internal::WireFormatLite::WriteUInt32(2, this->dst_id(), output);
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(3, this->dst_id(), output);
   }
 
-  // optional uint32 card_id = 3;
-  if (has_card_id()) {
-    ::google::protobuf::internal::WireFormatLite::WriteUInt32(3, this->card_id(), output);
+  // repeated uint32 card_ids = 4;
+  for (int i = 0; i < this->card_ids_size(); i++) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(
+      4, this->card_ids(i), output);
   }
 
-  // optional uint32 real_card = 4;
-  if (has_real_card()) {
-    ::google::protobuf::internal::WireFormatLite::WriteUInt32(4, this->real_card(), output);
+  // optional bool is_real = 5;
+  if (has_is_real()) {
+    ::google::protobuf::internal::WireFormatLite::WriteBool(5, this->is_real(), output);
   }
 
   if (!unknown_fields().empty()) {
@@ -3387,26 +3435,32 @@ void UseCard::SerializeWithCachedSizes(
   }
 }
 
-::google::protobuf::uint8* UseCard::SerializeWithCachedSizesToArray(
+::google::protobuf::uint8* CardMsg::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
-  // optional uint32 src_id = 1;
+  // optional uint32 type = 1;
+  if (has_type()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(1, this->type(), target);
+  }
+
+  // optional uint32 src_id = 2;
   if (has_src_id()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(1, this->src_id(), target);
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(2, this->src_id(), target);
   }
 
-  // optional uint32 dst_id = 2;
+  // optional uint32 dst_id = 3;
   if (has_dst_id()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(2, this->dst_id(), target);
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(3, this->dst_id(), target);
   }
 
-  // optional uint32 card_id = 3;
-  if (has_card_id()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(3, this->card_id(), target);
+  // repeated uint32 card_ids = 4;
+  for (int i = 0; i < this->card_ids_size(); i++) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteUInt32ToArray(4, this->card_ids(i), target);
   }
 
-  // optional uint32 real_card = 4;
-  if (has_real_card()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(4, this->real_card(), target);
+  // optional bool is_real = 5;
+  if (has_is_real()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(5, this->is_real(), target);
   }
 
   if (!unknown_fields().empty()) {
@@ -3416,39 +3470,47 @@ void UseCard::SerializeWithCachedSizes(
   return target;
 }
 
-int UseCard::ByteSize() const {
+int CardMsg::ByteSize() const {
   int total_size = 0;
 
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    // optional uint32 src_id = 1;
+    // optional uint32 type = 1;
+    if (has_type()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->type());
+    }
+
+    // optional uint32 src_id = 2;
     if (has_src_id()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::UInt32Size(
           this->src_id());
     }
 
-    // optional uint32 dst_id = 2;
+    // optional uint32 dst_id = 3;
     if (has_dst_id()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::UInt32Size(
           this->dst_id());
     }
 
-    // optional uint32 card_id = 3;
-    if (has_card_id()) {
-      total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::UInt32Size(
-          this->card_id());
-    }
-
-    // optional uint32 real_card = 4;
-    if (has_real_card()) {
-      total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::UInt32Size(
-          this->real_card());
+    // optional bool is_real = 5;
+    if (has_is_real()) {
+      total_size += 1 + 1;
     }
 
   }
+  // repeated uint32 card_ids = 4;
+  {
+    int data_size = 0;
+    for (int i = 0; i < this->card_ids_size(); i++) {
+      data_size += ::google::protobuf::internal::WireFormatLite::
+        UInt32Size(this->card_ids(i));
+    }
+    total_size += 1 * this->card_ids_size() + data_size;
+  }
+
   if (!unknown_fields().empty()) {
     total_size +=
       ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
@@ -3460,10 +3522,10 @@ int UseCard::ByteSize() const {
   return total_size;
 }
 
-void UseCard::MergeFrom(const ::google::protobuf::Message& from) {
+void CardMsg::MergeFrom(const ::google::protobuf::Message& from) {
   GOOGLE_CHECK_NE(&from, this);
-  const UseCard* source =
-    ::google::protobuf::internal::dynamic_cast_if_available<const UseCard*>(
+  const CardMsg* source =
+    ::google::protobuf::internal::dynamic_cast_if_available<const CardMsg*>(
       &from);
   if (source == NULL) {
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
@@ -3472,59 +3534,61 @@ void UseCard::MergeFrom(const ::google::protobuf::Message& from) {
   }
 }
 
-void UseCard::MergeFrom(const UseCard& from) {
+void CardMsg::MergeFrom(const CardMsg& from) {
   GOOGLE_CHECK_NE(&from, this);
+  card_ids_.MergeFrom(from.card_ids_);
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (from.has_type()) {
+      set_type(from.type());
+    }
     if (from.has_src_id()) {
       set_src_id(from.src_id());
     }
     if (from.has_dst_id()) {
       set_dst_id(from.dst_id());
     }
-    if (from.has_card_id()) {
-      set_card_id(from.card_id());
-    }
-    if (from.has_real_card()) {
-      set_real_card(from.real_card());
+    if (from.has_is_real()) {
+      set_is_real(from.is_real());
     }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
 }
 
-void UseCard::CopyFrom(const ::google::protobuf::Message& from) {
+void CardMsg::CopyFrom(const ::google::protobuf::Message& from) {
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-void UseCard::CopyFrom(const UseCard& from) {
+void CardMsg::CopyFrom(const CardMsg& from) {
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-bool UseCard::IsInitialized() const {
+bool CardMsg::IsInitialized() const {
 
   return true;
 }
 
-void UseCard::Swap(UseCard* other) {
+void CardMsg::Swap(CardMsg* other) {
   if (other != this) {
+    std::swap(type_, other->type_);
     std::swap(src_id_, other->src_id_);
     std::swap(dst_id_, other->dst_id_);
-    std::swap(card_id_, other->card_id_);
-    std::swap(real_card_, other->real_card_);
+    card_ids_.Swap(&other->card_ids_);
+    std::swap(is_real_, other->is_real_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);
   }
 }
 
-::google::protobuf::Metadata UseCard::GetMetadata() const {
+::google::protobuf::Metadata CardMsg::GetMetadata() const {
   protobuf_AssignDescriptorsOnce();
   ::google::protobuf::Metadata metadata;
-  metadata.descriptor = UseCard_descriptor_;
-  metadata.reflection = UseCard_reflection_;
+  metadata.descriptor = CardMsg_descriptor_;
+  metadata.reflection = CardMsg_reflection_;
   return metadata;
 }
 

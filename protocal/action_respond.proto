@@ -9,7 +9,7 @@ enum MessageType2 {
     MSG_ERROR_INPUT = 107;
 	MSG_HIT = 108;
 	MSG_TURN_BEGIN = 109;
-	MSG_USE_CARD = 110;
+	MSG_CARD = 110;
 	MSG_HURT = 111;
 	MSG_SKILL = 112;
 }
@@ -117,12 +117,18 @@ message HitMsg {
 	optional uint32 dst_id = 4;
 }
 
+enum CardMsgType{
+    CM_USE = 1;
+	CM_SHOW = 2;
+}
+
 // s -> c 卡牌使用，仅用于攻击及魔法牌的基础效果运用
-message UseCard {
-	optional uint32 src_id = 1;
-	optional uint32 dst_id = 2;
-	optional uint32 card_id = 3;
-	optional uint32 real_card = 4;
+message CardMsg {
+    optional uint32 type = 1;
+	optional uint32 src_id = 2;
+	optional uint32 dst_id = 3;
+	repeated uint32 card_ids = 4;
+	optional bool is_real = 5;
 }
 
 // s -> c 伤害消息

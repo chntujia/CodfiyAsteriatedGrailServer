@@ -43,7 +43,7 @@ class Command;
 class CommandRequest;
 class ErrorInput;
 class HitMsg;
-class UseCard;
+class CardMsg;
 class HurtMsg;
 class SkillMsg;
 
@@ -56,7 +56,7 @@ enum MessageType2 {
   MSG_ERROR_INPUT = 107,
   MSG_HIT = 108,
   MSG_TURN_BEGIN = 109,
-  MSG_USE_CARD = 110,
+  MSG_CARD = 110,
   MSG_HURT = 111,
   MSG_SKILL = 112
 };
@@ -160,6 +160,25 @@ inline bool CmdType_Parse(
     const ::std::string& name, CmdType* value) {
   return ::google::protobuf::internal::ParseNamedEnum<CmdType>(
     CmdType_descriptor(), name, value);
+}
+enum CardMsgType {
+  CM_USE = 1,
+  CM_SHOW = 2
+};
+bool CardMsgType_IsValid(int value);
+const CardMsgType CardMsgType_MIN = CM_USE;
+const CardMsgType CardMsgType_MAX = CM_SHOW;
+const int CardMsgType_ARRAYSIZE = CardMsgType_MAX + 1;
+
+const ::google::protobuf::EnumDescriptor* CardMsgType_descriptor();
+inline const ::std::string& CardMsgType_Name(CardMsgType value) {
+  return ::google::protobuf::internal::NameOfEnum(
+    CardMsgType_descriptor(), value);
+}
+inline bool CardMsgType_Parse(
+    const ::std::string& name, CardMsgType* value) {
+  return ::google::protobuf::internal::ParseNamedEnum<CardMsgType>(
+    CardMsgType_descriptor(), name, value);
 }
 // ===================================================================
 
@@ -1117,14 +1136,14 @@ class HitMsg : public ::google::protobuf::Message {
 };
 // -------------------------------------------------------------------
 
-class UseCard : public ::google::protobuf::Message {
+class CardMsg : public ::google::protobuf::Message {
  public:
-  UseCard();
-  virtual ~UseCard();
+  CardMsg();
+  virtual ~CardMsg();
 
-  UseCard(const UseCard& from);
+  CardMsg(const CardMsg& from);
 
-  inline UseCard& operator=(const UseCard& from) {
+  inline CardMsg& operator=(const CardMsg& from) {
     CopyFrom(from);
     return *this;
   }
@@ -1138,17 +1157,17 @@ class UseCard : public ::google::protobuf::Message {
   }
 
   static const ::google::protobuf::Descriptor* descriptor();
-  static const UseCard& default_instance();
+  static const CardMsg& default_instance();
 
-  void Swap(UseCard* other);
+  void Swap(CardMsg* other);
 
   // implements Message ----------------------------------------------
 
-  UseCard* New() const;
+  CardMsg* New() const;
   void CopyFrom(const ::google::protobuf::Message& from);
   void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const UseCard& from);
-  void MergeFrom(const UseCard& from);
+  void CopyFrom(const CardMsg& from);
+  void MergeFrom(const CardMsg& from);
   void Clear();
   bool IsInitialized() const;
 
@@ -1171,61 +1190,74 @@ class UseCard : public ::google::protobuf::Message {
 
   // accessors -------------------------------------------------------
 
-  // optional uint32 src_id = 1;
+  // optional uint32 type = 1;
+  inline bool has_type() const;
+  inline void clear_type();
+  static const int kTypeFieldNumber = 1;
+  inline ::google::protobuf::uint32 type() const;
+  inline void set_type(::google::protobuf::uint32 value);
+
+  // optional uint32 src_id = 2;
   inline bool has_src_id() const;
   inline void clear_src_id();
-  static const int kSrcIdFieldNumber = 1;
+  static const int kSrcIdFieldNumber = 2;
   inline ::google::protobuf::uint32 src_id() const;
   inline void set_src_id(::google::protobuf::uint32 value);
 
-  // optional uint32 dst_id = 2;
+  // optional uint32 dst_id = 3;
   inline bool has_dst_id() const;
   inline void clear_dst_id();
-  static const int kDstIdFieldNumber = 2;
+  static const int kDstIdFieldNumber = 3;
   inline ::google::protobuf::uint32 dst_id() const;
   inline void set_dst_id(::google::protobuf::uint32 value);
 
-  // optional uint32 card_id = 3;
-  inline bool has_card_id() const;
-  inline void clear_card_id();
-  static const int kCardIdFieldNumber = 3;
-  inline ::google::protobuf::uint32 card_id() const;
-  inline void set_card_id(::google::protobuf::uint32 value);
+  // repeated uint32 card_ids = 4;
+  inline int card_ids_size() const;
+  inline void clear_card_ids();
+  static const int kCardIdsFieldNumber = 4;
+  inline ::google::protobuf::uint32 card_ids(int index) const;
+  inline void set_card_ids(int index, ::google::protobuf::uint32 value);
+  inline void add_card_ids(::google::protobuf::uint32 value);
+  inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
+      card_ids() const;
+  inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
+      mutable_card_ids();
 
-  // optional uint32 real_card = 4;
-  inline bool has_real_card() const;
-  inline void clear_real_card();
-  static const int kRealCardFieldNumber = 4;
-  inline ::google::protobuf::uint32 real_card() const;
-  inline void set_real_card(::google::protobuf::uint32 value);
+  // optional bool is_real = 5;
+  inline bool has_is_real() const;
+  inline void clear_is_real();
+  static const int kIsRealFieldNumber = 5;
+  inline bool is_real() const;
+  inline void set_is_real(bool value);
 
-  // @@protoc_insertion_point(class_scope:network.UseCard)
+  // @@protoc_insertion_point(class_scope:network.CardMsg)
  private:
+  inline void set_has_type();
+  inline void clear_has_type();
   inline void set_has_src_id();
   inline void clear_has_src_id();
   inline void set_has_dst_id();
   inline void clear_has_dst_id();
-  inline void set_has_card_id();
-  inline void clear_has_card_id();
-  inline void set_has_real_card();
-  inline void clear_has_real_card();
+  inline void set_has_is_real();
+  inline void clear_has_is_real();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
+  ::google::protobuf::uint32 type_;
   ::google::protobuf::uint32 src_id_;
+  ::google::protobuf::RepeatedField< ::google::protobuf::uint32 > card_ids_;
   ::google::protobuf::uint32 dst_id_;
-  ::google::protobuf::uint32 card_id_;
-  ::google::protobuf::uint32 real_card_;
+  bool is_real_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(4 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(5 + 31) / 32];
 
   friend void  protobuf_AddDesc_action_5frespond_2eproto();
   friend void protobuf_AssignDesc_action_5frespond_2eproto();
   friend void protobuf_ShutdownFile_action_5frespond_2eproto();
 
   void InitAsDefaultInstance();
-  static UseCard* default_instance_;
+  static CardMsg* default_instance_;
 };
 // -------------------------------------------------------------------
 
@@ -2127,94 +2159,119 @@ inline void HitMsg::set_dst_id(::google::protobuf::uint32 value) {
 
 // -------------------------------------------------------------------
 
-// UseCard
+// CardMsg
 
-// optional uint32 src_id = 1;
-inline bool UseCard::has_src_id() const {
+// optional uint32 type = 1;
+inline bool CardMsg::has_type() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
-inline void UseCard::set_has_src_id() {
+inline void CardMsg::set_has_type() {
   _has_bits_[0] |= 0x00000001u;
 }
-inline void UseCard::clear_has_src_id() {
+inline void CardMsg::clear_has_type() {
   _has_bits_[0] &= ~0x00000001u;
 }
-inline void UseCard::clear_src_id() {
+inline void CardMsg::clear_type() {
+  type_ = 0u;
+  clear_has_type();
+}
+inline ::google::protobuf::uint32 CardMsg::type() const {
+  return type_;
+}
+inline void CardMsg::set_type(::google::protobuf::uint32 value) {
+  set_has_type();
+  type_ = value;
+}
+
+// optional uint32 src_id = 2;
+inline bool CardMsg::has_src_id() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void CardMsg::set_has_src_id() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void CardMsg::clear_has_src_id() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void CardMsg::clear_src_id() {
   src_id_ = 0u;
   clear_has_src_id();
 }
-inline ::google::protobuf::uint32 UseCard::src_id() const {
+inline ::google::protobuf::uint32 CardMsg::src_id() const {
   return src_id_;
 }
-inline void UseCard::set_src_id(::google::protobuf::uint32 value) {
+inline void CardMsg::set_src_id(::google::protobuf::uint32 value) {
   set_has_src_id();
   src_id_ = value;
 }
 
-// optional uint32 dst_id = 2;
-inline bool UseCard::has_dst_id() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
+// optional uint32 dst_id = 3;
+inline bool CardMsg::has_dst_id() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
 }
-inline void UseCard::set_has_dst_id() {
-  _has_bits_[0] |= 0x00000002u;
+inline void CardMsg::set_has_dst_id() {
+  _has_bits_[0] |= 0x00000004u;
 }
-inline void UseCard::clear_has_dst_id() {
-  _has_bits_[0] &= ~0x00000002u;
+inline void CardMsg::clear_has_dst_id() {
+  _has_bits_[0] &= ~0x00000004u;
 }
-inline void UseCard::clear_dst_id() {
+inline void CardMsg::clear_dst_id() {
   dst_id_ = 0u;
   clear_has_dst_id();
 }
-inline ::google::protobuf::uint32 UseCard::dst_id() const {
+inline ::google::protobuf::uint32 CardMsg::dst_id() const {
   return dst_id_;
 }
-inline void UseCard::set_dst_id(::google::protobuf::uint32 value) {
+inline void CardMsg::set_dst_id(::google::protobuf::uint32 value) {
   set_has_dst_id();
   dst_id_ = value;
 }
 
-// optional uint32 card_id = 3;
-inline bool UseCard::has_card_id() const {
-  return (_has_bits_[0] & 0x00000004u) != 0;
+// repeated uint32 card_ids = 4;
+inline int CardMsg::card_ids_size() const {
+  return card_ids_.size();
 }
-inline void UseCard::set_has_card_id() {
-  _has_bits_[0] |= 0x00000004u;
+inline void CardMsg::clear_card_ids() {
+  card_ids_.Clear();
 }
-inline void UseCard::clear_has_card_id() {
-  _has_bits_[0] &= ~0x00000004u;
+inline ::google::protobuf::uint32 CardMsg::card_ids(int index) const {
+  return card_ids_.Get(index);
 }
-inline void UseCard::clear_card_id() {
-  card_id_ = 0u;
-  clear_has_card_id();
+inline void CardMsg::set_card_ids(int index, ::google::protobuf::uint32 value) {
+  card_ids_.Set(index, value);
 }
-inline ::google::protobuf::uint32 UseCard::card_id() const {
-  return card_id_;
+inline void CardMsg::add_card_ids(::google::protobuf::uint32 value) {
+  card_ids_.Add(value);
 }
-inline void UseCard::set_card_id(::google::protobuf::uint32 value) {
-  set_has_card_id();
-  card_id_ = value;
+inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
+CardMsg::card_ids() const {
+  return card_ids_;
+}
+inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
+CardMsg::mutable_card_ids() {
+  return &card_ids_;
 }
 
-// optional uint32 real_card = 4;
-inline bool UseCard::has_real_card() const {
-  return (_has_bits_[0] & 0x00000008u) != 0;
+// optional bool is_real = 5;
+inline bool CardMsg::has_is_real() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
 }
-inline void UseCard::set_has_real_card() {
-  _has_bits_[0] |= 0x00000008u;
+inline void CardMsg::set_has_is_real() {
+  _has_bits_[0] |= 0x00000010u;
 }
-inline void UseCard::clear_has_real_card() {
-  _has_bits_[0] &= ~0x00000008u;
+inline void CardMsg::clear_has_is_real() {
+  _has_bits_[0] &= ~0x00000010u;
 }
-inline void UseCard::clear_real_card() {
-  real_card_ = 0u;
-  clear_has_real_card();
+inline void CardMsg::clear_is_real() {
+  is_real_ = false;
+  clear_has_is_real();
 }
-inline ::google::protobuf::uint32 UseCard::real_card() const {
-  return real_card_;
+inline bool CardMsg::is_real() const {
+  return is_real_;
 }
-inline void UseCard::set_real_card(::google::protobuf::uint32 value) {
-  set_has_real_card();
-  real_card_ = value;
+inline void CardMsg::set_is_real(bool value) {
+  set_has_is_real();
+  is_real_ = value;
 }
 
 // -------------------------------------------------------------------
@@ -2432,6 +2489,10 @@ inline const EnumDescriptor* GetEnumDescriptor< ::network::BasicRespondType>() {
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::network::CmdType>() {
   return ::network::CmdType_descriptor();
+}
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::network::CardMsgType>() {
+  return ::network::CardMsgType_descriptor();
 }
 
 }  // namespace google

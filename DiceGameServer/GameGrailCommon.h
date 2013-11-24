@@ -393,19 +393,27 @@ public:
 		cmd->add_args(hurtSum);
 		cmd->add_args(nextID);
 	}
-    static void useCardNotice(int cardID, int dstID, int srcID, UseCard& use_card, int realCard=1)
+    static void useCardNotice(int cardID, int dstID, int srcID, CardMsg& use_card, bool realCard = true)
 	{
+		use_card.set_type(CM_USE);
 		use_card.set_dst_id(dstID);
 		use_card.set_src_id(srcID);
-		use_card.set_card_id(cardID);
-		use_card.set_real_card(realCard);
+		use_card.add_card_ids(cardID);
+		use_card.set_is_real(realCard);
 	}
-	static void showCardNotice(int ID, vector<int> cards, GameInfo& game_info)
+	static void showCardNotice(int ID, int howMany, int cardID, CardMsg& show_card)
 	{
-		vector<int>::iterator card_id_iter;
-		for (card_id_iter = cards.begin(); card_id_iter != cards.end(); ++card_id_iter)
-			game_info.add_show_cards(*card_id_iter);
-		game_info.set_show_from(ID);
+		show_card.set_type(CM_SHOW);
+		show_card.set_src_id(ID);
+		show_card.add_card_ids(cardID);
+	}
+	static void showCardNotice(int ID, int howMany, vector<int> cards, CardMsg& show_card)
+	{
+		show_card.set_type(CM_SHOW);
+		show_card.set_src_id(ID);
+		for (int i = 0; i < howMany; i++){
+			show_card.add_card_ids(cards[i]);
+		}
 	}
 	static void askForAction(int playerID, int actionTypeAllowed, bool canGiveUp, CommandRequest& cmd_req)
 	{

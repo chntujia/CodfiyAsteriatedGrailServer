@@ -487,6 +487,8 @@ int StateActionPhase::basicSpecial(Action *action, GameGrail* engine)
 			engine->pushGameState(new StateBeforeSpecial(m_currentPlayerID));
 		}
 		break;
+	default:
+		return GE_INVALID_ACTION;
 	}
 }
 
@@ -1261,7 +1263,6 @@ int StateRequestHand::handle(GameGrail* engine)
 	vector<int> toDiscard(howMany);
 	PlayerEntity *target = engine->getPlayerEntity(targetID);
 	PlayerEntity *causer = engine->getPlayerEntity(harm.srcID);
-	int card_id;
 	if(engine->waitForOne(targetID, MSG_CMD_REQ, cmd_req))
 	{
 		void* reply;
@@ -1456,9 +1457,6 @@ int StateShowHand::handle(GameGrail* engine)
 			return ret;
 		}		
 	}
-
-	GameInfo game_info;
-	Coder::showCardNotice(dstID, cards, game_info);
 	return engine->popGameState_if(STATE_SHOW_HAND);
 }
 
