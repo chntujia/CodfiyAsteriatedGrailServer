@@ -102,6 +102,10 @@ enum CAUSE{
 	YUAN_SU_DIAN_RAN = 1106,
 	YUE_GUANG = 1107,
 	YUAN_SU_XI_SHOU = 1108,
+	QI_ZHA = 1201,
+	MAO_XIAN_ZHE_TIAN_TANG = 1202,
+	TOU_TIAN_HUAN_RI = 1203,
+	TE_SHU_JIA_GONG = 1204,
 	BU_XIU = 1301,
 	SHENG_DU = 1302,
 	WEN_YI = 1303,
@@ -331,7 +335,17 @@ public:
 		hit_msg.set_src_id(srcID);
 		hit_msg.set_dst_id(dstID);
 	}
-    static string stoneNotice(int color,int gem,int crystal){return combMessage("15",TOQSTR(color),TOQSTR(gem),TOQSTR(crystal));}
+    static void stoneNotice(int color, int gem, int crystal, GameInfo& update_info)
+	{
+	    if(color == RED){
+	        update_info.set_red_gem(gem);
+			update_info.set_red_crystal(crystal);
+		}
+		else{
+		    update_info.set_blue_gem(gem);
+			update_info.set_blue_crystal(crystal);
+		}
+	}
     static string cupNotice(int color,int cup){return combMessage("17",TOQSTR(color),TOQSTR(cup));}
     static void energyNotice(int ID, int gem, int crystal, GameInfo& update_info)
 	{
@@ -484,7 +498,7 @@ public:
 		player_info->set_id(ID);
 		player_info->set_max_hand(howMany);
 	}
-    static void tapNotice(int ID,int flag, GameInfo& game_info)
+    static void tapNotice(int ID, bool flag, GameInfo& game_info)
 	{
 		SinglePlayerInfo* player_info = game_info.add_player_infos();
 		player_info->set_id(ID);

@@ -16,6 +16,7 @@
 #include "role\ShengNv.h"
 #include "role\SiLing.h"
 #include "role\ShengQiang.h"
+#include "role\MaoXian.h"
 using namespace boost;
 
 void TeamArea::initialTeam()
@@ -417,10 +418,10 @@ int GameGrail::setStateHandOverLoad(int dstID, HARM harm)
 
 int GameGrail::setStateUseCard(int cardID, int dstID, int srcID, bool stay, bool realCard)
 {
-	if(realCard){
-		network::UseCard use_card;
-		Coder::useCardNotice(cardID, dstID, srcID, use_card, realCard);
-		sendMessage(-1, MSG_USE_CARD, use_card);
+	network::UseCard use_card;
+	Coder::useCardNotice(cardID, dstID, srcID, use_card, realCard);
+	sendMessage(-1, MSG_USE_CARD, use_card);
+	if(realCard){	
 		return stay ? setStateMoveOneCardNotToHand(srcID, DECK_HAND, dstID, DECK_BASIC_EFFECT, cardID, srcID, CAUSE_USE, true)
 			        : setStateMoveOneCardNotToHand(srcID, DECK_HAND, -1, DECK_DISCARD, cardID, srcID, CAUSE_USE, true);			        
 	}
@@ -760,7 +761,7 @@ void GameGrail::initPlayerEntities()
 		id = player_it->id();
 		color = player_it->team();
 		//FIXME: È«·âÓ¡Ê±´ú
-		m_playerEntities[id] = new ShengQiang(this, id, color);
+		m_playerEntities[id] = new MaoXian(this, id, color);
 		
 		position2id[i] = id;
 	}

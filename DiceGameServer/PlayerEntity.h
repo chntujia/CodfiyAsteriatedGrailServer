@@ -71,6 +71,7 @@ public:
     int getGem();
     int getCrystal();
     int getEnergy();
+	int getEnergyMax() { return energyMax; }
     int getColor();
     list< int >  getCoverCards(){return this->coverCards;}
     int getToken(int id){return token[id];}

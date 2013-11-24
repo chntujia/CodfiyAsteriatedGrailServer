@@ -87,7 +87,7 @@ int StateRoleStrategyRandom::handle(GameGrail* engine)
 		// i为玩家编号，不是座号		
 		if(GE_SUCCESS == (ret=roles->pop(1, &out))){
 			//FIXME: 全封印时代
-			Coder::roleNotice(i, 10, game_info);
+			Coder::roleNotice(i, 12, game_info);
 			engine->sendMessage(-1, MSG_GAME, game_info);
 		}
 		else{
@@ -381,8 +381,8 @@ int StateActionPhase::basicSpecial(Action *action, GameGrail* engine)
 			GameInfo update_info;
 			TeamArea *team = engine->getTeamArea();
 			int color = src->getColor();
-			team->setGem(color, team->getGem(color)+1);
-			team->setCrystal(color, team->getCrystal(color)+1);
+			team->setGem(color, team->getGem(color) + action->args(0));
+			team->setCrystal(color, team->getCrystal(color) + action->args(1));
 			if (color == RED){
 				update_info.set_red_gem(team->getGem(color));
 				update_info.set_red_crystal(team->getCrystal(color));

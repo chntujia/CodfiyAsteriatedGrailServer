@@ -102,6 +102,9 @@
     <ClInclude Include="role\ShengQiang.h">
       <Filter>role</Filter>
     </ClInclude>
+    <ClInclude Include="role\MaoXian.h">
+      <Filter>role</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -180,6 +183,9 @@
       <Filter>role</Filter>
     </ClCompile>
     <ClCompile Include="role\ShengQiang.cpp">
+      <Filter>role</Filter>
+    </ClCompile>
+    <ClCompile Include="role\MaoXian.cpp">
       <Filter>role</Filter>
     </ClCompile>
   </ItemGroup>

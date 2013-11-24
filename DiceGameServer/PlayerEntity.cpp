@@ -323,6 +323,9 @@ int PlayerEntity::v_allow_action(int claim, int allow, bool canGiveUp)
 	if(claim == ACTION_MAGIC_SKILL){
 		claim = ACTION_MAGIC;
 	}
+	if(claim == ACTION_SPECIAL_SKILL){
+		claim = ACTION_SPECIAL;
+	}
 	switch(allow)
 	{
 	case ACTION_ANY:
@@ -505,7 +508,7 @@ int PlayerEntity::v_extract(Action *action, TeamArea* team)
 {
 	int gem = action->args(0);
 	int crystal = action->args(1);
-	if(gem>team->getGem(color) || crystal>team->getCrystal(color) || getGem()+getCrystal() >= energyMax){
+	if(gem > team->getGem(color) || crystal > team->getCrystal(color) || getGem()+getCrystal() >= energyMax){
 		return GE_INVALID_ACTION;
 	}
 	return GE_SUCCESS;

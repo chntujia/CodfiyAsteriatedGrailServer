@@ -1,6 +1,5 @@
 #include "FengYin.h"
 #include "..\GameGrail.h"
-#include "..\UserTask.h"
 
 int FengYin::p_after_magic(int &step, int playerID)
 {
