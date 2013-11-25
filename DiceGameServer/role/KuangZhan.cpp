@@ -90,12 +90,6 @@ int KuangZhan::p_timeline_2_hit(int &step, CONTEXT_TIMELINE_2_HIT * con)
 		case KUANG_HUA:
 			ret = KuangHua(con);
 			if(toNextStep(ret)){
-				step = XUE_YING_KUANG_DAO_USED;
-			}			
-			break;
-		case XUE_YING_KUANG_DAO_USED:
-			ret = XueYingKuangDaoUsed(con);
-			if(toNextStep(ret)){
 				step = SI_LIE;
 			}			
 			break;
@@ -110,12 +104,6 @@ int KuangZhan::p_timeline_2_hit(int &step, CONTEXT_TIMELINE_2_HIT * con)
 		}
 	}
 	return ret;
-}
-//攻击结束后将血影狂刀标志重置
-int KuangZhan::p_after_attack(int &step, int playerID)
-{
-	used_XueYingKuangDao = false;
-	return GE_SUCCESS;
 }
 
 int KuangZhan::XueYingKuangDao(CONTEXT_TIMELINE_1 *con)
@@ -148,6 +136,14 @@ int KuangZhan::XueYingKuangDao(CONTEXT_TIMELINE_1 *con)
 				Coder::skillNotice(id, dstID, XUE_YING_KUANG_DAO, skill);
 				engine->sendMessage(-1, MSG_SKILL, skill);
 				used_XueYingKuangDao = true;
+			}
+			if(dstHandCardNum == 2)
+			{
+				con->harm.point+=2;
+			}
+			if(dstHandCardNum == 3)
+			{
+				con->harm.point+=1;
 			}
 		}
 		return ret;
@@ -209,27 +205,6 @@ int KuangZhan::KuangHua(CONTEXT_TIMELINE_2_HIT *con)
 	Coder::skillNotice(id, con->attack.dstID, KUANG_HUA, skill);
 	engine->sendMessage(-1, MSG_SKILL, skill);
 	con->harm.point += 1;
-	return GE_SUCCESS;
-}
-
-int KuangZhan::XueYingKuangDaoUsed(CONTEXT_TIMELINE_2_HIT *con)
-{
-	int ret;
-	int srcID = con->attack.srcID;
-	int dstID = con->attack.dstID;
-	int dstHandCardNum = engine->getPlayerEntity(dstID)->getHandCardNum();
-	if(srcID != id || !used_XueYingKuangDao || dstHandCardNum < 2 || dstHandCardNum > 3){
-		return GE_SUCCESS;
-	}
-	SkillMsg skill;
-	Coder::skillNotice(id, con->attack.dstID, XUE_YING_KUANG_DAO_USED, skill);
-	engine->sendMessage(-1, MSG_SKILL, skill);
-	if(dstHandCardNum == 2){
-		con->harm.point += 2;
-	}
-	if(dstHandCardNum == 3){
-		con->harm.point += 1;
-	}
 	return GE_SUCCESS;
 }
 

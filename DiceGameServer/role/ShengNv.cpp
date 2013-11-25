@@ -38,7 +38,10 @@ int ShengNv::p_boot(int &step, int currentPlayerID)
 	if (currentPlayerID != id || getGem() == 0 || tap)
 		return GE_SUCCESS;
 	ret = LianMin();
-	step = STEP_DONE;
+	if(toNextStep(ret))
+	{
+		step = STEP_DONE;
+	}
 	return ret;
 }
 
@@ -54,7 +57,10 @@ int ShengNv::p_timeline_1(int &step, CONTEXT_TIMELINE_1 *con)
 		// 冰霜祷言
 		ret = BingShuangDaoYan(con);
 	}
-	step = STEP_DONE;
+	if(toNextStep(ret))
+	{
+		step = STEP_DONE;
+	}
 	return ret;
 }
 
@@ -108,7 +114,7 @@ int ShengNv::p_magic_skill(int &step, Action* action)
 		if(GE_URGENT == ret){
 			step = ZHI_LIAO_SHU;
 		}
-		else if (GE_SUCCESS == ret){
+		else if (toNextStep(ret) || GE_SUCCESS == ret){
 			step = STEP_DONE;
 		}
 		break;
@@ -117,13 +123,13 @@ int ShengNv::p_magic_skill(int &step, Action* action)
 		if(GE_URGENT == ret){
 			step = ZHI_YU_ZHI_GUANG;
 		}
-		else if (GE_SUCCESS == ret){
+		else if (toNextStep(ret) || GE_SUCCESS == ret){
 			step = STEP_DONE;
 		}
 		break;
 	case SHENG_LIAO:
 		ret = ShengLiao(action);
-		if (GE_SUCCESS == ret){
+		if (toNextStep(ret) || GE_SUCCESS == ret){
 			step = STEP_DONE;
 		}
 		break;
@@ -221,7 +227,11 @@ int ShengNv::ZhiLiaoShu(int &step, Action* action)
 		SkillMsg skill_msg;
 		Coder::skillNotice(id, dstID, ZHI_LIAO_SHU, skill_msg);
 		engine->sendMessage(-1, MSG_SKILL, skill_msg);
-
+		vector<int> cardIDs;
+		cardIDs.push_back(cardID);
+		CardMsg show_card;
+		Coder::showCardNotice(id, 1, cardIDs, show_card);
+		engine->sendMessage(-1, MSG_CARD, show_card);
 		engine->setStateMoveOneCardNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardID, ZHI_LIAO_SHU, true);
 		//插入了新状态，请return GE_URGENT
 		return GE_URGENT;
@@ -251,6 +261,11 @@ int ShengNv::ZhiYuZhiGuang(int &step, Action* action)
 	{
 		Coder::skillNotice(id, dsts, ZHI_YU_ZHI_GUANG, skill_msg);
 		engine->sendMessage(-1, MSG_SKILL, skill_msg);
+		vector<int> cardIDs;
+		cardIDs.push_back(cardID);
+		CardMsg show_card;
+		Coder::showCardNotice(id, 1, cardIDs, show_card);
+		engine->sendMessage(-1, MSG_CARD, show_card);
 		engine->setStateMoveOneCardNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardID, ZHI_YU_ZHI_GUANG, true);
 		//插入了新状态，请return GE_URGENT
 		return GE_URGENT;

@@ -18,6 +18,8 @@
 #include "role\ShengQiang.h"
 #include "role\MaoXian.h"
 #include "role\GongNv.h"
+#include "role\ShenGuan.h"
+
 using namespace boost;
 
 void TeamArea::initialTeam()
@@ -762,7 +764,7 @@ void GameGrail::initPlayerEntities()
 		id = player_it->id();
 		color = player_it->team();
 		//FIXME: 全封印时代
-		m_playerEntities[id] = new GongNv(this, id, color); //DEBUG ROLE 改变角色ID
+		m_playerEntities[id] = new ShenGuan(this, id, color);
 		
 		position2id[i] = id;
 	}
