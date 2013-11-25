@@ -25,12 +25,6 @@ bool GongNv::cmdMsgParse(UserTask *session, uint16_t type, ::google::protobuf::M
 	return false;
 }
 
-int GongNv::p_before_turn_begin(int &step, int currentPlayerID) 
-{
-	used_JingZhunSheJi = false;
-	step = STEP_DONE;
-	return GE_SUCCESS; 
-}
 
 //闪电箭：雷系攻击或应战无法被应战
 int GongNv::ShanDianJian(CONTEXT_TIMELINE_1 *con)
@@ -41,7 +35,10 @@ int GongNv::ShanDianJian(CONTEXT_TIMELINE_1 *con)
 	if(getCardByID(con->attack.cardID)->getElement() == ELEMENT_THUNDER){
 		con->hitRate = RATE_NOREATTACK;
 		
-		//没有技能宣告
+		//确认发动，宣告技能
+		SkillMsg skill;
+		Coder::skillNotice(id, con->attack.dstID, SHAN_DIAN_JIAN, skill);
+		engine->sendMessage(-1, MSG_SKILL, skill);
 		
 	}
 	return GE_SUCCESS;
@@ -116,13 +113,13 @@ int GongNv::ShanGuangXianJing(Action* action)
 	int dstID = action->dst_ids(0);
 	CardEntity* card = getCardByID(cardID);
 	//检查牌是否为对应技能牌
-	if( !card->checkSpeciality(SHAN_GUANG_XIAN_JIN)  ){
+	if( !card->checkSpeciality(SHAN_GUANG_XIAN_JING)  ){
 		return GE_SUCCESS;
 	}
 	
 	//宣告技能
 	SkillMsg skill_msg;
-	Coder::skillNotice(id, dstID, SHAN_GUANG_XIAN_JIN, skill_msg);
+	Coder::skillNotice(id, dstID, SHAN_GUANG_XIAN_JING, skill_msg);
 	engine->sendMessage(-1, MSG_SKILL, skill_msg);
 	
 	//展示手牌
@@ -132,7 +129,7 @@ int GongNv::ShanGuangXianJing(Action* action)
 
 	//制造伤害
 	HARM harm;
-	harm.cause = SHAN_GUANG_XIAN_JIN;
+	harm.cause = SHAN_GUANG_XIAN_JING;
 	harm.point = 2;
 	harm.srcID = id;
 	harm.type = HARM_MAGIC;
@@ -145,7 +142,7 @@ int GongNv::ShanGuangXianJing(Action* action)
 }
 
 //精准射击：牌技能：攻击强制命中，1点伤害，可选触发
-int GongNv::JingZhunSheJiAttack(CONTEXT_TIMELINE_1 *con)
+int GongNv::JingZhunSheJi(CONTEXT_TIMELINE_1 *con)
 {
 
 	int ret;
@@ -177,8 +174,8 @@ int GongNv::JingZhunSheJiAttack(CONTEXT_TIMELINE_1 *con)
 				Coder::skillNotice(id, dstID, JING_ZHUN_SHE_JI, skill);
 				engine->sendMessage(-1, MSG_SKILL, skill);
 
-				used_JingZhunSheJi = true;
 				con->hitRate = RATE_NOMISS;
+				con->harm.point = con->harm.point - 1 ;
 			}
 		}
 		return ret;
@@ -188,17 +185,6 @@ int GongNv::JingZhunSheJiAttack(CONTEXT_TIMELINE_1 *con)
 
 }
 
-//精准射击：牌技能：攻击强制命中，1点伤害，可选触发
-int GongNv::JingZhunSheJiDamage(CONTEXT_TIMELINE_2_HIT *con)
-{
-	
-	if(used_JingZhunSheJi){
-		con->harm.point = 1;
-	}
-	
-	return GE_SUCCESS;
-
-}
 
 //狙击：1水晶，目标手牌补到5张，+1攻击行动
 int GongNv::JuJi(Action *action)
@@ -245,7 +231,7 @@ int GongNv::JuJi(Action *action)
 int GongNv::p_timeline_1(int &step, CONTEXT_TIMELINE_1 *con)
 {
 	int ret = GE_INVALID_STEP;
-	if(con->attack.srcID != id){
+	if(con->attack.srcID != id){ //确认攻击是否由该id发动
 		return GE_SUCCESS;
 	}
 	while(STEP_DONE != step)
@@ -263,7 +249,7 @@ int GongNv::p_timeline_1(int &step, CONTEXT_TIMELINE_1 *con)
 
 		case JING_ZHUN_SHE_JI:
 
-			ret = JingZhunSheJiAttack(con);
+			ret = JingZhunSheJi(con);
 			if(toNextStep(ret)){
 				step = STEP_DONE;
 			}
@@ -277,31 +263,6 @@ int GongNv::p_timeline_1(int &step, CONTEXT_TIMELINE_1 *con)
 	return ret;
 }
 
-int GongNv::p_timeline_2_hit(int &step, CONTEXT_TIMELINE_2_HIT * con)
-{
-	int ret = GE_INVALID_STEP;
-	if(con->attack.srcID != id){//精准射击应战也可发动，只需检查发起者
-		return GE_SUCCESS;
-	}
-	while(STEP_DONE != step)
-	{
-		switch(step)
-		{
-		case STEP_INIT:
-			step = JING_ZHUN_SHE_JI;
-			break;
-
-		case JING_ZHUN_SHE_JI:
-			ret = JingZhunSheJiDamage(con);
-			step =  STEP_DONE; 
-			break;
-
-		default:
-			return GE_INVALID_STEP;
-		}
-	}
-	return ret;
-}
 
 int GongNv::p_timeline_2_miss(int &step, CONTEXT_TIMELINE_2_MISS *con){
 
@@ -334,14 +295,7 @@ int GongNv::p_timeline_2_miss(int &step, CONTEXT_TIMELINE_2_MISS *con){
 	
 }
 
-int GongNv::p_after_attack(int &step, int playerID)
-{
-	//攻击过程完毕重置精准射击flag
-	if(id == playerID){
-		used_JingZhunSheJi = false;
-	}
-	return GE_SUCCESS;
-}
+
 
 //P_MAGIC_SKILL只有发起者执行，故不需要判断发起者，法术技能验证均在v_MAGIC_SKILL中
 int GongNv::p_magic_skill(int &step, Action *action)
@@ -351,7 +305,7 @@ int GongNv::p_magic_skill(int &step, Action *action)
 	int actionID = action->action_id();
 	switch(actionID)
 	{
-		case SHAN_GUANG_XIAN_JIN:
+		case SHAN_GUANG_XIAN_JING:
 			ret = ShanGuangXianJing(action);
 			step = STEP_DONE;
 			
@@ -378,7 +332,7 @@ int GongNv::v_magic_skill(Action *action)
 	}
 	switch(actionID)
 	{
-		case SHAN_GUANG_XIAN_JIN:
+		case SHAN_GUANG_XIAN_JING:
 			cardID = action->card_ids(0);
 		    card = getCardByID(cardID);
 			if(GE_SUCCESS != checkOneHandCard(cardID) || !card->checkSpeciality(actionID)){
