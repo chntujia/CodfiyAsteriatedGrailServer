@@ -17,6 +17,7 @@
 #include "role\SiLing.h"
 #include "role\ShengQiang.h"
 #include "role\MaoXian.h"
+#include "role\GongNv.h"
 using namespace boost;
 
 void TeamArea::initialTeam()
@@ -761,7 +762,7 @@ void GameGrail::initPlayerEntities()
 		id = player_it->id();
 		color = player_it->team();
 		//FIXME: 全封印时代
-		m_playerEntities[id] = new MaoXian(this, id, color);
+		m_playerEntities[id] = new GongNv(this, id, color); //DEBUG ROLE 改变角色ID
 		
 		position2id[i] = id;
 	}
