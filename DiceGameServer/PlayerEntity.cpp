@@ -62,7 +62,8 @@ int PlayerEntity::checkBasicEffectByCard(int card)
 int PlayerEntity::checkBasicEffectByName(int name, int* cardID, int* src)
 {
 	for(list< BasicEffect >::iterator it = basicEffects.begin(); it != basicEffects.end(); it++){
-        if(getCardByID(it->card)->getName() == name){
+		CardEntity* card = getCardByID(it->card);
+        if(card->getName() == name || card->checkSpeciality(name)){
 			if(cardID != NULL){
 				*cardID = it->card;
 			}

@@ -19,7 +19,7 @@
 #include "role\MaoXian.h"
 #include "role\GongNv.h"
 #include "role\ShenGuan.h"
-
+#include "role\TianShi.h"
 using namespace boost;
 
 void TeamArea::initialTeam()
@@ -490,7 +490,7 @@ int GameGrail::setStateAttackGiveUp(int cardID, int dstID, int srcID, HARM harm,
 
 	PlayerEntity *player = getPlayerEntity(dstID);
 	int shieldCardID = -1;
-	if(checkSheild && GE_SUCCESS == player->checkBasicEffectByName(NAME_SHIELD, &shieldCardID)){
+	if(checkSheild && (GE_SUCCESS == player->checkBasicEffectByName(NAME_SHIELD, &shieldCardID)  || player->checkBasicEffectByName(TIAN_SHI_ZHI_QIANG, &shieldCardID) == GE_SUCCESS)){
 		setStateTimeline2Miss(cardID, dstID, srcID, isActive);	
 		return setStateMoveOneCardNotToHand(dstID, DECK_BASIC_EFFECT, -1, DECK_DISCARD, shieldCardID, dstID, CAUSE_DEFAULT, true);	
 	}
@@ -505,7 +505,7 @@ int GameGrail::setStateMissileGiveUp(int dstID, int srcID, int harmPoint)
 	// FIX_ME  没有检查天使之墙 check sheild here by Fengyu
 	PlayerEntity *player = getPlayerEntity(dstID);
 	int shieldCardID = -1;
-	if(player->checkBasicEffectByName(NAME_SHIELD, &shieldCardID) == GE_SUCCESS){	
+	if(player->checkBasicEffectByName(NAME_SHIELD, &shieldCardID) == GE_SUCCESS || player->checkBasicEffectByName(TIAN_SHI_ZHI_QIANG, &shieldCardID) == GE_SUCCESS){	
 		return setStateMoveOneCardNotToHand(dstID, DECK_BASIC_EFFECT, -1, DECK_DISCARD, shieldCardID, dstID, CAUSE_DEFAULT, true);	
 	}	
 	else{
@@ -763,8 +763,11 @@ void GameGrail::initPlayerEntities()
 		player_it = (SinglePlayerInfo*)&(game_info.player_infos().Get(i));
 		id = player_it->id();
 		color = player_it->team();
-		//FIXME: 全封印时代
-		m_playerEntities[id] = new ShenGuan(this, id, color);
+		//FIXME: 全天使时代
+		if (id % 2)
+			m_playerEntities[id] = new TianShi(this, id, color);
+		else
+			m_playerEntities[id] = new FengYin(this, id, color);
 		
 		position2id[i] = id;
 	}

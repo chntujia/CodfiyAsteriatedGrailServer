@@ -82,12 +82,14 @@ int StateRoleStrategyRandom::handle(GameGrail* engine)
 	int ret;
 	// 直接将随机结果保存到engine中
 	GameInfo& game_info = engine->game_info;
+	int role_id;
 
 	for(int i = 0; i < engine->getGameMaxPlayers(); i++){
 		// i为玩家编号，不是座号		
 		if(GE_SUCCESS == (ret=roles->pop(1, &out))){
-			//FIXME: 全封印时代
-			Coder::roleNotice(i, 15, game_info);
+			//FIXME: 全天使时代
+			role_id = i % 2 ? 7: 4;
+			Coder::roleNotice(i, role_id, game_info);
 			engine->sendMessage(-1, MSG_GAME, game_info);
 		}
 		else{
@@ -1217,25 +1219,30 @@ int StateHandChange::handle(GameGrail* engine)
 int StateBasicEffectChange::handle(GameGrail* engine)
 {
 	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateBasicEffectChange", engine->getGameId());
-	int ret;
+	int ret = GE_SUCCESS;
 	if(!isSet){
 		PlayerEntity* dst = engine->getPlayerEntity(dstID);
 		if(direction == CHANGE_ADD){
-            dst->addBasicEffect(card, doerID);
+            ret = dst->addBasicEffect(card, doerID);
 		}
 		else{
-			dst->removeBasicEffect(card);	
+			ret = dst->removeBasicEffect(card);	
 		}
 		isSet = true;
 
 		GameInfo update_info;
 		Coder::basicNotice(dstID, dst->getBasicEffect(), update_info);
-	
 		engine->sendMessage(-1, MSG_GAME, update_info);
-	}
-	ret = GE_FATAL_ERROR;
-	int m_currentPlayerID = engine->getCurrentPlayerID();
 
+		// 没有移除或者没有添加到基础效果区
+		if (ret == GE_MOVECARD_FAILED)
+		{
+			engine->popGameState_if(STATE_BASIC_EFFECT_CHANGE);
+			return ret;
+		}
+	}
+
+	int m_currentPlayerID = engine->getCurrentPlayerID();
 	while(iterator < engine->getGameMaxPlayers()){	    
 		ret = engine->getPlayerEntity(iterator)->p_basic_effect_change(step, dstID, card, doerID, cause);
 		moveIterator(ret);
@@ -1243,7 +1250,7 @@ int StateBasicEffectChange::handle(GameGrail* engine)
 			return ret;
 		}		
 	}
-	return engine->popGameState_if(STATE_BASIC_EFFECT_CHANGE);	 
+	return engine->popGameState_if(STATE_BASIC_EFFECT_CHANGE);
 }
 
 int StateRequestHand::handle(GameGrail* engine)
