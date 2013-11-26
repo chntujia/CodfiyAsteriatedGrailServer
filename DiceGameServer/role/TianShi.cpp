@@ -20,7 +20,7 @@ bool TianShi::cmdMsgParse(UserTask *session, uint16_t type, ::google::protobuf::
 			return true;
 		case SHEN_ZHI_BI_HU:
 			//tryNotify负责向游戏主线程传消息，只有id等于当前等待id，声明state等于当前state，声明step等于当前step，游戏主线程才会接受
-			session->tryNotify(id, STATE_BEFORE_LOSE_MORALE, SHEN_ZHI_BI_HU, respond);
+			session->tryNotify(id, STATE_LOSE_MORALE, SHEN_ZHI_BI_HU, respond);
 			return true;
 		}
 	}
@@ -149,7 +149,7 @@ int TianShi::p_basic_effect_change(int &step, int dstID, int card, int doerID, i
 	return GE_SUCCESS;
 }
 
-int TianShi::p_before_lose_morale(int &step, CONTEXT_LOSE_MORALE *con)
+int TianShi::p_lose_morale(int &step, CONTEXT_LOSE_MORALE *con)
 {
 	int ret = GE_SUCCESS;
 	if (engine->getPlayerEntity(con->dstID)->getColor() == getColor() && con->harm.type == HARM_MAGIC && crystal+gem > 0)

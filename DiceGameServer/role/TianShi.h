@@ -10,7 +10,7 @@ public:
 	int v_magic_skill(Action* action);
 	int p_magic_skill(int &step, Action *action);
 	int p_basic_effect_change(int &step, int dstID, int card, int doerID, int cause);
-	int p_before_lose_morale(int &step, CONTEXT_LOSE_MORALE *con);
+	int p_lose_morale(int &step, CONTEXT_LOSE_MORALE *con);
 private:
 	int TianShiZhiQiang(Action *action);
 	int TianShiZhuFu(int step, Action *action);
