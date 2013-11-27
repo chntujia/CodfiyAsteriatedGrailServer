@@ -82,24 +82,24 @@ void zSocket2::Check(const system::error_code& e)
 
 void zSocket2::HandleWrite(const system::error_code& error)
 {
+	wstate = WS_Complete;
 	if(!error)
-	{
-		wstate = WS_Complete;
-		//m_sendLock.lock();
-		//if (!sendQueue.empty())
-		//{			
-		//	t_BufferCmd* ptCmd = sendQueue.front();
-		//	asio::async_write(socket_,
-		//		asio::buffer(&ptCmd->pstrCmd[ptCmd->offset],
-		//		ptCmd->nCmdLen - ptCmd->offset),
-		//		//strand_.wrap(boost::bind(&zSocket::HandleWrite, shared_from_this(),
-		//		strand_.wrap(boost::bind(&zSocket2::HandleWrite, this,
-		//		asio::placeholders::error)));
-		//	wstate = WS_On;
-		//	sendQueue.pop();
-		//	SAFE_DELETE(ptCmd);   // 可以delete么
-		//}
-		//m_sendLock.unlock();
+	{		
+		m_sendLock.lock();
+		if (!sendQueue.empty())
+		{			
+			t_BufferCmd* ptCmd = sendQueue.front();
+			asio::async_write(socket_,
+				asio::buffer(&ptCmd->pstrCmd[ptCmd->offset],
+				ptCmd->nCmdLen - ptCmd->offset),
+				//strand_.wrap(boost::bind(&zSocket::HandleWrite, shared_from_this(),
+				strand_.wrap(boost::bind(&zSocket2::HandleWrite, this,
+				asio::placeholders::error)));
+			wstate = WS_On;
+			sendQueue.pop();
+			SAFE_DELETE(ptCmd);   // 可以delete么
+		}
+		m_sendLock.unlock();
 	}
 	else
 	{

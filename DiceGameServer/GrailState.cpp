@@ -487,6 +487,7 @@ int StateActionPhase::basicSpecial(Action *action, GameGrail* engine)
 			engine->popGameState();
 			engine->pushGameState(new StateAfterSpecial(m_currentPlayerID));
 			engine->pushGameState(new StateBeforeSpecial(m_currentPlayerID));
+			return GE_SUCCESS;
 		}
 		break;
 	default:

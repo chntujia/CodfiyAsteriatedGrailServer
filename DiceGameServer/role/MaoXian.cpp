@@ -55,16 +55,12 @@ int MaoXian::v_attack_skill(Action *action)
 
 int MaoXian::p_attack_skill(int &step, Action* action)
 {
+	if(action->action_id() != QI_ZHA){
+		return GE_INVALID_ACTION;
+	}
 	int ret = QiZha(step, action);
-	if (GE_URGENT == ret)
-	{
-		// 欺诈处理分2段，弃牌和攻击
-		if(step == STEP_INIT){
-			step = QI_ZHA;
-		}
-		else if(step == QI_ZHA){
-			step = STEP_DONE;
-		}
+	if(ret == GE_URGENT){
+		step = STEP_DONE;
 	}
 	return ret;
 }
@@ -75,35 +71,29 @@ int MaoXian::QiZha(int step, Action *action)
 	int cardNum = action->card_ids_size();
 	int virtualCardID = action->args(0);
 	int dstID = action->dst_ids(0);
-	if (step != QI_ZHA)
-	{
-		//宣告技能
-		network::SkillMsg skill;
-		Coder::skillNotice(id, dstID, actionID, skill);
-		engine->sendMessage(-1, MSG_SKILL, skill);
-		vector<int> cardIDs(cardNum);
-		for(int i = 0; i < cardNum; i++){
-			cardIDs[i] = action->card_ids(i);
-		}
-		//所有移牌操作都要用setStateMoveXXXX，ToHand的话要填好HARM，就算不是伤害
-		CardMsg show_card;
-		Coder::showCardNotice(id, cardNum, cardIDs, show_card);
-		engine->sendMessage(-1, MSG_CARD, show_card);
-		engine->setStateMoveCardsNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardNum, cardIDs, id, actionID, true);
-		//插入了新状态，请return GE_URGENT
-		return GE_URGENT;
+
+	//宣告技能
+	network::SkillMsg skill;
+	Coder::skillNotice(id, dstID, actionID, skill);
+	engine->sendMessage(-1, MSG_SKILL, skill);
+	vector<int> cardIDs(cardNum);
+	for(int i = 0; i < cardNum; i++){
+		cardIDs[i] = action->card_ids(i);
 	}
-	else
-	{
-		//更新能量
-		GameInfo update_info;
-		setCrystal(++crystal);
-		Coder::energyNotice(id, gem, crystal, update_info);
-		engine->sendMessage(-1, MSG_GAME, update_info);
-		engine->setStateTimeline1(virtualCardID, dstID, id, true);
-		engine->setStateUseCard(virtualCardID, dstID, id, false, false);
-		return GE_URGENT;
-	}
+	//更新能量
+	GameInfo update_info;
+	setCrystal(++crystal);
+	Coder::energyNotice(id, gem, crystal, update_info);
+	engine->sendMessage(-1, MSG_GAME, update_info);
+	engine->setStateTimeline1(virtualCardID, dstID, id, true);
+	engine->setStateUseCard(virtualCardID, dstID, id, false, false);
+	//所有移牌操作都要用setStateMoveXXXX，ToHand的话要填好HARM，就算不是伤害
+	CardMsg show_card;
+	Coder::showCardNotice(id, cardNum, cardIDs, show_card);
+	engine->sendMessage(-1, MSG_CARD, show_card);
+	engine->setStateMoveCardsNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardNum, cardIDs, id, actionID, true);
+	//插入了新状态，请return GE_URGENT
+	return GE_URGENT;
 }
 
 //响应三版号召，偷天换日跟特殊加工共用一个flag
@@ -149,15 +139,8 @@ int MaoXian::p_magic_skill(int &step, Action* action)
 		ret = TeShuJiaGong(action);
 		break;
 	}
-	if (GE_URGENT == ret)
-	{
-		// 欺诈处理分2段，弃牌和攻击
-		if(step == STEP_INIT){
-			step = QI_ZHA;
-		}
-		else if(step == QI_ZHA){
-			step = STEP_DONE;
-		}
+	if (GE_SUCCESS == ret){
+		step = STEP_DONE;
 	}
 	return ret;
 }

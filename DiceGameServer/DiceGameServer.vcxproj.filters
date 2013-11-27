@@ -24,9 +24,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stdafx.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="targetver.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -103,6 +100,12 @@
       <Filter>role</Filter>
     </ClInclude>
     <ClInclude Include="role\MaoXian.h">
+      <Filter>role</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="role\TianShi.h">
       <Filter>role</Filter>
     </ClInclude>
   </ItemGroup>
@@ -186,6 +189,9 @@
       <Filter>role</Filter>
     </ClCompile>
     <ClCompile Include="role\MaoXian.cpp">
+      <Filter>role</Filter>
+    </ClCompile>
+    <ClCompile Include="role\TianShi.cpp">
       <Filter>role</Filter>
     </ClCompile>
   </ItemGroup>

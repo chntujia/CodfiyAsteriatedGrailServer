@@ -81,10 +81,8 @@ bool UserTask::cmdMsgParse(const char *pstrMsg, const uint32_t nCmdLen)
 		ztLoggerWrite(ZONE, e_Debug, "[%s]Receive: %s,\n size:%d, type:%d,\n To proto: %s", m_userId.c_str(), pstrMsg, *size, type, proto->DebugString().c_str());
 #endif
 
-		GameGrailConfig*config;
 		int ret;
 		int tableID;
-		int actionFlag;
 		m_activeTime = time(NULL);
 		EnterRoom* enter_room;
 		Action *action;
