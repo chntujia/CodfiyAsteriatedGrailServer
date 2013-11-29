@@ -487,8 +487,6 @@ int GameGrail::setStateReattack(int attackFromCard, int attackToCard, int attack
 
 int GameGrail::setStateAttackGiveUp(int cardID, int dstID, int srcID, HARM harm, bool isActive, bool checkSheild)
 {
-	// FIX_ME  没有检查天使之墙 check sheild here by Fengyu
-
 	PlayerEntity *player = getPlayerEntity(dstID);
 	int shieldCardID = -1;
 	if(checkSheild && (GE_SUCCESS == player->checkBasicEffectByName(NAME_SHIELD, &shieldCardID)  || player->checkBasicEffectByName(TIAN_SHI_ZHI_QIANG, &shieldCardID) == GE_SUCCESS)){
@@ -503,7 +501,6 @@ int GameGrail::setStateAttackGiveUp(int cardID, int dstID, int srcID, HARM harm,
 
 int GameGrail::setStateMissileGiveUp(int dstID, int srcID, int harmPoint)
 {
-	// FIX_ME  没有检查天使之墙 check sheild here by Fengyu
 	PlayerEntity *player = getPlayerEntity(dstID);
 	int shieldCardID = -1;
 	if(player->checkBasicEffectByName(NAME_SHIELD, &shieldCardID) == GE_SUCCESS || player->checkBasicEffectByName(TIAN_SHI_ZHI_QIANG, &shieldCardID) == GE_SUCCESS){	
