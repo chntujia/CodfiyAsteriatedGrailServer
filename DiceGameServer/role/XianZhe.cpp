@@ -114,7 +114,7 @@ int XianZhe::p_timeline_6_drawn(int &step, CONTEXT_TIMELINE_6_DRAWN *con)
 	if (con->harm.point > 3)
 		// 伤害大于等于4,
 		ZhiHuiFaDian();
-	else if (con->harm.point == 1 && canFanTan())
+	else if (con->harm.point == 1)
 	{
 		// 伤害为1
 		step = FA_SHU_FAN_TAN;
@@ -129,7 +129,7 @@ int XianZhe::p_timeline_6_drawn(int &step, CONTEXT_TIMELINE_6_DRAWN *con)
 int XianZhe::ZhiHuiFaDian()
 {
 	SkillMsg skill_msg;
-	Coder::skillNotice(id, dst->getID(), ZHI_HUI_FA_DIAN, skill_msg);
+	Coder::skillNotice(id, id, ZHI_HUI_FA_DIAN, skill_msg);
 	engine->sendMessage(-1, MSG_SKILL, skill_msg);
 
 	setGem(gem+2);
@@ -286,22 +286,4 @@ int XianZhe::elementCheck(vector<int> cards)
 	if (elements.size() == cards.size())
 		return ELEMENT_ALL_DIFFERENT;
 	return ELEMENT_INVALID;
-}
-
-bool XianZhe::canFanTan()
-{
-	int element_nums[8];
-	int e;
-	memset(element_nums, 0, 8);
-
-	list<int>::iterator hand_it;
-	for (hand_it = handCards.begin(); hand_it != handCards.end(); ++hand_it)
-	{
-		e = getCardByID(*hand_it)->getElement();
-		if (element_nums[e] == 1)
-			return true;
-		else
-			element_nums[e] = 1;
-	}
-	return false;
 }

@@ -16,5 +16,4 @@ private:
 	int ShengJieFaDian(int &step, Action *action);
 	int FaShuFanTan();
 	int elementCheck(vector<int> cards);
-	bool canFanTan();
 };
