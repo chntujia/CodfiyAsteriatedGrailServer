@@ -108,6 +108,15 @@
     <ClInclude Include="role\TianShi.h">
       <Filter>role</Filter>
     </ClInclude>
+    <ClInclude Include="role\GongNv.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="role\ShenGuan.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="role\XianZhe.h">
+      <Filter>role</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -192,6 +201,15 @@
       <Filter>role</Filter>
     </ClCompile>
     <ClCompile Include="role\TianShi.cpp">
+      <Filter>role</Filter>
+    </ClCompile>
+    <ClCompile Include="role\GongNv.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="role\ShenGuan.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="role\XianZhe.cpp">
       <Filter>role</Filter>
     </ClCompile>
   </ItemGroup>
