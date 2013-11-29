@@ -20,6 +20,7 @@
 #include "role\GongNv.h"
 #include "role\ShenGuan.h"
 #include "role\TianShi.h"
+#include "role\XianZhe.h"
 using namespace boost;
 
 void TeamArea::initialTeam()
@@ -765,7 +766,7 @@ void GameGrail::initPlayerEntities()
 		color = player_it->team();
 		//FIXME: 全天使时代
 		if (id % 2)
-			m_playerEntities[id] = new TianShi(this, id, color);
+			m_playerEntities[id] = new XianZhe(this, id, color);
 		else
 			m_playerEntities[id] = new FengYin(this, id, color);
 		
