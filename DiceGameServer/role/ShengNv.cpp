@@ -227,10 +227,8 @@ int ShengNv::ZhiLiaoShu(int &step, Action* action)
 		SkillMsg skill_msg;
 		Coder::skillNotice(id, dstID, ZHI_LIAO_SHU, skill_msg);
 		engine->sendMessage(-1, MSG_SKILL, skill_msg);
-		vector<int> cardIDs;
-		cardIDs.push_back(cardID);
 		CardMsg show_card;
-		Coder::showCardNotice(id, 1, cardIDs, show_card);
+		Coder::showCardNotice(id, 1, cardID, show_card);
 		engine->sendMessage(-1, MSG_CARD, show_card);
 		engine->setStateMoveOneCardNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardID, ZHI_LIAO_SHU, true);
 		//插入了新状态，请return GE_URGENT
@@ -261,10 +259,8 @@ int ShengNv::ZhiYuZhiGuang(int &step, Action* action)
 	{
 		Coder::skillNotice(id, dsts, ZHI_YU_ZHI_GUANG, skill_msg);
 		engine->sendMessage(-1, MSG_SKILL, skill_msg);
-		vector<int> cardIDs;
-		cardIDs.push_back(cardID);
 		CardMsg show_card;
-		Coder::showCardNotice(id, 1, cardIDs, show_card);
+		Coder::showCardNotice(id, 1, cardID, show_card);
 		engine->sendMessage(-1, MSG_CARD, show_card);
 		engine->setStateMoveOneCardNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardID, ZHI_YU_ZHI_GUANG, true);
 		//插入了新状态，请return GE_URGENT

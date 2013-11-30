@@ -21,8 +21,8 @@
 #include "role\ShenGuan.h"
 #include "role\TianShi.h"
 #include "role\XianZhe.h"
+#include "role\WuNv.h"
 using namespace boost;
-
 void TeamArea::initialTeam()
 {
     this->moraleBLUE = 15;
@@ -761,11 +761,8 @@ void GameGrail::initPlayerEntities()
 		player_it = (SinglePlayerInfo*)&(game_info.player_infos().Get(i));
 		id = player_it->id();
 		color = player_it->team();
-		//FIXME: 全天使时代
-		if (id % 2)
-			m_playerEntities[id] = new XianZhe(this, id, color);
-		else
-			m_playerEntities[id] = new FengYin(this, id, color);
+		//FIXME: 全封印时代
+		m_playerEntities[id] = new WuNv(this, id, color);
 		
 		position2id[i] = id;
 	}

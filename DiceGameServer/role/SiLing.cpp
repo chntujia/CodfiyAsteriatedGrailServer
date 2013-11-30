@@ -216,10 +216,8 @@ int SiLing::WenYi(Action *action)
 	{
 		engine->setStateTimeline3(*it, harm);
 	}
-	vector<int> cardIDs;
-	cardIDs.push_back(cardID);
 	CardMsg show_card;
-	Coder::showCardNotice(id, 1, cardIDs, show_card);
+	Coder::showCardNotice(id, 1, cardID, show_card);
 	engine->sendMessage(-1, MSG_CARD, show_card);
 	engine->setStateMoveOneCardNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardID, WEN_YI, true);
 	return GE_URGENT;

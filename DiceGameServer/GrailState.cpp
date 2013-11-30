@@ -87,9 +87,8 @@ int StateRoleStrategyRandom::handle(GameGrail* engine)
 	for(int i = 0; i < engine->getGameMaxPlayers(); i++){
 		// i为玩家编号，不是座号		
 		if(GE_SUCCESS == (ret=roles->pop(1, &out))){
-			//FIXME: 全天使时代
-			role_id = i % 2 ? 17: 4;
-			Coder::roleNotice(i, role_id, game_info);
+			//FIXME: 全封印时代
+			Coder::roleNotice(i, 23, game_info);
 			engine->sendMessage(-1, MSG_GAME, game_info);
 		}
 		else{

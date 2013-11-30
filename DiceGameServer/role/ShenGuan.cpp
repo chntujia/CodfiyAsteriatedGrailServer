@@ -166,7 +166,7 @@ int ShenGuan::ShenShengQiYue()
 			if (crossNum > 0)
 			{
 				network::SkillMsg skill_msg;
-				Coder::skillNotice(id, id, SHEN_SHENG_QI_YUE, skill_msg);
+				Coder::skillNotice(id, dstID, SHEN_SHENG_QI_YUE, skill_msg);
 				engine->sendMessage(-1, MSG_SKILL, skill_msg);
 				if(crystal>0){
 					setCrystal(--crystal);
@@ -205,7 +205,7 @@ int ShenGuan::ShenShengQiFu(int &step, Action* action)
 		CardMsg show_card;
 		Coder::showCardNotice(id, 2, cardIDs, show_card);
 		engine->sendMessage(-1, MSG_CARD, show_card);
-		engine->setStateMoveCardsNotToHand(id, DECK_HAND, -1, DECK_DISCARD, 2, cardIDs, SHEN_SHENG_QI_FU, true);
+		engine->setStateMoveCardsNotToHand(id, DECK_HAND, -1, DECK_DISCARD, 2, cardIDs, id, SHEN_SHENG_QI_FU, true);
 		//插入了新状态，请return GE_URGENT
 		step = SHEN_SHENG_QI_FU;
 		return GE_URGENT;
@@ -232,12 +232,10 @@ int ShenGuan::ShuiZhiShenLi(int &step, Action* action)
 		SkillMsg skill_msg;
 		Coder::skillNotice(id, dstID, SHUI_ZHI_SHEN_LI, skill_msg);
 		engine->sendMessage(-1, MSG_SKILL, skill_msg);
-		vector<int> cardIDs;
-		cardIDs.push_back(cardID);
 		CardMsg show_card;
-		Coder::showCardNotice(id, 1, cardIDs, show_card);
+		Coder::showCardNotice(id, 1, cardID, show_card);
 		engine->sendMessage(-1, MSG_CARD, show_card);
-		engine->setStateMoveOneCardNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardID, SHUI_ZHI_SHEN_LI, true);
+		engine->setStateMoveOneCardNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardID, id, SHUI_ZHI_SHEN_LI, true);
 		step = SHUI_ZHI_SHEN_LI_GIVE;
 		return GE_URGENT;
 	}
@@ -250,41 +248,14 @@ int ShenGuan::ShuiZhiShenLi(int &step, Action* action)
 		}
 		else
 		{
-			CommandRequest cmd_req;
-			Coder::askForSkill(id, SHUI_ZHI_SHEN_LI_GIVE, cmd_req);
-			//有限等待，由UserTask调用tryNotify唤醒
-			if(engine->waitForOne(id, network::MSG_CMD_REQ, cmd_req))
-			{
-				void* reply;
-				int ret;
-				if (GE_SUCCESS == (ret = engine->getReply(id, reply)))
-				{
-					Respond* respond = (Respond*) reply;
-					give = respond->card_ids(0);
-					HARM harm;
-					harm.type = HARM_NONE;
-					harm.point = 1;
-					harm.srcID = id;
-					harm.cause = HARM_NONE;
-					engine->setStateMoveOneCardToHand(id, DECK_HAND, dstID, DECK_HAND, give, harm, false);
-					step = SHUI_ZHI_SHEN_LI_CROSS;
-					return GE_URGENT;
-				}
-				return ret;
-			}
-			else
-			{
-				//超时
-				give = *(this->getHandCards().begin());
-				HARM harm;
-				harm.type = HARM_NONE;
-				harm.point = 1;
-				harm.srcID = id;
-				harm.cause = HARM_NONE;
-				engine->setStateMoveOneCardToHand(id, DECK_HAND, dstID, DECK_HAND, give, harm, false);
-				step = SHUI_ZHI_SHEN_LI_CROSS;
-				return GE_TIMEOUT;
-			}
+			HARM shuishen;
+			shuishen.cause = SHUI_ZHI_SHEN_LI;
+			shuishen.point = 1;
+			shuishen.srcID = id;
+			shuishen.type = HARM_NONE;
+			engine->pushGameState(new StateRequestHand(id, shuishen, dstID, DECK_HAND));
+			step = SHUI_ZHI_SHEN_LI_CROSS;
+			return GE_URGENT;
 		}
 	}
 	if(step == SHUI_ZHI_SHEN_LI_CROSS)
@@ -326,7 +297,7 @@ int ShenGuan::ShenShengLingYu(int &step, Action *action)
 		}
 		if(cardNum > 0)
 		{
-			engine->setStateMoveCardsNotToHand(id, DECK_HAND, -1, DECK_DISCARD, 2, cardIDs, SHEN_SHENG_LING_YU, false);
+			engine->setStateMoveCardsNotToHand(id, DECK_HAND, -1, DECK_DISCARD, 2, cardIDs, id, SHEN_SHENG_LING_YU, false);
 			step = SHEN_SHENG_LING_YU;
 			return GE_URGENT;
 		}
