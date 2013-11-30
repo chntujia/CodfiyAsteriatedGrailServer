@@ -59,8 +59,10 @@ int TianShi::v_magic_skill(Action* action)
 		cardID = action->card_ids(0);
 		card = getCardByID(cardID);
 		dst = engine->getPlayerEntity(action->dst_ids(0));
-		//不是自己的手牌                          || 不是墙
-		if(GE_SUCCESS != checkOneHandCard(cardID) || !card->checkSpeciality(actionID)){
+		//  不是自己的手牌                         || 不是墙                           ||
+		if (GE_SUCCESS != checkOneHandCard(cardID) || !card->checkSpeciality(actionID) ||
+		//  目标已经有盾                                           || 目标已经有墙
+			GE_SUCCESS == dst->checkBasicEffectByName(NAME_SHIELD) || GE_SUCCESS == dst->checkBasicEffectByName(actionID)){
 			return GE_INVALID_ACTION;
 		}
 		break;
