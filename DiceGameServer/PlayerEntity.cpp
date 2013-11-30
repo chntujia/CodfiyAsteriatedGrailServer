@@ -461,7 +461,7 @@ int PlayerEntity::v_shield(int cardID, PlayerEntity* dst)
 	if(GE_SUCCESS != (ret = checkOneHandCard(cardID))){
 		return ret;
 	}
-	if(GE_SUCCESS == dst->checkBasicEffectByName(NAME_SHIELD)){
+	if(GE_SUCCESS == dst->checkBasicEffectByName(NAME_SHIELD) || GE_SUCCESS == dst->checkBasicEffectByName(TIAN_SHI_ZHI_QIANG)){
 		return GE_BASIC_EFFECT_ALREADY_EXISTS;
 	}
 	return GE_SUCCESS;
