@@ -1211,9 +1211,10 @@ int StateHandChange::handle(GameGrail* engine)
 
 	int dstID_temp = dstID;
 	HARM harm_temp = harm;
-	engine->popGameState_if(STATE_HAND_CHANGE);
-
-	return engine->setStateHandOverLoad(dstID_temp, harm_temp);
+	if(GE_SUCCESS == (ret = engine->popGameState_if(STATE_HAND_CHANGE))){
+		ret = engine->setStateHandOverLoad(dstID_temp, harm_temp);
+	}
+	return ret;
 }
 
 int StateBasicEffectChange::handle(GameGrail* engine)
@@ -1253,21 +1254,64 @@ int StateBasicEffectChange::handle(GameGrail* engine)
 	return engine->popGameState_if(STATE_BASIC_EFFECT_CHANGE);
 }
 
+int StateCoverChange::handle(GameGrail* engine)
+{
+	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateCoverChange", engine->getGameId());
+	int ret;
+	if(!isSet){
+		PlayerEntity* dst = engine->getPlayerEntity(dstID);
+		if(direction == CHANGE_ADD){
+			dst->addCoverCards(howMany, cards);					
+		}
+		else{
+			dst->removeCoverCards(howMany, cards);
+		}
+		isSet = true;
+
+		GameInfo update_info;
+		Coder::coverNotice(dstID, dst->getCoverCards(), update_info);
+	
+		engine->sendMessage(-1, MSG_GAME, update_info);
+	}
+	ret = GE_FATAL_ERROR;
+	int m_currentPlayerID = engine->getCurrentPlayerID();
+
+	while(iterator < engine->getGameMaxPlayers()){	    
+		ret = engine->getPlayerEntity(iterator)->p_cover_change(step, dstID, howMany, cards, harm.srcID, harm.cause);
+		moveIterator(ret);
+		if(GE_SUCCESS != ret){
+			return ret;
+		}		
+	}
+
+	int dstID_temp = dstID;
+	if(GE_SUCCESS == (ret = engine->popGameState_if(STATE_COVER_CHANGE))){
+		ret = engine->setStateCoverOverLoad(dstID_temp);
+	}
+	return ret;
+}
+
 int StateRequestHand::handle(GameGrail* engine)
 {
-	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateRequestHand, howMany %d", engine->getGameId(), howMany);
+	//最多把手牌全弃，若手牌为零，直接pop
+	int atMost = engine->getPlayerEntity(targetID)->getHandCardNum();
+	harm.point = harm.point > atMost ? atMost : harm.point;
+	if(harm.point < 1){
+		engine->popGameState();
+		return GE_SUCCESS;
+	}
+	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateRequestHand, howMany %d", engine->getGameId(), harm.point);
 	int ret = GE_FATAL_ERROR;
 
 	CommandRequest cmd_req;
-	Coder::askForDiscard(targetID, howMany, cause, isShown, cmd_req);
+	Coder::askForDiscard(targetID, harm.point, harm.cause, isShown, cmd_req);
 
-	int howMany_t = howMany;
 	int targetID_t = targetID;
 	int dstOwner_t = dstOwner;
 	int dstArea_t = dstArea;
 	HARM harm_t = harm;
 	bool isShown_t = isShown;
-	vector<int> toDiscard(howMany);
+	vector<int> toDiscard(harm.point);
 	PlayerEntity *target = engine->getPlayerEntity(targetID);
 	PlayerEntity *causer = engine->getPlayerEntity(harm.srcID);
 	if(engine->waitForOne(targetID, MSG_CMD_REQ, cmd_req))
@@ -1276,26 +1320,31 @@ int StateRequestHand::handle(GameGrail* engine)
 		if (GE_SUCCESS == (ret = engine->getReply(targetID, reply)))
 		{
 			Respond* respond = (Respond*) reply;
-
+			//弃牌了
 			if(respond->args(0) == 1)
 			{
-				if (respond->card_ids_size() != howMany){
+				if (respond->card_ids_size() != harm_t.point){
 					return GE_MOVECARD_FAILED;
 				}
 				else {
 					for (int i=0; i<respond->card_ids_size(); ++i)
 						toDiscard[i] = respond->card_ids(i);
 				}
-				if(GE_SUCCESS != (ret = target->checkHandCards(howMany, toDiscard)) ||
-				   GE_SUCCESS != (ret = causer->v_request_hand(howMany, toDiscard, harm_t))){
+				if(GE_SUCCESS != (ret = target->checkHandCards(harm.point, toDiscard)) ||
+				   GE_SUCCESS != (ret = causer->v_request_hand(harm.point, toDiscard, harm))){
 					return ret;
+				}
+				if(isShown){
+					CardMsg show_card;
+					Coder::showCardNotice(targetID, harm.point, toDiscard, show_card);
+					engine->sendMessage(-1, MSG_CARD, show_card);
 				}
 				engine->popGameState();
 				if(dstArea_t != DECK_HAND){
-					return engine->setStateMoveCardsNotToHand(targetID_t, DECK_HAND, dstOwner_t, dstArea_t, howMany_t, toDiscard, harm_t.srcID, harm_t.cause, isShown_t);
+					return engine->setStateMoveCardsNotToHand(targetID_t, DECK_HAND, dstOwner_t, dstArea_t, harm_t.point, toDiscard, harm_t.srcID, harm_t.cause, isShown_t);
 				}
 				else{
-					return engine->setStateMoveCardsToHand(targetID_t, DECK_HAND, dstOwner_t, dstArea_t, howMany_t, toDiscard, harm_t, isShown_t);
+					return engine->setStateMoveCardsToHand(targetID_t, DECK_HAND, dstOwner_t, dstArea_t, harm_t.point, toDiscard, harm_t, isShown_t);
 				}
 			}
 			else if(canGiveUp){	
@@ -1316,20 +1365,113 @@ int StateRequestHand::handle(GameGrail* engine)
 			engine->popGameState();
 			list<int> handcards = engine->getPlayerEntity(targetID_t)->getHandCards();
 			list<int>::iterator it = handcards.begin();
-			for(int i = 0; i < howMany_t && it != handcards.end(); i++){
+			for(int i = 0; i < harm_t.point && it != handcards.end(); i++){
 				toDiscard[i] = *it;
 				it++;
 			}
 			if(dstArea != DECK_HAND){
-				engine->setStateMoveCardsNotToHand(targetID_t, DECK_HAND, dstOwner_t, dstArea_t, howMany_t, toDiscard, harm_t.srcID, harm_t.cause, isShown_t);
+				engine->setStateMoveCardsNotToHand(targetID_t, DECK_HAND, dstOwner_t, dstArea_t, harm_t.point, toDiscard, harm_t.srcID, harm_t.cause, isShown_t);
 			}
 			else{
-				engine->setStateMoveCardsToHand(targetID_t, DECK_HAND, dstOwner_t, dstArea_t, howMany_t, toDiscard, harm_t, isShown_t);
+				engine->setStateMoveCardsToHand(targetID_t, DECK_HAND, dstOwner_t, dstArea_t, harm_t.point, toDiscard, harm_t, isShown_t);
 			}
 		}
 		else{
 			engine->popGameState();
 			causer->p_request_hand_give_up(step, targetID_t, harm_t.cause);
+		}
+		return GE_TIMEOUT;
+	}
+}
+
+int StateRequestCover::handle(GameGrail* engine)
+{
+	//最多把手牌全弃，若手牌为零，直接pop
+	int atMost = engine->getPlayerEntity(targetID)->getCoverCardNum();
+	harm.point = harm.point > atMost ? atMost : harm.point;
+	if(harm.point < 1){
+		engine->popGameState();
+		return GE_SUCCESS;
+	}
+	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateRequestCover, howMany %d", engine->getGameId(), harm.point);
+	int ret = GE_FATAL_ERROR;
+
+	CommandRequest cmd_req;
+	Coder::askForDiscardCover(targetID, harm.point, harm.cause, cmd_req);
+
+	int targetID_t = targetID;
+	int dstOwner_t = dstOwner;
+	int dstArea_t = dstArea;
+	bool isShown_t = isShown;
+	HARM harm_t = harm;
+	vector<int> toDiscard(harm.point);
+	PlayerEntity *target = engine->getPlayerEntity(targetID);
+	PlayerEntity *causer = engine->getPlayerEntity(harm.srcID);
+	if(engine->waitForOne(targetID, MSG_CMD_REQ, cmd_req))
+	{
+		void* reply;
+		if (GE_SUCCESS == (ret = engine->getReply(targetID, reply)))
+		{
+			Respond* respond = (Respond*) reply;
+			//弃牌了
+			if(respond->args(0) == 1)
+			{
+				if (respond->card_ids_size() != harm.point){
+					return GE_MOVECARD_FAILED;
+				}
+				else {
+					for (int i=0; i<respond->card_ids_size(); ++i)
+						toDiscard[i] = respond->card_ids(i);
+				}
+				if(GE_SUCCESS != (ret = target->checkHandCards(harm.point, toDiscard)) ||
+				   GE_SUCCESS != (ret = causer->v_request_cover(harm.point, toDiscard, harm))){
+					return ret;
+				}
+				if(isShown){
+					CardMsg show_card;
+					Coder::showCardNotice(targetID, harm.point, toDiscard, show_card);
+					engine->sendMessage(-1, MSG_CARD, show_card);
+				}
+				engine->popGameState();
+				if(dstArea_t != DECK_HAND){
+					return engine->setStateMoveCardsNotToHand(targetID_t, DECK_COVER, dstOwner_t, dstArea_t, harm_t.point, toDiscard, harm_t.srcID, harm_t.cause, isShown_t);
+				}
+				else{
+					return engine->setStateMoveCardsToHand(targetID_t, DECK_COVER, dstOwner_t, dstArea_t, harm_t.point, toDiscard, harm_t, isShown_t);
+				}
+			}
+			else if(canGiveUp){	
+				engine->popGameState();
+				return causer->p_request_cover_give_up(step, targetID_t, harm_t.cause);
+			}
+			else{
+				return GE_INVALID_ACTION;
+			}
+		}
+	    return ret;
+	}
+	else
+	{
+		//Timeout auto discard
+		if(!canGiveUp)
+		{
+			engine->popGameState();
+			list<int> covercards = engine->getPlayerEntity(targetID_t)->getCoverCards();
+			list<int>::iterator it = covercards.begin();
+			for(int i = 0; i < harm_t.point && it != covercards.end(); i++){
+				toDiscard[i] = *it;
+				it++;
+			}
+			if(dstArea != DECK_HAND){
+				engine->setStateMoveCardsNotToHand(targetID_t, DECK_COVER, dstOwner_t, dstArea_t, harm_t.point, toDiscard, harm_t.srcID, harm_t.cause, isShown_t);
+			}
+			else{
+				engine->setStateMoveCardsToHand(targetID_t, DECK_COVER, dstOwner_t, dstArea_t, harm_t.point, toDiscard, harm_t, isShown_t);
+			}
+		}
+		else{
+			engine->popGameState();
+			causer->p_request_cover_give_up(step, targetID_t, harm_t.cause);
 		}
 		return GE_TIMEOUT;
 	}

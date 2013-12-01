@@ -30,6 +30,7 @@ enum GrailError{
 	GE_BASIC_EFFECT_NOT_FOUND,
 	GE_BASIC_EFFECT_ALREADY_EXISTS,
 	GE_EXCLUSIVE_EFFECT_NOT_FOUND,
+	GE_COVERCARD_NOT_FOUND,
 	GE_MOVECARD_FAILED,
     GE_INCONSISTENT_STATE,
 	GE_FATAL_ERROR,
@@ -95,13 +96,13 @@ enum CAUSE{
 	MO_DAN_ZHANG_WO = 802,
 	MO_DAN_RONG_HE = 803,
 	HUI_MIE_FENG_BAO = 804,
-	XIU_LUO_LIAN_ZHAN=901,
-    AN_YING_NING_JU=902,
-    AN_YING_ZHI_LI=903,
-    AN_YING_KANG_JU=904,
-    AN_YING_LIU_XING=905,
-    HEI_AN_ZHEN_CHAN=906,
-	HEI_AN_ZHEN_CHAN_BU_PAI=9061,
+	XIU_LUO_LIAN_ZHAN = 901,
+    AN_YING_NING_JU = 902,
+    AN_YING_ZHI_LI = 903,
+    AN_YING_KANG_JU = 904,
+    AN_YING_LIU_XING = 905,
+    HEI_AN_ZHEN_CHAN = 906,
+	HEI_AN_ZHEN_CHAN_BU_PAI = 9061,
 	HUI_YAO = 1001,
     CHENG_JIE = 1002,
     SHENG_GUANG_QI_YU = 1003,
@@ -140,6 +141,11 @@ enum CAUSE{
 	MO_DAO_FA_DIAN = 1702,
 	SHENG_JIE_FA_DIAN = 1703,
 	FA_SHU_FAN_TAN = 1704,
+	FENG_XING = 1801,
+	LEI_MING = 1802,
+	NIAN_ZHOU = 1803,
+	BAI_GUI_YE_XING = 1804,
+	LING_LI_BENG_JIE = 1805,
 	LING_HUN_ZHEN_BAO = 2201,
 	LING_HUN_CI_YU = 2202,
 	XUE_ZHI_BEI_MING = 2301,
@@ -301,6 +307,17 @@ public:
 		cmd->add_args(cause);
 		cmd->add_args(sum);
 		cmd->add_args(show);
+	}
+	static void askForDiscardCover(int ID, int sum, int cause, CommandRequest& cmd_req)
+	{
+		cmd_req.set_cmd_type(CMD_RESPOND);
+		Command *cmd;
+
+		cmd = cmd_req.add_commands();
+		cmd->set_respond_id(network::RESPOND_DISCARD);
+		cmd->add_dst_ids(ID);
+		cmd->add_args(cause);
+		cmd->add_args(sum);
 	}
 	static void handNotice(int ID, list<int> handCards, GameInfo& game_info)
 	{

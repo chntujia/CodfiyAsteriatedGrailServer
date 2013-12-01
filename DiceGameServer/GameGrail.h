@@ -193,6 +193,7 @@ public:
 	int setStateUseCard(int cardID, int dstID, int srcID, bool stay = false, bool realCard = true);
 	int setStateChangeMaxHand(int dstID, bool using_fixed, bool fixed = false, int howmany = 6, int handCardsRange = 0);
 	int setStateHandOverLoad(int dstID, HARM harm);
+	int setStateCoverOverLoad(int dstID);
 	int setStateCheckBasicEffect();
 	int setStateAttackAction(int cardID, int dstID, int srcID, bool realCard = true);
 	int setStateReattack(int attackFromCard, int attackToCard, int attackFrom, int attacked , int attackTo, bool isActive, bool realCard = true);

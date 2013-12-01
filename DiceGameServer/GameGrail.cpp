@@ -22,6 +22,7 @@
 #include "role\TianShi.h"
 #include "role\XianZhe.h"
 #include "role\WuNv.h"
+
 using namespace boost;
 void TeamArea::initialTeam()
 {
@@ -261,6 +262,7 @@ int GameGrail::setStateMoveCards(int srcOwner, int srcArea, int dstOwner, int ds
 {
 	PlayerEntity *src;
 	int ret;
+	bool updated = false;
 	//check whether exists
 
 	GameInfo update_info;
@@ -270,10 +272,11 @@ int GameGrail::setStateMoveCards(int srcOwner, int srcArea, int dstOwner, int ds
 	case DECK_PILE:
 		drawCardsFromPile(howMany, cards);
 		update_info.set_pile(pile->get_size());
+		updated = true;
 		break;
 	case DECK_HAND:
 		src = getPlayerEntity(srcOwner);
-		if(GE_SUCCESS != (ret=src->checkHandCards(howMany,cards))){
+		if(GE_SUCCESS != (ret = src->checkHandCards(howMany, cards))){
 			throw ret;
 		}
 		break;
@@ -284,6 +287,11 @@ int GameGrail::setStateMoveCards(int srcOwner, int srcArea, int dstOwner, int ds
 		}
 		break;
 	case DECK_COVER:
+		src = getPlayerEntity(srcOwner);
+		if(GE_SUCCESS != (ret = src->checkCoverCards(howMany, cards))){
+			throw ret;
+		}
+		break;
 	default:
 		return GE_NOT_SUPPORTED;
 	}
@@ -293,6 +301,7 @@ int GameGrail::setStateMoveCards(int srcOwner, int srcArea, int dstOwner, int ds
 	case DECK_DISCARD:
 		ret = discard->push(howMany, &cards[0]);
 		update_info.set_discard(discard->get_size());
+		updated = true;
 		break;
 	case DECK_HAND:
 		pushGameState(new StateHandChange(dstOwner, CHANGE_ADD, howMany, cards, harm));							
@@ -301,6 +310,8 @@ int GameGrail::setStateMoveCards(int srcOwner, int srcArea, int dstOwner, int ds
 		pushGameState(new StateBasicEffectChange(dstOwner, CHANGE_ADD, cards[0], harm.srcID, harm.cause));	
 		break;
 	case DECK_COVER:
+		pushGameState(new StateCoverChange(dstOwner, CHANGE_ADD, howMany, cards, harm));	
+		break;
 	default:
 		return GE_NOT_SUPPORTED;
 	}
@@ -318,11 +329,14 @@ int GameGrail::setStateMoveCards(int srcOwner, int srcArea, int dstOwner, int ds
 		pushGameState(new StateBasicEffectChange(srcOwner, CHANGE_REMOVE, cards[0], harm.srcID, harm.cause));
 		break;
 	case DECK_COVER:
+		pushGameState(new StateCoverChange(dstOwner, CHANGE_REMOVE, howMany, cards, harm));	
+		break;
 	default:
 		return GE_NOT_SUPPORTED;
 	}
-
-	sendMessage(-1, MSG_GAME, update_info);
+	if(updated){
+		sendMessage(-1, MSG_GAME, update_info);
+	}
 
 	return GE_SUCCESS;
 }
@@ -402,7 +416,6 @@ int GameGrail::drawCardsFromPile(int howMany, vector< int > &cards)
 	return GE_SUCCESS;
 }
 
-//Must ensure it is called through last line and must push the nextState first
 int GameGrail::setStateHandOverLoad(int dstID, HARM harm)
 {
 	PlayerEntity *dst = getPlayerEntity(dstID);
@@ -417,6 +430,25 @@ int GameGrail::setStateHandOverLoad(int dstID, HARM harm)
 	harm.point = overNum;
 	harm.cause = CAUSE_OVERLOAD;
 	pushGameState(new StateRequestHand(dstID, harm));
+	return GE_URGENT;
+}
+
+int GameGrail::setStateCoverOverLoad(int dstID)
+{
+	PlayerEntity *dst = getPlayerEntity(dstID);
+	if(!dst){
+		return GE_INVALID_PLAYERID;
+	}
+	int overNum = dst->getCoverCardNum() - dst->getCoverCardMax();
+	if (overNum <= 0){
+		return GE_SUCCESS;
+	}
+	HARM move;
+	move.type = HARM_NONE;
+	move.cause = CAUSE_OVERLOAD;
+	move.point = overNum;
+	move.srcID = dstID;
+	pushGameState(new StateRequestCover(dstID, move));
 	return GE_URGENT;
 }
 

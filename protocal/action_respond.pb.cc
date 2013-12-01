@@ -394,13 +394,14 @@ void protobuf_AddDesc_action_5frespond_2eproto() {
     "\022\027\n\023ACTION_ATTACK_SKILL\020\004\022\026\n\022ACTION_MAGI"
     "C_SKILL\020\005\022\030\n\024ACTION_SPECIAL_SKILL\020\006\022\016\n\nA"
     "CTION_ANY\020\007\022\027\n\023ACTION_ATTACK_MAGIC\020\010\022\021\n\013"
-    "ACTION_NONE\020\240\215\006*\232\001\n\020BasicRespondType\022\030\n\024"
+    "ACTION_NONE\020\240\215\006*\265\001\n\020BasicRespondType\022\030\n\024"
     "RESPOND_REPLY_ATTACK\020\n\022\022\n\016RESPOND_BULLET"
     "\020\013\022\020\n\014RESPOND_HEAL\020\014\022\023\n\017RESPOND_DISCARD\020"
     "\r\022\022\n\016RESPOND_WEAKEN\020\016\022\035\n\031RESPOND_ADDITIO"
-    "NAL_ACTION\020\017**\n\007CmdType\022\016\n\nCMD_ACTION\020\001\022"
-    "\017\n\013CMD_RESPOND\020\002*&\n\013CardMsgType\022\n\n\006CM_US"
-    "E\020\001\022\013\n\007CM_SHOW\020\002", 1616);
+    "NAL_ACTION\020\017\022\031\n\025RESPOND_DISCARD_COVER\020\020*"
+    "*\n\007CmdType\022\016\n\nCMD_ACTION\020\001\022\017\n\013CMD_RESPON"
+    "D\020\002*&\n\013CardMsgType\022\n\n\006CM_USE\020\001\022\013\n\007CM_SHO"
+    "W\020\002", 1643);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "action_respond.proto", &protobuf_RegisterTypes);
   CharactorPickRequest::default_instance_ = new CharactorPickRequest();
@@ -505,6 +506,7 @@ bool BasicRespondType_IsValid(int value) {
     case 13:
     case 14:
     case 15:
+    case 16:
       return true;
     default:
       return false;

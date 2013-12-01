@@ -41,7 +41,9 @@ enum STATE{
 	STATE_SHOW_HAND,
 	STATE_HAND_CHANGE,
 	STATE_BASIC_EFFECT_CHANGE,
+	STATE_COVER_CHANGE,
 	STATE_REQUEST_HAND,
+	STATE_REQUEST_COVER,
 	STATE_BEFORE_LOSE_MORALE,
 	STATE_LOSE_MORALE,
 	STATE_FIX_MORALE,
@@ -138,17 +140,17 @@ class GameGrail;
 class GrailState
 {
 public:
-	int state;
+	const int state;
 	int step;
 	int iterator;
-	GrailState(int s): state(s), step(0), iterator(0) {}
+	GrailState(int s): state(s), step(STEP_INIT), iterator(0) {}
 	void moveIterator(int ret) {
 		if(GE_SUCCESS == ret || STEP_DONE == step){
 			iterator++;
 			step = STEP_INIT;
 		}
 	}
-	virtual int handle(GameGrail* engine) { return GE_EMPTY_HANDLE; }
+	virtual int handle(GameGrail* engine) { return GE_EMPTY_HANDLE; }	
 };
 
 class StateWaitForEnter : public GrailState
@@ -488,15 +490,41 @@ public:
 	bool isSet;
 };
 
+class StateCoverChange : public GrailState
+{
+public:
+	StateCoverChange(int dstID, int direction, int howMany, vector<int> cards, HARM harm): GrailState(STATE_COVER_CHANGE), dstID(dstID), direction(direction),
+	howMany(howMany), cards(cards), harm(harm), isSet(false){}
+	int handle(GameGrail* engine);
+	int dstID;
+	int direction;
+	int howMany;
+	vector<int> cards;
+	HARM harm;
+	bool isSet;
+};
+
 class StateRequestHand : public GrailState
 {
 public:
 	StateRequestHand(int targetID, HARM harm, int dstOwner = -1, int dstArea = DECK_DISCARD, bool isShown = false, bool canGiveUp = false): GrailState(STATE_REQUEST_HAND),
-		targetID(targetID), howMany(harm.point), cause(harm.cause), harm(harm), dstOwner(dstOwner), dstArea(dstArea), isShown(isShown), canGiveUp(canGiveUp){}
+		targetID(targetID), harm(harm), dstOwner(dstOwner), dstArea(dstArea), isShown(isShown), canGiveUp(canGiveUp){}
 	int handle(GameGrail* engine);
 	int targetID;
-	int howMany;
-	int cause;
+	HARM harm;
+	int dstOwner;
+	int dstArea;
+	bool isShown;
+	bool canGiveUp;
+};
+
+class StateRequestCover : public GrailState
+{
+public:
+	StateRequestCover(int targetID, HARM harm, int dstOwner = -1, int dstArea = DECK_DISCARD, bool isShown = false, bool canGiveUp = false): GrailState(STATE_REQUEST_COVER),
+		targetID(targetID), harm(harm), dstOwner(dstOwner), dstArea(dstArea), isShown(isShown), canGiveUp(canGiveUp){}
+	int handle(GameGrail* engine);
+	int targetID;
 	HARM harm;
 	int dstOwner;
 	int dstArea;

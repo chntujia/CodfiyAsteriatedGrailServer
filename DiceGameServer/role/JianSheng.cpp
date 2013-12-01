@@ -40,24 +40,24 @@ int JianSheng::p_timeline_1(int &step, CONTEXT_TIMELINE_1 *con)
 	}
 	//若成功则继续往下走，失败则返回，step会保留，下次再进来就不会重走
 	//一般超时也会继续下一步
-	while(STEP_DONE != step)
+	bool success = true;
+	while(STEP_DONE != step && success)
 	{
+		success = false;
 		switch(step)
 		{
 		case STEP_INIT:
-			//初始化step
-			step = LIE_FENG_JI;
-			break;
-		case LIE_FENG_JI:
 			ret = LieFengJi(con);
 			if(toNextStep(ret)){
 				step = JI_FENG_JI;
+				success = true;
 			}			
 			break;
 		case JI_FENG_JI:
 			ret = JiFengJi(con);
 			if(toNextStep(ret)){
 				step = SHENG_JIAN;
+				success = true;
 			}			
 			break;
 		case SHENG_JIAN:
@@ -65,6 +65,7 @@ int JianSheng::p_timeline_1(int &step, CONTEXT_TIMELINE_1 *con)
 			if(toNextStep(ret)){
 				//全部走完后，请把step设成STEP_DONE
 			    step = STEP_DONE;
+				success = true;
 			}			
 			break;
 		default:
@@ -84,18 +85,17 @@ int JianSheng::p_after_attack(int &step, int playerID)
 	}
 	//若成功则继续往下走，失败则返回，step会保留，下次再进来就不会重走
 	//一般超时也会继续下一步
-	while(STEP_DONE != step)
+	bool success = true;
+	while(STEP_DONE != step && success)
 	{
+		success = false;
 		switch(step)
 		{
 		case STEP_INIT:
-			//初始化step
-			step = LIAN_XU_JI;
-			break;
-		case LIAN_XU_JI:
 			ret = LianXuJi(playerID);
 			if(toNextStep(ret)){
 				step = JIAN_YING;
+				success = true;
 			}			
 			break;
 		case JIAN_YING:
@@ -103,6 +103,7 @@ int JianSheng::p_after_attack(int &step, int playerID)
 			if(toNextStep(ret)){
 				//全部走完后，请把step设成STEP_DONE
 				step = STEP_DONE;
+				success = true;
 			}			
 			break;
 		default:

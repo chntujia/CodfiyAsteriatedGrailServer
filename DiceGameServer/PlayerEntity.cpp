@@ -158,6 +158,27 @@ int PlayerEntity::checkOneHandCard(int cardID)
 	return GE_SUCCESS;
 }
 
+int PlayerEntity::checkCoverCards(int howMany, vector<int> cards)
+{
+	for(int i = 0; i < howMany; i++)
+	{
+		std::list<int>::iterator findIter = std::find(coverCards.begin(), coverCards.end(), cards[i]);
+		if(findIter == coverCards.end()){
+			return GE_COVERCARD_NOT_FOUND;
+		}
+	}
+	return GE_SUCCESS;
+}
+
+int PlayerEntity::checkOneCoverCard(int cardID)
+{
+	std::list<int>::iterator findIter = std::find(coverCards.begin(), coverCards.end(), cardID);
+	if(findIter == coverCards.end()){
+		return GE_COVERCARD_NOT_FOUND;
+	}
+	return GE_SUCCESS;
+}
+
 int PlayerEntity::removeCoverCards(int howMany, vector< int > cards)
 {
 	int size = coverCards.size();

@@ -37,11 +37,13 @@ public:
     //移除手牌操作
     int removeHandCards(int howMany, vector<int> oldCard);
 	//检查手牌
-	int checkHandCards(int howMany, vector<int> oldCard);
+	int checkHandCards(int howMany, vector<int> cards);
 	int checkOneHandCard(int cardID);
 	//盖牌
 	int addCoverCards(int howMany, vector< int > cards);
 	int removeCoverCards(int howMany, vector< int > cards);
+    int checkCoverCards(int howMany, vector<int> cards);
+	int checkOneCoverCard(int cardID);
     //设定手牌上限是否锁定
     void setHandCardsMaxFixed(bool fixed, int howmany=6);
     //设置手牌变化
@@ -66,6 +68,8 @@ public:
     string getName();
     int getHandCardMax();
     int getHandCardNum();
+    int getCoverCardMax() { return coverCardsMax; }
+    int getCoverCardNum() { return coverCards.size(); }
     int getCrossNum();
     int getCrossMax();
     int getGem();
@@ -127,12 +131,14 @@ public:
 	virtual int p_true_lose_morale(int &step, CONTEXT_LOSE_MORALE *con) { return GE_SUCCESS; }
 	virtual int p_hand_change(int &step, int playerID) { return GE_SUCCESS; }
 	virtual int p_basic_effect_change(int &step, int dstID, int card, int doerID, int cause)  { return GE_SUCCESS; }
+    virtual int p_cover_change(int &step, int dstID, int howMany, vector<int> cards, int doerID, int cause)  { return GE_SUCCESS; }
 	virtual int p_show_hand(int &step, int playerID, int howMany, vector<int> cards, HARM harm) { return GE_SUCCESS; }
 	virtual int p_additional_action(int chosen);
 	virtual int p_attack_skill(int &step, Action *action) { return GE_EMPTY_HANDLE; }
 	virtual int p_magic_skill(int &step, Action *action) { return GE_EMPTY_HANDLE; }
 	virtual int p_special_skill(int &step, Action *action) { return GE_EMPTY_HANDLE; }
 	virtual int p_request_hand_give_up(int &step, int targetID, int cause) { return GE_SUCCESS; }
+    virtual int p_request_cover_give_up(int &step, int targetID, int cause) { return GE_SUCCESS; }
 
 	virtual int v_allow_action(int claim, int allow, bool canGiveUp);
 	virtual int v_attack(int cardID, int dstID, bool realCard = true);
@@ -151,6 +157,7 @@ public:
 	virtual int v_magic_skill(Action *action) { return GE_EMPTY_HANDLE; }
 	virtual int v_special_skill(Action *action) { return GE_EMPTY_HANDLE; }
 	virtual int v_request_hand(int howMany, vector<int> cards, HARM harm) { return GE_SUCCESS; }
+    virtual int v_request_cover(int howMany, vector<int> cards, HARM harm) { return GE_SUCCESS; }
 protected:
     int id;//玩家id
     int characterID;
@@ -158,6 +165,7 @@ protected:
     int handCardsMax;
     int handCardsRange;
     int handCardsMin;//蝶舞生命之火使用
+    int coverCardsMax;
     int crossNum;
     int crossMax;
     int gem;

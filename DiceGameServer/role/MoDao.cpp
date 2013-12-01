@@ -182,11 +182,8 @@ int MoDao::MoBaoChongJi(Action* action)
 	moBao.type = HARM_NONE;
 	//先进后出，所以逆出牌顺序压，最后才是魔导自己明弃法牌
 	while(it != this){
-		if(it->getID() == dst1ID){
-			engine->pushGameState(new StateRequestHand(dst1ID, moBao, -1, DECK_DISCARD, true, true));
-		}
-		if(it->getID() == dst2ID){
-			engine->pushGameState(new StateRequestHand(dst2ID, moBao, -1, DECK_DISCARD, true, true));
+		if(it->getID() == dst1ID || it->getID() == dst2ID){
+			engine->pushGameState(new StateRequestHand(it->getID(), moBao, -1, DECK_DISCARD, true, true));
 		}
 		it = it->getPre();
 	}
@@ -232,11 +229,8 @@ int MoDao::HuiMieFengBao(Action* action)
 	huiMie.type = HARM_MAGIC;
 	//先进后出，所以逆出牌顺序压
 	while(it != this){
-		if(it->getID() == dst1ID){
-			engine->setStateTimeline3(dst1ID, huiMie);
-		}
-		if(it->getID() == dst2ID){
-			engine->setStateTimeline3(dst2ID, huiMie);
+		if(it->getID() == dst1ID || it->getID() == dst2ID){
+			engine->setStateTimeline3(it->getID(), huiMie);
 		}
 		it = it->getPre();
 	}

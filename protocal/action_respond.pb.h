@@ -125,11 +125,12 @@ enum BasicRespondType {
   RESPOND_HEAL = 12,
   RESPOND_DISCARD = 13,
   RESPOND_WEAKEN = 14,
-  RESPOND_ADDITIONAL_ACTION = 15
+  RESPOND_ADDITIONAL_ACTION = 15,
+  RESPOND_DISCARD_COVER = 16
 };
 bool BasicRespondType_IsValid(int value);
 const BasicRespondType BasicRespondType_MIN = RESPOND_REPLY_ATTACK;
-const BasicRespondType BasicRespondType_MAX = RESPOND_ADDITIONAL_ACTION;
+const BasicRespondType BasicRespondType_MAX = RESPOND_DISCARD_COVER;
 const int BasicRespondType_ARRAYSIZE = BasicRespondType_MAX + 1;
 
 const ::google::protobuf::EnumDescriptor* BasicRespondType_descriptor();
