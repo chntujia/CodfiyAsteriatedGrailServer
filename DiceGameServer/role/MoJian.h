@@ -18,8 +18,6 @@ public:
 	 int v_additional_action(int chosen);
 	 int p_additional_action(int chosen);
 	 int v_missile(int cardID, int dstID, bool realCard);
-	 int v_remissile(int cardID, bool realCard);
-	 int v_block(int cardID);
 	 int v_shield(int cardID, PlayerEntity* dst);
 	 int v_weaken(int cardID, PlayerEntity* dst);
 

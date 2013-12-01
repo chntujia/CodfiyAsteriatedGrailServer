@@ -173,32 +173,15 @@ int MoJian::p_timeline_2_hit(int &step, CONTEXT_TIMELINE_2_HIT * con)
 		case HEI_AN_ZHEN_CHAN_BU_PAI:
 
 			ret =HeiAnZhenChanBuPai(con);  //命中则补手牌
-			if(toNextStep(ret)){
-				step =STEP_DONE;
-			}			
+				step =STEP_DONE;	
 			break;
 		default:
 			return GE_INVALID_STEP;
 		}
 	}
-
-
 	return ret;
 }
 
-//暗影凝聚（自伤一点）
-/*
-int MoJian::p_timeline_3(int &step, CONTEXT_TIMELINE_3 *con)
-{	
-	if (engine->getCurrentPlayerID() == id&&step==AN_YING_NING_JU&&tap )
-	{
-		// 自己对自己构成一点伤害
-		return  AnYingNingJuSelfHurt(con);
-	}
-		step=STEP_DONE;
-	return GE_SUCCESS;
-}
-*/
 //所有额外行动，都是集中到一个地方询问，而不是每个都问一遍
 int MoJian::p_after_attack(int &step, int playerID)
 {
@@ -283,6 +266,7 @@ int MoJian::p_additional_action(int chosen)
     【暗影抗拒】：法术牌不可用
 ***/
 
+//魔弹：非本人
 int MoJian::v_missile(int cardID, int dstID, bool realCard)
 {
 	if(realCard){
@@ -290,26 +274,6 @@ int MoJian::v_missile(int cardID, int dstID, bool realCard)
 		if(GE_SUCCESS != (ret = checkOneHandCard(cardID))){
 			return ret;
 		}
-	}
-	return GE_INVALID_CARDID;
-}
-
-int MoJian::v_remissile(int cardID, bool realCard)
-{
-	/*if(realCard){
-		int ret;
-		if(GE_SUCCESS != (ret = checkOneHandCard(cardID))){
-			return ret;
-		}
-	}*/
-	return GE_INVALID_CARDID;
-}
-
-int MoJian::v_block(int cardID)
-{
-	int ret;
-	if(GE_SUCCESS != (ret = checkOneHandCard(cardID))){
-		return ret;
 	}
 	return GE_INVALID_CARDID;
 }
@@ -423,14 +387,16 @@ int MoJian::AnYingNingJuSelfHurt()
 {
    if (tap)
 	{	
-		vector<int> cards;    
+		int cardID=1;
 		//设置一点的伤害
 		HARM harm;
 		harm.type=HARM_MAGIC;
 		harm.point=1;
 		harm.srcID=id;
 	   //移一张手牌到手上
-       int ret = engine->setStateMoveCardsToHand(-1, DECK_PILE, id, DECK_HAND, 1, cards, harm);
+		int ret = engine->setStateMoveOneCardToHand(-1, DECK_PILE, id, DECK_HAND, cardID, harm);
+    //   int ret = engine->setStateMoveCardsToHand(-1, DECK_PILE, id, DECK_HAND, 1, cards, harm);
+		return ret;
 	}
   return GE_SUCCESS;
 }
@@ -492,12 +458,12 @@ int MoJian::HeiAnZhenChanBuPai(CONTEXT_TIMELINE_2_HIT* con)
 	harm.type = HARM_NONE;
 	harm.point =num;                  //最大手牌减去当前手牌
 	harm.cause = HEI_AN_ZHEN_CHAN;
-	int ret = engine->setStateMoveCardsToHand(-1, DECK_PILE, con->harm.srcID, DECK_HAND, num, cards, harm);
+	engine->setStateMoveCardsToHand(-1, DECK_PILE, con->harm.srcID, DECK_HAND, num, cards, harm);
 	SkillMsg skill_msg;
 	Coder::skillNotice(id, con->harm.srcID, HEI_AN_ZHEN_CHAN, skill_msg);
 	engine->sendMessage(-1, MSG_SKILL, skill_msg);
 	using_HeiAnZhenChan=false;  //当前【黑暗震颤】环节处理完毕
-	return ret;
+	return GE_URGENT;
 }
 
 int MoJian::AnYingLiuXing(Action* action)
