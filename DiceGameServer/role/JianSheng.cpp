@@ -40,38 +40,26 @@ int JianSheng::p_timeline_1(int &step, CONTEXT_TIMELINE_1 *con)
 	}
 	//若成功则继续往下走，失败则返回，step会保留，下次再进来就不会重走
 	//一般超时也会继续下一步
-	bool success = true;
-	while(STEP_DONE != step && success)
-	{
-		success = false;
-		switch(step)
-		{
-		case STEP_INIT:
-			ret = LieFengJi(con);
-			if(toNextStep(ret)){
-				step = JI_FENG_JI;
-				success = true;
-			}			
-			break;
-		case JI_FENG_JI:
-			ret = JiFengJi(con);
-			if(toNextStep(ret)){
-				step = SHENG_JIAN;
-				success = true;
-			}			
-			break;
-		case SHENG_JIAN:
-			ret = ShengJian(con);
-			if(toNextStep(ret)){
-				//全部走完后，请把step设成STEP_DONE
-			    step = STEP_DONE;
-				success = true;
-			}			
-			break;
-		default:
-			return GE_INVALID_STEP;
-		}
+	if(step == STEP_INIT){
+		ret = LieFengJi(con);
+		if(toNextStep(ret)){
+			step = JI_FENG_JI;
+		}			
 	}
+	if(step == JI_FENG_JI){
+		ret = JiFengJi(con);
+		if(toNextStep(ret)){
+			step = SHENG_JIAN;
+		}			
+	}
+	if(step == SHENG_JIAN){
+		ret = ShengJian(con);
+		if(toNextStep(ret)){
+			//全部走完后，请把step设成STEP_DONE
+			step = STEP_DONE;
+		}			
+	}
+
 	return ret;
 }
 
@@ -85,29 +73,17 @@ int JianSheng::p_after_attack(int &step, int playerID)
 	}
 	//若成功则继续往下走，失败则返回，step会保留，下次再进来就不会重走
 	//一般超时也会继续下一步
-	bool success = true;
-	while(STEP_DONE != step && success)
-	{
-		success = false;
-		switch(step)
-		{
-		case STEP_INIT:
-			ret = LianXuJi(playerID);
-			if(toNextStep(ret)){
-				step = JIAN_YING;
-				success = true;
-			}			
-			break;
-		case JIAN_YING:
-			ret = JianYing(playerID);
-			if(toNextStep(ret)){
-				//全部走完后，请把step设成STEP_DONE
-				step = STEP_DONE;
-				success = true;
-			}			
-			break;
-		default:
-			return GE_INVALID_STEP;
+	if(step == STEP_INIT){
+		ret = LianXuJi(playerID);
+		if(toNextStep(ret)){
+			step = JIAN_YING;
+		}			
+	}
+	if(step == JIAN_YING){
+		ret = JianYing(playerID);
+		if(toNextStep(ret)){
+			//全部走完后，请把step设成STEP_DONE
+			step = STEP_DONE;
 		}
 	}
 	return ret;
@@ -187,8 +163,7 @@ int JianSheng::LieFengJi(CONTEXT_TIMELINE_1 *con)
 	}
 	PlayerEntity* dst = engine->getPlayerEntity(dstID);
 	//目标有没盾
-	//FIXME: 天使之墙
-	if(GE_SUCCESS != dst->checkBasicEffectByName(NAME_SHIELD)){
+	if(GE_SUCCESS != dst->checkBasicEffectByName(NAME_SHIELD) || GE_SUCCESS != checkBasicEffectBySpeciality(TIAN_SHI_ZHI_QIANG)){
 		return GE_SUCCESS;
 	}
 	//满足发动条件，询问客户端是否发动
