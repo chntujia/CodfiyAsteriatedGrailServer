@@ -337,8 +337,9 @@ bool PlayerEntity::containsAction(int cause)
 	return false;
 }
 
-int PlayerEntity::v_allow_action(int claim, int allow, bool canGiveUp)
+int PlayerEntity::v_allow_action(Action* action, int allow, bool canGiveUp)
 {
+	int claim = action->action_type();
 	if(claim == ACTION_ATTACK_SKILL){
 		claim = ACTION_ATTACK;
 	}

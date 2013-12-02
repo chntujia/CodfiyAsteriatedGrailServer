@@ -140,7 +140,7 @@ public:
 	virtual int p_request_hand_give_up(int &step, int targetID, int cause) { return GE_SUCCESS; }
     virtual int p_request_cover_give_up(int &step, int targetID, int cause) { return GE_SUCCESS; }
 
-	virtual int v_allow_action(int claim, int allow, bool canGiveUp);
+	virtual int v_allow_action(Action* action, int allow, bool canGiveUp);
 	virtual int v_attack(int cardID, int dstID, bool realCard = true);
 	virtual int v_attacked() { return GE_SUCCESS; }
 	virtual int v_reattack(int cardID, int orignCardID, int dstID, int orignID, int rate, bool realCard = true);

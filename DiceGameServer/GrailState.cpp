@@ -269,7 +269,7 @@ int StateActionPhase::handle(GameGrail* engine)
 			Action *action = (Action*) temp;
 			PlayerEntity *src;
 			src = engine->getPlayerEntity(m_currentPlayerID);
-			if(GE_SUCCESS != (ret = src->v_allow_action(action->action_type(), allowAction, canGiveUp))){
+			if(GE_SUCCESS != (ret = src->v_allow_action(action, allowAction, canGiveUp))){
 				return ret;
 			}
 			switch(action->action_type())
