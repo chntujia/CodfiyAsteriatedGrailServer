@@ -1,7 +1,6 @@
 #include "MoJian.h"
 #include "..\GameGrail.h"
 #include "..\UserTask.h"
-//#include "..\GameGrailCommon.h"
 
 
 bool MoJian::cmdMsgParse(UserTask *session, uint16_t type, ::google::protobuf::Message *proto)
@@ -216,6 +215,7 @@ int MoJian::p_after_attack(int &step, int playerID)
 /**
        【修罗连斩】：只接受火系攻击
 **/  
+
 int  MoJian::v_attack(int cardID, int dstID, bool realCard)
 {
 	if(using_XiuLuoLianZhan){
@@ -393,9 +393,9 @@ int MoJian::AnYingNingJuSelfHurt()
 		harm.type=HARM_MAGIC;
 		harm.point=1;
 		harm.srcID=id;
+		harm.cause=AN_YING_NING_JU;
 	   //移一张手牌到手上
-		int ret = engine->setStateMoveOneCardToHand(-1, DECK_PILE, id, DECK_HAND, cardID, harm);
-    //   int ret = engine->setStateMoveCardsToHand(-1, DECK_PILE, id, DECK_HAND, 1, cards, harm);
+		int ret=engine->setStateTimeline3(id, harm);
 		return ret;
 	}
   return GE_SUCCESS;
