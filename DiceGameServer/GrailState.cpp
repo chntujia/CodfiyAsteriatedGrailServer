@@ -1277,7 +1277,7 @@ int StateCoverChange::handle(GameGrail* engine)
 	int m_currentPlayerID = engine->getCurrentPlayerID();
 
 	while(iterator < engine->getGameMaxPlayers()){	    
-		ret = engine->getPlayerEntity(iterator)->p_cover_change(step, dstID, howMany, cards, harm.srcID, harm.cause);
+		ret = engine->getPlayerEntity(iterator)->p_cover_change(step, dstID, direction, howMany, cards, harm.srcID, harm.cause);
 		moveIterator(ret);
 		if(GE_SUCCESS != ret){
 			return ret;

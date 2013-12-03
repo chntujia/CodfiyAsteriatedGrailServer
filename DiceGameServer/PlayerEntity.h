@@ -131,7 +131,7 @@ public:
 	virtual int p_true_lose_morale(int &step, CONTEXT_LOSE_MORALE *con) { return GE_SUCCESS; }
 	virtual int p_hand_change(int &step, int playerID) { return GE_SUCCESS; }
 	virtual int p_basic_effect_change(int &step, int dstID, int card, int doerID, int cause)  { return GE_SUCCESS; }
-    virtual int p_cover_change(int &step, int dstID, int howMany, vector<int> cards, int doerID, int cause)  { return GE_SUCCESS; }
+    virtual int p_cover_change(int &step, int dstID, int direction, int howMany, vector<int> cards, int doerID, int cause)  { return GE_SUCCESS; }
 	virtual int p_show_hand(int &step, int playerID, int howMany, vector<int> cards, HARM harm) { return GE_SUCCESS; }
 	virtual int p_additional_action(int chosen);
 	virtual int p_attack_skill(int &step, Action *action) { return GE_EMPTY_HANDLE; }
