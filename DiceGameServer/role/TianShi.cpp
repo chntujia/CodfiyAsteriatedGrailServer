@@ -126,7 +126,7 @@ int TianShi::p_magic_skill(int &step, Action *action)
 	default:
 		return GE_INVALID_ACTION;
 	}
-	return GE_SUCCESS;
+	return ret;
 }
 
 int TianShi::p_basic_effect_change(int &step, int dstID, int card, int doerID, int cause)

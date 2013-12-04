@@ -22,6 +22,7 @@
 #include "role\TianShi.h"
 #include "role\XianZhe.h"
 #include "role\WuNv.h"
+#include "role\ZhongCai.h"
 
 using namespace boost;
 void TeamArea::initialTeam()
@@ -793,8 +794,14 @@ void GameGrail::initPlayerEntities()
 		player_it = (SinglePlayerInfo*)&(game_info.player_infos().Get(i));
 		id = player_it->id();
 		color = player_it->team();
-		//FIXME: 全封印时代
-		m_playerEntities[id] = new WuNv(this, id, color);
+		//FIXME: 全仲裁时代
+		m_playerEntities[id] = new ZhongCai(this, id, color);
+		/*
+		if (id % 2)
+			m_playerEntities[id] = new XianZhe(this, id, color);
+		else
+			m_playerEntities[id] = new FengYin(this, id, color);
+		*/
 		
 		position2id[i] = id;
 	}

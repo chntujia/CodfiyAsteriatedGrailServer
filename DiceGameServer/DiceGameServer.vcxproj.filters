@@ -108,19 +108,22 @@
     <ClInclude Include="role\ShenGuan.h">
       <Filter>role</Filter>
     </ClInclude>
-    <ClInclude Include="role\WuNv.h">
-      <Filter>role</Filter>
-    </ClInclude>
     <ClInclude Include="role\GongNv.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="role\TianShi.h">
+      <Filter>role</Filter>
+    </ClInclude>
+    <ClInclude Include="role\ZhongCai.h">
+      <Filter>role</Filter>
+    </ClInclude>
     <ClInclude Include="role\XianZhe.h">
-      <Filter>头文件</Filter>
+      <Filter>role</Filter>
     </ClInclude>
     <ClInclude Include="role\MoJian.h">
       <Filter>role</Filter>
     </ClInclude>
-    <ClInclude Include="role\TianShi.h">
+    <ClInclude Include="role\WuNv.h">
       <Filter>role</Filter>
     </ClInclude>
   </ItemGroup>
@@ -209,19 +212,22 @@
     <ClCompile Include="role\ShenGuan.cpp">
       <Filter>role</Filter>
     </ClCompile>
-    <ClCompile Include="role\WuNv.cpp">
-      <Filter>role</Filter>
-    </ClCompile>
     <ClCompile Include="role\GongNv.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="role\TianShi.cpp">
+      <Filter>role</Filter>
+    </ClCompile>
+    <ClCompile Include="role\ZhongCai.cpp">
+      <Filter>role</Filter>
+    </ClCompile>
     <ClCompile Include="role\XianZhe.cpp">
-      <Filter>源文件</Filter>
+      <Filter>role</Filter>
     </ClCompile>
     <ClCompile Include="role\MoJian.cpp">
       <Filter>role</Filter>
     </ClCompile>
-    <ClCompile Include="role\TianShi.cpp">
+    <ClCompile Include="role\WuNv.cpp">
       <Filter>role</Filter>
     </ClCompile>
   </ItemGroup>
