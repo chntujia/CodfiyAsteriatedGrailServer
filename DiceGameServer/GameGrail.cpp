@@ -22,7 +22,7 @@
 #include "role\TianShi.h"
 #include "role\XianZhe.h"
 #include "role\WuNv.h"
-#include "role\ZhongCai.h"
+#include "role\LingFu.h"
 
 using namespace boost;
 void TeamArea::initialTeam()
@@ -330,7 +330,7 @@ int GameGrail::setStateMoveCards(int srcOwner, int srcArea, int dstOwner, int ds
 		pushGameState(new StateBasicEffectChange(srcOwner, CHANGE_REMOVE, cards[0], harm.srcID, harm.cause));
 		break;
 	case DECK_COVER:
-		pushGameState(new StateCoverChange(dstOwner, CHANGE_REMOVE, howMany, cards, harm));	
+		pushGameState(new StateCoverChange(srcOwner, CHANGE_REMOVE, howMany, cards, harm));	
 		break;
 	default:
 		return GE_NOT_SUPPORTED;
@@ -626,10 +626,6 @@ int GameGrail::setStateTimeline2Hit(int cardID, int dstID, int srcID, HARM harm,
 
 int GameGrail::setStateTimeline3(int dstID, HARM harm)
 {
-	network::HurtMsg hurt_msg;
-	Coder::hurtNotice(dstID, harm.srcID, harm.type, harm.point, harm.cause, hurt_msg);
-	sendMessage(-1, MSG_HURT, hurt_msg);
-
 	CONTEXT_TIMELINE_3 *con = new CONTEXT_TIMELINE_3;
 	con->harm = harm;
 	con->dstID = dstID;
@@ -794,14 +790,8 @@ void GameGrail::initPlayerEntities()
 		player_it = (SinglePlayerInfo*)&(game_info.player_infos().Get(i));
 		id = player_it->id();
 		color = player_it->team();
-		//FIXME: 全仲裁时代
-		m_playerEntities[id] = new ZhongCai(this, id, color);
-		/*
-		if (id % 2)
-			m_playerEntities[id] = new XianZhe(this, id, color);
-		else
-			m_playerEntities[id] = new FengYin(this, id, color);
-		*/
+		//FIXME: 全封印时代
+		m_playerEntities[id] = new LingFu(this, id, color);
 		
 		position2id[i] = id;
 	}

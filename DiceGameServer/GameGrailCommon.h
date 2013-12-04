@@ -311,7 +311,7 @@ public:
 		cmd->add_dst_ids(ID);
 		cmd->add_args(cause);
 		cmd->add_args(sum);
-		cmd->add_args(show);
+		cmd->add_args(show ? 1 : 0);
 	}
 	static void askForDiscardCover(int ID, int sum, int cause, CommandRequest& cmd_req)
 	{
@@ -319,7 +319,7 @@ public:
 		Command *cmd;
 
 		cmd = cmd_req.add_commands();
-		cmd->set_respond_id(network::RESPOND_DISCARD);
+		cmd->set_respond_id(network::RESPOND_DISCARD_COVER);
 		cmd->add_dst_ids(ID);
 		cmd->add_args(cause);
 		cmd->add_args(sum);

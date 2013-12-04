@@ -87,10 +87,8 @@ int StateRoleStrategyRandom::handle(GameGrail* engine)
 	for(int i = 0; i < engine->getGameMaxPlayers(); i++){
 		// i为玩家编号，不是座号		
 		if(GE_SUCCESS == (ret=roles->pop(1, &out))){
-			//FIXME: 全仲裁时代
-			role_id = 14;
-			//role_id = i % 2 ? 17: 4;
-			Coder::roleNotice(i, role_id, game_info);
+			//FIXME: 全封印时代
+			Coder::roleNotice(i, 18, game_info);
 			engine->sendMessage(-1, MSG_GAME, game_info);
 		}
 		else{
@@ -971,7 +969,13 @@ int StateTimeline3::handle(GameGrail* engine)
 	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateTimeline3", engine->getGameId());
 	int ret = GE_FATAL_ERROR;
 	int m_currentPlayerID = engine->getCurrentPlayerID();
-
+	if(!isSet){
+		network::HurtMsg hurt_msg;
+		HARM harm = context->harm;
+		Coder::hurtNotice(context->dstID, harm.srcID, harm.type, harm.point, harm.cause, hurt_msg);
+		engine->sendMessage(-1, MSG_HURT, hurt_msg);
+		isSet = true;
+	}
 	while(iterator < engine->getGameMaxPlayers()){	    
 		ret = engine->getPlayerEntity(iterator)->p_timeline_3(step, context);
 		moveIterator(ret);
@@ -1425,7 +1429,7 @@ int StateRequestCover::handle(GameGrail* engine)
 					for (int i=0; i<respond->card_ids_size(); ++i)
 						toDiscard[i] = respond->card_ids(i);
 				}
-				if(GE_SUCCESS != (ret = target->checkHandCards(harm.point, toDiscard)) ||
+				if(GE_SUCCESS != (ret = target->checkCoverCards(harm.point, toDiscard)) ||
 				   GE_SUCCESS != (ret = causer->v_request_cover(harm.point, toDiscard, harm))){
 					return ret;
 				}

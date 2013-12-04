@@ -126,6 +126,15 @@
     <ClInclude Include="role\WuNv.h">
       <Filter>role</Filter>
     </ClInclude>
+    <ClInclude Include="role\MoJian.h">
+      <Filter>role</Filter>
+    </ClInclude>
+    <ClInclude Include="role\LingFu.h">
+      <Filter>role</Filter>
+    </ClInclude>
+    <ClInclude Include="role\WuNv.h">
+      <Filter>role</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -225,6 +234,15 @@
       <Filter>role</Filter>
     </ClCompile>
     <ClCompile Include="role\MoJian.cpp">
+      <Filter>role</Filter>
+    </ClCompile>
+    <ClCompile Include="role\WuNv.cpp">
+      <Filter>role</Filter>
+    </ClCompile>
+    <ClCompile Include="role\MoJian.cpp">
+      <Filter>role</Filter>
+    </ClCompile>
+    <ClCompile Include="role\LingFu.cpp">
       <Filter>role</Filter>
     </ClCompile>
     <ClCompile Include="role\WuNv.cpp">

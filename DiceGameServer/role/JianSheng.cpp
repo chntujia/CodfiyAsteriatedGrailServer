@@ -41,6 +41,9 @@ int JianSheng::p_timeline_1(int &step, CONTEXT_TIMELINE_1 *con)
 	//若成功则继续往下走，失败则返回，step会保留，下次再进来就不会重走
 	//一般超时也会继续下一步
 	if(step == STEP_INIT){
+		step = LIE_FENG_JI;
+	}
+	if(step == LIE_FENG_JI){
 		ret = LieFengJi(con);
 		if(toNextStep(ret)){
 			step = JI_FENG_JI;

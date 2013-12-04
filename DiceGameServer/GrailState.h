@@ -410,10 +410,11 @@ public:
 class StateTimeline3 : public GrailState
 {
 public:
-	StateTimeline3(CONTEXT_TIMELINE_3 *con): GrailState(STATE_TIMELINE_3), context(con){}
+	StateTimeline3(CONTEXT_TIMELINE_3 *con): GrailState(STATE_TIMELINE_3), context(con), isSet(false){}
 	~StateTimeline3(){ SAFE_DELETE(context); }
 	int handle(GameGrail* engine);
 	CONTEXT_TIMELINE_3 *context;
+	bool isSet;
 };
 
 class StateTimeline4 : public GrailState

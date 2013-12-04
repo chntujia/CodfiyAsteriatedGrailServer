@@ -177,8 +177,8 @@ protected:
     bool handCardsMaxFixed;//是否锁定手牌上限
     bool yourTurn;
     int seatNum;
-    int token[3];
-    int tokenMax[3];
+    int token[2];
+    int tokenMax[2];
 	PlayerEntity* prePlayer;//上家
     PlayerEntity* postPlayer;//下家
     TeamArea* teamArea;
