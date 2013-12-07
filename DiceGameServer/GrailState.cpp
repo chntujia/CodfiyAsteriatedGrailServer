@@ -1496,16 +1496,17 @@ int StateBeforeLoseMorale::handle(GameGrail* engine)
 			return ret;
 		}		
 	}
-
-	CONTEXT_LOSE_MORALE* newCon = new CONTEXT_LOSE_MORALE;
-	newCon->howMany = context->howMany;
-	newCon->dstID = context->dstID;
-	newCon->harm = context->harm;
-	if(GE_SUCCESS == (ret = engine->popGameState_if(STATE_BEFORE_LOSE_MORALE))){
-		engine->pushGameState(new StateLoseMorale(newCon));
-	}
-	else{
-		SAFE_DELETE(newCon);
+	if(context->howMany != 0){
+		CONTEXT_LOSE_MORALE* newCon = new CONTEXT_LOSE_MORALE;
+		newCon->howMany = context->howMany;
+		newCon->dstID = context->dstID;
+		newCon->harm = context->harm;
+		if(GE_SUCCESS == (ret = engine->popGameState_if(STATE_BEFORE_LOSE_MORALE))){
+			engine->pushGameState(new StateLoseMorale(newCon));
+		}
+		else{
+			SAFE_DELETE(newCon);
+		}
 	}
 	return ret;
 }
@@ -1523,16 +1524,17 @@ int StateLoseMorale::handle(GameGrail* engine)
 			return ret;
 		}		
 	}
-
-	CONTEXT_LOSE_MORALE* newCon = new CONTEXT_LOSE_MORALE;
-	newCon->howMany = context->howMany;
-	newCon->dstID = context->dstID;
-	newCon->harm = context->harm;
-	if(GE_SUCCESS == (ret = engine->popGameState_if(STATE_LOSE_MORALE))){
-		engine->pushGameState(new StateFixMorale(newCon));
-	}
-	else{
-		SAFE_DELETE(newCon);
+	if(context->howMany != 0){
+		CONTEXT_LOSE_MORALE* newCon = new CONTEXT_LOSE_MORALE;
+		newCon->howMany = context->howMany;
+		newCon->dstID = context->dstID;
+		newCon->harm = context->harm;
+		if(GE_SUCCESS == (ret = engine->popGameState_if(STATE_LOSE_MORALE))){
+			engine->pushGameState(new StateFixMorale(newCon));
+		}
+		else{
+			SAFE_DELETE(newCon);
+		}
 	}
 	return ret;
 }
@@ -1550,16 +1552,17 @@ int StateFixMorale::handle(GameGrail* engine)
 			return ret;
 		}		
 	}
-
-	CONTEXT_LOSE_MORALE* newCon = new CONTEXT_LOSE_MORALE;
-	newCon->howMany = context->howMany;
-	newCon->dstID = context->dstID;
-	newCon->harm = context->harm;
-	if(GE_SUCCESS == (ret = engine->popGameState_if(STATE_FIX_MORALE))){
-		engine->pushGameState(new StateTrueLoseMorale(newCon));
-	}
-	else{
-		SAFE_DELETE(newCon);
+	if(context->howMany != 0){
+		CONTEXT_LOSE_MORALE* newCon = new CONTEXT_LOSE_MORALE;
+		newCon->howMany = context->howMany;
+		newCon->dstID = context->dstID;
+		newCon->harm = context->harm;
+		if(GE_SUCCESS == (ret = engine->popGameState_if(STATE_FIX_MORALE))){
+			engine->pushGameState(new StateTrueLoseMorale(newCon));
+		}
+		else{
+			SAFE_DELETE(newCon);
+		}
 	}
 	return ret;
 }
