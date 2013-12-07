@@ -23,6 +23,7 @@
 #include "role\XianZhe.h"
 #include "role\WuNv.h"
 #include "role\LingFu.h"
+#include "role\GeDou.h"
 
 using namespace boost;
 void TeamArea::initialTeam()
@@ -791,7 +792,7 @@ void GameGrail::initPlayerEntities()
 		id = player_it->id();
 		color = player_it->team();
 		//FIXME: È«·âÓ¡Ê±´ú
-		m_playerEntities[id] = new LingFu(this, id, color);
+		m_playerEntities[id] = new GeDou(this, id, color);
 		
 		position2id[i] = id;
 	}

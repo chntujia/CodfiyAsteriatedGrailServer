@@ -297,7 +297,7 @@ int ShenGuan::ShenShengLingYu(int &step, Action *action)
 		}
 		if(cardNum > 0)
 		{
-			engine->setStateMoveCardsNotToHand(id, DECK_HAND, -1, DECK_DISCARD, 2, cardIDs, id, SHEN_SHENG_LING_YU, false);
+			engine->setStateMoveCardsNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardNum, cardIDs, id, SHEN_SHENG_LING_YU, false);
 			step = SHEN_SHENG_LING_YU;
 			return GE_URGENT;
 		}

@@ -383,42 +383,14 @@ int WuNv::XueZhiZuZhou(int &step, Action* action)
 		}
 		else
 		{
-			vector<int> cardIDs;
-			CommandRequest cmd_req;
-			Coder::askForSkill(id, XUE_ZHI_ZU_ZHOU_QI_PAI, cmd_req);
-			//有限等待，由UserTask调用tryNotify唤醒
-			if(engine->waitForOne(id, network::MSG_CMD_REQ, cmd_req))
-			{
-				void* reply;
-				int ret;
-				if (GE_SUCCESS == (ret = engine->getReply(id, reply)))
-				{
-					Respond* respond = (Respond*) reply;
-					int cardNum = (getHandCardNum()>3)? 3:getHandCardNum();
-					for(int i = 0; i < cardNum; i ++)
-					{
-						cardIDs.push_back(respond->card_ids(i));
-					}
-					engine->setStateMoveCardsNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardNum, cardIDs, id, XUE_ZHI_ZU_ZHOU, false);
-					step = STEP_DONE;
-					return GE_URGENT;
-				}
-				return ret;
-			}
-			else
-			{
-				//超时
-				list<int>::iterator card = this->getHandCards().begin();
-				int cardNum = (getHandCardNum()>3)? 3:getHandCardNum();
-				for(int i = 0; i < cardNum; i ++)
-				{
-					cardIDs.push_back(*card);
-					++card;
-				}
-				engine->setStateMoveCardsNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardNum, cardIDs, id, XUE_ZHI_ZU_ZHOU, false);
-				step = STEP_DONE;
-				return GE_TIMEOUT;
-			}
+			int cardNum = (getHandCardNum()>3)? 3:getHandCardNum();
+			HARM qipai;
+			qipai.point = cardNum;
+			qipai.srcID = id;
+			qipai.type = HARM_NONE;
+			qipai.cause = XUE_ZHI_ZU_ZHOU;
+			engine->pushGameState(new StateRequestHand(id, qipai, -1, DECK_DISCARD, false, false));
+			return GE_URGENT;
 		}
 	}
 }

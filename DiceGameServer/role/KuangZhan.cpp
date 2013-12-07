@@ -29,8 +29,7 @@ bool KuangZhan::cmdMsgParse(UserTask *session, uint16_t type, ::google::protobuf
 	return false;
 }
 
-//统一在p_before_turn_begin 初始化各种回合变量
-int KuangZhan::p_before_turn_begin(int &step, int currentPlayerID) 
+int KuangZhan::p_after_attack(int &step, int currentPlayerID) 
 {
 	used_XueYingKuangDao = false;
 	return GE_SUCCESS; 
@@ -46,30 +45,23 @@ int KuangZhan::p_timeline_1(int &step, CONTEXT_TIMELINE_1 *con)
 	}
 	//若成功则继续往下走，失败则返回，step会保留，下次再进来就不会重走
 	//一般超时也会继续下一步
-	while(STEP_DONE != step)
+	if(step == STEP_INIT){
+		step = XUE_YING_KUANG_DAO;
+	}
+	if(step == XUE_YING_KUANG_DAO)
 	{
-		switch(step)
-		{
-		case STEP_INIT:
-			//初始化step
-			step = XUE_YING_KUANG_DAO;
-			break;
-		case XUE_YING_KUANG_DAO:
-			ret = XueYingKuangDao(con);
-			if(toNextStep(ret)){
-				step = XUE_XING_PAO_XIAO;
-			}			
-			break;
-		case XUE_XING_PAO_XIAO:
-			ret = XueXingPaoXiao(con);
-			if(toNextStep(ret)){
-				step = STEP_DONE;
-			}			
-			break;	
-		default:
-			return GE_INVALID_STEP;
+		ret = XueYingKuangDao(con);
+		if(toNextStep(ret)){
+			step = XUE_XING_PAO_XIAO;
 		}
 	}
+	if(step == XUE_XING_PAO_XIAO)
+	{
+		ret = XueXingPaoXiao(con);
+		if(toNextStep(ret)){
+			step = STEP_DONE;
+		}
+	}				
 	return ret;
 }
 
@@ -79,28 +71,21 @@ int KuangZhan::p_timeline_2_hit(int &step, CONTEXT_TIMELINE_2_HIT * con)
 	if(con->attack.srcID != id){
 		return GE_SUCCESS;
 	}
-	while(STEP_DONE != step)
+	if(step == STEP_INIT){
+		step = KUANG_HUA;
+	}
+	if(step == KUANG_HUA)
 	{
-		switch(step)
-		{
-		case STEP_INIT:
-			//初始化step
-			step = KUANG_HUA;
-			break;
-		case KUANG_HUA:
-			ret = KuangHua(con);
-			if(toNextStep(ret)){
-				step = SI_LIE;
-			}			
-			break;
-		case SI_LIE:
-			ret = SiLie(con);
-			if(toNextStep(ret)){
-				step = STEP_DONE;
-			}
-			break;
-		default:
-			return GE_INVALID_STEP;
+		ret = KuangHua(con);
+		if(toNextStep(ret)){
+			step = SI_LIE;
+		}			
+	}
+	if(step == SI_LIE)
+	{
+		ret = SiLie(con);
+		if(toNextStep(ret)){
+			step = STEP_DONE;
 		}
 	}
 	return ret;

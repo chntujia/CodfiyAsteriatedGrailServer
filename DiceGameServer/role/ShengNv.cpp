@@ -49,14 +49,9 @@ int ShengNv::p_timeline_1(int &step, CONTEXT_TIMELINE_1 *con)
 {
 	int ret = GE_INVALID_STEP;
 	step = BING_SHUANG_DAO_YAN;
-	int srcID = con->attack.srcID;
-	int cardID = con->attack.cardID;
-	CardEntity* card = getCardByID(cardID);
-	if (srcID == id && card->getElement() == ELEMENT_WATER)
-	{
-		// ±ùËªµ»ÑÔ
-		ret = BingShuangDaoYan(con);
-	}
+	
+	// ±ùËªµ»ÑÔ
+	ret = BingShuangDaoYan(con);
 	if(toNextStep(ret))
 	{
 		step = STEP_DONE;
@@ -180,6 +175,12 @@ int ShengNv::LianMin()
 
 int ShengNv::BingShuangDaoYan(CONTEXT_TIMELINE_1 *con)
 {
+	int srcID = con->attack.srcID;
+	int cardID = con->attack.cardID;
+	CardEntity* card = getCardByID(cardID);
+	if (srcID != id && card->getElement() != ELEMENT_WATER){
+		return GE_SUCCESS;
+	}
 	CommandRequest cmd_req;
 	int ret;
 	Coder::askForSkill(id, BING_SHUANG_DAO_YAN, cmd_req);

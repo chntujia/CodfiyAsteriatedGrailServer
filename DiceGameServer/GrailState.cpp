@@ -88,7 +88,7 @@ int StateRoleStrategyRandom::handle(GameGrail* engine)
 		// i为玩家编号，不是座号		
 		if(GE_SUCCESS == (ret=roles->pop(1, &out))){
 			//FIXME: 全封印时代
-			Coder::roleNotice(i, 18, game_info);
+			Coder::roleNotice(i, 20, game_info);
 			engine->sendMessage(-1, MSG_GAME, game_info);
 		}
 		else{
