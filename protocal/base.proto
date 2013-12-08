@@ -16,6 +16,16 @@ enum MessageType {
 	MSG_LOGOUT_REP = 13;
 	MSG_REGISTER_REQ = 14;
 	MSG_REGISTER_REP = 15;
+
+	MSG_GAMELIST_REQ = 16;
+	MSG_GAMELIST_REP = 17;
+	MSG_CREATE_GAME_REQ = 18;
+	MSG_JOIN_GAME_REQ = 19;
+	MSG_JOIN_GMAE_REP = 20;
+	MSG_START_GAME_REQ = 21;
+	MSG_START_GAME_REP = 22;
+	MSG_READY_GAME_REQ = 23;
+	MSG_GAME_INFO_REP = 24;
 }
 
 // c -> s 注册请求
@@ -52,6 +62,95 @@ message LogoutRequest {
 // s -> c 登出响应
 message LogoutReply {
 	repeated uint32 args = 1;
+}
+
+// 游戏类型
+enum GameType {
+	GAME_TYPE_ALL = 1;
+	GAME_TYPE_THREE_ONE = 2;		// 31模式
+	GAME_TYPE_BP = 3;
+	GAME_TYPE_CP = 4;
+}
+
+// c -> s 获取游戏列表
+message GameListRequest {
+	required GameType type = 1;
+}
+
+// s -> c 游戏列表
+message GameListResponse {
+	message GameInfo{
+		required int32 room_id = 1;
+		required string room_name = 2;
+		required int32 max_player = 3;
+		required int32 now_player = 4;
+		required GameType type = 5;
+	}
+	repeated GameInfo game = 1;
+}
+
+// c -> s 创建房间
+message CreateGameRequest {
+	required int32 user_id = 1;
+	required GameType type = 2;
+	required int32 max_player = 3;
+}
+
+// c -> s 加入房间
+message JoinGameRequest {
+	required int32 user_id = 1;
+	required int32 romm_id = 2;
+}
+
+// s -> c 加入房间返回
+message JoinGameResponse {
+	required int32 user_id = 1;
+	required int32 romm_id = 2;
+	enum JoinGameResult {
+		JOIN_GAME_SUCCESS = 1;
+		JOIN_GMAE_FULL = 2;
+	}
+	required JoinGameResult result = 3;
+}
+
+// c -> s 开始游戏请求
+message StartGameRequest {
+	required int32 user_id = 1;
+	required int32 romm_id = 2;
+}
+
+// s -> c 开始游戏返回
+message StartGameResponse {
+	required int32 user_id = 1;
+	required int32 romm_id = 2;
+	enum StartGameResult {
+		JOIN_GAME_SUCCESS = 1;
+		JOIN_GMAE_FAIL = 2;
+	}
+	required StartGameResult result = 3;
+}
+
+// c -> s 游戏准备、取消准备
+message ReadyForGameRequest {
+	required int32 user_id = 1;
+	required int32 romm_id = 2;
+	enum ReadyForGameType {
+		READY_FOR_GMAE = 1;
+		CANCEL_REDAY_FOR_GAME = 2;
+	}
+	required ReadyForGameType result = 3;
+}
+
+// s -> c 游戏房间信息
+message GameRoomInfo {
+	required int32 room_id = 1;
+	required GameType type = 2;
+	message PlayerInfo {
+		required int32 user_id = 1;
+		required string user_name = 2;
+		required int32 is_room_owner = 3;
+	}
+	repeated PlayerInfo player = 3;
 }
 
 // c -> s 创建房间
