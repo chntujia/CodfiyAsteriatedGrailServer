@@ -19,10 +19,11 @@
 #include "role\MaoXian.h"
 #include "role\GongNv.h"
 #include "role\ShenGuan.h"
+#include "role\MoJian.h"
+#include "role\LingHun.h"
 #include "role\TianShi.h"
 #include "role\XianZhe.h"
 #include "role\WuNv.h"
-#include "role\LingFu.h"
 #include "role\GeDou.h"
 
 using namespace boost;
@@ -634,6 +635,16 @@ int GameGrail::setStateTimeline3(int dstID, HARM harm)
 	pushGameState(new StateTimeline3(con));
 	return GE_SUCCESS;
 }
+ //灵魂术士-->【灵魂链接】  added by Tony
+int GameGrail::setStateTimeline6(int dstID, HARM harm)
+{
+	CONTEXT_TIMELINE_6 *con = new CONTEXT_TIMELINE_6;
+	con->harm = harm;
+	con->dstID = dstID;
+	
+	pushGameState(new StateTimeline6(con));
+	return GE_SUCCESS;
+}
 
 int GameGrail::setStateStartLoseMorale(int howMany, int dstID, HARM harm)
 {
@@ -792,7 +803,7 @@ void GameGrail::initPlayerEntities()
 		id = player_it->id();
 		color = player_it->team();
 		//FIXME: 全封印时代
-		m_playerEntities[id] = new GeDou(this, id, color);
+		m_playerEntities[id] = new LingHun(this, id, color);
 		
 		position2id[i] = id;
 	}
@@ -816,6 +827,7 @@ void GameGrail::initPlayerEntities()
 	m_playerEntities[id]->setPre(m_playerEntities[pre]);
 	m_teamArea = new TeamArea;
 }
+
 /*
 int GameGrail::handleRoleStrategy31(GrailState *state)
 {

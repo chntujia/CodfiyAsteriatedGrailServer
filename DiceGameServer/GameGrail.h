@@ -203,6 +203,7 @@ public:
 	int setStateTimeline2Miss(int cardID, int dstID, int srcID, bool isActive);
 	int setStateTimeline2Hit(int cardID, int dstID, int srcID, HARM harm, bool isActive);
 	int setStateTimeline3(int dstID, HARM harm);
+	int setStateTimeline6(int dstID, HARM harm); //added by Tony
 	int setStateStartLoseMorale(int howMany, int dstID, HARM harm);
 	int setStateCheckTurnEnd();
 	Deck* initRoles();
