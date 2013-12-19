@@ -24,7 +24,9 @@
 #include "role\TianShi.h"
 #include "role\XianZhe.h"
 #include "role\WuNv.h"
+#include "role\LingFu.h"
 #include "role\GeDou.h"
+#include "role\QiDao.h"
 
 using namespace boost;
 void TeamArea::initialTeam()
