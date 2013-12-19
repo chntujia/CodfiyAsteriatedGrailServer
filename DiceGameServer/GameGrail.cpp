@@ -27,8 +27,98 @@
 #include "role\LingFu.h"
 #include "role\GeDou.h"
 #include "role\QiDao.h"
-
+#include "role\ZhongCai.h"
 using namespace boost;
+
+PlayerEntity* GameGrail::createRole(int id, int roleID, int color)
+{
+	switch(roleID)
+    {
+    case 1:
+        return new JianSheng(this,id,color);
+        break;
+    case 2:
+        return new KuangZhan(this,id,color);
+        break;
+    case 3:
+        return new GongNv(this,id,color);
+        break;
+    case 4:
+        return new FengYin(this,id,color);
+        break;
+    case 5:
+        return new AnSha(this,id,color);
+        break;
+    case 6:
+        return new ShengNv(this,id,color);
+        break;
+    case 7:
+        return new TianShi(this,id,color);
+        break;
+    case 8:
+        return new MoDao(this,id,color);
+        break;
+    case 9:
+        return new MoJian(this,id,color);
+        break;
+	case 10:
+        return new ShengQiang(this, id, color);
+		break;
+    case 11:
+        return new YuanSu(this,id,color);
+        break;
+    case 12:
+        return new MaoXian(this,id,color);
+        break;
+    case 13:
+        return new SiLing(this,id,color);
+        break;
+    case 14:
+        return new ZhongCai(this,id,color);
+        break;
+    case 15:
+        return new ShenGuan(this,id,color);
+        break;
+    //case 16:
+    //    return new QiDao(this,id,color);
+    //    break;
+    case 17:
+        return new XianZhe(this,id,color);
+        break;
+    //case 19:
+    //    return new JianDi(this,id,color);
+    //    break;
+    //case 20:
+    //    return new GeDouJia(this,id,color);
+    //    break;
+    case 18:
+        return new LingFu(this,id,color);
+        break;
+    //case 21:
+    //    return new YongZhe(this,id,color);
+    //    break;
+    //case 22:
+    //    return new LingHun(this,id,color);
+        //break;
+    case 23:
+        return new WuNv(this,id,color);
+        break;
+    //case 24:
+    //    return new DieWu(this,id,color);
+    //    break;
+    //case 26:
+    //    return new MoGong(this,id,color);
+    //    break;
+    //case 28:
+    //    return new HongLian(this,id,color);
+    //    break;
+    //case 29:
+    //    return new MoQiang(this,id,color);
+    //    break;
+    }
+    return NULL;
+}
+
 void TeamArea::initialTeam()
 {
     this->moraleBLUE = 15;
@@ -741,7 +831,7 @@ int GameGrail::setStateRoleStrategy()
 		pushGameState(new StateRoleStrategyRandom);
 		break;
 	case ROLE_STRATEGY_31:
-		pushGameState(new GrailState(STATE_ROLE_STRATEGY_31));
+		pushGameState(new StateRoleStrategy31);
 		break;
 	case ROLE_STRATEGY_BP:
 		pushGameState(new GrailState(STATE_ROLE_STRATEGY_BP));
@@ -775,11 +865,9 @@ Deck* GameGrail::initRoles()
 {
 	Deck *roles;
 	roles = new Deck(30);
-	roles->init(1, 24);
-	//int temp[]={26, 28, 29};
-	//roles->push(3, temp);
+	roles->push(sizeof(SUMMON)/sizeof(int), SUMMON);
 	//FIXME: disable random for debug
-	//roles->randomize();
+	roles->randomize();
 	return roles;
 }
 
@@ -789,23 +877,18 @@ void GameGrail::initPlayerEntities()
 	int id;
 	int post;
 	int color;
-	if(m_maxPlayers<2){
-		ztLoggerWrite(ZONE, e_Error, "[Table %d] maxPlayers: %d must be at least 2", 
-					m_gameId, m_maxPlayers);
-		return;
-	}
-	//FIXME should init roles instead of playerEntity
+	int roleID;
 
-	//google::protobuf::RepeatedPtrField<SinglePlayerInfo>::iterator player_it = game_info.player_infos().begin();
 	SinglePlayerInfo* player_it;
 	int position2id[8];
 
 	for(int i = 0; i < m_maxPlayers; i++){
 		player_it = (SinglePlayerInfo*)&(game_info.player_infos().Get(i));
 		id = player_it->id();
+		roleID = player_it->role_id();
 		color = player_it->team();
 		//FIXME: È«·âÓ¡Ê±´ú
-		m_playerEntities[id] = new LingHun(this, id, color);
+		m_playerEntities[id] = createRole(id, roleID, color);
 		
 		position2id[i] = id;
 	}

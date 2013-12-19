@@ -34,8 +34,8 @@ void  protobuf_AddDesc_action_5frespond_2eproto();
 void protobuf_AssignDesc_action_5frespond_2eproto();
 void protobuf_ShutdownFile_action_5frespond_2eproto();
 
-class CharactorPickRequest;
-class Pick;
+class RoleRequest;
+class PickBan;
 class TurnBegin;
 class Action;
 class Respond;
@@ -48,8 +48,8 @@ class HurtMsg;
 class SkillMsg;
 
 enum MessageType2 {
-  MSG_PICK_REQ = 101,
-  MSG_PICK = 102,
+  MSG_ROLE_REQ = 101,
+  MSG_PICK_BAN = 102,
   MSG_ACTION = 103,
   MSG_RESPOND = 104,
   MSG_CMD_REQ = 106,
@@ -61,7 +61,7 @@ enum MessageType2 {
   MSG_SKILL = 112
 };
 bool MessageType2_IsValid(int value);
-const MessageType2 MessageType2_MIN = MSG_PICK_REQ;
+const MessageType2 MessageType2_MIN = MSG_ROLE_REQ;
 const MessageType2 MessageType2_MAX = MSG_SKILL;
 const int MessageType2_ARRAYSIZE = MessageType2_MAX + 1;
 
@@ -92,6 +92,26 @@ inline bool PlayerIdConst_Parse(
     const ::std::string& name, PlayerIdConst* value) {
   return ::google::protobuf::internal::ParseNamedEnum<PlayerIdConst>(
     PlayerIdConst_descriptor(), name, value);
+}
+enum ROLE_STRATEGY {
+  ROLE_STRATEGY_RANDOM = 1,
+  ROLE_STRATEGY_31 = 2,
+  ROLE_STRATEGY_BP = 3
+};
+bool ROLE_STRATEGY_IsValid(int value);
+const ROLE_STRATEGY ROLE_STRATEGY_MIN = ROLE_STRATEGY_RANDOM;
+const ROLE_STRATEGY ROLE_STRATEGY_MAX = ROLE_STRATEGY_BP;
+const int ROLE_STRATEGY_ARRAYSIZE = ROLE_STRATEGY_MAX + 1;
+
+const ::google::protobuf::EnumDescriptor* ROLE_STRATEGY_descriptor();
+inline const ::std::string& ROLE_STRATEGY_Name(ROLE_STRATEGY value) {
+  return ::google::protobuf::internal::NameOfEnum(
+    ROLE_STRATEGY_descriptor(), value);
+}
+inline bool ROLE_STRATEGY_Parse(
+    const ::std::string& name, ROLE_STRATEGY* value) {
+  return ::google::protobuf::internal::ParseNamedEnum<ROLE_STRATEGY>(
+    ROLE_STRATEGY_descriptor(), name, value);
 }
 enum BasicActionType {
   ACTION_ATTACK = 1,
@@ -126,11 +146,12 @@ enum BasicRespondType {
   RESPOND_DISCARD = 13,
   RESPOND_WEAKEN = 14,
   RESPOND_ADDITIONAL_ACTION = 15,
-  RESPOND_DISCARD_COVER = 16
+  RESPOND_DISCARD_COVER = 16,
+  RESPOND_ROLE = 17
 };
 bool BasicRespondType_IsValid(int value);
 const BasicRespondType BasicRespondType_MIN = RESPOND_REPLY_ATTACK;
-const BasicRespondType BasicRespondType_MAX = RESPOND_DISCARD_COVER;
+const BasicRespondType BasicRespondType_MAX = RESPOND_ROLE;
 const int BasicRespondType_ARRAYSIZE = BasicRespondType_MAX + 1;
 
 const ::google::protobuf::EnumDescriptor* BasicRespondType_descriptor();
@@ -183,14 +204,14 @@ inline bool CardMsgType_Parse(
 }
 // ===================================================================
 
-class CharactorPickRequest : public ::google::protobuf::Message {
+class RoleRequest : public ::google::protobuf::Message {
  public:
-  CharactorPickRequest();
-  virtual ~CharactorPickRequest();
+  RoleRequest();
+  virtual ~RoleRequest();
 
-  CharactorPickRequest(const CharactorPickRequest& from);
+  RoleRequest(const RoleRequest& from);
 
-  inline CharactorPickRequest& operator=(const CharactorPickRequest& from) {
+  inline RoleRequest& operator=(const RoleRequest& from) {
     CopyFrom(from);
     return *this;
   }
@@ -204,17 +225,17 @@ class CharactorPickRequest : public ::google::protobuf::Message {
   }
 
   static const ::google::protobuf::Descriptor* descriptor();
-  static const CharactorPickRequest& default_instance();
+  static const RoleRequest& default_instance();
 
-  void Swap(CharactorPickRequest* other);
+  void Swap(RoleRequest* other);
 
   // implements Message ----------------------------------------------
 
-  CharactorPickRequest* New() const;
+  RoleRequest* New() const;
   void CopyFrom(const ::google::protobuf::Message& from);
   void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const CharactorPickRequest& from);
-  void MergeFrom(const CharactorPickRequest& from);
+  void CopyFrom(const RoleRequest& from);
+  void MergeFrom(const RoleRequest& from);
   void Clear();
   bool IsInitialized() const;
 
@@ -237,10 +258,17 @@ class CharactorPickRequest : public ::google::protobuf::Message {
 
   // accessors -------------------------------------------------------
 
-  // repeated uint32 role_ids = 1;
+  // optional .network.ROLE_STRATEGY strategy = 1;
+  inline bool has_strategy() const;
+  inline void clear_strategy();
+  static const int kStrategyFieldNumber = 1;
+  inline ::network::ROLE_STRATEGY strategy() const;
+  inline void set_strategy(::network::ROLE_STRATEGY value);
+
+  // repeated uint32 role_ids = 2;
   inline int role_ids_size() const;
   inline void clear_role_ids();
-  static const int kRoleIdsFieldNumber = 1;
+  static const int kRoleIdsFieldNumber = 2;
   inline ::google::protobuf::uint32 role_ids(int index) const;
   inline void set_role_ids(int index, ::google::protobuf::uint32 value);
   inline void add_role_ids(::google::protobuf::uint32 value);
@@ -249,33 +277,49 @@ class CharactorPickRequest : public ::google::protobuf::Message {
   inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
       mutable_role_ids();
 
-  // @@protoc_insertion_point(class_scope:network.CharactorPickRequest)
+  // repeated uint32 args = 3;
+  inline int args_size() const;
+  inline void clear_args();
+  static const int kArgsFieldNumber = 3;
+  inline ::google::protobuf::uint32 args(int index) const;
+  inline void set_args(int index, ::google::protobuf::uint32 value);
+  inline void add_args(::google::protobuf::uint32 value);
+  inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
+      args() const;
+  inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
+      mutable_args();
+
+  // @@protoc_insertion_point(class_scope:network.RoleRequest)
  private:
+  inline void set_has_strategy();
+  inline void clear_has_strategy();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
   ::google::protobuf::RepeatedField< ::google::protobuf::uint32 > role_ids_;
+  ::google::protobuf::RepeatedField< ::google::protobuf::uint32 > args_;
+  int strategy_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(1 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(3 + 31) / 32];
 
   friend void  protobuf_AddDesc_action_5frespond_2eproto();
   friend void protobuf_AssignDesc_action_5frespond_2eproto();
   friend void protobuf_ShutdownFile_action_5frespond_2eproto();
 
   void InitAsDefaultInstance();
-  static CharactorPickRequest* default_instance_;
+  static RoleRequest* default_instance_;
 };
 // -------------------------------------------------------------------
 
-class Pick : public ::google::protobuf::Message {
+class PickBan : public ::google::protobuf::Message {
  public:
-  Pick();
-  virtual ~Pick();
+  PickBan();
+  virtual ~PickBan();
 
-  Pick(const Pick& from);
+  PickBan(const PickBan& from);
 
-  inline Pick& operator=(const Pick& from) {
+  inline PickBan& operator=(const PickBan& from) {
     CopyFrom(from);
     return *this;
   }
@@ -289,17 +333,17 @@ class Pick : public ::google::protobuf::Message {
   }
 
   static const ::google::protobuf::Descriptor* descriptor();
-  static const Pick& default_instance();
+  static const PickBan& default_instance();
 
-  void Swap(Pick* other);
+  void Swap(PickBan* other);
 
   // implements Message ----------------------------------------------
 
-  Pick* New() const;
+  PickBan* New() const;
   void CopyFrom(const ::google::protobuf::Message& from);
   void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const Pick& from);
-  void MergeFrom(const Pick& from);
+  void CopyFrom(const PickBan& from);
+  void MergeFrom(const PickBan& from);
   void Clear();
   bool IsInitialized() const;
 
@@ -322,31 +366,54 @@ class Pick : public ::google::protobuf::Message {
 
   // accessors -------------------------------------------------------
 
-  // optional uint32 role_id = 1;
-  inline bool has_role_id() const;
-  inline void clear_role_id();
-  static const int kRoleIdFieldNumber = 1;
-  inline ::google::protobuf::uint32 role_id() const;
-  inline void set_role_id(::google::protobuf::uint32 value);
+  // optional uint32 strategy = 1;
+  inline bool has_strategy() const;
+  inline void clear_strategy();
+  static const int kStrategyFieldNumber = 1;
+  inline ::google::protobuf::uint32 strategy() const;
+  inline void set_strategy(::google::protobuf::uint32 value);
 
-  // @@protoc_insertion_point(class_scope:network.Pick)
+  // optional bool is_pick = 2;
+  inline bool has_is_pick() const;
+  inline void clear_is_pick();
+  static const int kIsPickFieldNumber = 2;
+  inline bool is_pick() const;
+  inline void set_is_pick(bool value);
+
+  // repeated uint32 role_ids = 3;
+  inline int role_ids_size() const;
+  inline void clear_role_ids();
+  static const int kRoleIdsFieldNumber = 3;
+  inline ::google::protobuf::uint32 role_ids(int index) const;
+  inline void set_role_ids(int index, ::google::protobuf::uint32 value);
+  inline void add_role_ids(::google::protobuf::uint32 value);
+  inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
+      role_ids() const;
+  inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
+      mutable_role_ids();
+
+  // @@protoc_insertion_point(class_scope:network.PickBan)
  private:
-  inline void set_has_role_id();
-  inline void clear_has_role_id();
+  inline void set_has_strategy();
+  inline void clear_has_strategy();
+  inline void set_has_is_pick();
+  inline void clear_has_is_pick();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
-  ::google::protobuf::uint32 role_id_;
+  ::google::protobuf::uint32 strategy_;
+  bool is_pick_;
+  ::google::protobuf::RepeatedField< ::google::protobuf::uint32 > role_ids_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(1 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(3 + 31) / 32];
 
   friend void  protobuf_AddDesc_action_5frespond_2eproto();
   friend void protobuf_AssignDesc_action_5frespond_2eproto();
   friend void protobuf_ShutdownFile_action_5frespond_2eproto();
 
   void InitAsDefaultInstance();
-  static Pick* default_instance_;
+  static PickBan* default_instance_;
 };
 // -------------------------------------------------------------------
 
@@ -1492,57 +1559,152 @@ class SkillMsg : public ::google::protobuf::Message {
 
 // ===================================================================
 
-// CharactorPickRequest
+// RoleRequest
 
-// repeated uint32 role_ids = 1;
-inline int CharactorPickRequest::role_ids_size() const {
+// optional .network.ROLE_STRATEGY strategy = 1;
+inline bool RoleRequest::has_strategy() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void RoleRequest::set_has_strategy() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void RoleRequest::clear_has_strategy() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void RoleRequest::clear_strategy() {
+  strategy_ = 1;
+  clear_has_strategy();
+}
+inline ::network::ROLE_STRATEGY RoleRequest::strategy() const {
+  return static_cast< ::network::ROLE_STRATEGY >(strategy_);
+}
+inline void RoleRequest::set_strategy(::network::ROLE_STRATEGY value) {
+  assert(::network::ROLE_STRATEGY_IsValid(value));
+  set_has_strategy();
+  strategy_ = value;
+}
+
+// repeated uint32 role_ids = 2;
+inline int RoleRequest::role_ids_size() const {
   return role_ids_.size();
 }
-inline void CharactorPickRequest::clear_role_ids() {
+inline void RoleRequest::clear_role_ids() {
   role_ids_.Clear();
 }
-inline ::google::protobuf::uint32 CharactorPickRequest::role_ids(int index) const {
+inline ::google::protobuf::uint32 RoleRequest::role_ids(int index) const {
   return role_ids_.Get(index);
 }
-inline void CharactorPickRequest::set_role_ids(int index, ::google::protobuf::uint32 value) {
+inline void RoleRequest::set_role_ids(int index, ::google::protobuf::uint32 value) {
   role_ids_.Set(index, value);
 }
-inline void CharactorPickRequest::add_role_ids(::google::protobuf::uint32 value) {
+inline void RoleRequest::add_role_ids(::google::protobuf::uint32 value) {
   role_ids_.Add(value);
 }
 inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
-CharactorPickRequest::role_ids() const {
+RoleRequest::role_ids() const {
   return role_ids_;
 }
 inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
-CharactorPickRequest::mutable_role_ids() {
+RoleRequest::mutable_role_ids() {
   return &role_ids_;
+}
+
+// repeated uint32 args = 3;
+inline int RoleRequest::args_size() const {
+  return args_.size();
+}
+inline void RoleRequest::clear_args() {
+  args_.Clear();
+}
+inline ::google::protobuf::uint32 RoleRequest::args(int index) const {
+  return args_.Get(index);
+}
+inline void RoleRequest::set_args(int index, ::google::protobuf::uint32 value) {
+  args_.Set(index, value);
+}
+inline void RoleRequest::add_args(::google::protobuf::uint32 value) {
+  args_.Add(value);
+}
+inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
+RoleRequest::args() const {
+  return args_;
+}
+inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
+RoleRequest::mutable_args() {
+  return &args_;
 }
 
 // -------------------------------------------------------------------
 
-// Pick
+// PickBan
 
-// optional uint32 role_id = 1;
-inline bool Pick::has_role_id() const {
+// optional uint32 strategy = 1;
+inline bool PickBan::has_strategy() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
-inline void Pick::set_has_role_id() {
+inline void PickBan::set_has_strategy() {
   _has_bits_[0] |= 0x00000001u;
 }
-inline void Pick::clear_has_role_id() {
+inline void PickBan::clear_has_strategy() {
   _has_bits_[0] &= ~0x00000001u;
 }
-inline void Pick::clear_role_id() {
-  role_id_ = 0u;
-  clear_has_role_id();
+inline void PickBan::clear_strategy() {
+  strategy_ = 0u;
+  clear_has_strategy();
 }
-inline ::google::protobuf::uint32 Pick::role_id() const {
-  return role_id_;
+inline ::google::protobuf::uint32 PickBan::strategy() const {
+  return strategy_;
 }
-inline void Pick::set_role_id(::google::protobuf::uint32 value) {
-  set_has_role_id();
-  role_id_ = value;
+inline void PickBan::set_strategy(::google::protobuf::uint32 value) {
+  set_has_strategy();
+  strategy_ = value;
+}
+
+// optional bool is_pick = 2;
+inline bool PickBan::has_is_pick() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void PickBan::set_has_is_pick() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void PickBan::clear_has_is_pick() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void PickBan::clear_is_pick() {
+  is_pick_ = false;
+  clear_has_is_pick();
+}
+inline bool PickBan::is_pick() const {
+  return is_pick_;
+}
+inline void PickBan::set_is_pick(bool value) {
+  set_has_is_pick();
+  is_pick_ = value;
+}
+
+// repeated uint32 role_ids = 3;
+inline int PickBan::role_ids_size() const {
+  return role_ids_.size();
+}
+inline void PickBan::clear_role_ids() {
+  role_ids_.Clear();
+}
+inline ::google::protobuf::uint32 PickBan::role_ids(int index) const {
+  return role_ids_.Get(index);
+}
+inline void PickBan::set_role_ids(int index, ::google::protobuf::uint32 value) {
+  role_ids_.Set(index, value);
+}
+inline void PickBan::add_role_ids(::google::protobuf::uint32 value) {
+  role_ids_.Add(value);
+}
+inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
+PickBan::role_ids() const {
+  return role_ids_;
+}
+inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
+PickBan::mutable_role_ids() {
+  return &role_ids_;
 }
 
 // -------------------------------------------------------------------
@@ -2478,6 +2640,10 @@ inline const EnumDescriptor* GetEnumDescriptor< ::network::MessageType2>() {
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::network::PlayerIdConst>() {
   return ::network::PlayerIdConst_descriptor();
+}
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::network::ROLE_STRATEGY>() {
+  return ::network::ROLE_STRATEGY_descriptor();
 }
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::network::BasicActionType>() {

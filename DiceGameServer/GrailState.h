@@ -51,11 +51,6 @@ enum STATE{
 	STATE_GAME_OVER
 };
 
-enum ROLE_STRATEGY{
-	ROLE_STRATEGY_RANDOM,
-	ROLE_STRATEGY_31,
-	ROLE_STRATEGY_BP
-};
 //Contexts
 
 typedef struct{
@@ -175,6 +170,16 @@ class StateRoleStrategyRandom : public GrailState
 public:
 	StateRoleStrategyRandom(): GrailState(STATE_ROLE_STRATEGY_RANDOM){}
 	int handle(GameGrail* engine);
+};
+
+class StateRoleStrategy31 : public GrailState
+{
+public:
+	StateRoleStrategy31(): GrailState(STATE_ROLE_STRATEGY_31), isSet(false){}
+	int handle(GameGrail* engine);
+private:
+	bool isSet;
+	RoleRequest* messages[MAXPLAYER];
 };
 
 class StateGameStart : public GrailState

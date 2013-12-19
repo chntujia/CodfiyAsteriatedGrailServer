@@ -54,8 +54,8 @@ void* proto_decoder(const char* msg, uint16_t& type)
 		proto = new Talk();
 		proto->ParseFromArray(msg + SIZEOF_HEADER, header_ptr->len - SIZEOF_HEADER);
 		break;
-	case MSG_PICK:
-		proto = new Pick();
+	case MSG_PICK_BAN:
+		proto = new PickBan();
 		proto->ParseFromArray(msg + SIZEOF_HEADER, header_ptr->len - SIZEOF_HEADER);
 		break;
 	case MSG_ACTION:

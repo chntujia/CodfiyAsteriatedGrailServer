@@ -1,8 +1,8 @@
 package network;
 
 enum MessageType2 {
-    MSG_PICK_REQ = 101;
-    MSG_PICK = 102;
+    MSG_ROLE_REQ = 101;
+    MSG_PICK_BAN = 102;
     MSG_ACTION = 103;
     MSG_RESPOND= 104;
     MSG_CMD_REQ = 106;
@@ -18,14 +18,24 @@ enum PlayerIdConst {
 	PLAYER_NONE_ID = 100000;
 }
 
-// s -> c 备选角色（31模式）
-message CharactorPickRequest {
-    repeated uint32 role_ids = 1;   // 可选角色
+enum ROLE_STRATEGY{
+	ROLE_STRATEGY_RANDOM = 1;
+	ROLE_STRATEGY_31 = 2;
+	ROLE_STRATEGY_BP = 3;
 }
 
-// c -> s 角色选取（31模式）
-message Pick {
-    optional uint32 role_id = 1;
+// s -> c 备选角色
+message RoleRequest {
+    optional ROLE_STRATEGY strategy = 1;
+    repeated uint32 role_ids = 2;   // 可选角色
+	repeated uint32 args = 3;
+}
+
+// c -> s 角色选取
+message PickBan {
+    optional uint32 strategy = 1;
+    optional bool is_pick = 2;
+    repeated uint32 role_ids = 3;
 }
 
 // s -> c 回合开始消息
@@ -67,6 +77,7 @@ enum BasicRespondType {
 	RESPOND_WEAKEN = 14;       // 虚弱
 	RESPOND_ADDITIONAL_ACTION = 15;       // 额外行动
 	RESPOND_DISCARD_COVER = 16;           // 丢弃盖牌
+	RESPOND_ROLE = 17;
 }
 
 // c -> s, s -> c 启动及技能响应及应战及治疗响应及爆牌，根据不同的行动填写不同长度的args，可以用到 s -> c

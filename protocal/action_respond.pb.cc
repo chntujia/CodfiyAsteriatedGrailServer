@@ -20,12 +20,12 @@ namespace network {
 
 namespace {
 
-const ::google::protobuf::Descriptor* CharactorPickRequest_descriptor_ = NULL;
+const ::google::protobuf::Descriptor* RoleRequest_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
-  CharactorPickRequest_reflection_ = NULL;
-const ::google::protobuf::Descriptor* Pick_descriptor_ = NULL;
+  RoleRequest_reflection_ = NULL;
+const ::google::protobuf::Descriptor* PickBan_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
-  Pick_reflection_ = NULL;
+  PickBan_reflection_ = NULL;
 const ::google::protobuf::Descriptor* TurnBegin_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   TurnBegin_reflection_ = NULL;
@@ -58,6 +58,7 @@ const ::google::protobuf::internal::GeneratedMessageReflection*
   SkillMsg_reflection_ = NULL;
 const ::google::protobuf::EnumDescriptor* MessageType2_descriptor_ = NULL;
 const ::google::protobuf::EnumDescriptor* PlayerIdConst_descriptor_ = NULL;
+const ::google::protobuf::EnumDescriptor* ROLE_STRATEGY_descriptor_ = NULL;
 const ::google::protobuf::EnumDescriptor* BasicActionType_descriptor_ = NULL;
 const ::google::protobuf::EnumDescriptor* BasicRespondType_descriptor_ = NULL;
 const ::google::protobuf::EnumDescriptor* CmdType_descriptor_ = NULL;
@@ -72,36 +73,40 @@ void protobuf_AssignDesc_action_5frespond_2eproto() {
     ::google::protobuf::DescriptorPool::generated_pool()->FindFileByName(
       "action_respond.proto");
   GOOGLE_CHECK(file != NULL);
-  CharactorPickRequest_descriptor_ = file->message_type(0);
-  static const int CharactorPickRequest_offsets_[1] = {
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CharactorPickRequest, role_ids_),
+  RoleRequest_descriptor_ = file->message_type(0);
+  static const int RoleRequest_offsets_[3] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RoleRequest, strategy_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RoleRequest, role_ids_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RoleRequest, args_),
   };
-  CharactorPickRequest_reflection_ =
+  RoleRequest_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
-      CharactorPickRequest_descriptor_,
-      CharactorPickRequest::default_instance_,
-      CharactorPickRequest_offsets_,
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CharactorPickRequest, _has_bits_[0]),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CharactorPickRequest, _unknown_fields_),
+      RoleRequest_descriptor_,
+      RoleRequest::default_instance_,
+      RoleRequest_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RoleRequest, _has_bits_[0]),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RoleRequest, _unknown_fields_),
       -1,
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
-      sizeof(CharactorPickRequest));
-  Pick_descriptor_ = file->message_type(1);
-  static const int Pick_offsets_[1] = {
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Pick, role_id_),
+      sizeof(RoleRequest));
+  PickBan_descriptor_ = file->message_type(1);
+  static const int PickBan_offsets_[3] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PickBan, strategy_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PickBan, is_pick_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PickBan, role_ids_),
   };
-  Pick_reflection_ =
+  PickBan_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
-      Pick_descriptor_,
-      Pick::default_instance_,
-      Pick_offsets_,
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Pick, _has_bits_[0]),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Pick, _unknown_fields_),
+      PickBan_descriptor_,
+      PickBan::default_instance_,
+      PickBan_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PickBan, _has_bits_[0]),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PickBan, _unknown_fields_),
       -1,
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
-      sizeof(Pick));
+      sizeof(PickBan));
   TurnBegin_descriptor_ = file->message_type(2);
   static const int TurnBegin_offsets_[1] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(TurnBegin, id_),
@@ -282,10 +287,11 @@ void protobuf_AssignDesc_action_5frespond_2eproto() {
       sizeof(SkillMsg));
   MessageType2_descriptor_ = file->enum_type(0);
   PlayerIdConst_descriptor_ = file->enum_type(1);
-  BasicActionType_descriptor_ = file->enum_type(2);
-  BasicRespondType_descriptor_ = file->enum_type(3);
-  CmdType_descriptor_ = file->enum_type(4);
-  CardMsgType_descriptor_ = file->enum_type(5);
+  ROLE_STRATEGY_descriptor_ = file->enum_type(2);
+  BasicActionType_descriptor_ = file->enum_type(3);
+  BasicRespondType_descriptor_ = file->enum_type(4);
+  CmdType_descriptor_ = file->enum_type(5);
+  CardMsgType_descriptor_ = file->enum_type(6);
 }
 
 namespace {
@@ -299,9 +305,9 @@ inline void protobuf_AssignDescriptorsOnce() {
 void protobuf_RegisterTypes(const ::std::string&) {
   protobuf_AssignDescriptorsOnce();
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
-    CharactorPickRequest_descriptor_, &CharactorPickRequest::default_instance());
+    RoleRequest_descriptor_, &RoleRequest::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
-    Pick_descriptor_, &Pick::default_instance());
+    PickBan_descriptor_, &PickBan::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
     TurnBegin_descriptor_, &TurnBegin::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
@@ -327,10 +333,10 @@ void protobuf_RegisterTypes(const ::std::string&) {
 }  // namespace
 
 void protobuf_ShutdownFile_action_5frespond_2eproto() {
-  delete CharactorPickRequest::default_instance_;
-  delete CharactorPickRequest_reflection_;
-  delete Pick::default_instance_;
-  delete Pick_reflection_;
+  delete RoleRequest::default_instance_;
+  delete RoleRequest_reflection_;
+  delete PickBan::default_instance_;
+  delete PickBan_reflection_;
   delete TurnBegin::default_instance_;
   delete TurnBegin_reflection_;
   delete Action::default_instance_;
@@ -360,52 +366,56 @@ void protobuf_AddDesc_action_5frespond_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-    "\n\024action_respond.proto\022\007network\"(\n\024Chara"
-    "ctorPickRequest\022\020\n\010role_ids\030\001 \003(\r\"\027\n\004Pic"
-    "k\022\017\n\007role_id\030\001 \001(\r\"\027\n\tTurnBegin\022\n\n\002id\030\001 "
-    "\001(\r\"q\n\006Action\022\023\n\013action_type\030\001 \001(\r\022\021\n\tac"
-    "tion_id\030\002 \001(\r\022\016\n\006src_id\030\003 \001(\r\022\017\n\007dst_ids"
-    "\030\004 \003(\r\022\020\n\010card_ids\030\005 \003(\r\022\014\n\004args\030\006 \003(\r\"^"
-    "\n\007Respond\022\022\n\nrespond_id\030\001 \001(\r\022\016\n\006src_id\030"
-    "\002 \001(\r\022\017\n\007dst_ids\030\003 \003(\r\022\020\n\010card_ids\030\004 \003(\r"
-    "\022\014\n\004args\030\005 \003(\r\"^\n\007Command\022\022\n\nrespond_id\030"
-    "\001 \001(\r\022\016\n\006src_id\030\002 \001(\r\022\017\n\007dst_ids\030\003 \003(\r\022\020"
-    "\n\010card_ids\030\004 \003(\r\022\014\n\004args\030\005 \003(\r\"X\n\016Comman"
-    "dRequest\022\"\n\010cmd_type\030\001 \001(\0162\020.network.Cmd"
-    "Type\022\"\n\010commands\030\002 \003(\0132\020.network.Command"
-    "\"V\n\nErrorInput\022$\n\nerror_type\030\001 \001(\0162\020.net"
-    "work.CmdType\022\"\n\010commands\030\002 \003(\0132\020.network"
-    ".Command\"E\n\006HitMsg\022\016\n\006cmd_id\030\001 \001(\r\022\013\n\003hi"
-    "t\030\002 \001(\r\022\016\n\006src_id\030\003 \001(\r\022\016\n\006dst_id\030\004 \001(\r\""
-    "Z\n\007CardMsg\022\014\n\004type\030\001 \001(\r\022\016\n\006src_id\030\002 \001(\r"
-    "\022\016\n\006dst_id\030\003 \001(\r\022\020\n\010card_ids\030\004 \003(\r\022\017\n\007is"
-    "_real\030\005 \001(\010\"\\\n\007HurtMsg\022\016\n\006src_id\030\001 \001(\r\022\026"
-    "\n\006dst_id\030\002 \001(\r:\006100000\022\014\n\004hurt\030\003 \001(\r\022\r\n\005"
-    "cause\030\004 \001(\r\022\014\n\004type\030\005 \001(\r\"=\n\010SkillMsg\022\020\n"
-    "\010skill_id\030\001 \001(\r\022\016\n\006src_id\030\002 \001(\r\022\017\n\007dst_i"
-    "ds\030\003 \003(\r*\301\001\n\014MessageType2\022\020\n\014MSG_PICK_RE"
-    "Q\020e\022\014\n\010MSG_PICK\020f\022\016\n\nMSG_ACTION\020g\022\017\n\013MSG"
-    "_RESPOND\020h\022\017\n\013MSG_CMD_REQ\020j\022\023\n\017MSG_ERROR"
-    "_INPUT\020k\022\013\n\007MSG_HIT\020l\022\022\n\016MSG_TURN_BEGIN\020"
-    "m\022\014\n\010MSG_CARD\020n\022\014\n\010MSG_HURT\020o\022\r\n\tMSG_SKI"
-    "LL\020p*%\n\rPlayerIdConst\022\024\n\016PLAYER_NONE_ID\020"
-    "\240\215\006*\321\001\n\017BasicActionType\022\021\n\rACTION_ATTACK"
-    "\020\001\022\020\n\014ACTION_MAGIC\020\002\022\022\n\016ACTION_SPECIAL\020\003"
-    "\022\027\n\023ACTION_ATTACK_SKILL\020\004\022\026\n\022ACTION_MAGI"
-    "C_SKILL\020\005\022\030\n\024ACTION_SPECIAL_SKILL\020\006\022\016\n\nA"
-    "CTION_ANY\020\007\022\027\n\023ACTION_ATTACK_MAGIC\020\010\022\021\n\013"
-    "ACTION_NONE\020\240\215\006*\265\001\n\020BasicRespondType\022\030\n\024"
-    "RESPOND_REPLY_ATTACK\020\n\022\022\n\016RESPOND_BULLET"
-    "\020\013\022\020\n\014RESPOND_HEAL\020\014\022\023\n\017RESPOND_DISCARD\020"
-    "\r\022\022\n\016RESPOND_WEAKEN\020\016\022\035\n\031RESPOND_ADDITIO"
-    "NAL_ACTION\020\017\022\031\n\025RESPOND_DISCARD_COVER\020\020*"
-    "*\n\007CmdType\022\016\n\nCMD_ACTION\020\001\022\017\n\013CMD_RESPON"
-    "D\020\002*&\n\013CardMsgType\022\n\n\006CM_USE\020\001\022\013\n\007CM_SHO"
-    "W\020\002", 1643);
+    "\n\024action_respond.proto\022\007network\"W\n\013RoleR"
+    "equest\022(\n\010strategy\030\001 \001(\0162\026.network.ROLE_"
+    "STRATEGY\022\020\n\010role_ids\030\002 \003(\r\022\014\n\004args\030\003 \003(\r"
+    "\">\n\007PickBan\022\020\n\010strategy\030\001 \001(\r\022\017\n\007is_pick"
+    "\030\002 \001(\010\022\020\n\010role_ids\030\003 \003(\r\"\027\n\tTurnBegin\022\n\n"
+    "\002id\030\001 \001(\r\"q\n\006Action\022\023\n\013action_type\030\001 \001(\r"
+    "\022\021\n\taction_id\030\002 \001(\r\022\016\n\006src_id\030\003 \001(\r\022\017\n\007d"
+    "st_ids\030\004 \003(\r\022\020\n\010card_ids\030\005 \003(\r\022\014\n\004args\030\006"
+    " \003(\r\"^\n\007Respond\022\022\n\nrespond_id\030\001 \001(\r\022\016\n\006s"
+    "rc_id\030\002 \001(\r\022\017\n\007dst_ids\030\003 \003(\r\022\020\n\010card_ids"
+    "\030\004 \003(\r\022\014\n\004args\030\005 \003(\r\"^\n\007Command\022\022\n\nrespo"
+    "nd_id\030\001 \001(\r\022\016\n\006src_id\030\002 \001(\r\022\017\n\007dst_ids\030\003"
+    " \003(\r\022\020\n\010card_ids\030\004 \003(\r\022\014\n\004args\030\005 \003(\r\"X\n\016"
+    "CommandRequest\022\"\n\010cmd_type\030\001 \001(\0162\020.netwo"
+    "rk.CmdType\022\"\n\010commands\030\002 \003(\0132\020.network.C"
+    "ommand\"V\n\nErrorInput\022$\n\nerror_type\030\001 \001(\016"
+    "2\020.network.CmdType\022\"\n\010commands\030\002 \003(\0132\020.n"
+    "etwork.Command\"E\n\006HitMsg\022\016\n\006cmd_id\030\001 \001(\r"
+    "\022\013\n\003hit\030\002 \001(\r\022\016\n\006src_id\030\003 \001(\r\022\016\n\006dst_id\030"
+    "\004 \001(\r\"Z\n\007CardMsg\022\014\n\004type\030\001 \001(\r\022\016\n\006src_id"
+    "\030\002 \001(\r\022\016\n\006dst_id\030\003 \001(\r\022\020\n\010card_ids\030\004 \003(\r"
+    "\022\017\n\007is_real\030\005 \001(\010\"\\\n\007HurtMsg\022\016\n\006src_id\030\001"
+    " \001(\r\022\026\n\006dst_id\030\002 \001(\r:\006100000\022\014\n\004hurt\030\003 \001"
+    "(\r\022\r\n\005cause\030\004 \001(\r\022\014\n\004type\030\005 \001(\r\"=\n\010Skill"
+    "Msg\022\020\n\010skill_id\030\001 \001(\r\022\016\n\006src_id\030\002 \001(\r\022\017\n"
+    "\007dst_ids\030\003 \003(\r*\305\001\n\014MessageType2\022\020\n\014MSG_R"
+    "OLE_REQ\020e\022\020\n\014MSG_PICK_BAN\020f\022\016\n\nMSG_ACTIO"
+    "N\020g\022\017\n\013MSG_RESPOND\020h\022\017\n\013MSG_CMD_REQ\020j\022\023\n"
+    "\017MSG_ERROR_INPUT\020k\022\013\n\007MSG_HIT\020l\022\022\n\016MSG_T"
+    "URN_BEGIN\020m\022\014\n\010MSG_CARD\020n\022\014\n\010MSG_HURT\020o\022"
+    "\r\n\tMSG_SKILL\020p*%\n\rPlayerIdConst\022\024\n\016PLAYE"
+    "R_NONE_ID\020\240\215\006*U\n\rROLE_STRATEGY\022\030\n\024ROLE_S"
+    "TRATEGY_RANDOM\020\001\022\024\n\020ROLE_STRATEGY_31\020\002\022\024"
+    "\n\020ROLE_STRATEGY_BP\020\003*\321\001\n\017BasicActionType"
+    "\022\021\n\rACTION_ATTACK\020\001\022\020\n\014ACTION_MAGIC\020\002\022\022\n"
+    "\016ACTION_SPECIAL\020\003\022\027\n\023ACTION_ATTACK_SKILL"
+    "\020\004\022\026\n\022ACTION_MAGIC_SKILL\020\005\022\030\n\024ACTION_SPE"
+    "CIAL_SKILL\020\006\022\016\n\nACTION_ANY\020\007\022\027\n\023ACTION_A"
+    "TTACK_MAGIC\020\010\022\021\n\013ACTION_NONE\020\240\215\006*\307\001\n\020Bas"
+    "icRespondType\022\030\n\024RESPOND_REPLY_ATTACK\020\n\022"
+    "\022\n\016RESPOND_BULLET\020\013\022\020\n\014RESPOND_HEAL\020\014\022\023\n"
+    "\017RESPOND_DISCARD\020\r\022\022\n\016RESPOND_WEAKEN\020\016\022\035"
+    "\n\031RESPOND_ADDITIONAL_ACTION\020\017\022\031\n\025RESPOND"
+    "_DISCARD_COVER\020\020\022\020\n\014RESPOND_ROLE\020\021**\n\007Cm"
+    "dType\022\016\n\nCMD_ACTION\020\001\022\017\n\013CMD_RESPOND\020\002*&"
+    "\n\013CardMsgType\022\n\n\006CM_USE\020\001\022\013\n\007CM_SHOW\020\002", 1838);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "action_respond.proto", &protobuf_RegisterTypes);
-  CharactorPickRequest::default_instance_ = new CharactorPickRequest();
-  Pick::default_instance_ = new Pick();
+  RoleRequest::default_instance_ = new RoleRequest();
+  PickBan::default_instance_ = new PickBan();
   TurnBegin::default_instance_ = new TurnBegin();
   Action::default_instance_ = new Action();
   Respond::default_instance_ = new Respond();
@@ -416,8 +426,8 @@ void protobuf_AddDesc_action_5frespond_2eproto() {
   CardMsg::default_instance_ = new CardMsg();
   HurtMsg::default_instance_ = new HurtMsg();
   SkillMsg::default_instance_ = new SkillMsg();
-  CharactorPickRequest::default_instance_->InitAsDefaultInstance();
-  Pick::default_instance_->InitAsDefaultInstance();
+  RoleRequest::default_instance_->InitAsDefaultInstance();
+  PickBan::default_instance_->InitAsDefaultInstance();
   TurnBegin::default_instance_->InitAsDefaultInstance();
   Action::default_instance_->InitAsDefaultInstance();
   Respond::default_instance_->InitAsDefaultInstance();
@@ -473,6 +483,21 @@ bool PlayerIdConst_IsValid(int value) {
   }
 }
 
+const ::google::protobuf::EnumDescriptor* ROLE_STRATEGY_descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return ROLE_STRATEGY_descriptor_;
+}
+bool ROLE_STRATEGY_IsValid(int value) {
+  switch(value) {
+    case 1:
+    case 2:
+    case 3:
+      return true;
+    default:
+      return false;
+  }
+}
+
 const ::google::protobuf::EnumDescriptor* BasicActionType_descriptor() {
   protobuf_AssignDescriptorsOnce();
   return BasicActionType_descriptor_;
@@ -507,6 +532,7 @@ bool BasicRespondType_IsValid(int value) {
     case 14:
     case 15:
     case 16:
+    case 17:
       return true;
     default:
       return false;
@@ -545,78 +571,105 @@ bool CardMsgType_IsValid(int value) {
 // ===================================================================
 
 #ifndef _MSC_VER
-const int CharactorPickRequest::kRoleIdsFieldNumber;
+const int RoleRequest::kStrategyFieldNumber;
+const int RoleRequest::kRoleIdsFieldNumber;
+const int RoleRequest::kArgsFieldNumber;
 #endif  // !_MSC_VER
 
-CharactorPickRequest::CharactorPickRequest()
+RoleRequest::RoleRequest()
   : ::google::protobuf::Message() {
   SharedCtor();
 }
 
-void CharactorPickRequest::InitAsDefaultInstance() {
+void RoleRequest::InitAsDefaultInstance() {
 }
 
-CharactorPickRequest::CharactorPickRequest(const CharactorPickRequest& from)
+RoleRequest::RoleRequest(const RoleRequest& from)
   : ::google::protobuf::Message() {
   SharedCtor();
   MergeFrom(from);
 }
 
-void CharactorPickRequest::SharedCtor() {
+void RoleRequest::SharedCtor() {
   _cached_size_ = 0;
+  strategy_ = 1;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
-CharactorPickRequest::~CharactorPickRequest() {
+RoleRequest::~RoleRequest() {
   SharedDtor();
 }
 
-void CharactorPickRequest::SharedDtor() {
+void RoleRequest::SharedDtor() {
   if (this != default_instance_) {
   }
 }
 
-void CharactorPickRequest::SetCachedSize(int size) const {
+void RoleRequest::SetCachedSize(int size) const {
   GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
   _cached_size_ = size;
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
-const ::google::protobuf::Descriptor* CharactorPickRequest::descriptor() {
+const ::google::protobuf::Descriptor* RoleRequest::descriptor() {
   protobuf_AssignDescriptorsOnce();
-  return CharactorPickRequest_descriptor_;
+  return RoleRequest_descriptor_;
 }
 
-const CharactorPickRequest& CharactorPickRequest::default_instance() {
+const RoleRequest& RoleRequest::default_instance() {
   if (default_instance_ == NULL) protobuf_AddDesc_action_5frespond_2eproto();
   return *default_instance_;
 }
 
-CharactorPickRequest* CharactorPickRequest::default_instance_ = NULL;
+RoleRequest* RoleRequest::default_instance_ = NULL;
 
-CharactorPickRequest* CharactorPickRequest::New() const {
-  return new CharactorPickRequest;
+RoleRequest* RoleRequest::New() const {
+  return new RoleRequest;
 }
 
-void CharactorPickRequest::Clear() {
+void RoleRequest::Clear() {
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    strategy_ = 1;
+  }
   role_ids_.Clear();
+  args_.Clear();
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
   mutable_unknown_fields()->Clear();
 }
 
-bool CharactorPickRequest::MergePartialFromCodedStream(
+bool RoleRequest::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
 #define DO_(EXPRESSION) if (!(EXPRESSION)) return false
   ::google::protobuf::uint32 tag;
   while ((tag = input->ReadTag()) != 0) {
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // repeated uint32 role_ids = 1;
+      // optional .network.ROLE_STRATEGY strategy = 1;
       case 1: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+          int value;
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
+                 input, &value)));
+          if (::network::ROLE_STRATEGY_IsValid(value)) {
+            set_strategy(static_cast< ::network::ROLE_STRATEGY >(value));
+          } else {
+            mutable_unknown_fields()->AddVarint(1, value);
+          }
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(16)) goto parse_role_ids;
+        break;
+      }
+
+      // repeated uint32 role_ids = 2;
+      case 2: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
          parse_role_ids:
           DO_((::google::protobuf::internal::WireFormatLite::ReadRepeatedPrimitive<
                    ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
-                 1, 8, input, this->mutable_role_ids())));
+                 1, 16, input, this->mutable_role_ids())));
         } else if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag)
                    == ::google::protobuf::internal::WireFormatLite::
                       WIRETYPE_LENGTH_DELIMITED) {
@@ -626,7 +679,29 @@ bool CharactorPickRequest::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(8)) goto parse_role_ids;
+        if (input->ExpectTag(16)) goto parse_role_ids;
+        if (input->ExpectTag(24)) goto parse_args;
+        break;
+      }
+
+      // repeated uint32 args = 3;
+      case 3: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+         parse_args:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadRepeatedPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 1, 24, input, this->mutable_args())));
+        } else if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag)
+                   == ::google::protobuf::internal::WireFormatLite::
+                      WIRETYPE_LENGTH_DELIMITED) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPackedPrimitiveNoInline<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, this->mutable_args())));
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(24)) goto parse_args;
         if (input->ExpectAtEnd()) return true;
         break;
       }
@@ -647,12 +722,24 @@ bool CharactorPickRequest::MergePartialFromCodedStream(
 #undef DO_
 }
 
-void CharactorPickRequest::SerializeWithCachedSizes(
+void RoleRequest::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // repeated uint32 role_ids = 1;
+  // optional .network.ROLE_STRATEGY strategy = 1;
+  if (has_strategy()) {
+    ::google::protobuf::internal::WireFormatLite::WriteEnum(
+      1, this->strategy(), output);
+  }
+
+  // repeated uint32 role_ids = 2;
   for (int i = 0; i < this->role_ids_size(); i++) {
     ::google::protobuf::internal::WireFormatLite::WriteUInt32(
-      1, this->role_ids(i), output);
+      2, this->role_ids(i), output);
+  }
+
+  // repeated uint32 args = 3;
+  for (int i = 0; i < this->args_size(); i++) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(
+      3, this->args(i), output);
   }
 
   if (!unknown_fields().empty()) {
@@ -661,12 +748,24 @@ void CharactorPickRequest::SerializeWithCachedSizes(
   }
 }
 
-::google::protobuf::uint8* CharactorPickRequest::SerializeWithCachedSizesToArray(
+::google::protobuf::uint8* RoleRequest::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
-  // repeated uint32 role_ids = 1;
+  // optional .network.ROLE_STRATEGY strategy = 1;
+  if (has_strategy()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
+      1, this->strategy(), target);
+  }
+
+  // repeated uint32 role_ids = 2;
   for (int i = 0; i < this->role_ids_size(); i++) {
     target = ::google::protobuf::internal::WireFormatLite::
-      WriteUInt32ToArray(1, this->role_ids(i), target);
+      WriteUInt32ToArray(2, this->role_ids(i), target);
+  }
+
+  // repeated uint32 args = 3;
+  for (int i = 0; i < this->args_size(); i++) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteUInt32ToArray(3, this->args(i), target);
   }
 
   if (!unknown_fields().empty()) {
@@ -676,10 +775,320 @@ void CharactorPickRequest::SerializeWithCachedSizes(
   return target;
 }
 
-int CharactorPickRequest::ByteSize() const {
+int RoleRequest::ByteSize() const {
   int total_size = 0;
 
-  // repeated uint32 role_ids = 1;
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    // optional .network.ROLE_STRATEGY strategy = 1;
+    if (has_strategy()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::EnumSize(this->strategy());
+    }
+
+  }
+  // repeated uint32 role_ids = 2;
+  {
+    int data_size = 0;
+    for (int i = 0; i < this->role_ids_size(); i++) {
+      data_size += ::google::protobuf::internal::WireFormatLite::
+        UInt32Size(this->role_ids(i));
+    }
+    total_size += 1 * this->role_ids_size() + data_size;
+  }
+
+  // repeated uint32 args = 3;
+  {
+    int data_size = 0;
+    for (int i = 0; i < this->args_size(); i++) {
+      data_size += ::google::protobuf::internal::WireFormatLite::
+        UInt32Size(this->args(i));
+    }
+    total_size += 1 * this->args_size() + data_size;
+  }
+
+  if (!unknown_fields().empty()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void RoleRequest::MergeFrom(const ::google::protobuf::Message& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  const RoleRequest* source =
+    ::google::protobuf::internal::dynamic_cast_if_available<const RoleRequest*>(
+      &from);
+  if (source == NULL) {
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+    MergeFrom(*source);
+  }
+}
+
+void RoleRequest::MergeFrom(const RoleRequest& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  role_ids_.MergeFrom(from.role_ids_);
+  args_.MergeFrom(from.args_);
+  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (from.has_strategy()) {
+      set_strategy(from.strategy());
+    }
+  }
+  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+}
+
+void RoleRequest::CopyFrom(const ::google::protobuf::Message& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void RoleRequest::CopyFrom(const RoleRequest& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool RoleRequest::IsInitialized() const {
+
+  return true;
+}
+
+void RoleRequest::Swap(RoleRequest* other) {
+  if (other != this) {
+    std::swap(strategy_, other->strategy_);
+    role_ids_.Swap(&other->role_ids_);
+    args_.Swap(&other->args_);
+    std::swap(_has_bits_[0], other->_has_bits_[0]);
+    _unknown_fields_.Swap(&other->_unknown_fields_);
+    std::swap(_cached_size_, other->_cached_size_);
+  }
+}
+
+::google::protobuf::Metadata RoleRequest::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = RoleRequest_descriptor_;
+  metadata.reflection = RoleRequest_reflection_;
+  return metadata;
+}
+
+
+// ===================================================================
+
+#ifndef _MSC_VER
+const int PickBan::kStrategyFieldNumber;
+const int PickBan::kIsPickFieldNumber;
+const int PickBan::kRoleIdsFieldNumber;
+#endif  // !_MSC_VER
+
+PickBan::PickBan()
+  : ::google::protobuf::Message() {
+  SharedCtor();
+}
+
+void PickBan::InitAsDefaultInstance() {
+}
+
+PickBan::PickBan(const PickBan& from)
+  : ::google::protobuf::Message() {
+  SharedCtor();
+  MergeFrom(from);
+}
+
+void PickBan::SharedCtor() {
+  _cached_size_ = 0;
+  strategy_ = 0u;
+  is_pick_ = false;
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+}
+
+PickBan::~PickBan() {
+  SharedDtor();
+}
+
+void PickBan::SharedDtor() {
+  if (this != default_instance_) {
+  }
+}
+
+void PickBan::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* PickBan::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return PickBan_descriptor_;
+}
+
+const PickBan& PickBan::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_action_5frespond_2eproto();
+  return *default_instance_;
+}
+
+PickBan* PickBan::default_instance_ = NULL;
+
+PickBan* PickBan::New() const {
+  return new PickBan;
+}
+
+void PickBan::Clear() {
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    strategy_ = 0u;
+    is_pick_ = false;
+  }
+  role_ids_.Clear();
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  mutable_unknown_fields()->Clear();
+}
+
+bool PickBan::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
+  ::google::protobuf::uint32 tag;
+  while ((tag = input->ReadTag()) != 0) {
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // optional uint32 strategy = 1;
+      case 1: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &strategy_)));
+          set_has_strategy();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(16)) goto parse_is_pick;
+        break;
+      }
+
+      // optional bool is_pick = 2;
+      case 2: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+         parse_is_pick:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
+                 input, &is_pick_)));
+          set_has_is_pick();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(24)) goto parse_role_ids;
+        break;
+      }
+
+      // repeated uint32 role_ids = 3;
+      case 3: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+         parse_role_ids:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadRepeatedPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 1, 24, input, this->mutable_role_ids())));
+        } else if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag)
+                   == ::google::protobuf::internal::WireFormatLite::
+                      WIRETYPE_LENGTH_DELIMITED) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPackedPrimitiveNoInline<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, this->mutable_role_ids())));
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(24)) goto parse_role_ids;
+        if (input->ExpectAtEnd()) return true;
+        break;
+      }
+
+      default: {
+      handle_uninterpreted:
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          return true;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+  return true;
+#undef DO_
+}
+
+void PickBan::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // optional uint32 strategy = 1;
+  if (has_strategy()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(1, this->strategy(), output);
+  }
+
+  // optional bool is_pick = 2;
+  if (has_is_pick()) {
+    ::google::protobuf::internal::WireFormatLite::WriteBool(2, this->is_pick(), output);
+  }
+
+  // repeated uint32 role_ids = 3;
+  for (int i = 0; i < this->role_ids_size(); i++) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(
+      3, this->role_ids(i), output);
+  }
+
+  if (!unknown_fields().empty()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+}
+
+::google::protobuf::uint8* PickBan::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
+  // optional uint32 strategy = 1;
+  if (has_strategy()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(1, this->strategy(), target);
+  }
+
+  // optional bool is_pick = 2;
+  if (has_is_pick()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(2, this->is_pick(), target);
+  }
+
+  // repeated uint32 role_ids = 3;
+  for (int i = 0; i < this->role_ids_size(); i++) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteUInt32ToArray(3, this->role_ids(i), target);
+  }
+
+  if (!unknown_fields().empty()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  return target;
+}
+
+int PickBan::ByteSize() const {
+  int total_size = 0;
+
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    // optional uint32 strategy = 1;
+    if (has_strategy()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->strategy());
+    }
+
+    // optional bool is_pick = 2;
+    if (has_is_pick()) {
+      total_size += 1 + 1;
+    }
+
+  }
+  // repeated uint32 role_ids = 3;
   {
     int data_size = 0;
     for (int i = 0; i < this->role_ids_size(); i++) {
@@ -700,10 +1109,10 @@ int CharactorPickRequest::ByteSize() const {
   return total_size;
 }
 
-void CharactorPickRequest::MergeFrom(const ::google::protobuf::Message& from) {
+void PickBan::MergeFrom(const ::google::protobuf::Message& from) {
   GOOGLE_CHECK_NE(&from, this);
-  const CharactorPickRequest* source =
-    ::google::protobuf::internal::dynamic_cast_if_available<const CharactorPickRequest*>(
+  const PickBan* source =
+    ::google::protobuf::internal::dynamic_cast_if_available<const PickBan*>(
       &from);
   if (source == NULL) {
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
@@ -712,31 +1121,41 @@ void CharactorPickRequest::MergeFrom(const ::google::protobuf::Message& from) {
   }
 }
 
-void CharactorPickRequest::MergeFrom(const CharactorPickRequest& from) {
+void PickBan::MergeFrom(const PickBan& from) {
   GOOGLE_CHECK_NE(&from, this);
   role_ids_.MergeFrom(from.role_ids_);
+  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (from.has_strategy()) {
+      set_strategy(from.strategy());
+    }
+    if (from.has_is_pick()) {
+      set_is_pick(from.is_pick());
+    }
+  }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
 }
 
-void CharactorPickRequest::CopyFrom(const ::google::protobuf::Message& from) {
+void PickBan::CopyFrom(const ::google::protobuf::Message& from) {
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-void CharactorPickRequest::CopyFrom(const CharactorPickRequest& from) {
+void PickBan::CopyFrom(const PickBan& from) {
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-bool CharactorPickRequest::IsInitialized() const {
+bool PickBan::IsInitialized() const {
 
   return true;
 }
 
-void CharactorPickRequest::Swap(CharactorPickRequest* other) {
+void PickBan::Swap(PickBan* other) {
   if (other != this) {
+    std::swap(strategy_, other->strategy_);
+    std::swap(is_pick_, other->is_pick_);
     role_ids_.Swap(&other->role_ids_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
@@ -744,219 +1163,11 @@ void CharactorPickRequest::Swap(CharactorPickRequest* other) {
   }
 }
 
-::google::protobuf::Metadata CharactorPickRequest::GetMetadata() const {
+::google::protobuf::Metadata PickBan::GetMetadata() const {
   protobuf_AssignDescriptorsOnce();
   ::google::protobuf::Metadata metadata;
-  metadata.descriptor = CharactorPickRequest_descriptor_;
-  metadata.reflection = CharactorPickRequest_reflection_;
-  return metadata;
-}
-
-
-// ===================================================================
-
-#ifndef _MSC_VER
-const int Pick::kRoleIdFieldNumber;
-#endif  // !_MSC_VER
-
-Pick::Pick()
-  : ::google::protobuf::Message() {
-  SharedCtor();
-}
-
-void Pick::InitAsDefaultInstance() {
-}
-
-Pick::Pick(const Pick& from)
-  : ::google::protobuf::Message() {
-  SharedCtor();
-  MergeFrom(from);
-}
-
-void Pick::SharedCtor() {
-  _cached_size_ = 0;
-  role_id_ = 0u;
-  ::memset(_has_bits_, 0, sizeof(_has_bits_));
-}
-
-Pick::~Pick() {
-  SharedDtor();
-}
-
-void Pick::SharedDtor() {
-  if (this != default_instance_) {
-  }
-}
-
-void Pick::SetCachedSize(int size) const {
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-}
-const ::google::protobuf::Descriptor* Pick::descriptor() {
-  protobuf_AssignDescriptorsOnce();
-  return Pick_descriptor_;
-}
-
-const Pick& Pick::default_instance() {
-  if (default_instance_ == NULL) protobuf_AddDesc_action_5frespond_2eproto();
-  return *default_instance_;
-}
-
-Pick* Pick::default_instance_ = NULL;
-
-Pick* Pick::New() const {
-  return new Pick;
-}
-
-void Pick::Clear() {
-  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    role_id_ = 0u;
-  }
-  ::memset(_has_bits_, 0, sizeof(_has_bits_));
-  mutable_unknown_fields()->Clear();
-}
-
-bool Pick::MergePartialFromCodedStream(
-    ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
-  ::google::protobuf::uint32 tag;
-  while ((tag = input->ReadTag()) != 0) {
-    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional uint32 role_id = 1;
-      case 1: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
-                 input, &role_id_)));
-          set_has_role_id();
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectAtEnd()) return true;
-        break;
-      }
-
-      default: {
-      handle_uninterpreted:
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
-          return true;
-        }
-        DO_(::google::protobuf::internal::WireFormat::SkipField(
-              input, tag, mutable_unknown_fields()));
-        break;
-      }
-    }
-  }
-  return true;
-#undef DO_
-}
-
-void Pick::SerializeWithCachedSizes(
-    ::google::protobuf::io::CodedOutputStream* output) const {
-  // optional uint32 role_id = 1;
-  if (has_role_id()) {
-    ::google::protobuf::internal::WireFormatLite::WriteUInt32(1, this->role_id(), output);
-  }
-
-  if (!unknown_fields().empty()) {
-    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
-        unknown_fields(), output);
-  }
-}
-
-::google::protobuf::uint8* Pick::SerializeWithCachedSizesToArray(
-    ::google::protobuf::uint8* target) const {
-  // optional uint32 role_id = 1;
-  if (has_role_id()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(1, this->role_id(), target);
-  }
-
-  if (!unknown_fields().empty()) {
-    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
-        unknown_fields(), target);
-  }
-  return target;
-}
-
-int Pick::ByteSize() const {
-  int total_size = 0;
-
-  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    // optional uint32 role_id = 1;
-    if (has_role_id()) {
-      total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::UInt32Size(
-          this->role_id());
-    }
-
-  }
-  if (!unknown_fields().empty()) {
-    total_size +=
-      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
-        unknown_fields());
-  }
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = total_size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-  return total_size;
-}
-
-void Pick::MergeFrom(const ::google::protobuf::Message& from) {
-  GOOGLE_CHECK_NE(&from, this);
-  const Pick* source =
-    ::google::protobuf::internal::dynamic_cast_if_available<const Pick*>(
-      &from);
-  if (source == NULL) {
-    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
-  } else {
-    MergeFrom(*source);
-  }
-}
-
-void Pick::MergeFrom(const Pick& from) {
-  GOOGLE_CHECK_NE(&from, this);
-  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    if (from.has_role_id()) {
-      set_role_id(from.role_id());
-    }
-  }
-  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
-}
-
-void Pick::CopyFrom(const ::google::protobuf::Message& from) {
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-void Pick::CopyFrom(const Pick& from) {
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-bool Pick::IsInitialized() const {
-
-  return true;
-}
-
-void Pick::Swap(Pick* other) {
-  if (other != this) {
-    std::swap(role_id_, other->role_id_);
-    std::swap(_has_bits_[0], other->_has_bits_[0]);
-    _unknown_fields_.Swap(&other->_unknown_fields_);
-    std::swap(_cached_size_, other->_cached_size_);
-  }
-}
-
-::google::protobuf::Metadata Pick::GetMetadata() const {
-  protobuf_AssignDescriptorsOnce();
-  ::google::protobuf::Metadata metadata;
-  metadata.descriptor = Pick_descriptor_;
-  metadata.reflection = Pick_reflection_;
+  metadata.descriptor = PickBan_descriptor_;
+  metadata.reflection = PickBan_reflection_;
   return metadata;
 }
 

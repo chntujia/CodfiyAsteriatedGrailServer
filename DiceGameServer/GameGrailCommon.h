@@ -18,6 +18,11 @@ using namespace std;
 #define SAFE_DELETE(x) { if (x) { delete (x); (x) = NULL; } }
 #endif
 
+const int SUMMON[] = {1, 2, 3, 4, 5, 6, 7, 8, 9,10,
+	           11,12,13,14,15,   17,18,
+			         23};
+bool isValidRoleID(int roleID);
+
 enum GrailError{
 	GE_SUCCESS,
 	GE_TIMEOUT,
@@ -36,6 +41,7 @@ enum GrailError{
 	GE_FATAL_ERROR,
 	GE_INVALID_PLAYERID,
 	GE_INVALID_CARDID,
+	GE_INVALID_ROLEID,
 	GE_INVALID_ACTION,
 	GE_INVALID_STEP,
 	GE_INVALID_EXCLUSIVE_EFFECT,
@@ -563,7 +569,7 @@ public:
 		SinglePlayerInfo* player_info;
 		for (int i = 0; i < game_info.player_infos_size(); ++i)
 		{
-			player_info = (SinglePlayerInfo*)&(game_info.player_infos().Get(i));
+			player_info = (SinglePlayerInfo*)&(game_info.player_infos(i));
 			if (player_info->id() == playerID)
 			{
 				player_info->set_role_id(roleID);
@@ -598,7 +604,13 @@ public:
 		else
 			player_info->set_blue_token(howMany);
 	}
-	static string askForRolePick(int howMany,int *roles);
+	static void askForRole(int ID, int howMany, int *roles, RoleRequest& cmd_req)
+	{
+		cmd_req.set_strategy(ROLE_STRATEGY_31);
+		for(int i = 0; i < howMany; i++){
+			cmd_req.add_role_ids(roles[i]);
+		}
+	}
     static string coverCardNotice(int playerID,int howMany,vector < int > cards,bool remove,bool show);
     static string askForSkillNumber(int playerID,int skillNum){return combMessage(TOQSTR(skillNum));}
     static string optionalRoleNotice(int num, int *roles);

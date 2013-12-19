@@ -128,6 +128,14 @@ bool UserTask::cmdMsgParse(const char *pstrMsg, const uint32_t nCmdLen)
 
 			delete proto;    // 如果不需要tryNotify或者tryNotify不带reply的话，释放message对象，这一步相当重要
 			break;
+		case MSG_PICK_BAN:
+			{
+				PickBan* pick = (PickBan*)proto;
+				if(pick->strategy() == ROLE_STRATEGY_31 && pick->is_pick()){
+					tryNotify(m_playerId, STATE_ROLE_STRATEGY_31, 0, pick);
+				}
+				break;
+			}
 		case MSG_ACTION:
 			action = (Action*)proto;
 			// 行动

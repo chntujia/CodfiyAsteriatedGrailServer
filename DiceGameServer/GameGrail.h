@@ -12,6 +12,8 @@
 #include "codec.h"
 using namespace std;
 
+
+
 class GrailState;
 class PlayerEntity;
 class Deck
@@ -41,7 +43,7 @@ public:
 		iterator -= howMany;
 		return GE_SUCCESS;
 	}
-	int push(int howMany, int* in){
+	int push(int howMany, const int* in){
 		if (size - iterator - 1 < howMany)
 			return GE_DECK_OVERFLOW;
 		int begin = iterator+1;
@@ -134,7 +136,7 @@ protected:
 	StateStack  m_states;
 	TeamArea* m_teamArea;
 	Deck *pile, *discard;
-	bool m_ready[8];
+	bool m_ready[MAXPLAYER];
 public:
 	GameGrail(GameGrailConfig *config);
 	~GameGrail();
@@ -207,6 +209,23 @@ public:
 	int setStateStartLoseMorale(int howMany, int dstID, HARM harm);
 	int setStateCheckTurnEnd();
 	Deck* initRoles();
+	void setRole(int playerID, int roleID){
+		if(playerID < 0 || playerID >= m_maxPlayers){
+			throw GE_INVALID_PLAYERID;
+		}
+		if(!isValidRoleID(roleID)){
+			throw GE_INVALID_ROLEID;
+		}
+		SinglePlayerInfo* player_it;
+		for(int i = 0; i < m_maxPlayers; i++){
+			player_it = (SinglePlayerInfo*)&(game_info.player_infos(i));
+			if(player_it->id() == playerID){
+				player_it->set_role_id(roleID);
+				break;
+			}
+		}
+	}
+	PlayerEntity* createRole(int playerID, int roleID, int color);
 	void initPlayerEntities();
 	void initDecks(){
 		pile = new Deck(CARDSUM);
@@ -221,5 +240,4 @@ protected:
 	void GameRun();
 	void kickOffNotConnectedPlayers();
 	void updateTableStatusMessage();
-
 };

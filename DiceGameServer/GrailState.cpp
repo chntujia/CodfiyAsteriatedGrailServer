@@ -77,19 +77,20 @@ int StateSeatArrange::handle(GameGrail* engine)
 int StateRoleStrategyRandom::handle(GameGrail* engine)
 {
 	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateRoleStrategyRandom", engine->getGameId());
-	int out;
 	Deck* roles = engine->initRoles();
 	int ret;
 	// 直接将随机结果保存到engine中
 	GameInfo& game_info = engine->game_info;
-	int role_id;
+	int roleID;
 
 	for(int i = 0; i < engine->getGameMaxPlayers(); i++){
 		// i为玩家编号，不是座号		
-		if(GE_SUCCESS == (ret=roles->pop(1, &out))){
+		if(GE_SUCCESS == (ret=roles->pop(1, &roleID))){
 			//FIXME: 全封印时代
-			Coder::roleNotice(i, 20, game_info);
+			//roleID = 18;
+			Coder::roleNotice(i, roleID, game_info);
 			engine->sendMessage(-1, MSG_GAME, game_info);
+			engine->setRole(i, roleID);
 		}
 		else{
 			return ret;
@@ -100,6 +101,53 @@ int StateRoleStrategyRandom::handle(GameGrail* engine)
 	engine->popGameState();
 	engine->pushGameState(new StateGameStart);
 	return GE_SUCCESS;
+}
+
+int StateRoleStrategy31::handle(GameGrail* engine)
+{
+	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateRoleStrategy31", engine->getGameId());
+	Deck* roles;
+	int ret;
+	int options[3];
+	int playerNum = engine->getGameMaxPlayers();
+	if(!isSet){
+		roles = engine->initRoles();
+		for(int i = 0; i < playerNum; i++){	
+			if(GE_SUCCESS == (ret = roles->pop(3, options))){
+				messages[i] = new RoleRequest;
+				Coder::askForRole(i, 3, options, *messages[i]);
+			}
+			else{
+				return ret;
+			}
+		}
+		isSet = true;
+	}
+	void* reply;
+	int chosen;
+	GameInfo& game_info = engine->game_info;
+	bool isTimeOut = !engine->waitForAll(network::MSG_ROLE_REQ, (void**)messages);
+			
+	for(int i = 0; i < engine->getGameMaxPlayers(); i++){	
+		if(GE_SUCCESS == (ret = engine->getReply(i, reply))){
+			PickBan *respond = (PickBan*)reply;
+			chosen = respond->role_ids(0);
+			engine->setRole(i, chosen);
+			Coder::roleNotice(i, chosen, game_info);
+		}
+		else{
+			chosen = messages[i]->role_ids(0);
+			engine->setRole(i, chosen);
+			Coder::roleNotice(i, chosen, game_info);
+		}
+	}
+
+	engine->sendMessage(-1, MSG_GAME, game_info);
+	SAFE_DELETE(roles);
+	engine->initPlayerEntities();
+	engine->popGameState();
+	engine->pushGameState(new StateGameStart);
+	return isTimeOut ? GE_TIMEOUT : GE_SUCCESS;
 }
 
 int StateGameStart::handle(GameGrail* engine)
