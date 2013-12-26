@@ -89,13 +89,13 @@ int StateRoleStrategyRandom::handle(GameGrail* engine)
 			//FIXME: È«·âÓ¡Ê±´ú
 			//roleID = 18;
 			Coder::roleNotice(i, roleID, game_info);
-			engine->sendMessage(-1, MSG_GAME, game_info);
 			engine->setRole(i, roleID);
 		}
 		else{
 			return ret;
 		}
 	}
+	engine->sendMessage(-1, MSG_GAME, game_info);
 	SAFE_DELETE(roles);
 	engine->initPlayerEntities();
 	engine->popGameState();
