@@ -35,6 +35,23 @@ void addCard(GameGrail* engine, PlayerEntity* player, vector<string>& ss)
 }
 
 /*
+card: 往盖牌区添加盖牌，参数数量不定，为添加的牌id
+*/
+void addCoverCard(GameGrail* engine, PlayerEntity* player, vector<string>& ss)
+{
+	int howmany;
+	vector<int> cards;
+	for (int i = 1; i < ss.size(); ++i)
+		cards.push_back(atoi(ss[i].c_str()));
+	howmany = ss.size() - 1;
+	player->addCoverCards(howmany, cards);  //
+
+	GameInfo game_info;
+	Coder::coverNotice(player->getID(), player->getCoverCards(), game_info);
+	engine->sendMessage(-1, MSG_GAME, game_info);
+}
+
+/*
 cross: 设置治疗
 */
 void setCross(GameGrail* engine, PlayerEntity* player, vector<string>& ss)
@@ -52,9 +69,10 @@ void setCross(GameGrail* engine, PlayerEntity* player, vector<string>& ss)
 */
 void initialize_gm_command()
 {
-	cmd_mapping["!`energy"] = setEnergy;  // 设置能量
-	cmd_mapping["!`card"] = addCard;      // 添加手牌
-	cmd_mapping["!`cross"] = setCross;    // 添加手牌
+	cmd_mapping["!`energy"] = setEnergy;            // 设置能量
+	cmd_mapping["!`card"] = addCard;                // 添加手牌
+	cmd_mapping["!`cross"] = setCross;              // 添加治疗
+	cmd_mapping["!`covercard"] = addCoverCard;      // 添加盖牌
 }
 
 /*
