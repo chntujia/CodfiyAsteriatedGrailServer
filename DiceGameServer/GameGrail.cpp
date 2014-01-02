@@ -26,8 +26,11 @@
 #include "role\WuNv.h"
 #include "role\LingFu.h"
 #include "role\GeDou.h"
-#include "role\QiDao.h"
+//#include "role\QiDao.h"
 #include "role\ZhongCai.h"
+#include "role\MoGong.h"
+#include "role\JianDi.h"
+
 using namespace boost;
 
 PlayerEntity* GameGrail::createRole(int id, int roleID, int color)
@@ -82,12 +85,12 @@ PlayerEntity* GameGrail::createRole(int id, int roleID, int color)
     //case 16:
     //    return new QiDao(this,id,color);
     //    break;
-    case 17:
-        return new XianZhe(this,id,color);
+ //   case 17:
+ //       return new XianZhe(this,id,color);
+//        break;
+    case 19:
+       return new JianDi(this,id,color);
         break;
-    //case 19:
-    //    return new JianDi(this,id,color);
-    //    break;
     //case 20:
     //    return new GeDouJia(this,id,color);
     //    break;
@@ -106,9 +109,9 @@ PlayerEntity* GameGrail::createRole(int id, int roleID, int color)
     //case 24:
     //    return new DieWu(this,id,color);
     //    break;
-    //case 26:
-    //    return new MoGong(this,id,color);
-    //    break;
+    case 26:
+        return new MoGong(this,id,color);
+        break;
     //case 28:
     //    return new HongLian(this,id,color);
     //    break;
@@ -888,7 +891,8 @@ void GameGrail::initPlayerEntities()
 		roleID = player_it->role_id();
 		color = player_it->team();
 		//FIXME: È«·âÓ¡Ê±´ú
-		m_playerEntities[id] = createRole(id, roleID, color);
+	//	m_playerEntities[id] = createRole(id, roleID, color);
+		m_playerEntities[id] = createRole(id, 19, color);
 		
 		position2id[i] = id;
 	}
