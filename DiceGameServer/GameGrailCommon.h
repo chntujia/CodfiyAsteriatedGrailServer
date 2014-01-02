@@ -19,8 +19,8 @@ using namespace std;
 #endif
 
 const int SUMMON[] = {1, 2, 3, 4, 5, 6, 7, 8, 9,10,
-	           11,12,13,14,15,   17,18,
-			         23};
+	           11,12,13,14,15,   17,18,19,
+			         23,    26};
 bool isValidRoleID(int roleID);
 
 enum GrailError{
@@ -161,6 +161,13 @@ enum CAUSE{
 	NIAN_ZHOU = 1803,
 	BAI_GUI_YE_XING = 1804,
 	LING_LI_BENG_JIE = 1805,
+       JIAN_HUN_SHOU_HU=1901,
+       YANG_GON=1902,
+       JIAN_QI_ZHAN=1903,
+       TIAN_SHI_YU_E_MO=1904,
+       TIAN_SHI_ZHI_HUN=1905,
+       E_MO_ZHI_HUN=1906,
+       BU_QU_YI_ZHI=1907,
 	NIAN_QI_LI_CHANG = 2001,
 	XU_LI_YI_JI = 2002,
 	NIAN_DAN = 2003,
@@ -186,7 +193,17 @@ enum CAUSE{
 	NI_LIU = 2304,
 	XUE_ZHI_ZU_ZHOU = 2351,
 	XUE_ZHI_ZU_ZHOU_QI_PAI = 2352,
-	LIU_XUE = 2306
+	LIU_XUE = 2306,
+	MO_GUAN_CHONG_JI=2601,
+    MO_GUAN_CHONG_JI_HIT=26011,
+    LEI_GUANG_SAN_SHE =2602,
+    LEI_GUANG_SAN_SHE_EXTRA=26021,
+    DUO_CHONG_SHE_JI=2603,
+    CHONG_NENG=2604,
+    CHONG_NENG_GAI_PAI=26041,
+    MO_YAN=2605,
+    MO_YAN_GAI_PAI=26051,
+    CHONG_NENG_MO_YAN=2606
 };
 
 enum CHANGE{
