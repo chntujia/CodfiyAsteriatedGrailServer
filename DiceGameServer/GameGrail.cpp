@@ -30,6 +30,7 @@
 #include "role\ZhongCai.h"
 #include "role\MoGong.h"
 #include "role\JianDi.h"
+#include "role\MoQiang.h"
 
 using namespace boost;
 
@@ -115,9 +116,9 @@ PlayerEntity* GameGrail::createRole(int id, int roleID, int color)
     //case 28:
     //    return new HongLian(this,id,color);
     //    break;
-    //case 29:
-    //    return new MoQiang(this,id,color);
-    //    break;
+    case 29:
+        return new MoQiang(this,id,color);
+        break;
     }
     return NULL;
 }
@@ -892,7 +893,7 @@ void GameGrail::initPlayerEntities()
 		color = player_it->team();
 		//FIXME: È«·âÓ¡Ê±´ú
 	//	m_playerEntities[id] = createRole(id, roleID, color);
-		m_playerEntities[id] = createRole(id, 19, color);
+		m_playerEntities[id] = createRole(id, 29, color);
 		
 		position2id[i] = id;
 	}
