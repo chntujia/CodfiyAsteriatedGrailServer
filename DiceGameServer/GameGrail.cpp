@@ -28,6 +28,7 @@
 #include "role\GeDou.h"
 //#include "role\QiDao.h"
 #include "role\ZhongCai.h"
+#include "role\HongLian.h"
 #include "role\MoGong.h"
 #include "role\JianDi.h"
 #include "role\MoQiang.h"
@@ -114,9 +115,9 @@ PlayerEntity* GameGrail::createRole(int id, int roleID, int color)
     case 26:
         return new MoGong(this,id,color);
         break;
-    //case 28:
-    //    return new HongLian(this,id,color);
-    //    break;
+    case 28:
+        return new HongLian(this,id,color);
+        break;
     case 29:
         return new MoQiang(this,id,color);
         break;
@@ -890,7 +891,7 @@ void GameGrail::initPlayerEntities()
 	for(int i = 0; i < m_maxPlayers; i++){
 		player_it = (SinglePlayerInfo*)&(game_info.player_infos().Get(i));
 		id = player_it->id();
-		roleID = player_it->role_id();
+		//roleID = player_it->role_id();
 		color = player_it->team();
 		//FIXME: È«·âÓ¡Ê±´ú
 	//	m_playerEntities[id] = createRole(id, roleID, color);
