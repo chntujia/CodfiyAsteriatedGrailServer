@@ -26,11 +26,13 @@ private:
 	static uint32_t m_sIDSeq;
 
 public:
+	string m_nickname;
 	UserTask( boost::asio::io_service& service):zTCPTask(service) 
 	{
 //FIXME used to mimic userId, which should be retrieved from DB
 		m_userId = "";
 		m_playerId = -1;
+		m_tableId = -1;
 		m_bAuthen = false;
 		m_activeTime = time(NULL);
 		m_iCheckTime = ServerConfig::getInstance().m_iCheckTime;
@@ -44,18 +46,19 @@ public:
 	bool msgParse(const void *pstrMsg, const uint32_t nCmdLen);
 	bool cmdMsgParse(const char *pstrMsg, const uint32_t nCmdLen);
 	void setPlayerID(int id) { m_playerId = id; } 
+	void setTableID(int id) { m_tableId = id; }
 	GameGrail* getGame();
 	bool tryNotify(int id, int state, int step = 0, void* reply = NULL);
 	void Start();
 	void OnQuit();
 	void OnCheck();
-
+	void sendProto(uint16_t proto_type, google::protobuf::Message& proto);
 private:
-	bool handleUserLogin(const char *pstrCmd, const uint32_t nCmdLen);
-	bool handleGetGameList(const char *pstrCmd, const uint32_t nCmdLen);
-	bool handleSicBoSitIntoTable(const char *pstrCmd, const uint32_t nCmdLen);
-	bool handleSicBoGameBetAction(const char *pstrCmd, const uint32_t nCmdLen);
-	bool handleSicBoGameRefresh(const char *pstrCmd, const uint32_t nCmdLen);
+	void handleCreateRoom(int game_type, void* request);
+	void handleEnterRoom(int game_type, void* request);
+	void handleLeaveRoom(int game_type, void* request);
+	void handleRoomList(int game_type, void* request);
+	void handleReadyGame(int game_type, void* request);
 };
 
 #endif

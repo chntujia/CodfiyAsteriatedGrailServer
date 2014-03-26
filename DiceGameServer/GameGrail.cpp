@@ -39,90 +39,91 @@ using namespace boost;
 PlayerEntity* GameGrail::createRole(int id, int roleID, int color)
 {
 	switch(roleID)
-    {
-    case 1:
-        return new JianSheng(this,id,color);
-        break;
-    case 2:
-        return new KuangZhan(this,id,color);
-        break;
-    case 3:
-        return new GongNv(this,id,color);
-        break;
-    case 4:
-        return new FengYin(this,id,color);
-        break;
-    case 5:
-        return new AnSha(this,id,color);
-        break;
-    case 6:
-        return new ShengNv(this,id,color);
-        break;
-    case 7:
-        return new TianShi(this,id,color);
-        break;
-    case 8:
-        return new MoDao(this,id,color);
-        break;
-    case 9:
-        return new MoJian(this,id,color);
-        break;
-	case 10:
-        return new ShengQiang(this, id, color);
+	{
+	case 1:
+		return new JianSheng(this,id,color);
 		break;
-    case 11:
-        return new YuanSu(this,id,color);
-        break;
-    case 12:
-        return new MaoXian(this,id,color);
-        break;
-    case 13:
-        return new SiLing(this,id,color);
-        break;
-    case 14:
-        return new ZhongCai(this,id,color);
-        break;
-    case 15:
-        return new ShenGuan(this,id,color);
-        break;
-    //case 16:
-    //    return new QiDao(this,id,color);
-    //    break;
- //   case 17:
- //       return new XianZhe(this,id,color);
-//        break;
-    case 19:
-       return new JianDi(this,id,color);
-        break;
-    //case 20:
-    //    return new GeDouJia(this,id,color);
-    //    break;
-    case 18:
-        return new LingFu(this,id,color);
-        break;
-    //case 21:
-    //    return new YongZhe(this,id,color);
-    //    break;
-    //case 22:
-    //    return new LingHun(this,id,color);
-        //break;
-    case 23:
-        return new WuNv(this,id,color);
-        break;
-    case 24:
-        return new DieWu(this,id,color);
-       break;
-    case 26:
-        return new MoGong(this,id,color);
-        break;
-    case 28:
-        return new HongLian(this,id,color);
-        break;
-    case 29:
-        return new MoQiang(this,id,color);
-        break;
-    }
-    return NULL;
+	case 2:
+		return new KuangZhan(this,id,color);
+		break;
+	case 3:
+		return new GongNv(this,id,color);
+		break;
+	case 4:
+		return new FengYin(this,id,color);
+		break;
+	case 5:
+		return new AnSha(this,id,color);
+		break;
+	case 6:
+		return new ShengNv(this,id,color);
+		break;
+	case 7:
+		return new TianShi(this,id,color);
+		break;
+	case 8:
+		return new MoDao(this,id,color);
+		break;
+	case 9:
+		return new MoJian(this,id,color);
+		break;
+	case 10:
+		return new ShengQiang(this, id, color);
+		break;
+	case 11:
+		return new YuanSu(this,id,color);
+		break;
+	case 12:
+		return new MaoXian(this,id,color);
+		break;
+	case 13:
+		return new SiLing(this,id,color);
+		break;
+	case 14:
+		return new ZhongCai(this,id,color);
+		break;
+	case 15:
+		return new ShenGuan(this,id,color);
+		break;
+		//case 16:
+		//    return new QiDao(this,id,color);
+		//    break;
+	case 17:
+		return new XianZhe(this,id,color);
+		break;
+	case 18:
+		return new LingFu(this,id,color);
+		break;
+	case 19:
+		return new JianDi(this,id,color);
+		break;
+		//case 20:
+		//    return new GeDouJia(this,id,color);
+		//    break;
+
+		//case 21:
+		//    return new YongZhe(this,id,color);
+		//    break;
+		//case 22:
+		//    return new LingHun(this,id,color);
+		//break;
+	case 23:
+		return new WuNv(this,id,color);
+		break;
+	case 24:
+		return new DieWu(this,id,color);
+		break;
+	case 26:
+		return new MoGong(this,id,color);
+		break;
+	case 28:
+		return new HongLian(this,id,color);
+		break;
+	case 29:
+		return new MoQiang(this,id,color);
+		break;
+	}
+	throw GE_INVALID_ROLEID;
 }
 
 void TeamArea::initialTeam()
@@ -171,7 +172,7 @@ void TeamArea::setMorale(int color, int value)
         this->moraleBLUE = value;
 }
 
-GameGrail::GameGrail(GameGrailConfig *config)
+GameGrail::GameGrail(GameGrailConfig *config) : playing(false), processing(true)
 {
 	m_gameId = config->getTableId();
 	m_gameName = config->getTableName();
@@ -198,10 +199,11 @@ GameGrail::~GameGrail()
 		SAFE_DELETE(m_playerEntities[i]);
 	}
 	m_playerEntities.clear();
-
+	m_guestList.clear();
 	SAFE_DELETE(m_teamArea);
 	SAFE_DELETE(pile);
 	SAFE_DELETE(discard);
+	m_condition_for_wait.notify_one();
 }
 
 int GameGrail::popGameState_if(int state)
@@ -222,33 +224,69 @@ void GameGrail::sendMessage(int id, uint16_t proto_type, google::protobuf::Messa
 	ztLoggerWrite(ZONE, e_Debug, "[Table %d] send to %d, type:%d, string:\n%s \nsize: %d", m_gameId, id, proto_type, proto.DebugString().c_str(), proto.ByteSize());
 #endif
 	UserTask *ref;
-	string msg;
-	proto_encoder(proto_type, proto, msg);
 
-	PlayerContextList::iterator it;
 	if(id == -1){
-		for(it = m_playerContexts.begin(); it !=m_playerContexts.end(); it++){
+		for(PlayerContextList::iterator it = m_playerContexts.begin(); it != m_playerContexts.end(); it++){
 			ref = UserSessionManager::getInstance().getUser(it->second->getUserId());
 			if(ref){
-				ref->SendCmd(msg);
+				ref->sendProto(proto_type, proto);
 			}
 			else{
 				ztLoggerWrite(ZONE, e_Debug, "[Table %d] Cannot find UserSession, PlayerID: %d, UserID: %s", m_gameId, id, it->second->getUserId().c_str());
+			}
+		}
+		for(list<string>::iterator it = m_guestList.begin(); it != m_guestList.end(); it++){
+			ref = UserSessionManager::getInstance().getUser(*it);
+			if(ref){
+				ref->sendProto(proto_type, proto);
+			}
+			else{
+				ztLoggerWrite(ZONE, e_Debug, "[Table %d] Cannot find UserSession, GuestID: %d, UserID: %s", m_gameId, id, *it);
 			}
 		}
 	}
 	else{
-		it = m_playerContexts.find(id);
+		PlayerContextList::iterator it = m_playerContexts.find(id);
 		if(it != m_playerContexts.end()){
 			ref = UserSessionManager::getInstance().getUser(it->second->getUserId());
 			if(ref){
-				ref->SendCmd(msg);
+				ref->sendProto(proto_type, proto);
 			}
 			else{
 				ztLoggerWrite(ZONE, e_Debug, "[Table %d] Cannot find UserSession, PlayerID: %d, UserID: %s", m_gameId, id, it->second->getUserId().c_str());
 			}
 		}
 	}
+}
+
+void GameGrail::sendMessageExcept(int id, uint16_t proto_type, google::protobuf::Message& proto)
+{
+#ifdef Debug
+	ztLoggerWrite(ZONE, e_Debug, "[Table %d] send to %d, type:%d, string:\n%s \nsize: %d", m_gameId, id, proto_type, proto.DebugString().c_str(), proto.ByteSize());
+#endif
+	UserTask *ref;
+
+	for(PlayerContextList::iterator it = m_playerContexts.begin(); it != m_playerContexts.end(); it++){
+		if(it->first != id){
+			ref = UserSessionManager::getInstance().getUser(it->second->getUserId());
+			if(ref){
+				ref->sendProto(proto_type, proto);
+			}
+			else{
+				ztLoggerWrite(ZONE, e_Debug, "[Table %d] Cannot find UserSession, PlayerID: %d, UserID: %s", m_gameId, id, it->second->getUserId().c_str());
+			}
+		}
+	}
+	for(list<string>::iterator it = m_guestList.begin(); it != m_guestList.end(); it++){
+		ref = UserSessionManager::getInstance().getUser(*it);
+		if(ref){
+			ref->sendProto(proto_type, proto);
+		}
+		else{
+			ztLoggerWrite(ZONE, e_Debug, "[Table %d] Cannot find UserSession, GuestID: %d, UserID: %s", m_gameId, id, *it);
+		}
+	}
+
 }
 
 bool GameGrail::isReady(int id)
@@ -787,7 +825,7 @@ void GameGrail::GameRun()
 					m_gameId, m_gameName.c_str());
 	int ret;
 	GrailState* currentState;
-	while(true)
+	while(processing)
 	{
 		try{
 			ret = GE_NO_STATE;
@@ -807,26 +845,36 @@ void GameGrail::GameRun()
 	}
 }
 
-int GameGrail::playerEnterIntoTable(GameGrailPlayerContext *player)
+int GameGrail::playerEnterIntoTable(string userId, int &playerId)
 {
-	if(isCanSitIntoTable())
+	playerId = GUEST;
+	for(PlayerContextList::iterator it = m_playerContexts.begin(); it != m_playerContexts.end(); it++)
+	{
+		if(it->second->getUserId() == userId)
+		{
+			playerId = it->first;
+			return SIT_TABLE_SUCCESS;
+		}
+	}
+	if(!isTableFull())
 	{
 		int availableID;
-		for(availableID=0;availableID<m_maxPlayers;availableID++)
+		for(availableID = 0; availableID<m_maxPlayers; availableID++)
 		{
 			if(m_playerContexts.find(availableID) == m_playerContexts.end())
 			{
-				UserSession *ref = UserSessionManager::getInstance().getUser(player->getUserId());
-				ref->setPlayerID(availableID);
+				GameGrailPlayerContext *player = new GameGrailPlayerContext(userId);
+				UserTask* session = UserSessionManager::getInstance().getUser(userId);
+				player->setName(session->m_nickname);
 				m_playerContexts.insert(PlayerContextList::value_type(availableID, player));
-				SingleRoom single_room;
-				single_room.set_player_id(availableID);
-				sendMessage(availableID, MSG_SINGLE_ROOM, single_room);
-				return 0;
+				playerId = availableID;
+				return SIT_TABLE_SUCCESS;
 			}
 		}
 	}
-	return 1;
+	//FIXME: limit guset number
+	m_guestList.push_back(userId);
+	return SIT_TABLE_GUEST;
 }
 
 int GameGrail::setStateRoleStrategy()
@@ -840,7 +888,7 @@ int GameGrail::setStateRoleStrategy()
 		pushGameState(new StateRoleStrategy31);
 		break;
 	case ROLE_STRATEGY_BP:
-		pushGameState(new GrailState(STATE_ROLE_STRATEGY_BP));
+		//pushGameState(new GrailState(STATE_ROLE_STRATEGY_BP));
 		break;
 	default:
 		return GE_INVALID_ARGUMENT;
@@ -858,10 +906,14 @@ int GameGrail::setStateCurrentPlayer(int playerID)
 		return GE_INVALID_ARGUMENT;
 	}
 	m_currentPlayerID = playerID;
+	if(m_currentPlayerID == m_firstPlayerID)
+		m_roundId++;
 	player->clearAdditionalAction();
 
 	network::TurnBegin turn_begin;
 	turn_begin.set_id(m_currentPlayerID);
+	turn_begin.set_round(m_roundId);
+
 	sendMessage(-1, network::MSG_TURN_BEGIN, turn_begin);
 	pushGameState(new StateBeforeTurnBegin);
 	return GE_SUCCESS;
@@ -889,14 +941,13 @@ void GameGrail::initPlayerEntities()
 	int position2id[8];
 
 	for(int i = 0; i < m_maxPlayers; i++){
-		player_it = (SinglePlayerInfo*)&(game_info.player_infos().Get(i));
+		player_it = (SinglePlayerInfo*)&(room_info.player_infos().Get(i));
 		id = player_it->id();
-		//roleID = player_it->role_id();
+		roleID = player_it->role_id();
 		color = player_it->team();
 		//FIXME: 全封印时代
-	//	m_playerEntities[id] = createRole(id, roleID, color);
-		m_playerEntities[id] = createRole(id, 24, color);
-		
+		m_playerEntities[id] = createRole(id, roleID, color);
+		m_playerEntities[id]->setRoleID(roleID);
 		position2id[i] = id;
 	}
 	for(int i = 1; i < m_maxPlayers-1; i++){
@@ -920,35 +971,113 @@ void GameGrail::initPlayerEntities()
 	m_teamArea = new TeamArea;
 }
 
-/*
-int GameGrail::handleRoleStrategy31(GrailState *state)
+void GameGrail::onPlayerEnter(int playerID)
 {
-	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter handleRoleStrategy31", m_gameId);
-	CONTEXT_BROADCAST* con;
-	if(!state->context){
-		Deck *roles = initRoles();
-		con = new CONTEXT_BROADCAST;
-		int out[3];
-		for(int i = 0; i < m_maxPlayers; i++){
-			if(roles->pop(3, out)){
-				con->msgs[i] = Coder::askForRolePick(3, out);
-			}
-			else{
-				return GE_INVALID_ARGUMENT;
-			}
-		}
-		state->context = con;
-		delete roles;
-	}
-	con = (CONTEXT_BROADCAST*)state->context;
-	if(waitForAll(con->msgs)){
-		//TODO
-		;
+	if(!playing)
+	{
+		GameInfo room_info;
+		Coder::roomInfo(m_playerContexts, room_info);
+		sendMessageExcept(playerID, MSG_GAME, room_info);
+
+		room_info.set_room_id(m_gameId);
+		room_info.set_player_id(playerID);
+		sendMessage(playerID, MSG_GAME, room_info);
 	}
 	else{
-		return GE_TIMEOUT;
+		//FIXME: reconnect notice?
+		GameInfo game_info;
+		toProto(game_info);
+		game_info.set_player_id(playerID);
+		sendMessage(playerID, MSG_GAME, game_info);
 	}
 }
 
-*/
+void GameGrail::onGuestEnter(string userID)
+{
+	UserTask* session = UserSessionManager::getInstance().getUser(userID);
+	if(!session)
+		return;
+	if(!playing)
+	{
+		GameInfo room_info;
+		Coder::roomInfo(m_playerContexts, room_info);
+		room_info.set_room_id(m_gameId);
+		room_info.set_player_id(GUEST);
+		session->sendProto(MSG_GAME, room_info);
+	}
+	else{
+		GameInfo game_info;
+		toProto(game_info);
+		game_info.set_player_id(GUEST);
+		session->sendProto(MSG_GAME, game_info);
+	}
+}
+
+void GameGrail::onUserLeave(string userID)
+{
+	m_guestList.remove(userID);
+	if(!playing)
+	{
+		for(PlayerContextList::iterator it = m_playerContexts.begin(); it != m_playerContexts.end(); it++)
+		{
+			if(it->second->getUserId() == userID)
+			{
+				delete it->second;
+				m_playerContexts.erase(it);
+				GameInfo game_info;
+				Coder::roomInfo(m_playerContexts, game_info);
+				sendMessage(-1, MSG_GAME, game_info);	
+				break;
+			}
+		}
+	}
+	else{
+		for(PlayerContextList::iterator it = m_playerContexts.begin(); it != m_playerContexts.end(); it++)
+		{
+			if(it->second->getUserId() == userID)
+			{
+				it->second->setConnect(false);
+				Error error;
+				Coder::errorMsg(GE_DISCONNECTED, it->first, error);
+				sendMessage(-1, MSG_ERROR, error);	
+				break;
+			}
+		}
+		for(PlayerContextList::iterator it = m_playerContexts.begin(); it != m_playerContexts.end(); it++)
+		{
+			if(it->second->isConnected())
+				return;
+		}
+		GameManager::getInstance().deleteGame(GAME_TYPE_GRAIL, m_gameId);
+	}
+}
+
+void GameGrail::toProto(GameInfo& game_info)
+{
+	game_info.set_room_id(m_gameId);
+	game_info.set_blue_crystal(m_teamArea->getCrystal(0));
+	game_info.set_blue_gem(m_teamArea->getGem(0));
+	game_info.set_blue_grail(m_teamArea->getCup(0));
+	game_info.set_blue_morale(m_teamArea->getMorale(0));
+
+	game_info.set_red_crystal(m_teamArea->getCrystal(1));
+	game_info.set_red_gem(m_teamArea->getGem(1));
+	game_info.set_red_grail(m_teamArea->getCup(1));
+	game_info.set_red_morale(m_teamArea->getMorale(1));
+
+	game_info.set_pile(pile->get_size());
+	game_info.set_discard(discard->get_size());
+	game_info.set_is_started(true);
+
+	for(int i = 0; i < m_maxPlayers; i++)
+	{
+		SinglePlayerInfo* player_info = game_info.add_player_infos();
+		//按座次顺序
+		int playerId = room_info.player_infos(i).id();
+		PlayerEntity* player = getPlayerEntity(playerId);
+		player->toProto(player_info);
+		player_info->set_nickname(m_playerContexts[playerId]->getName());
+	}
+
+}
 

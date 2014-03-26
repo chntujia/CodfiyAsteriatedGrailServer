@@ -108,9 +108,6 @@
     <ClInclude Include="role\ShenGuan.h">
       <Filter>role</Filter>
     </ClInclude>
-    <ClInclude Include="role\GongNv.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="role\TianShi.h">
       <Filter>role</Filter>
     </ClInclude>
@@ -126,10 +123,25 @@
     <ClInclude Include="role\WuNv.h">
       <Filter>role</Filter>
     </ClInclude>
-    <ClInclude Include="role\GeDou.h">
+    <ClInclude Include="role\LingFu.h">
       <Filter>role</Filter>
     </ClInclude>
-    <ClInclude Include="role\LingFu.h">
+    <ClInclude Include="role\DieWu.h">
+      <Filter>role</Filter>
+    </ClInclude>
+    <ClInclude Include="role\HongLian.h">
+      <Filter>role</Filter>
+    </ClInclude>
+    <ClInclude Include="role\JianDi.h">
+      <Filter>role</Filter>
+    </ClInclude>
+    <ClInclude Include="role\MoGong.h">
+      <Filter>role</Filter>
+    </ClInclude>
+    <ClInclude Include="role\MoQiang.h">
+      <Filter>role</Filter>
+    </ClInclude>
+    <ClInclude Include="role\GongNv.h">
       <Filter>role</Filter>
     </ClInclude>
   </ItemGroup>
@@ -218,9 +230,6 @@
     <ClCompile Include="role\ShenGuan.cpp">
       <Filter>role</Filter>
     </ClCompile>
-    <ClCompile Include="role\GongNv.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="role\TianShi.cpp">
       <Filter>role</Filter>
     </ClCompile>
@@ -236,10 +245,25 @@
     <ClCompile Include="role\WuNv.cpp">
       <Filter>role</Filter>
     </ClCompile>
-    <ClCompile Include="role\GeDou.cpp">
+    <ClCompile Include="role\LingFu.cpp">
       <Filter>role</Filter>
     </ClCompile>
-    <ClCompile Include="role\LingFu.cpp">
+    <ClCompile Include="role\DieWu.cpp">
+      <Filter>role</Filter>
+    </ClCompile>
+    <ClCompile Include="role\HongLian.cpp">
+      <Filter>role</Filter>
+    </ClCompile>
+    <ClCompile Include="role\JianDi.cpp">
+      <Filter>role</Filter>
+    </ClCompile>
+    <ClCompile Include="role\MoGong.cpp">
+      <Filter>role</Filter>
+    </ClCompile>
+    <ClCompile Include="role\MoQiang.cpp">
+      <Filter>role</Filter>
+    </ClCompile>
+    <ClCompile Include="role\GongNv.cpp">
       <Filter>role</Filter>
     </ClCompile>
   </ItemGroup>

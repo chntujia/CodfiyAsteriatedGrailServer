@@ -5,10 +5,13 @@
 int StateWaitForEnter::handle(GameGrail* engine)
 {
 	//ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateWaitForEnter", engine->getGameId());
-	if(engine->getGameNowPlayers() >= engine->getGameMaxPlayers())
+	//FIXME: skip ready 
+	//if(engine->isAllStartReady())
+	if(engine->isTableFull())
 	{
 		engine->popGameState();
 		engine->pushGameState(new StateSeatArrange);
+		engine->playing = true;
 	}
 	Sleep(1000);
 	return GE_SUCCESS;
@@ -21,7 +24,7 @@ int StateSeatArrange::handle(GameGrail* engine)
 	int m_maxPlayers = engine->getGameMaxPlayers();
 	
 	// 直接将随机结果保存到engine中
-	GameInfo& game_info = engine->game_info;
+	GameInfo& game_info = engine->room_info;
 
 	if(!isSet)
 	{
@@ -46,10 +49,8 @@ int StateSeatArrange::handle(GameGrail* engine)
 			SinglePlayerInfo *player_info;
 			int it;
 			for(int i = 0; i < m_maxPlayers; i++){
-				game_info.add_player_infos();
-				player_info = (SinglePlayerInfo*)&(game_info.player_infos().Get(i));
-
-				player_info->set_seat(i);
+				
+				player_info = game_info.add_player_infos();
 
 				ids.pop(1, &it);
 				player_info->set_id(it);
@@ -57,7 +58,7 @@ int StateSeatArrange::handle(GameGrail* engine)
 				colors.pop(1, &it);
 				player_info->set_team(it);
 			}
-
+			game_info.set_is_started(true);
 			for(int i = 0; i < m_maxPlayers; i++){
 				messages[i] = &game_info;
 			}
@@ -80,21 +81,20 @@ int StateRoleStrategyRandom::handle(GameGrail* engine)
 	Deck* roles = engine->initRoles();
 	int ret;
 	// 直接将随机结果保存到engine中
-	GameInfo& game_info = engine->game_info;
+	GameInfo& game_info = engine->room_info;
 	int roleID;
 
 	for(int i = 0; i < engine->getGameMaxPlayers(); i++){
 		// i为玩家编号，不是座号		
 		if(GE_SUCCESS == (ret=roles->pop(1, &roleID))){
 			//FIXME: 全封印时代
-			roleID = 28;
 			Coder::roleNotice(i, roleID, game_info);
-			engine->setRole(i, roleID);
 		}
 		else{
 			return ret;
 		}
 	}
+	game_info.set_is_started(true);
 	engine->sendMessage(-1, MSG_GAME, game_info);
 	SAFE_DELETE(roles);
 	engine->initPlayerEntities();
@@ -125,23 +125,21 @@ int StateRoleStrategy31::handle(GameGrail* engine)
 	}
 	void* reply;
 	int chosen;
-	GameInfo& game_info = engine->game_info;
+	GameInfo& game_info = engine->room_info;
 	bool isTimeOut = !engine->waitForAll(network::MSG_ROLE_REQ, (void**)messages);
 			
 	for(int i = 0; i < engine->getGameMaxPlayers(); i++){	
 		if(GE_SUCCESS == (ret = engine->getReply(i, reply))){
 			PickBan *respond = (PickBan*)reply;
 			chosen = respond->role_ids(0);
-			engine->setRole(i, chosen);
 			Coder::roleNotice(i, chosen, game_info);
 		}
 		else{
 			chosen = messages[i]->role_ids(0);
-			engine->setRole(i, chosen);
 			Coder::roleNotice(i, chosen, game_info);
 		}
 	}
-
+	game_info.set_is_started(true);
 	engine->sendMessage(-1, MSG_GAME, game_info);
 	SAFE_DELETE(roles);
 	engine->initPlayerEntities();
@@ -156,6 +154,7 @@ int StateGameStart::handle(GameGrail* engine)
 	if(!isSet){
 		isSet=true;
 		engine->initDecks();
+		Sleep(1000);
 	}
 	int ret;
 	vector< int > cards;
@@ -171,7 +170,8 @@ int StateGameStart::handle(GameGrail* engine)
 		return ret;
 	}
 	engine->popGameState();	
-	return engine->setStateCurrentPlayer(engine->game_info.player_infos().begin()->id());
+	engine->m_firstPlayerID = engine->room_info.player_infos().begin()->id();
+	return engine->setStateCurrentPlayer(engine->m_firstPlayerID);
 }
 
 int StateBeforeTurnBegin::handle(GameGrail* engine)
@@ -1667,6 +1667,7 @@ int StateShowHand::handle(GameGrail* engine)
 int StateGameOver::handle(GameGrail* engine)
 {
 	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateGameOver", engine->getGameId());
-	Sleep(10000);
+	engine->processing = false;
+
 	return GE_SUCCESS;
 }

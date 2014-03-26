@@ -38,13 +38,6 @@ bool DiceGameServer::serverInit()
 	UserSessionManager::newInstance();
 	GameManager::newInstance();
     grailInit();
-	//FIXME: 先自动开房
-	//1 random
-	//2 31
-			GameGrailConfig*	config = new GameGrailConfig(4,1);
-			GameManager::getInstance().createGame(GAME_TYPE_GRAIL, config);
-	// create all the game table here
-	//loadAllGameTable();
 	return true;
 }
 

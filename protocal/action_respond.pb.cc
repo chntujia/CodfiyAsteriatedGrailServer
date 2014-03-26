@@ -108,8 +108,9 @@ void protobuf_AssignDesc_action_5frespond_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(PickBan));
   TurnBegin_descriptor_ = file->message_type(2);
-  static const int TurnBegin_offsets_[1] = {
+  static const int TurnBegin_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(TurnBegin, id_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(TurnBegin, round_),
   };
   TurnBegin_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -370,48 +371,49 @@ void protobuf_AddDesc_action_5frespond_2eproto() {
     "equest\022(\n\010strategy\030\001 \001(\0162\026.network.ROLE_"
     "STRATEGY\022\020\n\010role_ids\030\002 \003(\r\022\014\n\004args\030\003 \003(\r"
     "\">\n\007PickBan\022\020\n\010strategy\030\001 \001(\r\022\017\n\007is_pick"
-    "\030\002 \001(\010\022\020\n\010role_ids\030\003 \003(\r\"\027\n\tTurnBegin\022\n\n"
-    "\002id\030\001 \001(\r\"q\n\006Action\022\023\n\013action_type\030\001 \001(\r"
-    "\022\021\n\taction_id\030\002 \001(\r\022\016\n\006src_id\030\003 \001(\r\022\017\n\007d"
-    "st_ids\030\004 \003(\r\022\020\n\010card_ids\030\005 \003(\r\022\014\n\004args\030\006"
-    " \003(\r\"^\n\007Respond\022\022\n\nrespond_id\030\001 \001(\r\022\016\n\006s"
-    "rc_id\030\002 \001(\r\022\017\n\007dst_ids\030\003 \003(\r\022\020\n\010card_ids"
-    "\030\004 \003(\r\022\014\n\004args\030\005 \003(\r\"^\n\007Command\022\022\n\nrespo"
-    "nd_id\030\001 \001(\r\022\016\n\006src_id\030\002 \001(\r\022\017\n\007dst_ids\030\003"
-    " \003(\r\022\020\n\010card_ids\030\004 \003(\r\022\014\n\004args\030\005 \003(\r\"X\n\016"
-    "CommandRequest\022\"\n\010cmd_type\030\001 \001(\0162\020.netwo"
-    "rk.CmdType\022\"\n\010commands\030\002 \003(\0132\020.network.C"
-    "ommand\"V\n\nErrorInput\022$\n\nerror_type\030\001 \001(\016"
-    "2\020.network.CmdType\022\"\n\010commands\030\002 \003(\0132\020.n"
-    "etwork.Command\"E\n\006HitMsg\022\016\n\006cmd_id\030\001 \001(\r"
-    "\022\013\n\003hit\030\002 \001(\r\022\016\n\006src_id\030\003 \001(\r\022\016\n\006dst_id\030"
-    "\004 \001(\r\"Z\n\007CardMsg\022\014\n\004type\030\001 \001(\r\022\016\n\006src_id"
-    "\030\002 \001(\r\022\016\n\006dst_id\030\003 \001(\r\022\020\n\010card_ids\030\004 \003(\r"
-    "\022\017\n\007is_real\030\005 \001(\010\"\\\n\007HurtMsg\022\016\n\006src_id\030\001"
-    " \001(\r\022\026\n\006dst_id\030\002 \001(\r:\006100000\022\014\n\004hurt\030\003 \001"
-    "(\r\022\r\n\005cause\030\004 \001(\r\022\014\n\004type\030\005 \001(\r\"=\n\010Skill"
-    "Msg\022\020\n\010skill_id\030\001 \001(\r\022\016\n\006src_id\030\002 \001(\r\022\017\n"
-    "\007dst_ids\030\003 \003(\r*\305\001\n\014MessageType2\022\020\n\014MSG_R"
-    "OLE_REQ\020e\022\020\n\014MSG_PICK_BAN\020f\022\016\n\nMSG_ACTIO"
-    "N\020g\022\017\n\013MSG_RESPOND\020h\022\017\n\013MSG_CMD_REQ\020j\022\023\n"
-    "\017MSG_ERROR_INPUT\020k\022\013\n\007MSG_HIT\020l\022\022\n\016MSG_T"
-    "URN_BEGIN\020m\022\014\n\010MSG_CARD\020n\022\014\n\010MSG_HURT\020o\022"
-    "\r\n\tMSG_SKILL\020p*%\n\rPlayerIdConst\022\024\n\016PLAYE"
-    "R_NONE_ID\020\240\215\006*U\n\rROLE_STRATEGY\022\030\n\024ROLE_S"
-    "TRATEGY_RANDOM\020\001\022\024\n\020ROLE_STRATEGY_31\020\002\022\024"
-    "\n\020ROLE_STRATEGY_BP\020\003*\321\001\n\017BasicActionType"
-    "\022\021\n\rACTION_ATTACK\020\001\022\020\n\014ACTION_MAGIC\020\002\022\022\n"
-    "\016ACTION_SPECIAL\020\003\022\027\n\023ACTION_ATTACK_SKILL"
-    "\020\004\022\026\n\022ACTION_MAGIC_SKILL\020\005\022\030\n\024ACTION_SPE"
-    "CIAL_SKILL\020\006\022\016\n\nACTION_ANY\020\007\022\027\n\023ACTION_A"
-    "TTACK_MAGIC\020\010\022\021\n\013ACTION_NONE\020\240\215\006*\307\001\n\020Bas"
-    "icRespondType\022\030\n\024RESPOND_REPLY_ATTACK\020\n\022"
-    "\022\n\016RESPOND_BULLET\020\013\022\020\n\014RESPOND_HEAL\020\014\022\023\n"
-    "\017RESPOND_DISCARD\020\r\022\022\n\016RESPOND_WEAKEN\020\016\022\035"
-    "\n\031RESPOND_ADDITIONAL_ACTION\020\017\022\031\n\025RESPOND"
-    "_DISCARD_COVER\020\020\022\020\n\014RESPOND_ROLE\020\021**\n\007Cm"
-    "dType\022\016\n\nCMD_ACTION\020\001\022\017\n\013CMD_RESPOND\020\002*&"
-    "\n\013CardMsgType\022\n\n\006CM_USE\020\001\022\013\n\007CM_SHOW\020\002", 1838);
+    "\030\002 \001(\010\022\020\n\010role_ids\030\003 \003(\r\"&\n\tTurnBegin\022\n\n"
+    "\002id\030\001 \001(\r\022\r\n\005round\030\002 \001(\r\"q\n\006Action\022\023\n\013ac"
+    "tion_type\030\001 \001(\r\022\021\n\taction_id\030\002 \001(\r\022\016\n\006sr"
+    "c_id\030\003 \001(\r\022\017\n\007dst_ids\030\004 \003(\r\022\020\n\010card_ids\030"
+    "\005 \003(\r\022\014\n\004args\030\006 \003(\r\"^\n\007Respond\022\022\n\nrespon"
+    "d_id\030\001 \001(\r\022\016\n\006src_id\030\002 \001(\r\022\017\n\007dst_ids\030\003 "
+    "\003(\r\022\020\n\010card_ids\030\004 \003(\r\022\014\n\004args\030\005 \003(\r\"^\n\007C"
+    "ommand\022\022\n\nrespond_id\030\001 \001(\r\022\016\n\006src_id\030\002 \001"
+    "(\r\022\017\n\007dst_ids\030\003 \003(\r\022\020\n\010card_ids\030\004 \003(\r\022\014\n"
+    "\004args\030\005 \003(\r\"X\n\016CommandRequest\022\"\n\010cmd_typ"
+    "e\030\001 \001(\0162\020.network.CmdType\022\"\n\010commands\030\002 "
+    "\003(\0132\020.network.Command\"V\n\nErrorInput\022$\n\ne"
+    "rror_type\030\001 \001(\0162\020.network.CmdType\022\"\n\010com"
+    "mands\030\002 \003(\0132\020.network.Command\"E\n\006HitMsg\022"
+    "\016\n\006cmd_id\030\001 \001(\r\022\013\n\003hit\030\002 \001(\r\022\016\n\006src_id\030\003"
+    " \001(\r\022\016\n\006dst_id\030\004 \001(\r\"Z\n\007CardMsg\022\014\n\004type\030"
+    "\001 \001(\r\022\016\n\006src_id\030\002 \001(\r\022\016\n\006dst_id\030\003 \001(\r\022\020\n"
+    "\010card_ids\030\004 \003(\r\022\017\n\007is_real\030\005 \001(\010\"\\\n\007Hurt"
+    "Msg\022\016\n\006src_id\030\001 \001(\r\022\026\n\006dst_id\030\002 \001(\r:\006100"
+    "000\022\014\n\004hurt\030\003 \001(\r\022\r\n\005cause\030\004 \001(\r\022\014\n\004type"
+    "\030\005 \001(\r\"=\n\010SkillMsg\022\020\n\010skill_id\030\001 \001(\r\022\016\n\006"
+    "src_id\030\002 \001(\r\022\017\n\007dst_ids\030\003 \003(\r*\305\001\n\014Messag"
+    "eType2\022\020\n\014MSG_ROLE_REQ\020e\022\020\n\014MSG_PICK_BAN"
+    "\020f\022\016\n\nMSG_ACTION\020g\022\017\n\013MSG_RESPOND\020h\022\017\n\013M"
+    "SG_CMD_REQ\020j\022\023\n\017MSG_ERROR_INPUT\020k\022\013\n\007MSG"
+    "_HIT\020l\022\022\n\016MSG_TURN_BEGIN\020m\022\014\n\010MSG_CARD\020n"
+    "\022\014\n\010MSG_HURT\020o\022\r\n\tMSG_SKILL\020p*%\n\rPlayerI"
+    "dConst\022\024\n\016PLAYER_NONE_ID\020\240\215\006*l\n\rROLE_STR"
+    "ATEGY\022\030\n\024ROLE_STRATEGY_RANDOM\020\001\022\024\n\020ROLE_"
+    "STRATEGY_31\020\002\022\024\n\020ROLE_STRATEGY_BP\020\003\022\025\n\021R"
+    "OLE_STRATEGY_ALL\020\t*\321\001\n\017BasicActionType\022\021"
+    "\n\rACTION_ATTACK\020\001\022\020\n\014ACTION_MAGIC\020\002\022\022\n\016A"
+    "CTION_SPECIAL\020\003\022\027\n\023ACTION_ATTACK_SKILL\020\004"
+    "\022\026\n\022ACTION_MAGIC_SKILL\020\005\022\030\n\024ACTION_SPECI"
+    "AL_SKILL\020\006\022\016\n\nACTION_ANY\020\007\022\027\n\023ACTION_ATT"
+    "ACK_MAGIC\020\010\022\021\n\013ACTION_NONE\020\240\215\006*\307\001\n\020Basic"
+    "RespondType\022\030\n\024RESPOND_REPLY_ATTACK\020\n\022\022\n"
+    "\016RESPOND_BULLET\020\013\022\020\n\014RESPOND_HEAL\020\014\022\023\n\017R"
+    "ESPOND_DISCARD\020\r\022\022\n\016RESPOND_WEAKEN\020\016\022\035\n\031"
+    "RESPOND_ADDITIONAL_ACTION\020\017\022\031\n\025RESPOND_D"
+    "ISCARD_COVER\020\020\022\020\n\014RESPOND_ROLE\020\021**\n\007CmdT"
+    "ype\022\016\n\nCMD_ACTION\020\001\022\017\n\013CMD_RESPOND\020\002*&\n\013"
+    "CardMsgType\022\n\n\006CM_USE\020\001\022\013\n\007CM_SHOW\020\002", 1876);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "action_respond.proto", &protobuf_RegisterTypes);
   RoleRequest::default_instance_ = new RoleRequest();
@@ -492,6 +494,7 @@ bool ROLE_STRATEGY_IsValid(int value) {
     case 1:
     case 2:
     case 3:
+    case 9:
       return true;
     default:
       return false;
@@ -1176,6 +1179,7 @@ void PickBan::Swap(PickBan* other) {
 
 #ifndef _MSC_VER
 const int TurnBegin::kIdFieldNumber;
+const int TurnBegin::kRoundFieldNumber;
 #endif  // !_MSC_VER
 
 TurnBegin::TurnBegin()
@@ -1195,6 +1199,7 @@ TurnBegin::TurnBegin(const TurnBegin& from)
 void TurnBegin::SharedCtor() {
   _cached_size_ = 0;
   id_ = 0u;
+  round_ = 0u;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -1231,6 +1236,7 @@ TurnBegin* TurnBegin::New() const {
 void TurnBegin::Clear() {
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
     id_ = 0u;
+    round_ = 0u;
   }
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
   mutable_unknown_fields()->Clear();
@@ -1250,6 +1256,22 @@ bool TurnBegin::MergePartialFromCodedStream(
                    ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
                  input, &id_)));
           set_has_id();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(16)) goto parse_round;
+        break;
+      }
+
+      // optional uint32 round = 2;
+      case 2: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+         parse_round:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &round_)));
+          set_has_round();
         } else {
           goto handle_uninterpreted;
         }
@@ -1280,6 +1302,11 @@ void TurnBegin::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteUInt32(1, this->id(), output);
   }
 
+  // optional uint32 round = 2;
+  if (has_round()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(2, this->round(), output);
+  }
+
   if (!unknown_fields().empty()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -1291,6 +1318,11 @@ void TurnBegin::SerializeWithCachedSizes(
   // optional uint32 id = 1;
   if (has_id()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(1, this->id(), target);
+  }
+
+  // optional uint32 round = 2;
+  if (has_round()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(2, this->round(), target);
   }
 
   if (!unknown_fields().empty()) {
@@ -1309,6 +1341,13 @@ int TurnBegin::ByteSize() const {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::UInt32Size(
           this->id());
+    }
+
+    // optional uint32 round = 2;
+    if (has_round()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->round());
     }
 
   }
@@ -1341,6 +1380,9 @@ void TurnBegin::MergeFrom(const TurnBegin& from) {
     if (from.has_id()) {
       set_id(from.id());
     }
+    if (from.has_round()) {
+      set_round(from.round());
+    }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
 }
@@ -1365,6 +1407,7 @@ bool TurnBegin::IsInitialized() const {
 void TurnBegin::Swap(TurnBegin* other) {
   if (other != this) {
     std::swap(id_, other->id_);
+    std::swap(round_, other->round_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);

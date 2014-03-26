@@ -54,10 +54,7 @@ public:
 
     void setGem(int howMany);
     void setCrystal(int howMany);
-    //设置当前回合是否为该玩家回合
-    void setYourTurn(bool yes);
-    void setSeatNum(int num){this->seatNum = num;}
-    int getSeatNum(){return this->seatNum;}
+	void setRoleID(int id) { roleID = id; }
     //设置横置
     void setTap(bool tap){this->tap = tap;}
     void setToken(int id,int howMany){if(howMany<0)howMany=0;token[id]=howMany<=tokenMax[id]?howMany:tokenMax[id];}
@@ -85,10 +82,9 @@ public:
     PlayerEntity* getPost(){ return this->postPlayer;}
 	PlayerEntity* getPre(){ return prePlayer; }
     list< int > getHandCards(){return this->handCards;}
-    int getRoleID(){return characterID;}
+    int getRoleID(){return roleID;}
     bool tapped(){return this->tap;}
     bool isHandCardsMaxFixed(){return this->handCardsMaxFixed;}
-    bool getYourturn();
 	bool containsAction(int cause);
 	bool hasAdditionalAction() {return !additionalActions.empty();}
 	list<ACTION_QUOTA> getAdditionalAction() { return additionalActions; }
@@ -99,8 +95,8 @@ public:
 		quota.cause = cause;
 		additionalActions.push_back(quota);
 	}
-	
-	bool toNextStep(int ret) {	return GE_SUCCESS == ret || GE_TIMEOUT == ret; }
+	void toProto(SinglePlayerInfo *playerInfo);
+	bool virtual toNextStep(int ret) {	return GE_SUCCESS == ret || GE_TIMEOUT == ret; }
 	//解析角色相关的命令
 	//return true 表示处理了
 	virtual bool cmdMsgParse(UserTask* session, uint16_t type, ::google::protobuf::Message *proto){ return false; }
@@ -160,7 +156,7 @@ public:
     virtual int v_request_cover(int howMany, vector<int> cards, HARM harm) { return GE_SUCCESS; }
 protected:
     int id;//玩家id
-    int characterID;
+    int roleID;
     string name;
     int handCardsMax;
     int handCardsRange;

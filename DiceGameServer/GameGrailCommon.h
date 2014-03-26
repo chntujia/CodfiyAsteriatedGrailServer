@@ -1,5 +1,6 @@
 #pragma once
 #include "CardEntity.h"
+#include "GameGrailPlayerContext.h"
 #include "zLogger.h"
 #include <boost/lexical_cast.hpp>
 #include <boost/interprocess/sync/interprocess_mutex.hpp>
@@ -17,6 +18,9 @@ using namespace std;
 #ifndef SAFE_DELETE
 #define SAFE_DELETE(x) { if (x) { delete (x); (x) = NULL; } }
 #endif
+
+class GameGrailPlayerContext;
+typedef map< int, GameGrailPlayerContext* > PlayerContextList;
 
 const int SUMMON[] = {1, 2, 3, 4, 5, 6, 7, 8, 9,10,
 	           11,12,13,14,15,   17,18,19,
@@ -48,7 +52,8 @@ enum GrailError{
 	GE_NOT_SUPPORTED,
 	GE_INVALID_ARGUMENT,
 	GE_NO_CONTEXT,
-	GE_NO_REPLY
+	GE_NO_REPLY,
+	GE_DISCONNECTED
 };
 
 enum CAUSE{
@@ -264,7 +269,7 @@ enum REATTACK{
 	RA_GIVEUP
 };
 
-enum SpecialActionId{
+enum SPECIAL_ACTION{
 	SPECIAL_BUY,
 	SPECIAL_SYNTHESIZE,
 	SPECIAL_EXTRACT
@@ -662,8 +667,24 @@ public:
     static string banNotice(int ID, int role);
     static string askForPick(int ID);
     static string pickNotice(int ID, int role);
-    static string nicknameNotice(int id,string name){return combMessage("58",TOQSTR(id),name);}
+	static void roomInfo(PlayerContextList players, GameInfo& room_info)
+	{
+		SinglePlayerInfo *player_info;
 
+		for(PlayerContextList::iterator it = players.begin(); it != players.end(); it++)
+		{
+			player_info = room_info.add_player_infos();
+			player_info->set_id(it->first);
+			//FIXME: nickname
+			player_info->set_nickname(it->second->getUserId());
+			player_info->set_ready(it->second->isReady());
+		}
+	}
+	static void errorMsg(int id, int dstId, Error& error)
+	{
+		error.set_id(id);
+		error.set_dst_id(dstId);
+	}
 };
 
 CardEntity* getCardByID(int id);

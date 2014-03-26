@@ -15,14 +15,23 @@ void UserTask::Start()
 	m_iTmpId = ++m_sIDSeq;
 
 	UserSessionManager::getInstance().AddUserById(m_iTmpId, this);
+	//FIXME temporarily disable login
+	m_bAuthen = true;
+	// TODO : check username & password here
+	m_userId = TOQSTR(m_iTmpId);
+	m_nickname = m_userId;
+	UserSessionManager::getInstance().AddUser(m_userId, this);
 }
 
 void UserTask::OnQuit()
 {
 	zTCPTask::OnQuit();
 	ztLoggerWrite(ZONE, e_Debug, "UserTask::OnQuit [%s] ",m_userId.c_str());
-
-	UserSessionManager::getInstance().RemoveUser(m_userId, m_iTmpId);
+	GameGrail* game = getGame();
+	if(game){
+		game->onUserLeave(m_userId);
+	}
+	//UserSessionManager::getInstance().RemoveUser(m_userId, m_iTmpId);
 }
 
 void UserTask::OnCheck()
@@ -39,6 +48,7 @@ void UserTask::OnCheck()
 	if (tmNow - m_activeTime > ServerConfig::getInstance().m_iCheckTime)
 	{
 		ztLoggerWrite(ZONE,e_Debug, "OnCheck[%s]: heartbeat timeout,be kicked off ", m_userId.c_str());
+		UserSessionManager::getInstance().RemoveUser(m_userId, m_iTmpId);
 		SetQuit();
 		return;
 	}
@@ -84,50 +94,51 @@ bool UserTask::cmdMsgParse(const char *pstrMsg, const uint32_t nCmdLen)
 		int ret;
 		int tableID;
 		m_activeTime = time(NULL);
-		EnterRoom* enter_room;
-		Action *action;
-		Respond *respond;
-		Talk *talk;
-
+		
 		switch(type)
 		{
-
-		case MSG_ENTER_ROOM:
-			enter_room = (EnterRoom*)proto;
-			/*		if (enter_room->room_id() == 0){
-			//创建房间
-			config = new GameGrailConfig(2,0);
-			GameManager::getInstance().createGame(GAME_TYPE_GRAIL, config);
-			delete config;
-			}
-			else
-			*/{
-				//进入房间
+		case MSG_LOGIN_REQ:
+			{
 				//FIXME temporarily disable login
 				m_bAuthen = true;
 				// TODO : check username & password here
 				m_userId = TOQSTR(m_iTmpId);
 				UserSessionManager::getInstance().AddUser(m_userId, this);
-				m_gameType = GAME_TYPE_GRAIL;
-				tableID = enter_room->room_id();
-				ret = GameManager::getInstance().sitIntoTable(m_userId, GAME_TYPE_GRAIL, tableID);
-				if (ret == SIT_TABLE_SUCCESS){
-					m_tableId = tableID;
-				}
-				else{
-					ztLoggerWrite(ZONE, e_Error, "UserTask::cmdMsgParse() userId [%s] cannot enter Table %d. Ret: %d", 
-						m_userId.c_str(), tableID, ret);
-				}
+				delete proto;
+				break;
 			}
-
-			delete proto;    // 如果不需要tryNotify或者tryNotify不带reply的话，释放message对象，这一步相当重要
-			break;	
-		case MSG_START_REP:
-			//clicked start
-			tryNotify(m_playerId, STATE_SEAT_ARRANGE);
-
-			delete proto;    // 如果不需要tryNotify或者tryNotify不带reply的话，释放message对象，这一步相当重要
-			break;
+		//创建房间
+		case MSG_CREATE_ROOM_REQ:
+			{
+				handleCreateRoom(GAME_TYPE_GRAIL, proto);
+				delete proto;
+				break;
+			}
+		//进入房间
+		case MSG_ENTER_ROOM_REQ:
+			{					
+				handleEnterRoom(GAME_TYPE_GRAIL, proto);
+				delete proto;    // 如果不需要tryNotify或者tryNotify不带reply的话，释放message对象，这一步相当重要
+				break;	
+			}
+		case MSG_LEAVE_ROOM_REQ:
+			{
+				handleLeaveRoom(GAME_TYPE_GRAIL, proto);
+				delete proto;
+				break;
+			}
+		case MSG_ROOMLIST_REQ:
+			{
+				handleRoomList(GAME_TYPE_GRAIL, proto);					
+				delete proto;    // 如果不需要tryNotify或者tryNotify不带reply的话，释放message对象，这一步相当重要
+				break;	
+			}
+		case MSG_READY_GAME_REQ:
+			{
+				handleReadyGame(GAME_TYPE_GRAIL, proto);					
+				delete proto;    // 如果不需要tryNotify或者tryNotify不带reply的话，释放message对象，这一步相当重要
+				break;	
+			}
 		case MSG_PICK_BAN:
 			{
 				PickBan* pick = (PickBan*)proto;
@@ -137,66 +148,71 @@ bool UserTask::cmdMsgParse(const char *pstrMsg, const uint32_t nCmdLen)
 				break;
 			}
 		case MSG_ACTION:
-			action = (Action*)proto;
-			// 行动
-			tryNotify(m_playerId, STATE_ACTION_PHASE, 0, action);
-			break;
-		case MSG_RESPOND:
-			respond = (Respond*)proto;
-			switch(respond->respond_id())
 			{
-			case RESPOND_REPLY_ATTACK:
-				tryNotify(m_playerId, STATE_ATTACKED, 0, respond);
+				Action *action = (Action*)proto;
+				// 行动
+				tryNotify(m_playerId, STATE_ACTION_PHASE, 0, action);
 				break;
-			case RESPOND_DISCARD:
-				tryNotify(m_playerId, STATE_REQUEST_HAND, 0, respond);
-				break;
-			case RESPOND_DISCARD_COVER:
-				tryNotify(m_playerId, STATE_REQUEST_COVER, 0, respond);
-				break;
-			case RESPOND_BULLET:
-				tryNotify(m_playerId, STATE_MISSILED, 0, respond);
-				break;
-			case RESPOND_WEAKEN:
-				tryNotify(m_playerId, STATE_WEAKEN, 0, respond);
-				break;
-			case RESPOND_ADDITIONAL_ACTION:
-				tryNotify(m_playerId, STATE_ADDITIONAL_ACTION, 0, respond);
-				break;
-			case RESPOND_HEAL:
-				tryNotify(m_playerId, STATE_ASK_FOR_CROSS, 0, respond);
-				break;			
-			default:
-				////[QiDao]如果是威力赐福响应，需要调用祈祷师的p_cmdMsgParse
-				if(respond->respond_id() == WEI_LI_CI_FU){
-				
-					int playerNum = getGame()->getGameMaxPlayers();
-					for(int pid = 0;pid<playerNum;pid++){
-						PlayerEntity* pe = getGame()->getPlayerEntity(pid);
-						cout<<"role id "<<pe->getRoleID() <<endl;
-						if(pe->getRoleID() == 16){
-							if(pe->cmdMsgParse(this, type, proto) == false){
-								ztLoggerWrite(ZONE, e_Error, "[%s]Received undefine MSG_RESPOND: %s,\n size:%d, type:%d,\n To proto: %s", m_userId.c_str(), pstrMsg, *size, type, proto->DebugString().c_str());
-								delete proto;
-							}	
-							break;
+			}
+		case MSG_RESPOND:
+			{
+				Respond* respond = (Respond*)proto;
+				switch(respond->respond_id())
+				{
+				case RESPOND_REPLY_ATTACK:
+					tryNotify(m_playerId, STATE_ATTACKED, 0, respond);
+					break;
+				case RESPOND_DISCARD:
+					tryNotify(m_playerId, STATE_REQUEST_HAND, 0, respond);
+					break;
+				case RESPOND_DISCARD_COVER:
+					tryNotify(m_playerId, STATE_REQUEST_COVER, 0, respond);
+					break;
+				case RESPOND_BULLET:
+					tryNotify(m_playerId, STATE_MISSILED, 0, respond);
+					break;
+				case RESPOND_WEAKEN:
+					tryNotify(m_playerId, STATE_WEAKEN, 0, respond);
+					break;
+				case RESPOND_ADDITIONAL_ACTION:
+					tryNotify(m_playerId, STATE_ADDITIONAL_ACTION, 0, respond);
+					break;
+				case RESPOND_HEAL:
+					tryNotify(m_playerId, STATE_ASK_FOR_CROSS, 0, respond);
+					break;			
+				default:
+					////[QiDao]如果是威力赐福响应，需要调用祈祷师的p_cmdMsgParse
+					if(respond->respond_id() == WEI_LI_CI_FU){
+
+						int playerNum = getGame()->getGameMaxPlayers();
+						for(int pid = 0;pid<playerNum;pid++){
+							PlayerEntity* pe = getGame()->getPlayerEntity(pid);
+							if(pe->getRoleID() == 16){
+								if(pe->cmdMsgParse(this, type, proto) == false){
+									ztLoggerWrite(ZONE, e_Error, "[%s]Received undefine MSG_RESPOND: %s,\n size:%d, type:%d,\n To proto: %s", m_userId.c_str(), pstrMsg, *size, type, proto->DebugString().c_str());
+									delete proto;
+								}	
+								break;
+							}
 						}
+						break; //退出switch
 					}
-					break; //退出switch
-				}
-				
-				//尝试从角色的cmdMsgParse里找匹配
-				if(getGame()->getPlayerEntity(m_playerId)->cmdMsgParse(this, type, proto) == false){
-					ztLoggerWrite(ZONE, e_Error, "[%s]Received undefine MSG_RESPOND: %s,\n size:%d, type:%d,\n To proto: %s", m_userId.c_str(), pstrMsg, *size, type, proto->DebugString().c_str());
-					delete proto;
-				}
-			}		
-			break;
+
+					//尝试从角色的cmdMsgParse里找匹配
+					if(getGame()->getPlayerEntity(m_playerId)->cmdMsgParse(this, type, proto) == false){
+						ztLoggerWrite(ZONE, e_Error, "[%s]Received undefine MSG_RESPOND: %s,\n size:%d, type:%d,\n To proto: %s", m_userId.c_str(), pstrMsg, *size, type, proto->DebugString().c_str());
+						delete proto;
+					}
+				}		
+				break;
+			}
 		case MSG_TALK:
-			talk = (Talk*) proto;
-			player_talk(getGame(), m_playerId, talk);
-			delete proto;
-			break;
+			{
+				Talk* talk = (Talk*) proto;
+				player_talk(getGame(), m_playerId, talk);
+				delete proto;
+				break;
+			}
 		default:
 			ztLoggerWrite(ZONE, e_Error, "[%s]Received undefine MSG_TYPE: %s,\n size:%d, type:%d,\n To proto: %s", m_userId.c_str(), pstrMsg, *size, type, proto->DebugString().c_str());
 			delete proto;
@@ -208,11 +224,80 @@ bool UserTask::cmdMsgParse(const char *pstrMsg, const uint32_t nCmdLen)
 	}
 }
 
+void UserTask::handleCreateRoom(int game_type, void* req)
+{
+	CreateRoomRequest* create_room = (CreateRoomRequest*)req;
+	GameConfig *config = new GameGrailConfig(create_room->max_player(), create_room->role_strategy());
+	GameManager::getInstance().createGame(GAME_TYPE_GRAIL, config);
+	EnterRoomRequest enter_room;
+	enter_room.set_room_id(config->getTableId());
+	handleEnterRoom(GAME_TYPE_GRAIL, &enter_room);
+	delete config;
+}
+
+void UserTask::handleEnterRoom(int game_type, void* req)
+{
+	GameManager::getInstance().enterRoom(GAME_TYPE_GRAIL, m_userId, req);
+}
+
+void UserTask::handleLeaveRoom(int game_type, void* request)
+{
+	GameGrail* game = getGame();
+	if(game){
+		game->onUserLeave(m_userId);
+	}
+	else{
+		ztLoggerWrite(ZONE, e_Error, "UserTask::cmdMsgParse() userId [%s] cannot leave Table %d.", 
+			m_userId.c_str(), m_tableId);
+	}
+}
+
+void UserTask::handleRoomList(int game_type, void* req)
+{
+	RoomListRequest* request = (RoomListRequest*)req;
+	RoomListResponse response;
+	int ret = GameManager::getInstance().getGameList(GAME_TYPE_GRAIL, req, &response);
+	if (ret == GE_SUCCESS){
+		sendProto(MSG_ROOMLIST_REP, response);
+	}
+	else{
+		ztLoggerWrite(ZONE, e_Error, "UserTask::cmdMsgParse() userId [%s] cannot retrieve TableList. Ret: %d", 
+			m_userId.c_str(), ret);
+	}
+}
+
+void UserTask::handleReadyGame(int game_type, void* req)
+{
+	ReadyForGameRequest* request = (ReadyForGameRequest*)req;
+	switch(request->type())
+	{
+	case ReadyForGameRequest_Type_START_READY:
+	case ReadyForGameRequest_Type_CANCEL_START_REDAY:
+		{
+			int ret = GameManager::getInstance().setPlayerReady(GAME_TYPE_GRAIL, m_tableId, m_playerId, req);
+			if (ret != GE_SUCCESS){
+				ztLoggerWrite(ZONE, e_Error, "UserTask::cmdMsgParse() userId [%s] cannot get ready. Table %d. Ret: %d", 
+					m_userId.c_str(), m_tableId, ret);
+			}		
+		}
+		break;
+	case ReadyForGameRequest_Type_SEAT_READY:
+		tryNotify(m_playerId, STATE_SEAT_ARRANGE);
+		break;
+	}
+}
+
 bool UserTask::msgParse(const void *pstrMsg, const uint32_t nCmdLen)
 {
 	return MessageQueue::msgParse((const char *)pstrMsg, nCmdLen);
 }
 
+void UserTask::sendProto(uint16_t proto_type, google::protobuf::Message& proto)
+{
+	string msg;
+	proto_encoder(proto_type, proto, msg);
+	SendCmd(msg.c_str(), msg.size());
+}
 /*
 bool UserTask::handleUserLogin(const char *pstrCmd, const uint32_t nCmdLen)
 {

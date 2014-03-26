@@ -178,7 +178,7 @@ int ShengNv::BingShuangDaoYan(CONTEXT_TIMELINE_1 *con)
 	int srcID = con->attack.srcID;
 	int cardID = con->attack.cardID;
 	CardEntity* card = getCardByID(cardID);
-	if (srcID != id && card->getElement() != ELEMENT_WATER){
+	if (srcID != id || card->getElement() != ELEMENT_WATER){
 		return GE_SUCCESS;
 	}
 	CommandRequest cmd_req;

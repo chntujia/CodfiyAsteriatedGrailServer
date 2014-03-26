@@ -5,7 +5,7 @@
 class GameGrailPlayerContext : public PlayerContext
 {
 public:
-	GameGrailPlayerContext(string userId) : PlayerContext(userId), buf(NULL)
+	GameGrailPlayerContext(std::string userId) : PlayerContext(userId), ready(false), buf(NULL)
 	{}
 	~GameGrailPlayerContext() {
 		if(buf){
@@ -21,6 +21,12 @@ public:
 	void* getBuf(){
 		return buf;
 	}
+	void setReady(bool r) { ready = r; }
+	bool isReady() { return ready; }
+	void setName(std::string n) { name = n; }
+	std::string getName() { return name; }
 private:
+	bool ready;
+	std::string name;
 	void* buf;
 };

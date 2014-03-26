@@ -12,7 +12,7 @@ protected:
 	int m_tableId;
 
 public:
-	PlayerContext() {}
+	PlayerContext() : m_isConnected(true), m_tableId(-1){}
 	PlayerContext(std::string userId);
 	~PlayerContext() {}
 

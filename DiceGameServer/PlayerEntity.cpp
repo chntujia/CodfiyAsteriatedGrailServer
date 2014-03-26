@@ -267,16 +267,6 @@ void PlayerEntity::setCrystal(int howMany)
 	}
 }
 
-void PlayerEntity::setYourTurn(bool yes)
-{
-    yourTurn=yes;
-}
-
-bool PlayerEntity::getYourturn()
-{
-    return yourTurn;
-}
-
 int PlayerEntity::getID()
 {
     return id;
@@ -594,4 +584,41 @@ int PlayerEntity::p_additional_action(int chosen)
 		}
 	}
 	return GE_INVALID_ACTION;
+}
+
+void PlayerEntity::toProto(SinglePlayerInfo *playerInfo)
+{
+	playerInfo->set_id(id);
+	playerInfo->set_team(color);
+	playerInfo->set_role_id(roleID);
+	playerInfo->set_hand_count(handCards.size());
+	playerInfo->set_max_hand(handCardsMax);	
+	playerInfo->set_heal_count(crossNum);
+
+	list<BasicEffect>::iterator it;
+	for (it = basicEffects.begin(); it != basicEffects.end(); ++it)
+	{
+		playerInfo->add_basic_cards(it->card);
+	}
+	if (basicEffects.size() == 0)
+		playerInfo->add_delete_field("basic_cards");
+
+	bool hasEx = false;
+	for (int i = 0; i < EXCLUSIVE_NUM; i++)
+	{
+		if(exclusiveEffects[i]){
+			playerInfo->add_ex_cards(i);
+			hasEx = true;
+		}
+	}
+	if (!hasEx)
+		playerInfo->add_delete_field("ex_cards");
+
+	playerInfo->set_gem(gem);
+	playerInfo->set_crystal(crystal);
+	playerInfo->set_yellow_token(token[0]);
+	playerInfo->set_blue_token(token[1]);
+	playerInfo->set_covered_count(coverCards.size());
+	playerInfo->set_is_knelt(tap);
+
 }

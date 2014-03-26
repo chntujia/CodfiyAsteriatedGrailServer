@@ -25,6 +25,7 @@
 #include <google/protobuf/extension_set.h>
 #include <google/protobuf/generated_enum_reflection.h>
 #include <google/protobuf/unknown_field_set.h>
+#include "action_respond.pb.h"
 // @@protoc_insertion_point(includes)
 
 namespace network {
@@ -35,119 +36,67 @@ void protobuf_AssignDesc_base_2eproto();
 void protobuf_ShutdownFile_base_2eproto();
 
 class RegisterRequest;
-class RegisterReply;
+class RegisterResponse;
 class LoginRequest;
-class LoginReply;
+class LoginResponse;
 class LogoutRequest;
-class LogoutReply;
-class GameListRequest;
-class GameListResponse;
-class GameListResponse_GameInfo;
-class CreateGameRequest;
-class JoinGameRequest;
-class JoinGameResponse;
-class StartGameRequest;
-class StartGameResponse;
+class LogoutResponse;
+class RoomListRequest;
+class RoomListResponse;
+class RoomListResponse_RoomInfo;
+class CreateRoomRequest;
+class EnterRoomRequest;
+class LeaveRoomRequest;
 class ReadyForGameRequest;
-class GameRoomInfo;
-class GameRoomInfo_PlayerInfo;
-class EnterRoom;
-class SingleRoom;
-class SingleRoom_RoomPlayer;
-class Rooms;
-class ReadyToStart;
-class StartReply;
 class SinglePlayerInfo;
 class GameInfo;
 class Talk;
+class Error;
 class Gossip;
 
-enum JoinGameResponse_JoinGameResult {
-  JoinGameResponse_JoinGameResult_JOIN_GAME_SUCCESS = 1,
-  JoinGameResponse_JoinGameResult_JOIN_GMAE_FULL = 2
+enum ReadyForGameRequest_Type {
+  ReadyForGameRequest_Type_START_READY = 1,
+  ReadyForGameRequest_Type_CANCEL_START_REDAY = 2,
+  ReadyForGameRequest_Type_SEAT_READY = 3
 };
-bool JoinGameResponse_JoinGameResult_IsValid(int value);
-const JoinGameResponse_JoinGameResult JoinGameResponse_JoinGameResult_JoinGameResult_MIN = JoinGameResponse_JoinGameResult_JOIN_GAME_SUCCESS;
-const JoinGameResponse_JoinGameResult JoinGameResponse_JoinGameResult_JoinGameResult_MAX = JoinGameResponse_JoinGameResult_JOIN_GMAE_FULL;
-const int JoinGameResponse_JoinGameResult_JoinGameResult_ARRAYSIZE = JoinGameResponse_JoinGameResult_JoinGameResult_MAX + 1;
+bool ReadyForGameRequest_Type_IsValid(int value);
+const ReadyForGameRequest_Type ReadyForGameRequest_Type_Type_MIN = ReadyForGameRequest_Type_START_READY;
+const ReadyForGameRequest_Type ReadyForGameRequest_Type_Type_MAX = ReadyForGameRequest_Type_SEAT_READY;
+const int ReadyForGameRequest_Type_Type_ARRAYSIZE = ReadyForGameRequest_Type_Type_MAX + 1;
 
-const ::google::protobuf::EnumDescriptor* JoinGameResponse_JoinGameResult_descriptor();
-inline const ::std::string& JoinGameResponse_JoinGameResult_Name(JoinGameResponse_JoinGameResult value) {
+const ::google::protobuf::EnumDescriptor* ReadyForGameRequest_Type_descriptor();
+inline const ::std::string& ReadyForGameRequest_Type_Name(ReadyForGameRequest_Type value) {
   return ::google::protobuf::internal::NameOfEnum(
-    JoinGameResponse_JoinGameResult_descriptor(), value);
+    ReadyForGameRequest_Type_descriptor(), value);
 }
-inline bool JoinGameResponse_JoinGameResult_Parse(
-    const ::std::string& name, JoinGameResponse_JoinGameResult* value) {
-  return ::google::protobuf::internal::ParseNamedEnum<JoinGameResponse_JoinGameResult>(
-    JoinGameResponse_JoinGameResult_descriptor(), name, value);
-}
-enum StartGameResponse_StartGameResult {
-  StartGameResponse_StartGameResult_JOIN_GAME_SUCCESS = 1,
-  StartGameResponse_StartGameResult_JOIN_GMAE_FAIL = 2
-};
-bool StartGameResponse_StartGameResult_IsValid(int value);
-const StartGameResponse_StartGameResult StartGameResponse_StartGameResult_StartGameResult_MIN = StartGameResponse_StartGameResult_JOIN_GAME_SUCCESS;
-const StartGameResponse_StartGameResult StartGameResponse_StartGameResult_StartGameResult_MAX = StartGameResponse_StartGameResult_JOIN_GMAE_FAIL;
-const int StartGameResponse_StartGameResult_StartGameResult_ARRAYSIZE = StartGameResponse_StartGameResult_StartGameResult_MAX + 1;
-
-const ::google::protobuf::EnumDescriptor* StartGameResponse_StartGameResult_descriptor();
-inline const ::std::string& StartGameResponse_StartGameResult_Name(StartGameResponse_StartGameResult value) {
-  return ::google::protobuf::internal::NameOfEnum(
-    StartGameResponse_StartGameResult_descriptor(), value);
-}
-inline bool StartGameResponse_StartGameResult_Parse(
-    const ::std::string& name, StartGameResponse_StartGameResult* value) {
-  return ::google::protobuf::internal::ParseNamedEnum<StartGameResponse_StartGameResult>(
-    StartGameResponse_StartGameResult_descriptor(), name, value);
-}
-enum ReadyForGameRequest_ReadyForGameType {
-  ReadyForGameRequest_ReadyForGameType_READY_FOR_GMAE = 1,
-  ReadyForGameRequest_ReadyForGameType_CANCEL_REDAY_FOR_GAME = 2
-};
-bool ReadyForGameRequest_ReadyForGameType_IsValid(int value);
-const ReadyForGameRequest_ReadyForGameType ReadyForGameRequest_ReadyForGameType_ReadyForGameType_MIN = ReadyForGameRequest_ReadyForGameType_READY_FOR_GMAE;
-const ReadyForGameRequest_ReadyForGameType ReadyForGameRequest_ReadyForGameType_ReadyForGameType_MAX = ReadyForGameRequest_ReadyForGameType_CANCEL_REDAY_FOR_GAME;
-const int ReadyForGameRequest_ReadyForGameType_ReadyForGameType_ARRAYSIZE = ReadyForGameRequest_ReadyForGameType_ReadyForGameType_MAX + 1;
-
-const ::google::protobuf::EnumDescriptor* ReadyForGameRequest_ReadyForGameType_descriptor();
-inline const ::std::string& ReadyForGameRequest_ReadyForGameType_Name(ReadyForGameRequest_ReadyForGameType value) {
-  return ::google::protobuf::internal::NameOfEnum(
-    ReadyForGameRequest_ReadyForGameType_descriptor(), value);
-}
-inline bool ReadyForGameRequest_ReadyForGameType_Parse(
-    const ::std::string& name, ReadyForGameRequest_ReadyForGameType* value) {
-  return ::google::protobuf::internal::ParseNamedEnum<ReadyForGameRequest_ReadyForGameType>(
-    ReadyForGameRequest_ReadyForGameType_descriptor(), name, value);
+inline bool ReadyForGameRequest_Type_Parse(
+    const ::std::string& name, ReadyForGameRequest_Type* value) {
+  return ::google::protobuf::internal::ParseNamedEnum<ReadyForGameRequest_Type>(
+    ReadyForGameRequest_Type_descriptor(), name, value);
 }
 enum MessageType {
-  MSG_LOGIN_REQ = 1,
-  MSG_LOGIN_REP = 2,
-  MSG_READY = 3,
-  MSG_START_REP = 4,
-  MSG_SINGLE_PLAYER = 5,
-  MSG_GAME = 6,
-  MSG_TALK = 7,
-  MSG_GOSSIP = 8,
-  MSG_ENTER_ROOM = 9,
-  MSG_SINGLE_ROOM = 10,
-  MSG_ROOMS = 11,
-  MSG_LOGOUT_REQ = 12,
-  MSG_LOGOUT_REP = 13,
-  MSG_REGISTER_REQ = 14,
-  MSG_REGISTER_REP = 15,
-  MSG_GAMELIST_REQ = 16,
-  MSG_GAMELIST_REP = 17,
-  MSG_CREATE_GAME_REQ = 18,
-  MSG_JOIN_GAME_REQ = 19,
-  MSG_JOIN_GMAE_REP = 20,
-  MSG_START_GAME_REQ = 21,
-  MSG_START_GAME_REP = 22,
-  MSG_READY_GAME_REQ = 23,
-  MSG_GAME_INFO_REP = 24
+  MSG_REGISTER_REQ = 1,
+  MSG_REGISTER_REP = 2,
+  MSG_LOGIN_REQ = 3,
+  MSG_LOGIN_REP = 4,
+  MSG_LOGOUT_REQ = 5,
+  MSG_LOGOUT_REP = 6,
+  MSG_ROOMLIST_REQ = 7,
+  MSG_ROOMLIST_REP = 8,
+  MSG_CREATE_ROOM_REQ = 9,
+  MSG_ENTER_ROOM_REQ = 10,
+  MSG_ENTER_ROOM_REP = 11,
+  MSG_LEAVE_ROOM_REQ = 12,
+  MSG_READY_GAME_REQ = 13,
+  MSG_SINGLE_PLAYER = 14,
+  MSG_GAME = 15,
+  MSG_TALK = 16,
+  MSG_GOSSIP = 17,
+  MSG_ERROR = 18
 };
 bool MessageType_IsValid(int value);
-const MessageType MessageType_MIN = MSG_LOGIN_REQ;
-const MessageType MessageType_MAX = MSG_GAME_INFO_REP;
+const MessageType MessageType_MIN = MSG_REGISTER_REQ;
+const MessageType MessageType_MAX = MSG_ERROR;
 const int MessageType_ARRAYSIZE = MessageType_MAX + 1;
 
 const ::google::protobuf::EnumDescriptor* MessageType_descriptor();
@@ -159,27 +108,6 @@ inline bool MessageType_Parse(
     const ::std::string& name, MessageType* value) {
   return ::google::protobuf::internal::ParseNamedEnum<MessageType>(
     MessageType_descriptor(), name, value);
-}
-enum GameType {
-  GAME_TYPE_ALL = 1,
-  GAME_TYPE_THREE_ONE = 2,
-  GAME_TYPE_BP = 3,
-  GAME_TYPE_CP = 4
-};
-bool GameType_IsValid(int value);
-const GameType GameType_MIN = GAME_TYPE_ALL;
-const GameType GameType_MAX = GAME_TYPE_CP;
-const int GameType_ARRAYSIZE = GameType_MAX + 1;
-
-const ::google::protobuf::EnumDescriptor* GameType_descriptor();
-inline const ::std::string& GameType_Name(GameType value) {
-  return ::google::protobuf::internal::NameOfEnum(
-    GameType_descriptor(), value);
-}
-inline bool GameType_Parse(
-    const ::std::string& name, GameType* value) {
-  return ::google::protobuf::internal::ParseNamedEnum<GameType>(
-    GameType_descriptor(), name, value);
 }
 enum GossipType {
   GOSSIP_TALK = 1,
@@ -349,14 +277,14 @@ class RegisterRequest : public ::google::protobuf::Message {
 };
 // -------------------------------------------------------------------
 
-class RegisterReply : public ::google::protobuf::Message {
+class RegisterResponse : public ::google::protobuf::Message {
  public:
-  RegisterReply();
-  virtual ~RegisterReply();
+  RegisterResponse();
+  virtual ~RegisterResponse();
 
-  RegisterReply(const RegisterReply& from);
+  RegisterResponse(const RegisterResponse& from);
 
-  inline RegisterReply& operator=(const RegisterReply& from) {
+  inline RegisterResponse& operator=(const RegisterResponse& from) {
     CopyFrom(from);
     return *this;
   }
@@ -370,17 +298,17 @@ class RegisterReply : public ::google::protobuf::Message {
   }
 
   static const ::google::protobuf::Descriptor* descriptor();
-  static const RegisterReply& default_instance();
+  static const RegisterResponse& default_instance();
 
-  void Swap(RegisterReply* other);
+  void Swap(RegisterResponse* other);
 
   // implements Message ----------------------------------------------
 
-  RegisterReply* New() const;
+  RegisterResponse* New() const;
   void CopyFrom(const ::google::protobuf::Message& from);
   void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const RegisterReply& from);
-  void MergeFrom(const RegisterReply& from);
+  void CopyFrom(const RegisterResponse& from);
+  void MergeFrom(const RegisterResponse& from);
   void Clear();
   bool IsInitialized() const;
 
@@ -410,7 +338,7 @@ class RegisterReply : public ::google::protobuf::Message {
   inline ::google::protobuf::uint32 state() const;
   inline void set_state(::google::protobuf::uint32 value);
 
-  // @@protoc_insertion_point(class_scope:network.RegisterReply)
+  // @@protoc_insertion_point(class_scope:network.RegisterResponse)
  private:
   inline void set_has_state();
   inline void clear_has_state();
@@ -427,7 +355,7 @@ class RegisterReply : public ::google::protobuf::Message {
   friend void protobuf_ShutdownFile_base_2eproto();
 
   void InitAsDefaultInstance();
-  static RegisterReply* default_instance_;
+  static RegisterResponse* default_instance_;
 };
 // -------------------------------------------------------------------
 
@@ -533,14 +461,14 @@ class LoginRequest : public ::google::protobuf::Message {
 };
 // -------------------------------------------------------------------
 
-class LoginReply : public ::google::protobuf::Message {
+class LoginResponse : public ::google::protobuf::Message {
  public:
-  LoginReply();
-  virtual ~LoginReply();
+  LoginResponse();
+  virtual ~LoginResponse();
 
-  LoginReply(const LoginReply& from);
+  LoginResponse(const LoginResponse& from);
 
-  inline LoginReply& operator=(const LoginReply& from) {
+  inline LoginResponse& operator=(const LoginResponse& from) {
     CopyFrom(from);
     return *this;
   }
@@ -554,17 +482,17 @@ class LoginReply : public ::google::protobuf::Message {
   }
 
   static const ::google::protobuf::Descriptor* descriptor();
-  static const LoginReply& default_instance();
+  static const LoginResponse& default_instance();
 
-  void Swap(LoginReply* other);
+  void Swap(LoginResponse* other);
 
   // implements Message ----------------------------------------------
 
-  LoginReply* New() const;
+  LoginResponse* New() const;
   void CopyFrom(const ::google::protobuf::Message& from);
   void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const LoginReply& from);
-  void MergeFrom(const LoginReply& from);
+  void CopyFrom(const LoginResponse& from);
+  void MergeFrom(const LoginResponse& from);
   void Clear();
   bool IsInitialized() const;
 
@@ -587,24 +515,10 @@ class LoginReply : public ::google::protobuf::Message {
 
   // accessors -------------------------------------------------------
 
-  // optional uint32 serial_num = 1;
-  inline bool has_serial_num() const;
-  inline void clear_serial_num();
-  static const int kSerialNumFieldNumber = 1;
-  inline ::google::protobuf::uint32 serial_num() const;
-  inline void set_serial_num(::google::protobuf::uint32 value);
-
-  // optional uint32 state = 2;
-  inline bool has_state() const;
-  inline void clear_state();
-  static const int kStateFieldNumber = 2;
-  inline ::google::protobuf::uint32 state() const;
-  inline void set_state(::google::protobuf::uint32 value);
-
-  // optional string nickname = 3;
+  // optional string nickname = 1;
   inline bool has_nickname() const;
   inline void clear_nickname();
-  static const int kNicknameFieldNumber = 3;
+  static const int kNicknameFieldNumber = 1;
   inline const ::std::string& nickname() const;
   inline void set_nickname(const ::std::string& value);
   inline void set_nickname(const char* value);
@@ -613,30 +527,24 @@ class LoginReply : public ::google::protobuf::Message {
   inline ::std::string* release_nickname();
   inline void set_allocated_nickname(::std::string* nickname);
 
-  // @@protoc_insertion_point(class_scope:network.LoginReply)
+  // @@protoc_insertion_point(class_scope:network.LoginResponse)
  private:
-  inline void set_has_serial_num();
-  inline void clear_has_serial_num();
-  inline void set_has_state();
-  inline void clear_has_state();
   inline void set_has_nickname();
   inline void clear_has_nickname();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
-  ::google::protobuf::uint32 serial_num_;
-  ::google::protobuf::uint32 state_;
   ::std::string* nickname_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(3 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(1 + 31) / 32];
 
   friend void  protobuf_AddDesc_base_2eproto();
   friend void protobuf_AssignDesc_base_2eproto();
   friend void protobuf_ShutdownFile_base_2eproto();
 
   void InitAsDefaultInstance();
-  static LoginReply* default_instance_;
+  static LoginResponse* default_instance_;
 };
 // -------------------------------------------------------------------
 
@@ -712,14 +620,14 @@ class LogoutRequest : public ::google::protobuf::Message {
 };
 // -------------------------------------------------------------------
 
-class LogoutReply : public ::google::protobuf::Message {
+class LogoutResponse : public ::google::protobuf::Message {
  public:
-  LogoutReply();
-  virtual ~LogoutReply();
+  LogoutResponse();
+  virtual ~LogoutResponse();
 
-  LogoutReply(const LogoutReply& from);
+  LogoutResponse(const LogoutResponse& from);
 
-  inline LogoutReply& operator=(const LogoutReply& from) {
+  inline LogoutResponse& operator=(const LogoutResponse& from) {
     CopyFrom(from);
     return *this;
   }
@@ -733,17 +641,17 @@ class LogoutReply : public ::google::protobuf::Message {
   }
 
   static const ::google::protobuf::Descriptor* descriptor();
-  static const LogoutReply& default_instance();
+  static const LogoutResponse& default_instance();
 
-  void Swap(LogoutReply* other);
+  void Swap(LogoutResponse* other);
 
   // implements Message ----------------------------------------------
 
-  LogoutReply* New() const;
+  LogoutResponse* New() const;
   void CopyFrom(const ::google::protobuf::Message& from);
   void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const LogoutReply& from);
-  void MergeFrom(const LogoutReply& from);
+  void CopyFrom(const LogoutResponse& from);
+  void MergeFrom(const LogoutResponse& from);
   void Clear();
   bool IsInitialized() const;
 
@@ -778,7 +686,7 @@ class LogoutReply : public ::google::protobuf::Message {
   inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
       mutable_args();
 
-  // @@protoc_insertion_point(class_scope:network.LogoutReply)
+  // @@protoc_insertion_point(class_scope:network.LogoutResponse)
  private:
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
@@ -793,18 +701,18 @@ class LogoutReply : public ::google::protobuf::Message {
   friend void protobuf_ShutdownFile_base_2eproto();
 
   void InitAsDefaultInstance();
-  static LogoutReply* default_instance_;
+  static LogoutResponse* default_instance_;
 };
 // -------------------------------------------------------------------
 
-class GameListRequest : public ::google::protobuf::Message {
+class RoomListRequest : public ::google::protobuf::Message {
  public:
-  GameListRequest();
-  virtual ~GameListRequest();
+  RoomListRequest();
+  virtual ~RoomListRequest();
 
-  GameListRequest(const GameListRequest& from);
+  RoomListRequest(const RoomListRequest& from);
 
-  inline GameListRequest& operator=(const GameListRequest& from) {
+  inline RoomListRequest& operator=(const RoomListRequest& from) {
     CopyFrom(from);
     return *this;
   }
@@ -818,17 +726,17 @@ class GameListRequest : public ::google::protobuf::Message {
   }
 
   static const ::google::protobuf::Descriptor* descriptor();
-  static const GameListRequest& default_instance();
+  static const RoomListRequest& default_instance();
 
-  void Swap(GameListRequest* other);
+  void Swap(RoomListRequest* other);
 
   // implements Message ----------------------------------------------
 
-  GameListRequest* New() const;
+  RoomListRequest* New() const;
   void CopyFrom(const ::google::protobuf::Message& from);
   void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const GameListRequest& from);
-  void MergeFrom(const GameListRequest& from);
+  void CopyFrom(const RoomListRequest& from);
+  void MergeFrom(const RoomListRequest& from);
   void Clear();
   bool IsInitialized() const;
 
@@ -851,21 +759,21 @@ class GameListRequest : public ::google::protobuf::Message {
 
   // accessors -------------------------------------------------------
 
-  // required .network.GameType type = 1;
-  inline bool has_type() const;
-  inline void clear_type();
-  static const int kTypeFieldNumber = 1;
-  inline ::network::GameType type() const;
-  inline void set_type(::network::GameType value);
+  // required .network.ROLE_STRATEGY role_strategy = 1;
+  inline bool has_role_strategy() const;
+  inline void clear_role_strategy();
+  static const int kRoleStrategyFieldNumber = 1;
+  inline ::network::ROLE_STRATEGY role_strategy() const;
+  inline void set_role_strategy(::network::ROLE_STRATEGY value);
 
-  // @@protoc_insertion_point(class_scope:network.GameListRequest)
+  // @@protoc_insertion_point(class_scope:network.RoomListRequest)
  private:
-  inline void set_has_type();
-  inline void clear_has_type();
+  inline void set_has_role_strategy();
+  inline void clear_has_role_strategy();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
-  int type_;
+  int role_strategy_;
 
   mutable int _cached_size_;
   ::google::protobuf::uint32 _has_bits_[(1 + 31) / 32];
@@ -875,18 +783,18 @@ class GameListRequest : public ::google::protobuf::Message {
   friend void protobuf_ShutdownFile_base_2eproto();
 
   void InitAsDefaultInstance();
-  static GameListRequest* default_instance_;
+  static RoomListRequest* default_instance_;
 };
 // -------------------------------------------------------------------
 
-class GameListResponse_GameInfo : public ::google::protobuf::Message {
+class RoomListResponse_RoomInfo : public ::google::protobuf::Message {
  public:
-  GameListResponse_GameInfo();
-  virtual ~GameListResponse_GameInfo();
+  RoomListResponse_RoomInfo();
+  virtual ~RoomListResponse_RoomInfo();
 
-  GameListResponse_GameInfo(const GameListResponse_GameInfo& from);
+  RoomListResponse_RoomInfo(const RoomListResponse_RoomInfo& from);
 
-  inline GameListResponse_GameInfo& operator=(const GameListResponse_GameInfo& from) {
+  inline RoomListResponse_RoomInfo& operator=(const RoomListResponse_RoomInfo& from) {
     CopyFrom(from);
     return *this;
   }
@@ -900,17 +808,323 @@ class GameListResponse_GameInfo : public ::google::protobuf::Message {
   }
 
   static const ::google::protobuf::Descriptor* descriptor();
-  static const GameListResponse_GameInfo& default_instance();
+  static const RoomListResponse_RoomInfo& default_instance();
 
-  void Swap(GameListResponse_GameInfo* other);
+  void Swap(RoomListResponse_RoomInfo* other);
 
   // implements Message ----------------------------------------------
 
-  GameListResponse_GameInfo* New() const;
+  RoomListResponse_RoomInfo* New() const;
   void CopyFrom(const ::google::protobuf::Message& from);
   void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const GameListResponse_GameInfo& from);
-  void MergeFrom(const GameListResponse_GameInfo& from);
+  void CopyFrom(const RoomListResponse_RoomInfo& from);
+  void MergeFrom(const RoomListResponse_RoomInfo& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional int32 room_id = 1;
+  inline bool has_room_id() const;
+  inline void clear_room_id();
+  static const int kRoomIdFieldNumber = 1;
+  inline ::google::protobuf::int32 room_id() const;
+  inline void set_room_id(::google::protobuf::int32 value);
+
+  // optional string room_name = 2;
+  inline bool has_room_name() const;
+  inline void clear_room_name();
+  static const int kRoomNameFieldNumber = 2;
+  inline const ::std::string& room_name() const;
+  inline void set_room_name(const ::std::string& value);
+  inline void set_room_name(const char* value);
+  inline void set_room_name(const char* value, size_t size);
+  inline ::std::string* mutable_room_name();
+  inline ::std::string* release_room_name();
+  inline void set_allocated_room_name(::std::string* room_name);
+
+  // optional int32 max_player = 3;
+  inline bool has_max_player() const;
+  inline void clear_max_player();
+  static const int kMaxPlayerFieldNumber = 3;
+  inline ::google::protobuf::int32 max_player() const;
+  inline void set_max_player(::google::protobuf::int32 value);
+
+  // optional int32 now_player = 4;
+  inline bool has_now_player() const;
+  inline void clear_now_player();
+  static const int kNowPlayerFieldNumber = 4;
+  inline ::google::protobuf::int32 now_player() const;
+  inline void set_now_player(::google::protobuf::int32 value);
+
+  // optional .network.ROLE_STRATEGY role_strategy = 5;
+  inline bool has_role_strategy() const;
+  inline void clear_role_strategy();
+  static const int kRoleStrategyFieldNumber = 5;
+  inline ::network::ROLE_STRATEGY role_strategy() const;
+  inline void set_role_strategy(::network::ROLE_STRATEGY value);
+
+  // @@protoc_insertion_point(class_scope:network.RoomListResponse.RoomInfo)
+ private:
+  inline void set_has_room_id();
+  inline void clear_has_room_id();
+  inline void set_has_room_name();
+  inline void clear_has_room_name();
+  inline void set_has_max_player();
+  inline void clear_has_max_player();
+  inline void set_has_now_player();
+  inline void clear_has_now_player();
+  inline void set_has_role_strategy();
+  inline void clear_has_role_strategy();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::std::string* room_name_;
+  ::google::protobuf::int32 room_id_;
+  ::google::protobuf::int32 max_player_;
+  ::google::protobuf::int32 now_player_;
+  int role_strategy_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(5 + 31) / 32];
+
+  friend void  protobuf_AddDesc_base_2eproto();
+  friend void protobuf_AssignDesc_base_2eproto();
+  friend void protobuf_ShutdownFile_base_2eproto();
+
+  void InitAsDefaultInstance();
+  static RoomListResponse_RoomInfo* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class RoomListResponse : public ::google::protobuf::Message {
+ public:
+  RoomListResponse();
+  virtual ~RoomListResponse();
+
+  RoomListResponse(const RoomListResponse& from);
+
+  inline RoomListResponse& operator=(const RoomListResponse& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const RoomListResponse& default_instance();
+
+  void Swap(RoomListResponse* other);
+
+  // implements Message ----------------------------------------------
+
+  RoomListResponse* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const RoomListResponse& from);
+  void MergeFrom(const RoomListResponse& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  typedef RoomListResponse_RoomInfo RoomInfo;
+
+  // accessors -------------------------------------------------------
+
+  // repeated .network.RoomListResponse.RoomInfo rooms = 1;
+  inline int rooms_size() const;
+  inline void clear_rooms();
+  static const int kRoomsFieldNumber = 1;
+  inline const ::network::RoomListResponse_RoomInfo& rooms(int index) const;
+  inline ::network::RoomListResponse_RoomInfo* mutable_rooms(int index);
+  inline ::network::RoomListResponse_RoomInfo* add_rooms();
+  inline const ::google::protobuf::RepeatedPtrField< ::network::RoomListResponse_RoomInfo >&
+      rooms() const;
+  inline ::google::protobuf::RepeatedPtrField< ::network::RoomListResponse_RoomInfo >*
+      mutable_rooms();
+
+  // @@protoc_insertion_point(class_scope:network.RoomListResponse)
+ private:
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::RepeatedPtrField< ::network::RoomListResponse_RoomInfo > rooms_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(1 + 31) / 32];
+
+  friend void  protobuf_AddDesc_base_2eproto();
+  friend void protobuf_AssignDesc_base_2eproto();
+  friend void protobuf_ShutdownFile_base_2eproto();
+
+  void InitAsDefaultInstance();
+  static RoomListResponse* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class CreateRoomRequest : public ::google::protobuf::Message {
+ public:
+  CreateRoomRequest();
+  virtual ~CreateRoomRequest();
+
+  CreateRoomRequest(const CreateRoomRequest& from);
+
+  inline CreateRoomRequest& operator=(const CreateRoomRequest& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const CreateRoomRequest& default_instance();
+
+  void Swap(CreateRoomRequest* other);
+
+  // implements Message ----------------------------------------------
+
+  CreateRoomRequest* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const CreateRoomRequest& from);
+  void MergeFrom(const CreateRoomRequest& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required .network.ROLE_STRATEGY role_strategy = 1;
+  inline bool has_role_strategy() const;
+  inline void clear_role_strategy();
+  static const int kRoleStrategyFieldNumber = 1;
+  inline ::network::ROLE_STRATEGY role_strategy() const;
+  inline void set_role_strategy(::network::ROLE_STRATEGY value);
+
+  // required int32 max_player = 2;
+  inline bool has_max_player() const;
+  inline void clear_max_player();
+  static const int kMaxPlayerFieldNumber = 2;
+  inline ::google::protobuf::int32 max_player() const;
+  inline void set_max_player(::google::protobuf::int32 value);
+
+  // @@protoc_insertion_point(class_scope:network.CreateRoomRequest)
+ private:
+  inline void set_has_role_strategy();
+  inline void clear_has_role_strategy();
+  inline void set_has_max_player();
+  inline void clear_has_max_player();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  int role_strategy_;
+  ::google::protobuf::int32 max_player_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
+
+  friend void  protobuf_AddDesc_base_2eproto();
+  friend void protobuf_AssignDesc_base_2eproto();
+  friend void protobuf_ShutdownFile_base_2eproto();
+
+  void InitAsDefaultInstance();
+  static CreateRoomRequest* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class EnterRoomRequest : public ::google::protobuf::Message {
+ public:
+  EnterRoomRequest();
+  virtual ~EnterRoomRequest();
+
+  EnterRoomRequest(const EnterRoomRequest& from);
+
+  inline EnterRoomRequest& operator=(const EnterRoomRequest& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const EnterRoomRequest& default_instance();
+
+  void Swap(EnterRoomRequest* other);
+
+  // implements Message ----------------------------------------------
+
+  EnterRoomRequest* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const EnterRoomRequest& from);
+  void MergeFrom(const EnterRoomRequest& from);
   void Clear();
   bool IsInitialized() const;
 
@@ -940,340 +1154,29 @@ class GameListResponse_GameInfo : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 room_id() const;
   inline void set_room_id(::google::protobuf::int32 value);
 
-  // required string room_name = 2;
-  inline bool has_room_name() const;
-  inline void clear_room_name();
-  static const int kRoomNameFieldNumber = 2;
-  inline const ::std::string& room_name() const;
-  inline void set_room_name(const ::std::string& value);
-  inline void set_room_name(const char* value);
-  inline void set_room_name(const char* value, size_t size);
-  inline ::std::string* mutable_room_name();
-  inline ::std::string* release_room_name();
-  inline void set_allocated_room_name(::std::string* room_name);
+  // optional string password = 2;
+  inline bool has_password() const;
+  inline void clear_password();
+  static const int kPasswordFieldNumber = 2;
+  inline const ::std::string& password() const;
+  inline void set_password(const ::std::string& value);
+  inline void set_password(const char* value);
+  inline void set_password(const char* value, size_t size);
+  inline ::std::string* mutable_password();
+  inline ::std::string* release_password();
+  inline void set_allocated_password(::std::string* password);
 
-  // required int32 max_player = 3;
-  inline bool has_max_player() const;
-  inline void clear_max_player();
-  static const int kMaxPlayerFieldNumber = 3;
-  inline ::google::protobuf::int32 max_player() const;
-  inline void set_max_player(::google::protobuf::int32 value);
-
-  // required int32 now_player = 4;
-  inline bool has_now_player() const;
-  inline void clear_now_player();
-  static const int kNowPlayerFieldNumber = 4;
-  inline ::google::protobuf::int32 now_player() const;
-  inline void set_now_player(::google::protobuf::int32 value);
-
-  // required .network.GameType type = 5;
-  inline bool has_type() const;
-  inline void clear_type();
-  static const int kTypeFieldNumber = 5;
-  inline ::network::GameType type() const;
-  inline void set_type(::network::GameType value);
-
-  // @@protoc_insertion_point(class_scope:network.GameListResponse.GameInfo)
+  // @@protoc_insertion_point(class_scope:network.EnterRoomRequest)
  private:
   inline void set_has_room_id();
   inline void clear_has_room_id();
-  inline void set_has_room_name();
-  inline void clear_has_room_name();
-  inline void set_has_max_player();
-  inline void clear_has_max_player();
-  inline void set_has_now_player();
-  inline void clear_has_now_player();
-  inline void set_has_type();
-  inline void clear_has_type();
+  inline void set_has_password();
+  inline void clear_has_password();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
-  ::std::string* room_name_;
+  ::std::string* password_;
   ::google::protobuf::int32 room_id_;
-  ::google::protobuf::int32 max_player_;
-  ::google::protobuf::int32 now_player_;
-  int type_;
-
-  mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(5 + 31) / 32];
-
-  friend void  protobuf_AddDesc_base_2eproto();
-  friend void protobuf_AssignDesc_base_2eproto();
-  friend void protobuf_ShutdownFile_base_2eproto();
-
-  void InitAsDefaultInstance();
-  static GameListResponse_GameInfo* default_instance_;
-};
-// -------------------------------------------------------------------
-
-class GameListResponse : public ::google::protobuf::Message {
- public:
-  GameListResponse();
-  virtual ~GameListResponse();
-
-  GameListResponse(const GameListResponse& from);
-
-  inline GameListResponse& operator=(const GameListResponse& from) {
-    CopyFrom(from);
-    return *this;
-  }
-
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _unknown_fields_;
-  }
-
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return &_unknown_fields_;
-  }
-
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const GameListResponse& default_instance();
-
-  void Swap(GameListResponse* other);
-
-  // implements Message ----------------------------------------------
-
-  GameListResponse* New() const;
-  void CopyFrom(const ::google::protobuf::Message& from);
-  void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const GameListResponse& from);
-  void MergeFrom(const GameListResponse& from);
-  void Clear();
-  bool IsInitialized() const;
-
-  int ByteSize() const;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input);
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const;
-  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
-  int GetCachedSize() const { return _cached_size_; }
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const;
-  public:
-
-  ::google::protobuf::Metadata GetMetadata() const;
-
-  // nested types ----------------------------------------------------
-
-  typedef GameListResponse_GameInfo GameInfo;
-
-  // accessors -------------------------------------------------------
-
-  // repeated .network.GameListResponse.GameInfo game = 1;
-  inline int game_size() const;
-  inline void clear_game();
-  static const int kGameFieldNumber = 1;
-  inline const ::network::GameListResponse_GameInfo& game(int index) const;
-  inline ::network::GameListResponse_GameInfo* mutable_game(int index);
-  inline ::network::GameListResponse_GameInfo* add_game();
-  inline const ::google::protobuf::RepeatedPtrField< ::network::GameListResponse_GameInfo >&
-      game() const;
-  inline ::google::protobuf::RepeatedPtrField< ::network::GameListResponse_GameInfo >*
-      mutable_game();
-
-  // @@protoc_insertion_point(class_scope:network.GameListResponse)
- private:
-
-  ::google::protobuf::UnknownFieldSet _unknown_fields_;
-
-  ::google::protobuf::RepeatedPtrField< ::network::GameListResponse_GameInfo > game_;
-
-  mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(1 + 31) / 32];
-
-  friend void  protobuf_AddDesc_base_2eproto();
-  friend void protobuf_AssignDesc_base_2eproto();
-  friend void protobuf_ShutdownFile_base_2eproto();
-
-  void InitAsDefaultInstance();
-  static GameListResponse* default_instance_;
-};
-// -------------------------------------------------------------------
-
-class CreateGameRequest : public ::google::protobuf::Message {
- public:
-  CreateGameRequest();
-  virtual ~CreateGameRequest();
-
-  CreateGameRequest(const CreateGameRequest& from);
-
-  inline CreateGameRequest& operator=(const CreateGameRequest& from) {
-    CopyFrom(from);
-    return *this;
-  }
-
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _unknown_fields_;
-  }
-
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return &_unknown_fields_;
-  }
-
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const CreateGameRequest& default_instance();
-
-  void Swap(CreateGameRequest* other);
-
-  // implements Message ----------------------------------------------
-
-  CreateGameRequest* New() const;
-  void CopyFrom(const ::google::protobuf::Message& from);
-  void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const CreateGameRequest& from);
-  void MergeFrom(const CreateGameRequest& from);
-  void Clear();
-  bool IsInitialized() const;
-
-  int ByteSize() const;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input);
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const;
-  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
-  int GetCachedSize() const { return _cached_size_; }
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const;
-  public:
-
-  ::google::protobuf::Metadata GetMetadata() const;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // required int32 user_id = 1;
-  inline bool has_user_id() const;
-  inline void clear_user_id();
-  static const int kUserIdFieldNumber = 1;
-  inline ::google::protobuf::int32 user_id() const;
-  inline void set_user_id(::google::protobuf::int32 value);
-
-  // required .network.GameType type = 2;
-  inline bool has_type() const;
-  inline void clear_type();
-  static const int kTypeFieldNumber = 2;
-  inline ::network::GameType type() const;
-  inline void set_type(::network::GameType value);
-
-  // required int32 max_player = 3;
-  inline bool has_max_player() const;
-  inline void clear_max_player();
-  static const int kMaxPlayerFieldNumber = 3;
-  inline ::google::protobuf::int32 max_player() const;
-  inline void set_max_player(::google::protobuf::int32 value);
-
-  // @@protoc_insertion_point(class_scope:network.CreateGameRequest)
- private:
-  inline void set_has_user_id();
-  inline void clear_has_user_id();
-  inline void set_has_type();
-  inline void clear_has_type();
-  inline void set_has_max_player();
-  inline void clear_has_max_player();
-
-  ::google::protobuf::UnknownFieldSet _unknown_fields_;
-
-  ::google::protobuf::int32 user_id_;
-  int type_;
-  ::google::protobuf::int32 max_player_;
-
-  mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(3 + 31) / 32];
-
-  friend void  protobuf_AddDesc_base_2eproto();
-  friend void protobuf_AssignDesc_base_2eproto();
-  friend void protobuf_ShutdownFile_base_2eproto();
-
-  void InitAsDefaultInstance();
-  static CreateGameRequest* default_instance_;
-};
-// -------------------------------------------------------------------
-
-class JoinGameRequest : public ::google::protobuf::Message {
- public:
-  JoinGameRequest();
-  virtual ~JoinGameRequest();
-
-  JoinGameRequest(const JoinGameRequest& from);
-
-  inline JoinGameRequest& operator=(const JoinGameRequest& from) {
-    CopyFrom(from);
-    return *this;
-  }
-
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _unknown_fields_;
-  }
-
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return &_unknown_fields_;
-  }
-
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const JoinGameRequest& default_instance();
-
-  void Swap(JoinGameRequest* other);
-
-  // implements Message ----------------------------------------------
-
-  JoinGameRequest* New() const;
-  void CopyFrom(const ::google::protobuf::Message& from);
-  void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const JoinGameRequest& from);
-  void MergeFrom(const JoinGameRequest& from);
-  void Clear();
-  bool IsInitialized() const;
-
-  int ByteSize() const;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input);
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const;
-  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
-  int GetCachedSize() const { return _cached_size_; }
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const;
-  public:
-
-  ::google::protobuf::Metadata GetMetadata() const;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // required int32 user_id = 1;
-  inline bool has_user_id() const;
-  inline void clear_user_id();
-  static const int kUserIdFieldNumber = 1;
-  inline ::google::protobuf::int32 user_id() const;
-  inline void set_user_id(::google::protobuf::int32 value);
-
-  // required int32 romm_id = 2;
-  inline bool has_romm_id() const;
-  inline void clear_romm_id();
-  static const int kRommIdFieldNumber = 2;
-  inline ::google::protobuf::int32 romm_id() const;
-  inline void set_romm_id(::google::protobuf::int32 value);
-
-  // @@protoc_insertion_point(class_scope:network.JoinGameRequest)
- private:
-  inline void set_has_user_id();
-  inline void clear_has_user_id();
-  inline void set_has_romm_id();
-  inline void clear_has_romm_id();
-
-  ::google::protobuf::UnknownFieldSet _unknown_fields_;
-
-  ::google::protobuf::int32 user_id_;
-  ::google::protobuf::int32 romm_id_;
 
   mutable int _cached_size_;
   ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
@@ -1283,18 +1186,18 @@ class JoinGameRequest : public ::google::protobuf::Message {
   friend void protobuf_ShutdownFile_base_2eproto();
 
   void InitAsDefaultInstance();
-  static JoinGameRequest* default_instance_;
+  static EnterRoomRequest* default_instance_;
 };
 // -------------------------------------------------------------------
 
-class JoinGameResponse : public ::google::protobuf::Message {
+class LeaveRoomRequest : public ::google::protobuf::Message {
  public:
-  JoinGameResponse();
-  virtual ~JoinGameResponse();
+  LeaveRoomRequest();
+  virtual ~LeaveRoomRequest();
 
-  JoinGameResponse(const JoinGameResponse& from);
+  LeaveRoomRequest(const LeaveRoomRequest& from);
 
-  inline JoinGameResponse& operator=(const JoinGameResponse& from) {
+  inline LeaveRoomRequest& operator=(const LeaveRoomRequest& from) {
     CopyFrom(from);
     return *this;
   }
@@ -1308,143 +1211,17 @@ class JoinGameResponse : public ::google::protobuf::Message {
   }
 
   static const ::google::protobuf::Descriptor* descriptor();
-  static const JoinGameResponse& default_instance();
+  static const LeaveRoomRequest& default_instance();
 
-  void Swap(JoinGameResponse* other);
-
-  // implements Message ----------------------------------------------
-
-  JoinGameResponse* New() const;
-  void CopyFrom(const ::google::protobuf::Message& from);
-  void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const JoinGameResponse& from);
-  void MergeFrom(const JoinGameResponse& from);
-  void Clear();
-  bool IsInitialized() const;
-
-  int ByteSize() const;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input);
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const;
-  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
-  int GetCachedSize() const { return _cached_size_; }
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const;
-  public:
-
-  ::google::protobuf::Metadata GetMetadata() const;
-
-  // nested types ----------------------------------------------------
-
-  typedef JoinGameResponse_JoinGameResult JoinGameResult;
-  static const JoinGameResult JOIN_GAME_SUCCESS = JoinGameResponse_JoinGameResult_JOIN_GAME_SUCCESS;
-  static const JoinGameResult JOIN_GMAE_FULL = JoinGameResponse_JoinGameResult_JOIN_GMAE_FULL;
-  static inline bool JoinGameResult_IsValid(int value) {
-    return JoinGameResponse_JoinGameResult_IsValid(value);
-  }
-  static const JoinGameResult JoinGameResult_MIN =
-    JoinGameResponse_JoinGameResult_JoinGameResult_MIN;
-  static const JoinGameResult JoinGameResult_MAX =
-    JoinGameResponse_JoinGameResult_JoinGameResult_MAX;
-  static const int JoinGameResult_ARRAYSIZE =
-    JoinGameResponse_JoinGameResult_JoinGameResult_ARRAYSIZE;
-  static inline const ::google::protobuf::EnumDescriptor*
-  JoinGameResult_descriptor() {
-    return JoinGameResponse_JoinGameResult_descriptor();
-  }
-  static inline const ::std::string& JoinGameResult_Name(JoinGameResult value) {
-    return JoinGameResponse_JoinGameResult_Name(value);
-  }
-  static inline bool JoinGameResult_Parse(const ::std::string& name,
-      JoinGameResult* value) {
-    return JoinGameResponse_JoinGameResult_Parse(name, value);
-  }
-
-  // accessors -------------------------------------------------------
-
-  // required int32 user_id = 1;
-  inline bool has_user_id() const;
-  inline void clear_user_id();
-  static const int kUserIdFieldNumber = 1;
-  inline ::google::protobuf::int32 user_id() const;
-  inline void set_user_id(::google::protobuf::int32 value);
-
-  // required int32 romm_id = 2;
-  inline bool has_romm_id() const;
-  inline void clear_romm_id();
-  static const int kRommIdFieldNumber = 2;
-  inline ::google::protobuf::int32 romm_id() const;
-  inline void set_romm_id(::google::protobuf::int32 value);
-
-  // required .network.JoinGameResponse.JoinGameResult result = 3;
-  inline bool has_result() const;
-  inline void clear_result();
-  static const int kResultFieldNumber = 3;
-  inline ::network::JoinGameResponse_JoinGameResult result() const;
-  inline void set_result(::network::JoinGameResponse_JoinGameResult value);
-
-  // @@protoc_insertion_point(class_scope:network.JoinGameResponse)
- private:
-  inline void set_has_user_id();
-  inline void clear_has_user_id();
-  inline void set_has_romm_id();
-  inline void clear_has_romm_id();
-  inline void set_has_result();
-  inline void clear_has_result();
-
-  ::google::protobuf::UnknownFieldSet _unknown_fields_;
-
-  ::google::protobuf::int32 user_id_;
-  ::google::protobuf::int32 romm_id_;
-  int result_;
-
-  mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(3 + 31) / 32];
-
-  friend void  protobuf_AddDesc_base_2eproto();
-  friend void protobuf_AssignDesc_base_2eproto();
-  friend void protobuf_ShutdownFile_base_2eproto();
-
-  void InitAsDefaultInstance();
-  static JoinGameResponse* default_instance_;
-};
-// -------------------------------------------------------------------
-
-class StartGameRequest : public ::google::protobuf::Message {
- public:
-  StartGameRequest();
-  virtual ~StartGameRequest();
-
-  StartGameRequest(const StartGameRequest& from);
-
-  inline StartGameRequest& operator=(const StartGameRequest& from) {
-    CopyFrom(from);
-    return *this;
-  }
-
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _unknown_fields_;
-  }
-
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return &_unknown_fields_;
-  }
-
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const StartGameRequest& default_instance();
-
-  void Swap(StartGameRequest* other);
+  void Swap(LeaveRoomRequest* other);
 
   // implements Message ----------------------------------------------
 
-  StartGameRequest* New() const;
+  LeaveRoomRequest* New() const;
   void CopyFrom(const ::google::protobuf::Message& from);
   void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const StartGameRequest& from);
-  void MergeFrom(const StartGameRequest& from);
+  void CopyFrom(const LeaveRoomRequest& from);
+  void MergeFrom(const LeaveRoomRequest& from);
   void Clear();
   bool IsInitialized() const;
 
@@ -1467,167 +1244,21 @@ class StartGameRequest : public ::google::protobuf::Message {
 
   // accessors -------------------------------------------------------
 
-  // required int32 user_id = 1;
-  inline bool has_user_id() const;
-  inline void clear_user_id();
-  static const int kUserIdFieldNumber = 1;
-  inline ::google::protobuf::int32 user_id() const;
-  inline void set_user_id(::google::protobuf::int32 value);
-
-  // required int32 romm_id = 2;
-  inline bool has_romm_id() const;
-  inline void clear_romm_id();
-  static const int kRommIdFieldNumber = 2;
-  inline ::google::protobuf::int32 romm_id() const;
-  inline void set_romm_id(::google::protobuf::int32 value);
-
-  // @@protoc_insertion_point(class_scope:network.StartGameRequest)
+  // @@protoc_insertion_point(class_scope:network.LeaveRoomRequest)
  private:
-  inline void set_has_user_id();
-  inline void clear_has_user_id();
-  inline void set_has_romm_id();
-  inline void clear_has_romm_id();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
-  ::google::protobuf::int32 user_id_;
-  ::google::protobuf::int32 romm_id_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[1];
 
   friend void  protobuf_AddDesc_base_2eproto();
   friend void protobuf_AssignDesc_base_2eproto();
   friend void protobuf_ShutdownFile_base_2eproto();
 
   void InitAsDefaultInstance();
-  static StartGameRequest* default_instance_;
-};
-// -------------------------------------------------------------------
-
-class StartGameResponse : public ::google::protobuf::Message {
- public:
-  StartGameResponse();
-  virtual ~StartGameResponse();
-
-  StartGameResponse(const StartGameResponse& from);
-
-  inline StartGameResponse& operator=(const StartGameResponse& from) {
-    CopyFrom(from);
-    return *this;
-  }
-
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _unknown_fields_;
-  }
-
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return &_unknown_fields_;
-  }
-
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const StartGameResponse& default_instance();
-
-  void Swap(StartGameResponse* other);
-
-  // implements Message ----------------------------------------------
-
-  StartGameResponse* New() const;
-  void CopyFrom(const ::google::protobuf::Message& from);
-  void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const StartGameResponse& from);
-  void MergeFrom(const StartGameResponse& from);
-  void Clear();
-  bool IsInitialized() const;
-
-  int ByteSize() const;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input);
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const;
-  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
-  int GetCachedSize() const { return _cached_size_; }
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const;
-  public:
-
-  ::google::protobuf::Metadata GetMetadata() const;
-
-  // nested types ----------------------------------------------------
-
-  typedef StartGameResponse_StartGameResult StartGameResult;
-  static const StartGameResult JOIN_GAME_SUCCESS = StartGameResponse_StartGameResult_JOIN_GAME_SUCCESS;
-  static const StartGameResult JOIN_GMAE_FAIL = StartGameResponse_StartGameResult_JOIN_GMAE_FAIL;
-  static inline bool StartGameResult_IsValid(int value) {
-    return StartGameResponse_StartGameResult_IsValid(value);
-  }
-  static const StartGameResult StartGameResult_MIN =
-    StartGameResponse_StartGameResult_StartGameResult_MIN;
-  static const StartGameResult StartGameResult_MAX =
-    StartGameResponse_StartGameResult_StartGameResult_MAX;
-  static const int StartGameResult_ARRAYSIZE =
-    StartGameResponse_StartGameResult_StartGameResult_ARRAYSIZE;
-  static inline const ::google::protobuf::EnumDescriptor*
-  StartGameResult_descriptor() {
-    return StartGameResponse_StartGameResult_descriptor();
-  }
-  static inline const ::std::string& StartGameResult_Name(StartGameResult value) {
-    return StartGameResponse_StartGameResult_Name(value);
-  }
-  static inline bool StartGameResult_Parse(const ::std::string& name,
-      StartGameResult* value) {
-    return StartGameResponse_StartGameResult_Parse(name, value);
-  }
-
-  // accessors -------------------------------------------------------
-
-  // required int32 user_id = 1;
-  inline bool has_user_id() const;
-  inline void clear_user_id();
-  static const int kUserIdFieldNumber = 1;
-  inline ::google::protobuf::int32 user_id() const;
-  inline void set_user_id(::google::protobuf::int32 value);
-
-  // required int32 romm_id = 2;
-  inline bool has_romm_id() const;
-  inline void clear_romm_id();
-  static const int kRommIdFieldNumber = 2;
-  inline ::google::protobuf::int32 romm_id() const;
-  inline void set_romm_id(::google::protobuf::int32 value);
-
-  // required .network.StartGameResponse.StartGameResult result = 3;
-  inline bool has_result() const;
-  inline void clear_result();
-  static const int kResultFieldNumber = 3;
-  inline ::network::StartGameResponse_StartGameResult result() const;
-  inline void set_result(::network::StartGameResponse_StartGameResult value);
-
-  // @@protoc_insertion_point(class_scope:network.StartGameResponse)
- private:
-  inline void set_has_user_id();
-  inline void clear_has_user_id();
-  inline void set_has_romm_id();
-  inline void clear_has_romm_id();
-  inline void set_has_result();
-  inline void clear_has_result();
-
-  ::google::protobuf::UnknownFieldSet _unknown_fields_;
-
-  ::google::protobuf::int32 user_id_;
-  ::google::protobuf::int32 romm_id_;
-  int result_;
-
-  mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(3 + 31) / 32];
-
-  friend void  protobuf_AddDesc_base_2eproto();
-  friend void protobuf_AssignDesc_base_2eproto();
-  friend void protobuf_ShutdownFile_base_2eproto();
-
-  void InitAsDefaultInstance();
-  static StartGameResponse* default_instance_;
+  static LeaveRoomRequest* default_instance_;
 };
 // -------------------------------------------------------------------
 
@@ -1683,70 +1314,51 @@ class ReadyForGameRequest : public ::google::protobuf::Message {
 
   // nested types ----------------------------------------------------
 
-  typedef ReadyForGameRequest_ReadyForGameType ReadyForGameType;
-  static const ReadyForGameType READY_FOR_GMAE = ReadyForGameRequest_ReadyForGameType_READY_FOR_GMAE;
-  static const ReadyForGameType CANCEL_REDAY_FOR_GAME = ReadyForGameRequest_ReadyForGameType_CANCEL_REDAY_FOR_GAME;
-  static inline bool ReadyForGameType_IsValid(int value) {
-    return ReadyForGameRequest_ReadyForGameType_IsValid(value);
+  typedef ReadyForGameRequest_Type Type;
+  static const Type START_READY = ReadyForGameRequest_Type_START_READY;
+  static const Type CANCEL_START_REDAY = ReadyForGameRequest_Type_CANCEL_START_REDAY;
+  static const Type SEAT_READY = ReadyForGameRequest_Type_SEAT_READY;
+  static inline bool Type_IsValid(int value) {
+    return ReadyForGameRequest_Type_IsValid(value);
   }
-  static const ReadyForGameType ReadyForGameType_MIN =
-    ReadyForGameRequest_ReadyForGameType_ReadyForGameType_MIN;
-  static const ReadyForGameType ReadyForGameType_MAX =
-    ReadyForGameRequest_ReadyForGameType_ReadyForGameType_MAX;
-  static const int ReadyForGameType_ARRAYSIZE =
-    ReadyForGameRequest_ReadyForGameType_ReadyForGameType_ARRAYSIZE;
+  static const Type Type_MIN =
+    ReadyForGameRequest_Type_Type_MIN;
+  static const Type Type_MAX =
+    ReadyForGameRequest_Type_Type_MAX;
+  static const int Type_ARRAYSIZE =
+    ReadyForGameRequest_Type_Type_ARRAYSIZE;
   static inline const ::google::protobuf::EnumDescriptor*
-  ReadyForGameType_descriptor() {
-    return ReadyForGameRequest_ReadyForGameType_descriptor();
+  Type_descriptor() {
+    return ReadyForGameRequest_Type_descriptor();
   }
-  static inline const ::std::string& ReadyForGameType_Name(ReadyForGameType value) {
-    return ReadyForGameRequest_ReadyForGameType_Name(value);
+  static inline const ::std::string& Type_Name(Type value) {
+    return ReadyForGameRequest_Type_Name(value);
   }
-  static inline bool ReadyForGameType_Parse(const ::std::string& name,
-      ReadyForGameType* value) {
-    return ReadyForGameRequest_ReadyForGameType_Parse(name, value);
+  static inline bool Type_Parse(const ::std::string& name,
+      Type* value) {
+    return ReadyForGameRequest_Type_Parse(name, value);
   }
 
   // accessors -------------------------------------------------------
 
-  // required int32 user_id = 1;
-  inline bool has_user_id() const;
-  inline void clear_user_id();
-  static const int kUserIdFieldNumber = 1;
-  inline ::google::protobuf::int32 user_id() const;
-  inline void set_user_id(::google::protobuf::int32 value);
-
-  // required int32 romm_id = 2;
-  inline bool has_romm_id() const;
-  inline void clear_romm_id();
-  static const int kRommIdFieldNumber = 2;
-  inline ::google::protobuf::int32 romm_id() const;
-  inline void set_romm_id(::google::protobuf::int32 value);
-
-  // required .network.ReadyForGameRequest.ReadyForGameType result = 3;
-  inline bool has_result() const;
-  inline void clear_result();
-  static const int kResultFieldNumber = 3;
-  inline ::network::ReadyForGameRequest_ReadyForGameType result() const;
-  inline void set_result(::network::ReadyForGameRequest_ReadyForGameType value);
+  // required .network.ReadyForGameRequest.Type type = 1;
+  inline bool has_type() const;
+  inline void clear_type();
+  static const int kTypeFieldNumber = 1;
+  inline ::network::ReadyForGameRequest_Type type() const;
+  inline void set_type(::network::ReadyForGameRequest_Type value);
 
   // @@protoc_insertion_point(class_scope:network.ReadyForGameRequest)
  private:
-  inline void set_has_user_id();
-  inline void clear_has_user_id();
-  inline void set_has_romm_id();
-  inline void clear_has_romm_id();
-  inline void set_has_result();
-  inline void clear_has_result();
+  inline void set_has_type();
+  inline void clear_has_type();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
-  ::google::protobuf::int32 user_id_;
-  ::google::protobuf::int32 romm_id_;
-  int result_;
+  int type_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(3 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(1 + 31) / 32];
 
   friend void  protobuf_AddDesc_base_2eproto();
   friend void protobuf_AssignDesc_base_2eproto();
@@ -1754,730 +1366,6 @@ class ReadyForGameRequest : public ::google::protobuf::Message {
 
   void InitAsDefaultInstance();
   static ReadyForGameRequest* default_instance_;
-};
-// -------------------------------------------------------------------
-
-class GameRoomInfo_PlayerInfo : public ::google::protobuf::Message {
- public:
-  GameRoomInfo_PlayerInfo();
-  virtual ~GameRoomInfo_PlayerInfo();
-
-  GameRoomInfo_PlayerInfo(const GameRoomInfo_PlayerInfo& from);
-
-  inline GameRoomInfo_PlayerInfo& operator=(const GameRoomInfo_PlayerInfo& from) {
-    CopyFrom(from);
-    return *this;
-  }
-
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _unknown_fields_;
-  }
-
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return &_unknown_fields_;
-  }
-
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const GameRoomInfo_PlayerInfo& default_instance();
-
-  void Swap(GameRoomInfo_PlayerInfo* other);
-
-  // implements Message ----------------------------------------------
-
-  GameRoomInfo_PlayerInfo* New() const;
-  void CopyFrom(const ::google::protobuf::Message& from);
-  void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const GameRoomInfo_PlayerInfo& from);
-  void MergeFrom(const GameRoomInfo_PlayerInfo& from);
-  void Clear();
-  bool IsInitialized() const;
-
-  int ByteSize() const;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input);
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const;
-  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
-  int GetCachedSize() const { return _cached_size_; }
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const;
-  public:
-
-  ::google::protobuf::Metadata GetMetadata() const;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // required int32 user_id = 1;
-  inline bool has_user_id() const;
-  inline void clear_user_id();
-  static const int kUserIdFieldNumber = 1;
-  inline ::google::protobuf::int32 user_id() const;
-  inline void set_user_id(::google::protobuf::int32 value);
-
-  // required string user_name = 2;
-  inline bool has_user_name() const;
-  inline void clear_user_name();
-  static const int kUserNameFieldNumber = 2;
-  inline const ::std::string& user_name() const;
-  inline void set_user_name(const ::std::string& value);
-  inline void set_user_name(const char* value);
-  inline void set_user_name(const char* value, size_t size);
-  inline ::std::string* mutable_user_name();
-  inline ::std::string* release_user_name();
-  inline void set_allocated_user_name(::std::string* user_name);
-
-  // required int32 is_room_owner = 3;
-  inline bool has_is_room_owner() const;
-  inline void clear_is_room_owner();
-  static const int kIsRoomOwnerFieldNumber = 3;
-  inline ::google::protobuf::int32 is_room_owner() const;
-  inline void set_is_room_owner(::google::protobuf::int32 value);
-
-  // @@protoc_insertion_point(class_scope:network.GameRoomInfo.PlayerInfo)
- private:
-  inline void set_has_user_id();
-  inline void clear_has_user_id();
-  inline void set_has_user_name();
-  inline void clear_has_user_name();
-  inline void set_has_is_room_owner();
-  inline void clear_has_is_room_owner();
-
-  ::google::protobuf::UnknownFieldSet _unknown_fields_;
-
-  ::std::string* user_name_;
-  ::google::protobuf::int32 user_id_;
-  ::google::protobuf::int32 is_room_owner_;
-
-  mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(3 + 31) / 32];
-
-  friend void  protobuf_AddDesc_base_2eproto();
-  friend void protobuf_AssignDesc_base_2eproto();
-  friend void protobuf_ShutdownFile_base_2eproto();
-
-  void InitAsDefaultInstance();
-  static GameRoomInfo_PlayerInfo* default_instance_;
-};
-// -------------------------------------------------------------------
-
-class GameRoomInfo : public ::google::protobuf::Message {
- public:
-  GameRoomInfo();
-  virtual ~GameRoomInfo();
-
-  GameRoomInfo(const GameRoomInfo& from);
-
-  inline GameRoomInfo& operator=(const GameRoomInfo& from) {
-    CopyFrom(from);
-    return *this;
-  }
-
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _unknown_fields_;
-  }
-
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return &_unknown_fields_;
-  }
-
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const GameRoomInfo& default_instance();
-
-  void Swap(GameRoomInfo* other);
-
-  // implements Message ----------------------------------------------
-
-  GameRoomInfo* New() const;
-  void CopyFrom(const ::google::protobuf::Message& from);
-  void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const GameRoomInfo& from);
-  void MergeFrom(const GameRoomInfo& from);
-  void Clear();
-  bool IsInitialized() const;
-
-  int ByteSize() const;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input);
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const;
-  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
-  int GetCachedSize() const { return _cached_size_; }
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const;
-  public:
-
-  ::google::protobuf::Metadata GetMetadata() const;
-
-  // nested types ----------------------------------------------------
-
-  typedef GameRoomInfo_PlayerInfo PlayerInfo;
-
-  // accessors -------------------------------------------------------
-
-  // required int32 room_id = 1;
-  inline bool has_room_id() const;
-  inline void clear_room_id();
-  static const int kRoomIdFieldNumber = 1;
-  inline ::google::protobuf::int32 room_id() const;
-  inline void set_room_id(::google::protobuf::int32 value);
-
-  // required .network.GameType type = 2;
-  inline bool has_type() const;
-  inline void clear_type();
-  static const int kTypeFieldNumber = 2;
-  inline ::network::GameType type() const;
-  inline void set_type(::network::GameType value);
-
-  // repeated .network.GameRoomInfo.PlayerInfo player = 3;
-  inline int player_size() const;
-  inline void clear_player();
-  static const int kPlayerFieldNumber = 3;
-  inline const ::network::GameRoomInfo_PlayerInfo& player(int index) const;
-  inline ::network::GameRoomInfo_PlayerInfo* mutable_player(int index);
-  inline ::network::GameRoomInfo_PlayerInfo* add_player();
-  inline const ::google::protobuf::RepeatedPtrField< ::network::GameRoomInfo_PlayerInfo >&
-      player() const;
-  inline ::google::protobuf::RepeatedPtrField< ::network::GameRoomInfo_PlayerInfo >*
-      mutable_player();
-
-  // @@protoc_insertion_point(class_scope:network.GameRoomInfo)
- private:
-  inline void set_has_room_id();
-  inline void clear_has_room_id();
-  inline void set_has_type();
-  inline void clear_has_type();
-
-  ::google::protobuf::UnknownFieldSet _unknown_fields_;
-
-  ::google::protobuf::int32 room_id_;
-  int type_;
-  ::google::protobuf::RepeatedPtrField< ::network::GameRoomInfo_PlayerInfo > player_;
-
-  mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(3 + 31) / 32];
-
-  friend void  protobuf_AddDesc_base_2eproto();
-  friend void protobuf_AssignDesc_base_2eproto();
-  friend void protobuf_ShutdownFile_base_2eproto();
-
-  void InitAsDefaultInstance();
-  static GameRoomInfo* default_instance_;
-};
-// -------------------------------------------------------------------
-
-class EnterRoom : public ::google::protobuf::Message {
- public:
-  EnterRoom();
-  virtual ~EnterRoom();
-
-  EnterRoom(const EnterRoom& from);
-
-  inline EnterRoom& operator=(const EnterRoom& from) {
-    CopyFrom(from);
-    return *this;
-  }
-
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _unknown_fields_;
-  }
-
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return &_unknown_fields_;
-  }
-
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const EnterRoom& default_instance();
-
-  void Swap(EnterRoom* other);
-
-  // implements Message ----------------------------------------------
-
-  EnterRoom* New() const;
-  void CopyFrom(const ::google::protobuf::Message& from);
-  void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const EnterRoom& from);
-  void MergeFrom(const EnterRoom& from);
-  void Clear();
-  bool IsInitialized() const;
-
-  int ByteSize() const;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input);
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const;
-  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
-  int GetCachedSize() const { return _cached_size_; }
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const;
-  public:
-
-  ::google::protobuf::Metadata GetMetadata() const;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // optional uint32 room_id = 1;
-  inline bool has_room_id() const;
-  inline void clear_room_id();
-  static const int kRoomIdFieldNumber = 1;
-  inline ::google::protobuf::uint32 room_id() const;
-  inline void set_room_id(::google::protobuf::uint32 value);
-
-  // @@protoc_insertion_point(class_scope:network.EnterRoom)
- private:
-  inline void set_has_room_id();
-  inline void clear_has_room_id();
-
-  ::google::protobuf::UnknownFieldSet _unknown_fields_;
-
-  ::google::protobuf::uint32 room_id_;
-
-  mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(1 + 31) / 32];
-
-  friend void  protobuf_AddDesc_base_2eproto();
-  friend void protobuf_AssignDesc_base_2eproto();
-  friend void protobuf_ShutdownFile_base_2eproto();
-
-  void InitAsDefaultInstance();
-  static EnterRoom* default_instance_;
-};
-// -------------------------------------------------------------------
-
-class SingleRoom_RoomPlayer : public ::google::protobuf::Message {
- public:
-  SingleRoom_RoomPlayer();
-  virtual ~SingleRoom_RoomPlayer();
-
-  SingleRoom_RoomPlayer(const SingleRoom_RoomPlayer& from);
-
-  inline SingleRoom_RoomPlayer& operator=(const SingleRoom_RoomPlayer& from) {
-    CopyFrom(from);
-    return *this;
-  }
-
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _unknown_fields_;
-  }
-
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return &_unknown_fields_;
-  }
-
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const SingleRoom_RoomPlayer& default_instance();
-
-  void Swap(SingleRoom_RoomPlayer* other);
-
-  // implements Message ----------------------------------------------
-
-  SingleRoom_RoomPlayer* New() const;
-  void CopyFrom(const ::google::protobuf::Message& from);
-  void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const SingleRoom_RoomPlayer& from);
-  void MergeFrom(const SingleRoom_RoomPlayer& from);
-  void Clear();
-  bool IsInitialized() const;
-
-  int ByteSize() const;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input);
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const;
-  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
-  int GetCachedSize() const { return _cached_size_; }
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const;
-  public:
-
-  ::google::protobuf::Metadata GetMetadata() const;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // optional uint32 player_id = 1;
-  inline bool has_player_id() const;
-  inline void clear_player_id();
-  static const int kPlayerIdFieldNumber = 1;
-  inline ::google::protobuf::uint32 player_id() const;
-  inline void set_player_id(::google::protobuf::uint32 value);
-
-  // optional uint32 player_nickname = 2;
-  inline bool has_player_nickname() const;
-  inline void clear_player_nickname();
-  static const int kPlayerNicknameFieldNumber = 2;
-  inline ::google::protobuf::uint32 player_nickname() const;
-  inline void set_player_nickname(::google::protobuf::uint32 value);
-
-  // @@protoc_insertion_point(class_scope:network.SingleRoom.RoomPlayer)
- private:
-  inline void set_has_player_id();
-  inline void clear_has_player_id();
-  inline void set_has_player_nickname();
-  inline void clear_has_player_nickname();
-
-  ::google::protobuf::UnknownFieldSet _unknown_fields_;
-
-  ::google::protobuf::uint32 player_id_;
-  ::google::protobuf::uint32 player_nickname_;
-
-  mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
-
-  friend void  protobuf_AddDesc_base_2eproto();
-  friend void protobuf_AssignDesc_base_2eproto();
-  friend void protobuf_ShutdownFile_base_2eproto();
-
-  void InitAsDefaultInstance();
-  static SingleRoom_RoomPlayer* default_instance_;
-};
-// -------------------------------------------------------------------
-
-class SingleRoom : public ::google::protobuf::Message {
- public:
-  SingleRoom();
-  virtual ~SingleRoom();
-
-  SingleRoom(const SingleRoom& from);
-
-  inline SingleRoom& operator=(const SingleRoom& from) {
-    CopyFrom(from);
-    return *this;
-  }
-
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _unknown_fields_;
-  }
-
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return &_unknown_fields_;
-  }
-
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const SingleRoom& default_instance();
-
-  void Swap(SingleRoom* other);
-
-  // implements Message ----------------------------------------------
-
-  SingleRoom* New() const;
-  void CopyFrom(const ::google::protobuf::Message& from);
-  void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const SingleRoom& from);
-  void MergeFrom(const SingleRoom& from);
-  void Clear();
-  bool IsInitialized() const;
-
-  int ByteSize() const;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input);
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const;
-  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
-  int GetCachedSize() const { return _cached_size_; }
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const;
-  public:
-
-  ::google::protobuf::Metadata GetMetadata() const;
-
-  // nested types ----------------------------------------------------
-
-  typedef SingleRoom_RoomPlayer RoomPlayer;
-
-  // accessors -------------------------------------------------------
-
-  // optional uint32 room_id = 1;
-  inline bool has_room_id() const;
-  inline void clear_room_id();
-  static const int kRoomIdFieldNumber = 1;
-  inline ::google::protobuf::uint32 room_id() const;
-  inline void set_room_id(::google::protobuf::uint32 value);
-
-  // optional uint32 player_id = 3;
-  inline bool has_player_id() const;
-  inline void clear_player_id();
-  static const int kPlayerIdFieldNumber = 3;
-  inline ::google::protobuf::uint32 player_id() const;
-  inline void set_player_id(::google::protobuf::uint32 value);
-
-  // repeated .network.SingleRoom.RoomPlayer players = 2;
-  inline int players_size() const;
-  inline void clear_players();
-  static const int kPlayersFieldNumber = 2;
-  inline const ::network::SingleRoom_RoomPlayer& players(int index) const;
-  inline ::network::SingleRoom_RoomPlayer* mutable_players(int index);
-  inline ::network::SingleRoom_RoomPlayer* add_players();
-  inline const ::google::protobuf::RepeatedPtrField< ::network::SingleRoom_RoomPlayer >&
-      players() const;
-  inline ::google::protobuf::RepeatedPtrField< ::network::SingleRoom_RoomPlayer >*
-      mutable_players();
-
-  // @@protoc_insertion_point(class_scope:network.SingleRoom)
- private:
-  inline void set_has_room_id();
-  inline void clear_has_room_id();
-  inline void set_has_player_id();
-  inline void clear_has_player_id();
-
-  ::google::protobuf::UnknownFieldSet _unknown_fields_;
-
-  ::google::protobuf::uint32 room_id_;
-  ::google::protobuf::uint32 player_id_;
-  ::google::protobuf::RepeatedPtrField< ::network::SingleRoom_RoomPlayer > players_;
-
-  mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(3 + 31) / 32];
-
-  friend void  protobuf_AddDesc_base_2eproto();
-  friend void protobuf_AssignDesc_base_2eproto();
-  friend void protobuf_ShutdownFile_base_2eproto();
-
-  void InitAsDefaultInstance();
-  static SingleRoom* default_instance_;
-};
-// -------------------------------------------------------------------
-
-class Rooms : public ::google::protobuf::Message {
- public:
-  Rooms();
-  virtual ~Rooms();
-
-  Rooms(const Rooms& from);
-
-  inline Rooms& operator=(const Rooms& from) {
-    CopyFrom(from);
-    return *this;
-  }
-
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _unknown_fields_;
-  }
-
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return &_unknown_fields_;
-  }
-
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const Rooms& default_instance();
-
-  void Swap(Rooms* other);
-
-  // implements Message ----------------------------------------------
-
-  Rooms* New() const;
-  void CopyFrom(const ::google::protobuf::Message& from);
-  void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const Rooms& from);
-  void MergeFrom(const Rooms& from);
-  void Clear();
-  bool IsInitialized() const;
-
-  int ByteSize() const;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input);
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const;
-  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
-  int GetCachedSize() const { return _cached_size_; }
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const;
-  public:
-
-  ::google::protobuf::Metadata GetMetadata() const;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // repeated .network.SingleRoom rooms = 1;
-  inline int rooms_size() const;
-  inline void clear_rooms();
-  static const int kRoomsFieldNumber = 1;
-  inline const ::network::SingleRoom& rooms(int index) const;
-  inline ::network::SingleRoom* mutable_rooms(int index);
-  inline ::network::SingleRoom* add_rooms();
-  inline const ::google::protobuf::RepeatedPtrField< ::network::SingleRoom >&
-      rooms() const;
-  inline ::google::protobuf::RepeatedPtrField< ::network::SingleRoom >*
-      mutable_rooms();
-
-  // @@protoc_insertion_point(class_scope:network.Rooms)
- private:
-
-  ::google::protobuf::UnknownFieldSet _unknown_fields_;
-
-  ::google::protobuf::RepeatedPtrField< ::network::SingleRoom > rooms_;
-
-  mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(1 + 31) / 32];
-
-  friend void  protobuf_AddDesc_base_2eproto();
-  friend void protobuf_AssignDesc_base_2eproto();
-  friend void protobuf_ShutdownFile_base_2eproto();
-
-  void InitAsDefaultInstance();
-  static Rooms* default_instance_;
-};
-// -------------------------------------------------------------------
-
-class ReadyToStart : public ::google::protobuf::Message {
- public:
-  ReadyToStart();
-  virtual ~ReadyToStart();
-
-  ReadyToStart(const ReadyToStart& from);
-
-  inline ReadyToStart& operator=(const ReadyToStart& from) {
-    CopyFrom(from);
-    return *this;
-  }
-
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _unknown_fields_;
-  }
-
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return &_unknown_fields_;
-  }
-
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const ReadyToStart& default_instance();
-
-  void Swap(ReadyToStart* other);
-
-  // implements Message ----------------------------------------------
-
-  ReadyToStart* New() const;
-  void CopyFrom(const ::google::protobuf::Message& from);
-  void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const ReadyToStart& from);
-  void MergeFrom(const ReadyToStart& from);
-  void Clear();
-  bool IsInitialized() const;
-
-  int ByteSize() const;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input);
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const;
-  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
-  int GetCachedSize() const { return _cached_size_; }
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const;
-  public:
-
-  ::google::protobuf::Metadata GetMetadata() const;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // @@protoc_insertion_point(class_scope:network.ReadyToStart)
- private:
-
-  ::google::protobuf::UnknownFieldSet _unknown_fields_;
-
-
-  mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[1];
-
-  friend void  protobuf_AddDesc_base_2eproto();
-  friend void protobuf_AssignDesc_base_2eproto();
-  friend void protobuf_ShutdownFile_base_2eproto();
-
-  void InitAsDefaultInstance();
-  static ReadyToStart* default_instance_;
-};
-// -------------------------------------------------------------------
-
-class StartReply : public ::google::protobuf::Message {
- public:
-  StartReply();
-  virtual ~StartReply();
-
-  StartReply(const StartReply& from);
-
-  inline StartReply& operator=(const StartReply& from) {
-    CopyFrom(from);
-    return *this;
-  }
-
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _unknown_fields_;
-  }
-
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return &_unknown_fields_;
-  }
-
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const StartReply& default_instance();
-
-  void Swap(StartReply* other);
-
-  // implements Message ----------------------------------------------
-
-  StartReply* New() const;
-  void CopyFrom(const ::google::protobuf::Message& from);
-  void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const StartReply& from);
-  void MergeFrom(const StartReply& from);
-  void Clear();
-  bool IsInitialized() const;
-
-  int ByteSize() const;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input);
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const;
-  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
-  int GetCachedSize() const { return _cached_size_; }
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const;
-  public:
-
-  ::google::protobuf::Metadata GetMetadata() const;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // @@protoc_insertion_point(class_scope:network.StartReply)
- private:
-
-  ::google::protobuf::UnknownFieldSet _unknown_fields_;
-
-
-  mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[1];
-
-  friend void  protobuf_AddDesc_base_2eproto();
-  friend void protobuf_AssignDesc_base_2eproto();
-  friend void protobuf_ShutdownFile_base_2eproto();
-
-  void InitAsDefaultInstance();
-  static StartReply* default_instance_;
 };
 // -------------------------------------------------------------------
 
@@ -2535,13 +1423,6 @@ class SinglePlayerInfo : public ::google::protobuf::Message {
 
   // accessors -------------------------------------------------------
 
-  // optional uint32 seat = 21;
-  inline bool has_seat() const;
-  inline void clear_seat();
-  static const int kSeatFieldNumber = 21;
-  inline ::google::protobuf::uint32 seat() const;
-  inline void set_seat(::google::protobuf::uint32 value);
-
   // optional uint32 id = 1;
   inline bool has_id() const;
   inline void clear_id();
@@ -2556,43 +1437,31 @@ class SinglePlayerInfo : public ::google::protobuf::Message {
   inline ::google::protobuf::uint32 team() const;
   inline void set_team(::google::protobuf::uint32 value);
 
-  // optional string nickname = 20;
-  inline bool has_nickname() const;
-  inline void clear_nickname();
-  static const int kNicknameFieldNumber = 20;
-  inline const ::std::string& nickname() const;
-  inline void set_nickname(const ::std::string& value);
-  inline void set_nickname(const char* value);
-  inline void set_nickname(const char* value, size_t size);
-  inline ::std::string* mutable_nickname();
-  inline ::std::string* release_nickname();
-  inline void set_allocated_nickname(::std::string* nickname);
-
-  // optional uint32 role_id = 4;
+  // optional uint32 role_id = 3;
   inline bool has_role_id() const;
   inline void clear_role_id();
-  static const int kRoleIdFieldNumber = 4;
+  static const int kRoleIdFieldNumber = 3;
   inline ::google::protobuf::uint32 role_id() const;
   inline void set_role_id(::google::protobuf::uint32 value);
 
-  // optional uint32 hand_count = 5;
+  // optional uint32 hand_count = 4;
   inline bool has_hand_count() const;
   inline void clear_hand_count();
-  static const int kHandCountFieldNumber = 5;
+  static const int kHandCountFieldNumber = 4;
   inline ::google::protobuf::uint32 hand_count() const;
   inline void set_hand_count(::google::protobuf::uint32 value);
 
-  // optional uint32 heal_count = 6;
+  // optional uint32 heal_count = 5;
   inline bool has_heal_count() const;
   inline void clear_heal_count();
-  static const int kHealCountFieldNumber = 6;
+  static const int kHealCountFieldNumber = 5;
   inline ::google::protobuf::uint32 heal_count() const;
   inline void set_heal_count(::google::protobuf::uint32 value);
 
-  // repeated uint32 ex_cards = 8;
+  // repeated uint32 ex_cards = 6;
   inline int ex_cards_size() const;
   inline void clear_ex_cards();
-  static const int kExCardsFieldNumber = 8;
+  static const int kExCardsFieldNumber = 6;
   inline ::google::protobuf::uint32 ex_cards(int index) const;
   inline void set_ex_cards(int index, ::google::protobuf::uint32 value);
   inline void add_ex_cards(::google::protobuf::uint32 value);
@@ -2601,10 +1470,10 @@ class SinglePlayerInfo : public ::google::protobuf::Message {
   inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
       mutable_ex_cards();
 
-  // repeated uint32 basic_cards = 9;
+  // repeated uint32 basic_cards = 7;
   inline int basic_cards_size() const;
   inline void clear_basic_cards();
-  static const int kBasicCardsFieldNumber = 9;
+  static const int kBasicCardsFieldNumber = 7;
   inline ::google::protobuf::uint32 basic_cards(int index) const;
   inline void set_basic_cards(int index, ::google::protobuf::uint32 value);
   inline void add_basic_cards(::google::protobuf::uint32 value);
@@ -2613,52 +1482,52 @@ class SinglePlayerInfo : public ::google::protobuf::Message {
   inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
       mutable_basic_cards();
 
-  // optional uint32 gem = 10;
+  // optional uint32 gem = 8;
   inline bool has_gem() const;
   inline void clear_gem();
-  static const int kGemFieldNumber = 10;
+  static const int kGemFieldNumber = 8;
   inline ::google::protobuf::uint32 gem() const;
   inline void set_gem(::google::protobuf::uint32 value);
 
-  // optional uint32 crystal = 11;
+  // optional uint32 crystal = 9;
   inline bool has_crystal() const;
   inline void clear_crystal();
-  static const int kCrystalFieldNumber = 11;
+  static const int kCrystalFieldNumber = 9;
   inline ::google::protobuf::uint32 crystal() const;
   inline void set_crystal(::google::protobuf::uint32 value);
 
-  // optional uint32 yellow_token = 12;
+  // optional uint32 yellow_token = 10;
   inline bool has_yellow_token() const;
   inline void clear_yellow_token();
-  static const int kYellowTokenFieldNumber = 12;
+  static const int kYellowTokenFieldNumber = 10;
   inline ::google::protobuf::uint32 yellow_token() const;
   inline void set_yellow_token(::google::protobuf::uint32 value);
 
-  // optional uint32 blue_token = 13;
+  // optional uint32 blue_token = 11;
   inline bool has_blue_token() const;
   inline void clear_blue_token();
-  static const int kBlueTokenFieldNumber = 13;
+  static const int kBlueTokenFieldNumber = 11;
   inline ::google::protobuf::uint32 blue_token() const;
   inline void set_blue_token(::google::protobuf::uint32 value);
 
-  // optional uint32 covered_count = 14;
+  // optional uint32 covered_count = 12;
   inline bool has_covered_count() const;
   inline void clear_covered_count();
-  static const int kCoveredCountFieldNumber = 14;
+  static const int kCoveredCountFieldNumber = 12;
   inline ::google::protobuf::uint32 covered_count() const;
   inline void set_covered_count(::google::protobuf::uint32 value);
 
-  // optional bool is_knelt = 3;
+  // optional bool is_knelt = 13;
   inline bool has_is_knelt() const;
   inline void clear_is_knelt();
-  static const int kIsKneltFieldNumber = 3;
+  static const int kIsKneltFieldNumber = 13;
   inline bool is_knelt() const;
   inline void set_is_knelt(bool value);
 
-  // repeated uint32 hands = 15;
+  // repeated uint32 hands = 14;
   inline int hands_size() const;
   inline void clear_hands();
-  static const int kHandsFieldNumber = 15;
+  static const int kHandsFieldNumber = 14;
   inline ::google::protobuf::uint32 hands(int index) const;
   inline void set_hands(int index, ::google::protobuf::uint32 value);
   inline void add_hands(::google::protobuf::uint32 value);
@@ -2667,10 +1536,10 @@ class SinglePlayerInfo : public ::google::protobuf::Message {
   inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
       mutable_hands();
 
-  // repeated uint32 covereds = 16;
+  // repeated uint32 covereds = 15;
   inline int covereds_size() const;
   inline void clear_covereds();
-  static const int kCoveredsFieldNumber = 16;
+  static const int kCoveredsFieldNumber = 15;
   inline ::google::protobuf::uint32 covereds(int index) const;
   inline void set_covereds(int index, ::google::protobuf::uint32 value);
   inline void add_covereds(::google::protobuf::uint32 value);
@@ -2679,17 +1548,36 @@ class SinglePlayerInfo : public ::google::protobuf::Message {
   inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
       mutable_covereds();
 
-  // optional uint32 max_hand = 22;
+  // optional uint32 max_hand = 16;
   inline bool has_max_hand() const;
   inline void clear_max_hand();
-  static const int kMaxHandFieldNumber = 22;
+  static const int kMaxHandFieldNumber = 16;
   inline ::google::protobuf::uint32 max_hand() const;
   inline void set_max_hand(::google::protobuf::uint32 value);
 
-  // repeated string delete_field = 30;
+  // optional string nickname = 17;
+  inline bool has_nickname() const;
+  inline void clear_nickname();
+  static const int kNicknameFieldNumber = 17;
+  inline const ::std::string& nickname() const;
+  inline void set_nickname(const ::std::string& value);
+  inline void set_nickname(const char* value);
+  inline void set_nickname(const char* value, size_t size);
+  inline ::std::string* mutable_nickname();
+  inline ::std::string* release_nickname();
+  inline void set_allocated_nickname(::std::string* nickname);
+
+  // optional bool ready = 18;
+  inline bool has_ready() const;
+  inline void clear_ready();
+  static const int kReadyFieldNumber = 18;
+  inline bool ready() const;
+  inline void set_ready(bool value);
+
+  // repeated string delete_field = 19;
   inline int delete_field_size() const;
   inline void clear_delete_field();
-  static const int kDeleteFieldFieldNumber = 30;
+  static const int kDeleteFieldFieldNumber = 19;
   inline const ::std::string& delete_field(int index) const;
   inline ::std::string* mutable_delete_field(int index);
   inline void set_delete_field(int index, const ::std::string& value);
@@ -2704,14 +1592,10 @@ class SinglePlayerInfo : public ::google::protobuf::Message {
 
   // @@protoc_insertion_point(class_scope:network.SinglePlayerInfo)
  private:
-  inline void set_has_seat();
-  inline void clear_has_seat();
   inline void set_has_id();
   inline void clear_has_id();
   inline void set_has_team();
   inline void clear_has_team();
-  inline void set_has_nickname();
-  inline void clear_has_nickname();
   inline void set_has_role_id();
   inline void clear_has_role_id();
   inline void set_has_hand_count();
@@ -2732,28 +1616,32 @@ class SinglePlayerInfo : public ::google::protobuf::Message {
   inline void clear_has_is_knelt();
   inline void set_has_max_hand();
   inline void clear_has_max_hand();
+  inline void set_has_nickname();
+  inline void clear_has_nickname();
+  inline void set_has_ready();
+  inline void clear_has_ready();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
-  ::google::protobuf::uint32 seat_;
   ::google::protobuf::uint32 id_;
-  ::std::string* nickname_;
   ::google::protobuf::uint32 team_;
   ::google::protobuf::uint32 role_id_;
   ::google::protobuf::uint32 hand_count_;
-  ::google::protobuf::uint32 heal_count_;
   ::google::protobuf::RepeatedField< ::google::protobuf::uint32 > ex_cards_;
-  ::google::protobuf::RepeatedField< ::google::protobuf::uint32 > basic_cards_;
+  ::google::protobuf::uint32 heal_count_;
   ::google::protobuf::uint32 gem_;
+  ::google::protobuf::RepeatedField< ::google::protobuf::uint32 > basic_cards_;
   ::google::protobuf::uint32 crystal_;
   ::google::protobuf::uint32 yellow_token_;
   ::google::protobuf::uint32 blue_token_;
   ::google::protobuf::uint32 covered_count_;
-  bool is_knelt_;
   ::google::protobuf::RepeatedField< ::google::protobuf::uint32 > hands_;
   ::google::protobuf::RepeatedField< ::google::protobuf::uint32 > covereds_;
-  ::google::protobuf::RepeatedPtrField< ::std::string> delete_field_;
+  bool is_knelt_;
+  bool ready_;
   ::google::protobuf::uint32 max_hand_;
+  ::std::string* nickname_;
+  ::google::protobuf::RepeatedPtrField< ::std::string> delete_field_;
 
   mutable int _cached_size_;
   ::google::protobuf::uint32 _has_bits_[(19 + 31) / 32];
@@ -2821,10 +1709,101 @@ class GameInfo : public ::google::protobuf::Message {
 
   // accessors -------------------------------------------------------
 
-  // repeated .network.SinglePlayerInfo player_infos = 1;
+  // optional int32 room_id = 1;
+  inline bool has_room_id() const;
+  inline void clear_room_id();
+  static const int kRoomIdFieldNumber = 1;
+  inline ::google::protobuf::int32 room_id() const;
+  inline void set_room_id(::google::protobuf::int32 value);
+
+  // optional int32 player_id = 2;
+  inline bool has_player_id() const;
+  inline void clear_player_id();
+  static const int kPlayerIdFieldNumber = 2;
+  inline ::google::protobuf::int32 player_id() const;
+  inline void set_player_id(::google::protobuf::int32 value);
+
+  // optional uint32 red_morale = 3;
+  inline bool has_red_morale() const;
+  inline void clear_red_morale();
+  static const int kRedMoraleFieldNumber = 3;
+  inline ::google::protobuf::uint32 red_morale() const;
+  inline void set_red_morale(::google::protobuf::uint32 value);
+
+  // optional uint32 blue_morale = 4;
+  inline bool has_blue_morale() const;
+  inline void clear_blue_morale();
+  static const int kBlueMoraleFieldNumber = 4;
+  inline ::google::protobuf::uint32 blue_morale() const;
+  inline void set_blue_morale(::google::protobuf::uint32 value);
+
+  // optional uint32 red_gem = 5;
+  inline bool has_red_gem() const;
+  inline void clear_red_gem();
+  static const int kRedGemFieldNumber = 5;
+  inline ::google::protobuf::uint32 red_gem() const;
+  inline void set_red_gem(::google::protobuf::uint32 value);
+
+  // optional uint32 blue_gem = 6;
+  inline bool has_blue_gem() const;
+  inline void clear_blue_gem();
+  static const int kBlueGemFieldNumber = 6;
+  inline ::google::protobuf::uint32 blue_gem() const;
+  inline void set_blue_gem(::google::protobuf::uint32 value);
+
+  // optional uint32 red_crystal = 7;
+  inline bool has_red_crystal() const;
+  inline void clear_red_crystal();
+  static const int kRedCrystalFieldNumber = 7;
+  inline ::google::protobuf::uint32 red_crystal() const;
+  inline void set_red_crystal(::google::protobuf::uint32 value);
+
+  // optional uint32 blue_crystal = 8;
+  inline bool has_blue_crystal() const;
+  inline void clear_blue_crystal();
+  static const int kBlueCrystalFieldNumber = 8;
+  inline ::google::protobuf::uint32 blue_crystal() const;
+  inline void set_blue_crystal(::google::protobuf::uint32 value);
+
+  // optional uint32 red_grail = 9;
+  inline bool has_red_grail() const;
+  inline void clear_red_grail();
+  static const int kRedGrailFieldNumber = 9;
+  inline ::google::protobuf::uint32 red_grail() const;
+  inline void set_red_grail(::google::protobuf::uint32 value);
+
+  // optional uint32 blue_grail = 10;
+  inline bool has_blue_grail() const;
+  inline void clear_blue_grail();
+  static const int kBlueGrailFieldNumber = 10;
+  inline ::google::protobuf::uint32 blue_grail() const;
+  inline void set_blue_grail(::google::protobuf::uint32 value);
+
+  // optional uint32 pile = 11;
+  inline bool has_pile() const;
+  inline void clear_pile();
+  static const int kPileFieldNumber = 11;
+  inline ::google::protobuf::uint32 pile() const;
+  inline void set_pile(::google::protobuf::uint32 value);
+
+  // optional uint32 discard = 12;
+  inline bool has_discard() const;
+  inline void clear_discard();
+  static const int kDiscardFieldNumber = 12;
+  inline ::google::protobuf::uint32 discard() const;
+  inline void set_discard(::google::protobuf::uint32 value);
+
+  // optional bool is_started = 13 [default = false];
+  inline bool has_is_started() const;
+  inline void clear_is_started();
+  static const int kIsStartedFieldNumber = 13;
+  inline bool is_started() const;
+  inline void set_is_started(bool value);
+
+  // repeated .network.SinglePlayerInfo player_infos = 14;
   inline int player_infos_size() const;
   inline void clear_player_infos();
-  static const int kPlayerInfosFieldNumber = 1;
+  static const int kPlayerInfosFieldNumber = 14;
   inline const ::network::SinglePlayerInfo& player_infos(int index) const;
   inline ::network::SinglePlayerInfo* mutable_player_infos(int index);
   inline ::network::SinglePlayerInfo* add_player_infos();
@@ -2833,113 +1812,12 @@ class GameInfo : public ::google::protobuf::Message {
   inline ::google::protobuf::RepeatedPtrField< ::network::SinglePlayerInfo >*
       mutable_player_infos();
 
-  // optional uint32 red_morale = 2;
-  inline bool has_red_morale() const;
-  inline void clear_red_morale();
-  static const int kRedMoraleFieldNumber = 2;
-  inline ::google::protobuf::uint32 red_morale() const;
-  inline void set_red_morale(::google::protobuf::uint32 value);
-
-  // optional uint32 blue_morale = 3;
-  inline bool has_blue_morale() const;
-  inline void clear_blue_morale();
-  static const int kBlueMoraleFieldNumber = 3;
-  inline ::google::protobuf::uint32 blue_morale() const;
-  inline void set_blue_morale(::google::protobuf::uint32 value);
-
-  // optional uint32 red_gem = 4;
-  inline bool has_red_gem() const;
-  inline void clear_red_gem();
-  static const int kRedGemFieldNumber = 4;
-  inline ::google::protobuf::uint32 red_gem() const;
-  inline void set_red_gem(::google::protobuf::uint32 value);
-
-  // optional uint32 blue_gem = 5;
-  inline bool has_blue_gem() const;
-  inline void clear_blue_gem();
-  static const int kBlueGemFieldNumber = 5;
-  inline ::google::protobuf::uint32 blue_gem() const;
-  inline void set_blue_gem(::google::protobuf::uint32 value);
-
-  // optional uint32 red_crystal = 6;
-  inline bool has_red_crystal() const;
-  inline void clear_red_crystal();
-  static const int kRedCrystalFieldNumber = 6;
-  inline ::google::protobuf::uint32 red_crystal() const;
-  inline void set_red_crystal(::google::protobuf::uint32 value);
-
-  // optional uint32 blue_crystal = 7;
-  inline bool has_blue_crystal() const;
-  inline void clear_blue_crystal();
-  static const int kBlueCrystalFieldNumber = 7;
-  inline ::google::protobuf::uint32 blue_crystal() const;
-  inline void set_blue_crystal(::google::protobuf::uint32 value);
-
-  // optional uint32 red_grail = 8;
-  inline bool has_red_grail() const;
-  inline void clear_red_grail();
-  static const int kRedGrailFieldNumber = 8;
-  inline ::google::protobuf::uint32 red_grail() const;
-  inline void set_red_grail(::google::protobuf::uint32 value);
-
-  // optional uint32 blue_grail = 9;
-  inline bool has_blue_grail() const;
-  inline void clear_blue_grail();
-  static const int kBlueGrailFieldNumber = 9;
-  inline ::google::protobuf::uint32 blue_grail() const;
-  inline void set_blue_grail(::google::protobuf::uint32 value);
-
-  // optional uint32 pile = 10;
-  inline bool has_pile() const;
-  inline void clear_pile();
-  static const int kPileFieldNumber = 10;
-  inline ::google::protobuf::uint32 pile() const;
-  inline void set_pile(::google::protobuf::uint32 value);
-
-  // optional uint32 discard = 11;
-  inline bool has_discard() const;
-  inline void clear_discard();
-  static const int kDiscardFieldNumber = 11;
-  inline ::google::protobuf::uint32 discard() const;
-  inline void set_discard(::google::protobuf::uint32 value);
-
-  // repeated uint32 show_cards = 12;
-  inline int show_cards_size() const;
-  inline void clear_show_cards();
-  static const int kShowCardsFieldNumber = 12;
-  inline ::google::protobuf::uint32 show_cards(int index) const;
-  inline void set_show_cards(int index, ::google::protobuf::uint32 value);
-  inline void add_show_cards(::google::protobuf::uint32 value);
-  inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
-      show_cards() const;
-  inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
-      mutable_show_cards();
-
-  // optional uint32 show_from = 13;
-  inline bool has_show_from() const;
-  inline void clear_show_from();
-  static const int kShowFromFieldNumber = 13;
-  inline ::google::protobuf::uint32 show_from() const;
-  inline void set_show_from(::google::protobuf::uint32 value);
-
-  // repeated string delete_field = 15;
-  inline int delete_field_size() const;
-  inline void clear_delete_field();
-  static const int kDeleteFieldFieldNumber = 15;
-  inline const ::std::string& delete_field(int index) const;
-  inline ::std::string* mutable_delete_field(int index);
-  inline void set_delete_field(int index, const ::std::string& value);
-  inline void set_delete_field(int index, const char* value);
-  inline void set_delete_field(int index, const char* value, size_t size);
-  inline ::std::string* add_delete_field();
-  inline void add_delete_field(const ::std::string& value);
-  inline void add_delete_field(const char* value);
-  inline void add_delete_field(const char* value, size_t size);
-  inline const ::google::protobuf::RepeatedPtrField< ::std::string>& delete_field() const;
-  inline ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_delete_field();
-
   // @@protoc_insertion_point(class_scope:network.GameInfo)
  private:
+  inline void set_has_room_id();
+  inline void clear_has_room_id();
+  inline void set_has_player_id();
+  inline void clear_has_player_id();
   inline void set_has_red_morale();
   inline void clear_has_red_morale();
   inline void set_has_blue_morale();
@@ -2960,12 +1838,13 @@ class GameInfo : public ::google::protobuf::Message {
   inline void clear_has_pile();
   inline void set_has_discard();
   inline void clear_has_discard();
-  inline void set_has_show_from();
-  inline void clear_has_show_from();
+  inline void set_has_is_started();
+  inline void clear_has_is_started();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
-  ::google::protobuf::RepeatedPtrField< ::network::SinglePlayerInfo > player_infos_;
+  ::google::protobuf::int32 room_id_;
+  ::google::protobuf::int32 player_id_;
   ::google::protobuf::uint32 red_morale_;
   ::google::protobuf::uint32 blue_morale_;
   ::google::protobuf::uint32 red_gem_;
@@ -2976,9 +1855,8 @@ class GameInfo : public ::google::protobuf::Message {
   ::google::protobuf::uint32 blue_grail_;
   ::google::protobuf::uint32 pile_;
   ::google::protobuf::uint32 discard_;
-  ::google::protobuf::RepeatedField< ::google::protobuf::uint32 > show_cards_;
-  ::google::protobuf::RepeatedPtrField< ::std::string> delete_field_;
-  ::google::protobuf::uint32 show_from_;
+  ::google::protobuf::RepeatedPtrField< ::network::SinglePlayerInfo > player_infos_;
+  bool is_started_;
 
   mutable int _cached_size_;
   ::google::protobuf::uint32 _has_bits_[(14 + 31) / 32];
@@ -3076,6 +1954,111 @@ class Talk : public ::google::protobuf::Message {
 
   void InitAsDefaultInstance();
   static Talk* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class Error : public ::google::protobuf::Message {
+ public:
+  Error();
+  virtual ~Error();
+
+  Error(const Error& from);
+
+  inline Error& operator=(const Error& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const Error& default_instance();
+
+  void Swap(Error* other);
+
+  // implements Message ----------------------------------------------
+
+  Error* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const Error& from);
+  void MergeFrom(const Error& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required int32 id = 1;
+  inline bool has_id() const;
+  inline void clear_id();
+  static const int kIdFieldNumber = 1;
+  inline ::google::protobuf::int32 id() const;
+  inline void set_id(::google::protobuf::int32 value);
+
+  // required int32 dst_id = 2;
+  inline bool has_dst_id() const;
+  inline void clear_dst_id();
+  static const int kDstIdFieldNumber = 2;
+  inline ::google::protobuf::int32 dst_id() const;
+  inline void set_dst_id(::google::protobuf::int32 value);
+
+  // repeated int32 args = 3;
+  inline int args_size() const;
+  inline void clear_args();
+  static const int kArgsFieldNumber = 3;
+  inline ::google::protobuf::int32 args(int index) const;
+  inline void set_args(int index, ::google::protobuf::int32 value);
+  inline void add_args(::google::protobuf::int32 value);
+  inline const ::google::protobuf::RepeatedField< ::google::protobuf::int32 >&
+      args() const;
+  inline ::google::protobuf::RepeatedField< ::google::protobuf::int32 >*
+      mutable_args();
+
+  // @@protoc_insertion_point(class_scope:network.Error)
+ private:
+  inline void set_has_id();
+  inline void clear_has_id();
+  inline void set_has_dst_id();
+  inline void clear_has_dst_id();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::int32 id_;
+  ::google::protobuf::int32 dst_id_;
+  ::google::protobuf::RepeatedField< ::google::protobuf::int32 > args_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(3 + 31) / 32];
+
+  friend void  protobuf_AddDesc_base_2eproto();
+  friend void protobuf_AssignDesc_base_2eproto();
+  friend void protobuf_ShutdownFile_base_2eproto();
+
+  void InitAsDefaultInstance();
+  static Error* default_instance_;
 };
 // -------------------------------------------------------------------
 
@@ -3543,26 +2526,26 @@ inline void RegisterRequest::set_allocated_email(::std::string* email) {
 
 // -------------------------------------------------------------------
 
-// RegisterReply
+// RegisterResponse
 
 // optional uint32 state = 1;
-inline bool RegisterReply::has_state() const {
+inline bool RegisterResponse::has_state() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
-inline void RegisterReply::set_has_state() {
+inline void RegisterResponse::set_has_state() {
   _has_bits_[0] |= 0x00000001u;
 }
-inline void RegisterReply::clear_has_state() {
+inline void RegisterResponse::clear_has_state() {
   _has_bits_[0] &= ~0x00000001u;
 }
-inline void RegisterReply::clear_state() {
+inline void RegisterResponse::clear_state() {
   state_ = 0u;
   clear_has_state();
 }
-inline ::google::protobuf::uint32 RegisterReply::state() const {
+inline ::google::protobuf::uint32 RegisterResponse::state() const {
   return state_;
 }
-inline void RegisterReply::set_state(::google::protobuf::uint32 value) {
+inline void RegisterResponse::set_state(::google::protobuf::uint32 value) {
   set_has_state();
   state_ = value;
 }
@@ -3713,100 +2696,56 @@ inline void LoginRequest::set_allocated_user_password(::std::string* user_passwo
 
 // -------------------------------------------------------------------
 
-// LoginReply
+// LoginResponse
 
-// optional uint32 serial_num = 1;
-inline bool LoginReply::has_serial_num() const {
+// optional string nickname = 1;
+inline bool LoginResponse::has_nickname() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
-inline void LoginReply::set_has_serial_num() {
+inline void LoginResponse::set_has_nickname() {
   _has_bits_[0] |= 0x00000001u;
 }
-inline void LoginReply::clear_has_serial_num() {
+inline void LoginResponse::clear_has_nickname() {
   _has_bits_[0] &= ~0x00000001u;
 }
-inline void LoginReply::clear_serial_num() {
-  serial_num_ = 0u;
-  clear_has_serial_num();
-}
-inline ::google::protobuf::uint32 LoginReply::serial_num() const {
-  return serial_num_;
-}
-inline void LoginReply::set_serial_num(::google::protobuf::uint32 value) {
-  set_has_serial_num();
-  serial_num_ = value;
-}
-
-// optional uint32 state = 2;
-inline bool LoginReply::has_state() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
-}
-inline void LoginReply::set_has_state() {
-  _has_bits_[0] |= 0x00000002u;
-}
-inline void LoginReply::clear_has_state() {
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline void LoginReply::clear_state() {
-  state_ = 0u;
-  clear_has_state();
-}
-inline ::google::protobuf::uint32 LoginReply::state() const {
-  return state_;
-}
-inline void LoginReply::set_state(::google::protobuf::uint32 value) {
-  set_has_state();
-  state_ = value;
-}
-
-// optional string nickname = 3;
-inline bool LoginReply::has_nickname() const {
-  return (_has_bits_[0] & 0x00000004u) != 0;
-}
-inline void LoginReply::set_has_nickname() {
-  _has_bits_[0] |= 0x00000004u;
-}
-inline void LoginReply::clear_has_nickname() {
-  _has_bits_[0] &= ~0x00000004u;
-}
-inline void LoginReply::clear_nickname() {
+inline void LoginResponse::clear_nickname() {
   if (nickname_ != &::google::protobuf::internal::kEmptyString) {
     nickname_->clear();
   }
   clear_has_nickname();
 }
-inline const ::std::string& LoginReply::nickname() const {
+inline const ::std::string& LoginResponse::nickname() const {
   return *nickname_;
 }
-inline void LoginReply::set_nickname(const ::std::string& value) {
+inline void LoginResponse::set_nickname(const ::std::string& value) {
   set_has_nickname();
   if (nickname_ == &::google::protobuf::internal::kEmptyString) {
     nickname_ = new ::std::string;
   }
   nickname_->assign(value);
 }
-inline void LoginReply::set_nickname(const char* value) {
+inline void LoginResponse::set_nickname(const char* value) {
   set_has_nickname();
   if (nickname_ == &::google::protobuf::internal::kEmptyString) {
     nickname_ = new ::std::string;
   }
   nickname_->assign(value);
 }
-inline void LoginReply::set_nickname(const char* value, size_t size) {
+inline void LoginResponse::set_nickname(const char* value, size_t size) {
   set_has_nickname();
   if (nickname_ == &::google::protobuf::internal::kEmptyString) {
     nickname_ = new ::std::string;
   }
   nickname_->assign(reinterpret_cast<const char*>(value), size);
 }
-inline ::std::string* LoginReply::mutable_nickname() {
+inline ::std::string* LoginResponse::mutable_nickname() {
   set_has_nickname();
   if (nickname_ == &::google::protobuf::internal::kEmptyString) {
     nickname_ = new ::std::string;
   }
   return nickname_;
 }
-inline ::std::string* LoginReply::release_nickname() {
+inline ::std::string* LoginResponse::release_nickname() {
   clear_has_nickname();
   if (nickname_ == &::google::protobuf::internal::kEmptyString) {
     return NULL;
@@ -3816,7 +2755,7 @@ inline ::std::string* LoginReply::release_nickname() {
     return temp;
   }
 }
-inline void LoginReply::set_allocated_nickname(::std::string* nickname) {
+inline void LoginResponse::set_allocated_nickname(::std::string* nickname) {
   if (nickname_ != &::google::protobuf::internal::kEmptyString) {
     delete nickname_;
   }
@@ -3835,134 +2774,134 @@ inline void LoginReply::set_allocated_nickname(::std::string* nickname) {
 
 // -------------------------------------------------------------------
 
-// LogoutReply
+// LogoutResponse
 
 // repeated uint32 args = 1;
-inline int LogoutReply::args_size() const {
+inline int LogoutResponse::args_size() const {
   return args_.size();
 }
-inline void LogoutReply::clear_args() {
+inline void LogoutResponse::clear_args() {
   args_.Clear();
 }
-inline ::google::protobuf::uint32 LogoutReply::args(int index) const {
+inline ::google::protobuf::uint32 LogoutResponse::args(int index) const {
   return args_.Get(index);
 }
-inline void LogoutReply::set_args(int index, ::google::protobuf::uint32 value) {
+inline void LogoutResponse::set_args(int index, ::google::protobuf::uint32 value) {
   args_.Set(index, value);
 }
-inline void LogoutReply::add_args(::google::protobuf::uint32 value) {
+inline void LogoutResponse::add_args(::google::protobuf::uint32 value) {
   args_.Add(value);
 }
 inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
-LogoutReply::args() const {
+LogoutResponse::args() const {
   return args_;
 }
 inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
-LogoutReply::mutable_args() {
+LogoutResponse::mutable_args() {
   return &args_;
 }
 
 // -------------------------------------------------------------------
 
-// GameListRequest
+// RoomListRequest
 
-// required .network.GameType type = 1;
-inline bool GameListRequest::has_type() const {
+// required .network.ROLE_STRATEGY role_strategy = 1;
+inline bool RoomListRequest::has_role_strategy() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
-inline void GameListRequest::set_has_type() {
+inline void RoomListRequest::set_has_role_strategy() {
   _has_bits_[0] |= 0x00000001u;
 }
-inline void GameListRequest::clear_has_type() {
+inline void RoomListRequest::clear_has_role_strategy() {
   _has_bits_[0] &= ~0x00000001u;
 }
-inline void GameListRequest::clear_type() {
-  type_ = 1;
-  clear_has_type();
+inline void RoomListRequest::clear_role_strategy() {
+  role_strategy_ = 1;
+  clear_has_role_strategy();
 }
-inline ::network::GameType GameListRequest::type() const {
-  return static_cast< ::network::GameType >(type_);
+inline ::network::ROLE_STRATEGY RoomListRequest::role_strategy() const {
+  return static_cast< ::network::ROLE_STRATEGY >(role_strategy_);
 }
-inline void GameListRequest::set_type(::network::GameType value) {
-  assert(::network::GameType_IsValid(value));
-  set_has_type();
-  type_ = value;
+inline void RoomListRequest::set_role_strategy(::network::ROLE_STRATEGY value) {
+  assert(::network::ROLE_STRATEGY_IsValid(value));
+  set_has_role_strategy();
+  role_strategy_ = value;
 }
 
 // -------------------------------------------------------------------
 
-// GameListResponse_GameInfo
+// RoomListResponse_RoomInfo
 
-// required int32 room_id = 1;
-inline bool GameListResponse_GameInfo::has_room_id() const {
+// optional int32 room_id = 1;
+inline bool RoomListResponse_RoomInfo::has_room_id() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
-inline void GameListResponse_GameInfo::set_has_room_id() {
+inline void RoomListResponse_RoomInfo::set_has_room_id() {
   _has_bits_[0] |= 0x00000001u;
 }
-inline void GameListResponse_GameInfo::clear_has_room_id() {
+inline void RoomListResponse_RoomInfo::clear_has_room_id() {
   _has_bits_[0] &= ~0x00000001u;
 }
-inline void GameListResponse_GameInfo::clear_room_id() {
+inline void RoomListResponse_RoomInfo::clear_room_id() {
   room_id_ = 0;
   clear_has_room_id();
 }
-inline ::google::protobuf::int32 GameListResponse_GameInfo::room_id() const {
+inline ::google::protobuf::int32 RoomListResponse_RoomInfo::room_id() const {
   return room_id_;
 }
-inline void GameListResponse_GameInfo::set_room_id(::google::protobuf::int32 value) {
+inline void RoomListResponse_RoomInfo::set_room_id(::google::protobuf::int32 value) {
   set_has_room_id();
   room_id_ = value;
 }
 
-// required string room_name = 2;
-inline bool GameListResponse_GameInfo::has_room_name() const {
+// optional string room_name = 2;
+inline bool RoomListResponse_RoomInfo::has_room_name() const {
   return (_has_bits_[0] & 0x00000002u) != 0;
 }
-inline void GameListResponse_GameInfo::set_has_room_name() {
+inline void RoomListResponse_RoomInfo::set_has_room_name() {
   _has_bits_[0] |= 0x00000002u;
 }
-inline void GameListResponse_GameInfo::clear_has_room_name() {
+inline void RoomListResponse_RoomInfo::clear_has_room_name() {
   _has_bits_[0] &= ~0x00000002u;
 }
-inline void GameListResponse_GameInfo::clear_room_name() {
+inline void RoomListResponse_RoomInfo::clear_room_name() {
   if (room_name_ != &::google::protobuf::internal::kEmptyString) {
     room_name_->clear();
   }
   clear_has_room_name();
 }
-inline const ::std::string& GameListResponse_GameInfo::room_name() const {
+inline const ::std::string& RoomListResponse_RoomInfo::room_name() const {
   return *room_name_;
 }
-inline void GameListResponse_GameInfo::set_room_name(const ::std::string& value) {
+inline void RoomListResponse_RoomInfo::set_room_name(const ::std::string& value) {
   set_has_room_name();
   if (room_name_ == &::google::protobuf::internal::kEmptyString) {
     room_name_ = new ::std::string;
   }
   room_name_->assign(value);
 }
-inline void GameListResponse_GameInfo::set_room_name(const char* value) {
+inline void RoomListResponse_RoomInfo::set_room_name(const char* value) {
   set_has_room_name();
   if (room_name_ == &::google::protobuf::internal::kEmptyString) {
     room_name_ = new ::std::string;
   }
   room_name_->assign(value);
 }
-inline void GameListResponse_GameInfo::set_room_name(const char* value, size_t size) {
+inline void RoomListResponse_RoomInfo::set_room_name(const char* value, size_t size) {
   set_has_room_name();
   if (room_name_ == &::google::protobuf::internal::kEmptyString) {
     room_name_ = new ::std::string;
   }
   room_name_->assign(reinterpret_cast<const char*>(value), size);
 }
-inline ::std::string* GameListResponse_GameInfo::mutable_room_name() {
+inline ::std::string* RoomListResponse_RoomInfo::mutable_room_name() {
   set_has_room_name();
   if (room_name_ == &::google::protobuf::internal::kEmptyString) {
     room_name_ = new ::std::string;
   }
   return room_name_;
 }
-inline ::std::string* GameListResponse_GameInfo::release_room_name() {
+inline ::std::string* RoomListResponse_RoomInfo::release_room_name() {
   clear_has_room_name();
   if (room_name_ == &::google::protobuf::internal::kEmptyString) {
     return NULL;
@@ -3972,7 +2911,7 @@ inline ::std::string* GameListResponse_GameInfo::release_room_name() {
     return temp;
   }
 }
-inline void GameListResponse_GameInfo::set_allocated_room_name(::std::string* room_name) {
+inline void RoomListResponse_RoomInfo::set_allocated_room_name(::std::string* room_name) {
   if (room_name_ != &::google::protobuf::internal::kEmptyString) {
     delete room_name_;
   }
@@ -3985,893 +2924,291 @@ inline void GameListResponse_GameInfo::set_allocated_room_name(::std::string* ro
   }
 }
 
-// required int32 max_player = 3;
-inline bool GameListResponse_GameInfo::has_max_player() const {
+// optional int32 max_player = 3;
+inline bool RoomListResponse_RoomInfo::has_max_player() const {
   return (_has_bits_[0] & 0x00000004u) != 0;
 }
-inline void GameListResponse_GameInfo::set_has_max_player() {
+inline void RoomListResponse_RoomInfo::set_has_max_player() {
   _has_bits_[0] |= 0x00000004u;
 }
-inline void GameListResponse_GameInfo::clear_has_max_player() {
+inline void RoomListResponse_RoomInfo::clear_has_max_player() {
   _has_bits_[0] &= ~0x00000004u;
 }
-inline void GameListResponse_GameInfo::clear_max_player() {
+inline void RoomListResponse_RoomInfo::clear_max_player() {
   max_player_ = 0;
   clear_has_max_player();
 }
-inline ::google::protobuf::int32 GameListResponse_GameInfo::max_player() const {
+inline ::google::protobuf::int32 RoomListResponse_RoomInfo::max_player() const {
   return max_player_;
 }
-inline void GameListResponse_GameInfo::set_max_player(::google::protobuf::int32 value) {
+inline void RoomListResponse_RoomInfo::set_max_player(::google::protobuf::int32 value) {
   set_has_max_player();
   max_player_ = value;
 }
 
-// required int32 now_player = 4;
-inline bool GameListResponse_GameInfo::has_now_player() const {
+// optional int32 now_player = 4;
+inline bool RoomListResponse_RoomInfo::has_now_player() const {
   return (_has_bits_[0] & 0x00000008u) != 0;
 }
-inline void GameListResponse_GameInfo::set_has_now_player() {
+inline void RoomListResponse_RoomInfo::set_has_now_player() {
   _has_bits_[0] |= 0x00000008u;
 }
-inline void GameListResponse_GameInfo::clear_has_now_player() {
+inline void RoomListResponse_RoomInfo::clear_has_now_player() {
   _has_bits_[0] &= ~0x00000008u;
 }
-inline void GameListResponse_GameInfo::clear_now_player() {
+inline void RoomListResponse_RoomInfo::clear_now_player() {
   now_player_ = 0;
   clear_has_now_player();
 }
-inline ::google::protobuf::int32 GameListResponse_GameInfo::now_player() const {
+inline ::google::protobuf::int32 RoomListResponse_RoomInfo::now_player() const {
   return now_player_;
 }
-inline void GameListResponse_GameInfo::set_now_player(::google::protobuf::int32 value) {
+inline void RoomListResponse_RoomInfo::set_now_player(::google::protobuf::int32 value) {
   set_has_now_player();
   now_player_ = value;
 }
 
-// required .network.GameType type = 5;
-inline bool GameListResponse_GameInfo::has_type() const {
+// optional .network.ROLE_STRATEGY role_strategy = 5;
+inline bool RoomListResponse_RoomInfo::has_role_strategy() const {
   return (_has_bits_[0] & 0x00000010u) != 0;
 }
-inline void GameListResponse_GameInfo::set_has_type() {
+inline void RoomListResponse_RoomInfo::set_has_role_strategy() {
   _has_bits_[0] |= 0x00000010u;
 }
-inline void GameListResponse_GameInfo::clear_has_type() {
+inline void RoomListResponse_RoomInfo::clear_has_role_strategy() {
   _has_bits_[0] &= ~0x00000010u;
 }
-inline void GameListResponse_GameInfo::clear_type() {
-  type_ = 1;
-  clear_has_type();
+inline void RoomListResponse_RoomInfo::clear_role_strategy() {
+  role_strategy_ = 1;
+  clear_has_role_strategy();
 }
-inline ::network::GameType GameListResponse_GameInfo::type() const {
-  return static_cast< ::network::GameType >(type_);
+inline ::network::ROLE_STRATEGY RoomListResponse_RoomInfo::role_strategy() const {
+  return static_cast< ::network::ROLE_STRATEGY >(role_strategy_);
 }
-inline void GameListResponse_GameInfo::set_type(::network::GameType value) {
-  assert(::network::GameType_IsValid(value));
-  set_has_type();
-  type_ = value;
-}
-
-// -------------------------------------------------------------------
-
-// GameListResponse
-
-// repeated .network.GameListResponse.GameInfo game = 1;
-inline int GameListResponse::game_size() const {
-  return game_.size();
-}
-inline void GameListResponse::clear_game() {
-  game_.Clear();
-}
-inline const ::network::GameListResponse_GameInfo& GameListResponse::game(int index) const {
-  return game_.Get(index);
-}
-inline ::network::GameListResponse_GameInfo* GameListResponse::mutable_game(int index) {
-  return game_.Mutable(index);
-}
-inline ::network::GameListResponse_GameInfo* GameListResponse::add_game() {
-  return game_.Add();
-}
-inline const ::google::protobuf::RepeatedPtrField< ::network::GameListResponse_GameInfo >&
-GameListResponse::game() const {
-  return game_;
-}
-inline ::google::protobuf::RepeatedPtrField< ::network::GameListResponse_GameInfo >*
-GameListResponse::mutable_game() {
-  return &game_;
+inline void RoomListResponse_RoomInfo::set_role_strategy(::network::ROLE_STRATEGY value) {
+  assert(::network::ROLE_STRATEGY_IsValid(value));
+  set_has_role_strategy();
+  role_strategy_ = value;
 }
 
 // -------------------------------------------------------------------
 
-// CreateGameRequest
+// RoomListResponse
 
-// required int32 user_id = 1;
-inline bool CreateGameRequest::has_user_id() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
-}
-inline void CreateGameRequest::set_has_user_id() {
-  _has_bits_[0] |= 0x00000001u;
-}
-inline void CreateGameRequest::clear_has_user_id() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline void CreateGameRequest::clear_user_id() {
-  user_id_ = 0;
-  clear_has_user_id();
-}
-inline ::google::protobuf::int32 CreateGameRequest::user_id() const {
-  return user_id_;
-}
-inline void CreateGameRequest::set_user_id(::google::protobuf::int32 value) {
-  set_has_user_id();
-  user_id_ = value;
-}
-
-// required .network.GameType type = 2;
-inline bool CreateGameRequest::has_type() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
-}
-inline void CreateGameRequest::set_has_type() {
-  _has_bits_[0] |= 0x00000002u;
-}
-inline void CreateGameRequest::clear_has_type() {
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline void CreateGameRequest::clear_type() {
-  type_ = 1;
-  clear_has_type();
-}
-inline ::network::GameType CreateGameRequest::type() const {
-  return static_cast< ::network::GameType >(type_);
-}
-inline void CreateGameRequest::set_type(::network::GameType value) {
-  assert(::network::GameType_IsValid(value));
-  set_has_type();
-  type_ = value;
-}
-
-// required int32 max_player = 3;
-inline bool CreateGameRequest::has_max_player() const {
-  return (_has_bits_[0] & 0x00000004u) != 0;
-}
-inline void CreateGameRequest::set_has_max_player() {
-  _has_bits_[0] |= 0x00000004u;
-}
-inline void CreateGameRequest::clear_has_max_player() {
-  _has_bits_[0] &= ~0x00000004u;
-}
-inline void CreateGameRequest::clear_max_player() {
-  max_player_ = 0;
-  clear_has_max_player();
-}
-inline ::google::protobuf::int32 CreateGameRequest::max_player() const {
-  return max_player_;
-}
-inline void CreateGameRequest::set_max_player(::google::protobuf::int32 value) {
-  set_has_max_player();
-  max_player_ = value;
-}
-
-// -------------------------------------------------------------------
-
-// JoinGameRequest
-
-// required int32 user_id = 1;
-inline bool JoinGameRequest::has_user_id() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
-}
-inline void JoinGameRequest::set_has_user_id() {
-  _has_bits_[0] |= 0x00000001u;
-}
-inline void JoinGameRequest::clear_has_user_id() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline void JoinGameRequest::clear_user_id() {
-  user_id_ = 0;
-  clear_has_user_id();
-}
-inline ::google::protobuf::int32 JoinGameRequest::user_id() const {
-  return user_id_;
-}
-inline void JoinGameRequest::set_user_id(::google::protobuf::int32 value) {
-  set_has_user_id();
-  user_id_ = value;
-}
-
-// required int32 romm_id = 2;
-inline bool JoinGameRequest::has_romm_id() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
-}
-inline void JoinGameRequest::set_has_romm_id() {
-  _has_bits_[0] |= 0x00000002u;
-}
-inline void JoinGameRequest::clear_has_romm_id() {
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline void JoinGameRequest::clear_romm_id() {
-  romm_id_ = 0;
-  clear_has_romm_id();
-}
-inline ::google::protobuf::int32 JoinGameRequest::romm_id() const {
-  return romm_id_;
-}
-inline void JoinGameRequest::set_romm_id(::google::protobuf::int32 value) {
-  set_has_romm_id();
-  romm_id_ = value;
-}
-
-// -------------------------------------------------------------------
-
-// JoinGameResponse
-
-// required int32 user_id = 1;
-inline bool JoinGameResponse::has_user_id() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
-}
-inline void JoinGameResponse::set_has_user_id() {
-  _has_bits_[0] |= 0x00000001u;
-}
-inline void JoinGameResponse::clear_has_user_id() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline void JoinGameResponse::clear_user_id() {
-  user_id_ = 0;
-  clear_has_user_id();
-}
-inline ::google::protobuf::int32 JoinGameResponse::user_id() const {
-  return user_id_;
-}
-inline void JoinGameResponse::set_user_id(::google::protobuf::int32 value) {
-  set_has_user_id();
-  user_id_ = value;
-}
-
-// required int32 romm_id = 2;
-inline bool JoinGameResponse::has_romm_id() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
-}
-inline void JoinGameResponse::set_has_romm_id() {
-  _has_bits_[0] |= 0x00000002u;
-}
-inline void JoinGameResponse::clear_has_romm_id() {
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline void JoinGameResponse::clear_romm_id() {
-  romm_id_ = 0;
-  clear_has_romm_id();
-}
-inline ::google::protobuf::int32 JoinGameResponse::romm_id() const {
-  return romm_id_;
-}
-inline void JoinGameResponse::set_romm_id(::google::protobuf::int32 value) {
-  set_has_romm_id();
-  romm_id_ = value;
-}
-
-// required .network.JoinGameResponse.JoinGameResult result = 3;
-inline bool JoinGameResponse::has_result() const {
-  return (_has_bits_[0] & 0x00000004u) != 0;
-}
-inline void JoinGameResponse::set_has_result() {
-  _has_bits_[0] |= 0x00000004u;
-}
-inline void JoinGameResponse::clear_has_result() {
-  _has_bits_[0] &= ~0x00000004u;
-}
-inline void JoinGameResponse::clear_result() {
-  result_ = 1;
-  clear_has_result();
-}
-inline ::network::JoinGameResponse_JoinGameResult JoinGameResponse::result() const {
-  return static_cast< ::network::JoinGameResponse_JoinGameResult >(result_);
-}
-inline void JoinGameResponse::set_result(::network::JoinGameResponse_JoinGameResult value) {
-  assert(::network::JoinGameResponse_JoinGameResult_IsValid(value));
-  set_has_result();
-  result_ = value;
-}
-
-// -------------------------------------------------------------------
-
-// StartGameRequest
-
-// required int32 user_id = 1;
-inline bool StartGameRequest::has_user_id() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
-}
-inline void StartGameRequest::set_has_user_id() {
-  _has_bits_[0] |= 0x00000001u;
-}
-inline void StartGameRequest::clear_has_user_id() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline void StartGameRequest::clear_user_id() {
-  user_id_ = 0;
-  clear_has_user_id();
-}
-inline ::google::protobuf::int32 StartGameRequest::user_id() const {
-  return user_id_;
-}
-inline void StartGameRequest::set_user_id(::google::protobuf::int32 value) {
-  set_has_user_id();
-  user_id_ = value;
-}
-
-// required int32 romm_id = 2;
-inline bool StartGameRequest::has_romm_id() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
-}
-inline void StartGameRequest::set_has_romm_id() {
-  _has_bits_[0] |= 0x00000002u;
-}
-inline void StartGameRequest::clear_has_romm_id() {
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline void StartGameRequest::clear_romm_id() {
-  romm_id_ = 0;
-  clear_has_romm_id();
-}
-inline ::google::protobuf::int32 StartGameRequest::romm_id() const {
-  return romm_id_;
-}
-inline void StartGameRequest::set_romm_id(::google::protobuf::int32 value) {
-  set_has_romm_id();
-  romm_id_ = value;
-}
-
-// -------------------------------------------------------------------
-
-// StartGameResponse
-
-// required int32 user_id = 1;
-inline bool StartGameResponse::has_user_id() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
-}
-inline void StartGameResponse::set_has_user_id() {
-  _has_bits_[0] |= 0x00000001u;
-}
-inline void StartGameResponse::clear_has_user_id() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline void StartGameResponse::clear_user_id() {
-  user_id_ = 0;
-  clear_has_user_id();
-}
-inline ::google::protobuf::int32 StartGameResponse::user_id() const {
-  return user_id_;
-}
-inline void StartGameResponse::set_user_id(::google::protobuf::int32 value) {
-  set_has_user_id();
-  user_id_ = value;
-}
-
-// required int32 romm_id = 2;
-inline bool StartGameResponse::has_romm_id() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
-}
-inline void StartGameResponse::set_has_romm_id() {
-  _has_bits_[0] |= 0x00000002u;
-}
-inline void StartGameResponse::clear_has_romm_id() {
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline void StartGameResponse::clear_romm_id() {
-  romm_id_ = 0;
-  clear_has_romm_id();
-}
-inline ::google::protobuf::int32 StartGameResponse::romm_id() const {
-  return romm_id_;
-}
-inline void StartGameResponse::set_romm_id(::google::protobuf::int32 value) {
-  set_has_romm_id();
-  romm_id_ = value;
-}
-
-// required .network.StartGameResponse.StartGameResult result = 3;
-inline bool StartGameResponse::has_result() const {
-  return (_has_bits_[0] & 0x00000004u) != 0;
-}
-inline void StartGameResponse::set_has_result() {
-  _has_bits_[0] |= 0x00000004u;
-}
-inline void StartGameResponse::clear_has_result() {
-  _has_bits_[0] &= ~0x00000004u;
-}
-inline void StartGameResponse::clear_result() {
-  result_ = 1;
-  clear_has_result();
-}
-inline ::network::StartGameResponse_StartGameResult StartGameResponse::result() const {
-  return static_cast< ::network::StartGameResponse_StartGameResult >(result_);
-}
-inline void StartGameResponse::set_result(::network::StartGameResponse_StartGameResult value) {
-  assert(::network::StartGameResponse_StartGameResult_IsValid(value));
-  set_has_result();
-  result_ = value;
-}
-
-// -------------------------------------------------------------------
-
-// ReadyForGameRequest
-
-// required int32 user_id = 1;
-inline bool ReadyForGameRequest::has_user_id() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
-}
-inline void ReadyForGameRequest::set_has_user_id() {
-  _has_bits_[0] |= 0x00000001u;
-}
-inline void ReadyForGameRequest::clear_has_user_id() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline void ReadyForGameRequest::clear_user_id() {
-  user_id_ = 0;
-  clear_has_user_id();
-}
-inline ::google::protobuf::int32 ReadyForGameRequest::user_id() const {
-  return user_id_;
-}
-inline void ReadyForGameRequest::set_user_id(::google::protobuf::int32 value) {
-  set_has_user_id();
-  user_id_ = value;
-}
-
-// required int32 romm_id = 2;
-inline bool ReadyForGameRequest::has_romm_id() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
-}
-inline void ReadyForGameRequest::set_has_romm_id() {
-  _has_bits_[0] |= 0x00000002u;
-}
-inline void ReadyForGameRequest::clear_has_romm_id() {
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline void ReadyForGameRequest::clear_romm_id() {
-  romm_id_ = 0;
-  clear_has_romm_id();
-}
-inline ::google::protobuf::int32 ReadyForGameRequest::romm_id() const {
-  return romm_id_;
-}
-inline void ReadyForGameRequest::set_romm_id(::google::protobuf::int32 value) {
-  set_has_romm_id();
-  romm_id_ = value;
-}
-
-// required .network.ReadyForGameRequest.ReadyForGameType result = 3;
-inline bool ReadyForGameRequest::has_result() const {
-  return (_has_bits_[0] & 0x00000004u) != 0;
-}
-inline void ReadyForGameRequest::set_has_result() {
-  _has_bits_[0] |= 0x00000004u;
-}
-inline void ReadyForGameRequest::clear_has_result() {
-  _has_bits_[0] &= ~0x00000004u;
-}
-inline void ReadyForGameRequest::clear_result() {
-  result_ = 1;
-  clear_has_result();
-}
-inline ::network::ReadyForGameRequest_ReadyForGameType ReadyForGameRequest::result() const {
-  return static_cast< ::network::ReadyForGameRequest_ReadyForGameType >(result_);
-}
-inline void ReadyForGameRequest::set_result(::network::ReadyForGameRequest_ReadyForGameType value) {
-  assert(::network::ReadyForGameRequest_ReadyForGameType_IsValid(value));
-  set_has_result();
-  result_ = value;
-}
-
-// -------------------------------------------------------------------
-
-// GameRoomInfo_PlayerInfo
-
-// required int32 user_id = 1;
-inline bool GameRoomInfo_PlayerInfo::has_user_id() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
-}
-inline void GameRoomInfo_PlayerInfo::set_has_user_id() {
-  _has_bits_[0] |= 0x00000001u;
-}
-inline void GameRoomInfo_PlayerInfo::clear_has_user_id() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline void GameRoomInfo_PlayerInfo::clear_user_id() {
-  user_id_ = 0;
-  clear_has_user_id();
-}
-inline ::google::protobuf::int32 GameRoomInfo_PlayerInfo::user_id() const {
-  return user_id_;
-}
-inline void GameRoomInfo_PlayerInfo::set_user_id(::google::protobuf::int32 value) {
-  set_has_user_id();
-  user_id_ = value;
-}
-
-// required string user_name = 2;
-inline bool GameRoomInfo_PlayerInfo::has_user_name() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
-}
-inline void GameRoomInfo_PlayerInfo::set_has_user_name() {
-  _has_bits_[0] |= 0x00000002u;
-}
-inline void GameRoomInfo_PlayerInfo::clear_has_user_name() {
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline void GameRoomInfo_PlayerInfo::clear_user_name() {
-  if (user_name_ != &::google::protobuf::internal::kEmptyString) {
-    user_name_->clear();
-  }
-  clear_has_user_name();
-}
-inline const ::std::string& GameRoomInfo_PlayerInfo::user_name() const {
-  return *user_name_;
-}
-inline void GameRoomInfo_PlayerInfo::set_user_name(const ::std::string& value) {
-  set_has_user_name();
-  if (user_name_ == &::google::protobuf::internal::kEmptyString) {
-    user_name_ = new ::std::string;
-  }
-  user_name_->assign(value);
-}
-inline void GameRoomInfo_PlayerInfo::set_user_name(const char* value) {
-  set_has_user_name();
-  if (user_name_ == &::google::protobuf::internal::kEmptyString) {
-    user_name_ = new ::std::string;
-  }
-  user_name_->assign(value);
-}
-inline void GameRoomInfo_PlayerInfo::set_user_name(const char* value, size_t size) {
-  set_has_user_name();
-  if (user_name_ == &::google::protobuf::internal::kEmptyString) {
-    user_name_ = new ::std::string;
-  }
-  user_name_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* GameRoomInfo_PlayerInfo::mutable_user_name() {
-  set_has_user_name();
-  if (user_name_ == &::google::protobuf::internal::kEmptyString) {
-    user_name_ = new ::std::string;
-  }
-  return user_name_;
-}
-inline ::std::string* GameRoomInfo_PlayerInfo::release_user_name() {
-  clear_has_user_name();
-  if (user_name_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = user_name_;
-    user_name_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void GameRoomInfo_PlayerInfo::set_allocated_user_name(::std::string* user_name) {
-  if (user_name_ != &::google::protobuf::internal::kEmptyString) {
-    delete user_name_;
-  }
-  if (user_name) {
-    set_has_user_name();
-    user_name_ = user_name;
-  } else {
-    clear_has_user_name();
-    user_name_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
-}
-
-// required int32 is_room_owner = 3;
-inline bool GameRoomInfo_PlayerInfo::has_is_room_owner() const {
-  return (_has_bits_[0] & 0x00000004u) != 0;
-}
-inline void GameRoomInfo_PlayerInfo::set_has_is_room_owner() {
-  _has_bits_[0] |= 0x00000004u;
-}
-inline void GameRoomInfo_PlayerInfo::clear_has_is_room_owner() {
-  _has_bits_[0] &= ~0x00000004u;
-}
-inline void GameRoomInfo_PlayerInfo::clear_is_room_owner() {
-  is_room_owner_ = 0;
-  clear_has_is_room_owner();
-}
-inline ::google::protobuf::int32 GameRoomInfo_PlayerInfo::is_room_owner() const {
-  return is_room_owner_;
-}
-inline void GameRoomInfo_PlayerInfo::set_is_room_owner(::google::protobuf::int32 value) {
-  set_has_is_room_owner();
-  is_room_owner_ = value;
-}
-
-// -------------------------------------------------------------------
-
-// GameRoomInfo
-
-// required int32 room_id = 1;
-inline bool GameRoomInfo::has_room_id() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
-}
-inline void GameRoomInfo::set_has_room_id() {
-  _has_bits_[0] |= 0x00000001u;
-}
-inline void GameRoomInfo::clear_has_room_id() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline void GameRoomInfo::clear_room_id() {
-  room_id_ = 0;
-  clear_has_room_id();
-}
-inline ::google::protobuf::int32 GameRoomInfo::room_id() const {
-  return room_id_;
-}
-inline void GameRoomInfo::set_room_id(::google::protobuf::int32 value) {
-  set_has_room_id();
-  room_id_ = value;
-}
-
-// required .network.GameType type = 2;
-inline bool GameRoomInfo::has_type() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
-}
-inline void GameRoomInfo::set_has_type() {
-  _has_bits_[0] |= 0x00000002u;
-}
-inline void GameRoomInfo::clear_has_type() {
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline void GameRoomInfo::clear_type() {
-  type_ = 1;
-  clear_has_type();
-}
-inline ::network::GameType GameRoomInfo::type() const {
-  return static_cast< ::network::GameType >(type_);
-}
-inline void GameRoomInfo::set_type(::network::GameType value) {
-  assert(::network::GameType_IsValid(value));
-  set_has_type();
-  type_ = value;
-}
-
-// repeated .network.GameRoomInfo.PlayerInfo player = 3;
-inline int GameRoomInfo::player_size() const {
-  return player_.size();
-}
-inline void GameRoomInfo::clear_player() {
-  player_.Clear();
-}
-inline const ::network::GameRoomInfo_PlayerInfo& GameRoomInfo::player(int index) const {
-  return player_.Get(index);
-}
-inline ::network::GameRoomInfo_PlayerInfo* GameRoomInfo::mutable_player(int index) {
-  return player_.Mutable(index);
-}
-inline ::network::GameRoomInfo_PlayerInfo* GameRoomInfo::add_player() {
-  return player_.Add();
-}
-inline const ::google::protobuf::RepeatedPtrField< ::network::GameRoomInfo_PlayerInfo >&
-GameRoomInfo::player() const {
-  return player_;
-}
-inline ::google::protobuf::RepeatedPtrField< ::network::GameRoomInfo_PlayerInfo >*
-GameRoomInfo::mutable_player() {
-  return &player_;
-}
-
-// -------------------------------------------------------------------
-
-// EnterRoom
-
-// optional uint32 room_id = 1;
-inline bool EnterRoom::has_room_id() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
-}
-inline void EnterRoom::set_has_room_id() {
-  _has_bits_[0] |= 0x00000001u;
-}
-inline void EnterRoom::clear_has_room_id() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline void EnterRoom::clear_room_id() {
-  room_id_ = 0u;
-  clear_has_room_id();
-}
-inline ::google::protobuf::uint32 EnterRoom::room_id() const {
-  return room_id_;
-}
-inline void EnterRoom::set_room_id(::google::protobuf::uint32 value) {
-  set_has_room_id();
-  room_id_ = value;
-}
-
-// -------------------------------------------------------------------
-
-// SingleRoom_RoomPlayer
-
-// optional uint32 player_id = 1;
-inline bool SingleRoom_RoomPlayer::has_player_id() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
-}
-inline void SingleRoom_RoomPlayer::set_has_player_id() {
-  _has_bits_[0] |= 0x00000001u;
-}
-inline void SingleRoom_RoomPlayer::clear_has_player_id() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline void SingleRoom_RoomPlayer::clear_player_id() {
-  player_id_ = 0u;
-  clear_has_player_id();
-}
-inline ::google::protobuf::uint32 SingleRoom_RoomPlayer::player_id() const {
-  return player_id_;
-}
-inline void SingleRoom_RoomPlayer::set_player_id(::google::protobuf::uint32 value) {
-  set_has_player_id();
-  player_id_ = value;
-}
-
-// optional uint32 player_nickname = 2;
-inline bool SingleRoom_RoomPlayer::has_player_nickname() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
-}
-inline void SingleRoom_RoomPlayer::set_has_player_nickname() {
-  _has_bits_[0] |= 0x00000002u;
-}
-inline void SingleRoom_RoomPlayer::clear_has_player_nickname() {
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline void SingleRoom_RoomPlayer::clear_player_nickname() {
-  player_nickname_ = 0u;
-  clear_has_player_nickname();
-}
-inline ::google::protobuf::uint32 SingleRoom_RoomPlayer::player_nickname() const {
-  return player_nickname_;
-}
-inline void SingleRoom_RoomPlayer::set_player_nickname(::google::protobuf::uint32 value) {
-  set_has_player_nickname();
-  player_nickname_ = value;
-}
-
-// -------------------------------------------------------------------
-
-// SingleRoom
-
-// optional uint32 room_id = 1;
-inline bool SingleRoom::has_room_id() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
-}
-inline void SingleRoom::set_has_room_id() {
-  _has_bits_[0] |= 0x00000001u;
-}
-inline void SingleRoom::clear_has_room_id() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline void SingleRoom::clear_room_id() {
-  room_id_ = 0u;
-  clear_has_room_id();
-}
-inline ::google::protobuf::uint32 SingleRoom::room_id() const {
-  return room_id_;
-}
-inline void SingleRoom::set_room_id(::google::protobuf::uint32 value) {
-  set_has_room_id();
-  room_id_ = value;
-}
-
-// optional uint32 player_id = 3;
-inline bool SingleRoom::has_player_id() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
-}
-inline void SingleRoom::set_has_player_id() {
-  _has_bits_[0] |= 0x00000002u;
-}
-inline void SingleRoom::clear_has_player_id() {
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline void SingleRoom::clear_player_id() {
-  player_id_ = 0u;
-  clear_has_player_id();
-}
-inline ::google::protobuf::uint32 SingleRoom::player_id() const {
-  return player_id_;
-}
-inline void SingleRoom::set_player_id(::google::protobuf::uint32 value) {
-  set_has_player_id();
-  player_id_ = value;
-}
-
-// repeated .network.SingleRoom.RoomPlayer players = 2;
-inline int SingleRoom::players_size() const {
-  return players_.size();
-}
-inline void SingleRoom::clear_players() {
-  players_.Clear();
-}
-inline const ::network::SingleRoom_RoomPlayer& SingleRoom::players(int index) const {
-  return players_.Get(index);
-}
-inline ::network::SingleRoom_RoomPlayer* SingleRoom::mutable_players(int index) {
-  return players_.Mutable(index);
-}
-inline ::network::SingleRoom_RoomPlayer* SingleRoom::add_players() {
-  return players_.Add();
-}
-inline const ::google::protobuf::RepeatedPtrField< ::network::SingleRoom_RoomPlayer >&
-SingleRoom::players() const {
-  return players_;
-}
-inline ::google::protobuf::RepeatedPtrField< ::network::SingleRoom_RoomPlayer >*
-SingleRoom::mutable_players() {
-  return &players_;
-}
-
-// -------------------------------------------------------------------
-
-// Rooms
-
-// repeated .network.SingleRoom rooms = 1;
-inline int Rooms::rooms_size() const {
+// repeated .network.RoomListResponse.RoomInfo rooms = 1;
+inline int RoomListResponse::rooms_size() const {
   return rooms_.size();
 }
-inline void Rooms::clear_rooms() {
+inline void RoomListResponse::clear_rooms() {
   rooms_.Clear();
 }
-inline const ::network::SingleRoom& Rooms::rooms(int index) const {
+inline const ::network::RoomListResponse_RoomInfo& RoomListResponse::rooms(int index) const {
   return rooms_.Get(index);
 }
-inline ::network::SingleRoom* Rooms::mutable_rooms(int index) {
+inline ::network::RoomListResponse_RoomInfo* RoomListResponse::mutable_rooms(int index) {
   return rooms_.Mutable(index);
 }
-inline ::network::SingleRoom* Rooms::add_rooms() {
+inline ::network::RoomListResponse_RoomInfo* RoomListResponse::add_rooms() {
   return rooms_.Add();
 }
-inline const ::google::protobuf::RepeatedPtrField< ::network::SingleRoom >&
-Rooms::rooms() const {
+inline const ::google::protobuf::RepeatedPtrField< ::network::RoomListResponse_RoomInfo >&
+RoomListResponse::rooms() const {
   return rooms_;
 }
-inline ::google::protobuf::RepeatedPtrField< ::network::SingleRoom >*
-Rooms::mutable_rooms() {
+inline ::google::protobuf::RepeatedPtrField< ::network::RoomListResponse_RoomInfo >*
+RoomListResponse::mutable_rooms() {
   return &rooms_;
 }
 
 // -------------------------------------------------------------------
 
-// ReadyToStart
+// CreateRoomRequest
+
+// required .network.ROLE_STRATEGY role_strategy = 1;
+inline bool CreateRoomRequest::has_role_strategy() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void CreateRoomRequest::set_has_role_strategy() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void CreateRoomRequest::clear_has_role_strategy() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void CreateRoomRequest::clear_role_strategy() {
+  role_strategy_ = 1;
+  clear_has_role_strategy();
+}
+inline ::network::ROLE_STRATEGY CreateRoomRequest::role_strategy() const {
+  return static_cast< ::network::ROLE_STRATEGY >(role_strategy_);
+}
+inline void CreateRoomRequest::set_role_strategy(::network::ROLE_STRATEGY value) {
+  assert(::network::ROLE_STRATEGY_IsValid(value));
+  set_has_role_strategy();
+  role_strategy_ = value;
+}
+
+// required int32 max_player = 2;
+inline bool CreateRoomRequest::has_max_player() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void CreateRoomRequest::set_has_max_player() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void CreateRoomRequest::clear_has_max_player() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void CreateRoomRequest::clear_max_player() {
+  max_player_ = 0;
+  clear_has_max_player();
+}
+inline ::google::protobuf::int32 CreateRoomRequest::max_player() const {
+  return max_player_;
+}
+inline void CreateRoomRequest::set_max_player(::google::protobuf::int32 value) {
+  set_has_max_player();
+  max_player_ = value;
+}
 
 // -------------------------------------------------------------------
 
-// StartReply
+// EnterRoomRequest
+
+// required int32 room_id = 1;
+inline bool EnterRoomRequest::has_room_id() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void EnterRoomRequest::set_has_room_id() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void EnterRoomRequest::clear_has_room_id() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void EnterRoomRequest::clear_room_id() {
+  room_id_ = 0;
+  clear_has_room_id();
+}
+inline ::google::protobuf::int32 EnterRoomRequest::room_id() const {
+  return room_id_;
+}
+inline void EnterRoomRequest::set_room_id(::google::protobuf::int32 value) {
+  set_has_room_id();
+  room_id_ = value;
+}
+
+// optional string password = 2;
+inline bool EnterRoomRequest::has_password() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void EnterRoomRequest::set_has_password() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void EnterRoomRequest::clear_has_password() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void EnterRoomRequest::clear_password() {
+  if (password_ != &::google::protobuf::internal::kEmptyString) {
+    password_->clear();
+  }
+  clear_has_password();
+}
+inline const ::std::string& EnterRoomRequest::password() const {
+  return *password_;
+}
+inline void EnterRoomRequest::set_password(const ::std::string& value) {
+  set_has_password();
+  if (password_ == &::google::protobuf::internal::kEmptyString) {
+    password_ = new ::std::string;
+  }
+  password_->assign(value);
+}
+inline void EnterRoomRequest::set_password(const char* value) {
+  set_has_password();
+  if (password_ == &::google::protobuf::internal::kEmptyString) {
+    password_ = new ::std::string;
+  }
+  password_->assign(value);
+}
+inline void EnterRoomRequest::set_password(const char* value, size_t size) {
+  set_has_password();
+  if (password_ == &::google::protobuf::internal::kEmptyString) {
+    password_ = new ::std::string;
+  }
+  password_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* EnterRoomRequest::mutable_password() {
+  set_has_password();
+  if (password_ == &::google::protobuf::internal::kEmptyString) {
+    password_ = new ::std::string;
+  }
+  return password_;
+}
+inline ::std::string* EnterRoomRequest::release_password() {
+  clear_has_password();
+  if (password_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = password_;
+    password_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void EnterRoomRequest::set_allocated_password(::std::string* password) {
+  if (password_ != &::google::protobuf::internal::kEmptyString) {
+    delete password_;
+  }
+  if (password) {
+    set_has_password();
+    password_ = password;
+  } else {
+    clear_has_password();
+    password_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// -------------------------------------------------------------------
+
+// LeaveRoomRequest
+
+// -------------------------------------------------------------------
+
+// ReadyForGameRequest
+
+// required .network.ReadyForGameRequest.Type type = 1;
+inline bool ReadyForGameRequest::has_type() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void ReadyForGameRequest::set_has_type() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void ReadyForGameRequest::clear_has_type() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void ReadyForGameRequest::clear_type() {
+  type_ = 1;
+  clear_has_type();
+}
+inline ::network::ReadyForGameRequest_Type ReadyForGameRequest::type() const {
+  return static_cast< ::network::ReadyForGameRequest_Type >(type_);
+}
+inline void ReadyForGameRequest::set_type(::network::ReadyForGameRequest_Type value) {
+  assert(::network::ReadyForGameRequest_Type_IsValid(value));
+  set_has_type();
+  type_ = value;
+}
 
 // -------------------------------------------------------------------
 
 // SinglePlayerInfo
 
-// optional uint32 seat = 21;
-inline bool SinglePlayerInfo::has_seat() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
-}
-inline void SinglePlayerInfo::set_has_seat() {
-  _has_bits_[0] |= 0x00000001u;
-}
-inline void SinglePlayerInfo::clear_has_seat() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline void SinglePlayerInfo::clear_seat() {
-  seat_ = 0u;
-  clear_has_seat();
-}
-inline ::google::protobuf::uint32 SinglePlayerInfo::seat() const {
-  return seat_;
-}
-inline void SinglePlayerInfo::set_seat(::google::protobuf::uint32 value) {
-  set_has_seat();
-  seat_ = value;
-}
-
 // optional uint32 id = 1;
 inline bool SinglePlayerInfo::has_id() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
+  return (_has_bits_[0] & 0x00000001u) != 0;
 }
 inline void SinglePlayerInfo::set_has_id() {
-  _has_bits_[0] |= 0x00000002u;
+  _has_bits_[0] |= 0x00000001u;
 }
 inline void SinglePlayerInfo::clear_has_id() {
-  _has_bits_[0] &= ~0x00000002u;
+  _has_bits_[0] &= ~0x00000001u;
 }
 inline void SinglePlayerInfo::clear_id() {
   id_ = 0u;
@@ -4887,13 +3224,13 @@ inline void SinglePlayerInfo::set_id(::google::protobuf::uint32 value) {
 
 // optional uint32 team = 2;
 inline bool SinglePlayerInfo::has_team() const {
-  return (_has_bits_[0] & 0x00000004u) != 0;
+  return (_has_bits_[0] & 0x00000002u) != 0;
 }
 inline void SinglePlayerInfo::set_has_team() {
-  _has_bits_[0] |= 0x00000004u;
+  _has_bits_[0] |= 0x00000002u;
 }
 inline void SinglePlayerInfo::clear_has_team() {
-  _has_bits_[0] &= ~0x00000004u;
+  _has_bits_[0] &= ~0x00000002u;
 }
 inline void SinglePlayerInfo::clear_team() {
   team_ = 0u;
@@ -4907,15 +3244,335 @@ inline void SinglePlayerInfo::set_team(::google::protobuf::uint32 value) {
   team_ = value;
 }
 
-// optional string nickname = 20;
-inline bool SinglePlayerInfo::has_nickname() const {
+// optional uint32 role_id = 3;
+inline bool SinglePlayerInfo::has_role_id() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void SinglePlayerInfo::set_has_role_id() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void SinglePlayerInfo::clear_has_role_id() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void SinglePlayerInfo::clear_role_id() {
+  role_id_ = 0u;
+  clear_has_role_id();
+}
+inline ::google::protobuf::uint32 SinglePlayerInfo::role_id() const {
+  return role_id_;
+}
+inline void SinglePlayerInfo::set_role_id(::google::protobuf::uint32 value) {
+  set_has_role_id();
+  role_id_ = value;
+}
+
+// optional uint32 hand_count = 4;
+inline bool SinglePlayerInfo::has_hand_count() const {
   return (_has_bits_[0] & 0x00000008u) != 0;
 }
-inline void SinglePlayerInfo::set_has_nickname() {
+inline void SinglePlayerInfo::set_has_hand_count() {
   _has_bits_[0] |= 0x00000008u;
 }
-inline void SinglePlayerInfo::clear_has_nickname() {
+inline void SinglePlayerInfo::clear_has_hand_count() {
   _has_bits_[0] &= ~0x00000008u;
+}
+inline void SinglePlayerInfo::clear_hand_count() {
+  hand_count_ = 0u;
+  clear_has_hand_count();
+}
+inline ::google::protobuf::uint32 SinglePlayerInfo::hand_count() const {
+  return hand_count_;
+}
+inline void SinglePlayerInfo::set_hand_count(::google::protobuf::uint32 value) {
+  set_has_hand_count();
+  hand_count_ = value;
+}
+
+// optional uint32 heal_count = 5;
+inline bool SinglePlayerInfo::has_heal_count() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void SinglePlayerInfo::set_has_heal_count() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void SinglePlayerInfo::clear_has_heal_count() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void SinglePlayerInfo::clear_heal_count() {
+  heal_count_ = 0u;
+  clear_has_heal_count();
+}
+inline ::google::protobuf::uint32 SinglePlayerInfo::heal_count() const {
+  return heal_count_;
+}
+inline void SinglePlayerInfo::set_heal_count(::google::protobuf::uint32 value) {
+  set_has_heal_count();
+  heal_count_ = value;
+}
+
+// repeated uint32 ex_cards = 6;
+inline int SinglePlayerInfo::ex_cards_size() const {
+  return ex_cards_.size();
+}
+inline void SinglePlayerInfo::clear_ex_cards() {
+  ex_cards_.Clear();
+}
+inline ::google::protobuf::uint32 SinglePlayerInfo::ex_cards(int index) const {
+  return ex_cards_.Get(index);
+}
+inline void SinglePlayerInfo::set_ex_cards(int index, ::google::protobuf::uint32 value) {
+  ex_cards_.Set(index, value);
+}
+inline void SinglePlayerInfo::add_ex_cards(::google::protobuf::uint32 value) {
+  ex_cards_.Add(value);
+}
+inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
+SinglePlayerInfo::ex_cards() const {
+  return ex_cards_;
+}
+inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
+SinglePlayerInfo::mutable_ex_cards() {
+  return &ex_cards_;
+}
+
+// repeated uint32 basic_cards = 7;
+inline int SinglePlayerInfo::basic_cards_size() const {
+  return basic_cards_.size();
+}
+inline void SinglePlayerInfo::clear_basic_cards() {
+  basic_cards_.Clear();
+}
+inline ::google::protobuf::uint32 SinglePlayerInfo::basic_cards(int index) const {
+  return basic_cards_.Get(index);
+}
+inline void SinglePlayerInfo::set_basic_cards(int index, ::google::protobuf::uint32 value) {
+  basic_cards_.Set(index, value);
+}
+inline void SinglePlayerInfo::add_basic_cards(::google::protobuf::uint32 value) {
+  basic_cards_.Add(value);
+}
+inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
+SinglePlayerInfo::basic_cards() const {
+  return basic_cards_;
+}
+inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
+SinglePlayerInfo::mutable_basic_cards() {
+  return &basic_cards_;
+}
+
+// optional uint32 gem = 8;
+inline bool SinglePlayerInfo::has_gem() const {
+  return (_has_bits_[0] & 0x00000080u) != 0;
+}
+inline void SinglePlayerInfo::set_has_gem() {
+  _has_bits_[0] |= 0x00000080u;
+}
+inline void SinglePlayerInfo::clear_has_gem() {
+  _has_bits_[0] &= ~0x00000080u;
+}
+inline void SinglePlayerInfo::clear_gem() {
+  gem_ = 0u;
+  clear_has_gem();
+}
+inline ::google::protobuf::uint32 SinglePlayerInfo::gem() const {
+  return gem_;
+}
+inline void SinglePlayerInfo::set_gem(::google::protobuf::uint32 value) {
+  set_has_gem();
+  gem_ = value;
+}
+
+// optional uint32 crystal = 9;
+inline bool SinglePlayerInfo::has_crystal() const {
+  return (_has_bits_[0] & 0x00000100u) != 0;
+}
+inline void SinglePlayerInfo::set_has_crystal() {
+  _has_bits_[0] |= 0x00000100u;
+}
+inline void SinglePlayerInfo::clear_has_crystal() {
+  _has_bits_[0] &= ~0x00000100u;
+}
+inline void SinglePlayerInfo::clear_crystal() {
+  crystal_ = 0u;
+  clear_has_crystal();
+}
+inline ::google::protobuf::uint32 SinglePlayerInfo::crystal() const {
+  return crystal_;
+}
+inline void SinglePlayerInfo::set_crystal(::google::protobuf::uint32 value) {
+  set_has_crystal();
+  crystal_ = value;
+}
+
+// optional uint32 yellow_token = 10;
+inline bool SinglePlayerInfo::has_yellow_token() const {
+  return (_has_bits_[0] & 0x00000200u) != 0;
+}
+inline void SinglePlayerInfo::set_has_yellow_token() {
+  _has_bits_[0] |= 0x00000200u;
+}
+inline void SinglePlayerInfo::clear_has_yellow_token() {
+  _has_bits_[0] &= ~0x00000200u;
+}
+inline void SinglePlayerInfo::clear_yellow_token() {
+  yellow_token_ = 0u;
+  clear_has_yellow_token();
+}
+inline ::google::protobuf::uint32 SinglePlayerInfo::yellow_token() const {
+  return yellow_token_;
+}
+inline void SinglePlayerInfo::set_yellow_token(::google::protobuf::uint32 value) {
+  set_has_yellow_token();
+  yellow_token_ = value;
+}
+
+// optional uint32 blue_token = 11;
+inline bool SinglePlayerInfo::has_blue_token() const {
+  return (_has_bits_[0] & 0x00000400u) != 0;
+}
+inline void SinglePlayerInfo::set_has_blue_token() {
+  _has_bits_[0] |= 0x00000400u;
+}
+inline void SinglePlayerInfo::clear_has_blue_token() {
+  _has_bits_[0] &= ~0x00000400u;
+}
+inline void SinglePlayerInfo::clear_blue_token() {
+  blue_token_ = 0u;
+  clear_has_blue_token();
+}
+inline ::google::protobuf::uint32 SinglePlayerInfo::blue_token() const {
+  return blue_token_;
+}
+inline void SinglePlayerInfo::set_blue_token(::google::protobuf::uint32 value) {
+  set_has_blue_token();
+  blue_token_ = value;
+}
+
+// optional uint32 covered_count = 12;
+inline bool SinglePlayerInfo::has_covered_count() const {
+  return (_has_bits_[0] & 0x00000800u) != 0;
+}
+inline void SinglePlayerInfo::set_has_covered_count() {
+  _has_bits_[0] |= 0x00000800u;
+}
+inline void SinglePlayerInfo::clear_has_covered_count() {
+  _has_bits_[0] &= ~0x00000800u;
+}
+inline void SinglePlayerInfo::clear_covered_count() {
+  covered_count_ = 0u;
+  clear_has_covered_count();
+}
+inline ::google::protobuf::uint32 SinglePlayerInfo::covered_count() const {
+  return covered_count_;
+}
+inline void SinglePlayerInfo::set_covered_count(::google::protobuf::uint32 value) {
+  set_has_covered_count();
+  covered_count_ = value;
+}
+
+// optional bool is_knelt = 13;
+inline bool SinglePlayerInfo::has_is_knelt() const {
+  return (_has_bits_[0] & 0x00001000u) != 0;
+}
+inline void SinglePlayerInfo::set_has_is_knelt() {
+  _has_bits_[0] |= 0x00001000u;
+}
+inline void SinglePlayerInfo::clear_has_is_knelt() {
+  _has_bits_[0] &= ~0x00001000u;
+}
+inline void SinglePlayerInfo::clear_is_knelt() {
+  is_knelt_ = false;
+  clear_has_is_knelt();
+}
+inline bool SinglePlayerInfo::is_knelt() const {
+  return is_knelt_;
+}
+inline void SinglePlayerInfo::set_is_knelt(bool value) {
+  set_has_is_knelt();
+  is_knelt_ = value;
+}
+
+// repeated uint32 hands = 14;
+inline int SinglePlayerInfo::hands_size() const {
+  return hands_.size();
+}
+inline void SinglePlayerInfo::clear_hands() {
+  hands_.Clear();
+}
+inline ::google::protobuf::uint32 SinglePlayerInfo::hands(int index) const {
+  return hands_.Get(index);
+}
+inline void SinglePlayerInfo::set_hands(int index, ::google::protobuf::uint32 value) {
+  hands_.Set(index, value);
+}
+inline void SinglePlayerInfo::add_hands(::google::protobuf::uint32 value) {
+  hands_.Add(value);
+}
+inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
+SinglePlayerInfo::hands() const {
+  return hands_;
+}
+inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
+SinglePlayerInfo::mutable_hands() {
+  return &hands_;
+}
+
+// repeated uint32 covereds = 15;
+inline int SinglePlayerInfo::covereds_size() const {
+  return covereds_.size();
+}
+inline void SinglePlayerInfo::clear_covereds() {
+  covereds_.Clear();
+}
+inline ::google::protobuf::uint32 SinglePlayerInfo::covereds(int index) const {
+  return covereds_.Get(index);
+}
+inline void SinglePlayerInfo::set_covereds(int index, ::google::protobuf::uint32 value) {
+  covereds_.Set(index, value);
+}
+inline void SinglePlayerInfo::add_covereds(::google::protobuf::uint32 value) {
+  covereds_.Add(value);
+}
+inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
+SinglePlayerInfo::covereds() const {
+  return covereds_;
+}
+inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
+SinglePlayerInfo::mutable_covereds() {
+  return &covereds_;
+}
+
+// optional uint32 max_hand = 16;
+inline bool SinglePlayerInfo::has_max_hand() const {
+  return (_has_bits_[0] & 0x00008000u) != 0;
+}
+inline void SinglePlayerInfo::set_has_max_hand() {
+  _has_bits_[0] |= 0x00008000u;
+}
+inline void SinglePlayerInfo::clear_has_max_hand() {
+  _has_bits_[0] &= ~0x00008000u;
+}
+inline void SinglePlayerInfo::clear_max_hand() {
+  max_hand_ = 0u;
+  clear_has_max_hand();
+}
+inline ::google::protobuf::uint32 SinglePlayerInfo::max_hand() const {
+  return max_hand_;
+}
+inline void SinglePlayerInfo::set_max_hand(::google::protobuf::uint32 value) {
+  set_has_max_hand();
+  max_hand_ = value;
+}
+
+// optional string nickname = 17;
+inline bool SinglePlayerInfo::has_nickname() const {
+  return (_has_bits_[0] & 0x00010000u) != 0;
+}
+inline void SinglePlayerInfo::set_has_nickname() {
+  _has_bits_[0] |= 0x00010000u;
+}
+inline void SinglePlayerInfo::clear_has_nickname() {
+  _has_bits_[0] &= ~0x00010000u;
 }
 inline void SinglePlayerInfo::clear_nickname() {
   if (nickname_ != &::google::protobuf::internal::kEmptyString) {
@@ -4977,327 +3634,29 @@ inline void SinglePlayerInfo::set_allocated_nickname(::std::string* nickname) {
   }
 }
 
-// optional uint32 role_id = 4;
-inline bool SinglePlayerInfo::has_role_id() const {
-  return (_has_bits_[0] & 0x00000010u) != 0;
-}
-inline void SinglePlayerInfo::set_has_role_id() {
-  _has_bits_[0] |= 0x00000010u;
-}
-inline void SinglePlayerInfo::clear_has_role_id() {
-  _has_bits_[0] &= ~0x00000010u;
-}
-inline void SinglePlayerInfo::clear_role_id() {
-  role_id_ = 0u;
-  clear_has_role_id();
-}
-inline ::google::protobuf::uint32 SinglePlayerInfo::role_id() const {
-  return role_id_;
-}
-inline void SinglePlayerInfo::set_role_id(::google::protobuf::uint32 value) {
-  set_has_role_id();
-  role_id_ = value;
-}
-
-// optional uint32 hand_count = 5;
-inline bool SinglePlayerInfo::has_hand_count() const {
-  return (_has_bits_[0] & 0x00000020u) != 0;
-}
-inline void SinglePlayerInfo::set_has_hand_count() {
-  _has_bits_[0] |= 0x00000020u;
-}
-inline void SinglePlayerInfo::clear_has_hand_count() {
-  _has_bits_[0] &= ~0x00000020u;
-}
-inline void SinglePlayerInfo::clear_hand_count() {
-  hand_count_ = 0u;
-  clear_has_hand_count();
-}
-inline ::google::protobuf::uint32 SinglePlayerInfo::hand_count() const {
-  return hand_count_;
-}
-inline void SinglePlayerInfo::set_hand_count(::google::protobuf::uint32 value) {
-  set_has_hand_count();
-  hand_count_ = value;
-}
-
-// optional uint32 heal_count = 6;
-inline bool SinglePlayerInfo::has_heal_count() const {
-  return (_has_bits_[0] & 0x00000040u) != 0;
-}
-inline void SinglePlayerInfo::set_has_heal_count() {
-  _has_bits_[0] |= 0x00000040u;
-}
-inline void SinglePlayerInfo::clear_has_heal_count() {
-  _has_bits_[0] &= ~0x00000040u;
-}
-inline void SinglePlayerInfo::clear_heal_count() {
-  heal_count_ = 0u;
-  clear_has_heal_count();
-}
-inline ::google::protobuf::uint32 SinglePlayerInfo::heal_count() const {
-  return heal_count_;
-}
-inline void SinglePlayerInfo::set_heal_count(::google::protobuf::uint32 value) {
-  set_has_heal_count();
-  heal_count_ = value;
-}
-
-// repeated uint32 ex_cards = 8;
-inline int SinglePlayerInfo::ex_cards_size() const {
-  return ex_cards_.size();
-}
-inline void SinglePlayerInfo::clear_ex_cards() {
-  ex_cards_.Clear();
-}
-inline ::google::protobuf::uint32 SinglePlayerInfo::ex_cards(int index) const {
-  return ex_cards_.Get(index);
-}
-inline void SinglePlayerInfo::set_ex_cards(int index, ::google::protobuf::uint32 value) {
-  ex_cards_.Set(index, value);
-}
-inline void SinglePlayerInfo::add_ex_cards(::google::protobuf::uint32 value) {
-  ex_cards_.Add(value);
-}
-inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
-SinglePlayerInfo::ex_cards() const {
-  return ex_cards_;
-}
-inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
-SinglePlayerInfo::mutable_ex_cards() {
-  return &ex_cards_;
-}
-
-// repeated uint32 basic_cards = 9;
-inline int SinglePlayerInfo::basic_cards_size() const {
-  return basic_cards_.size();
-}
-inline void SinglePlayerInfo::clear_basic_cards() {
-  basic_cards_.Clear();
-}
-inline ::google::protobuf::uint32 SinglePlayerInfo::basic_cards(int index) const {
-  return basic_cards_.Get(index);
-}
-inline void SinglePlayerInfo::set_basic_cards(int index, ::google::protobuf::uint32 value) {
-  basic_cards_.Set(index, value);
-}
-inline void SinglePlayerInfo::add_basic_cards(::google::protobuf::uint32 value) {
-  basic_cards_.Add(value);
-}
-inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
-SinglePlayerInfo::basic_cards() const {
-  return basic_cards_;
-}
-inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
-SinglePlayerInfo::mutable_basic_cards() {
-  return &basic_cards_;
-}
-
-// optional uint32 gem = 10;
-inline bool SinglePlayerInfo::has_gem() const {
-  return (_has_bits_[0] & 0x00000200u) != 0;
-}
-inline void SinglePlayerInfo::set_has_gem() {
-  _has_bits_[0] |= 0x00000200u;
-}
-inline void SinglePlayerInfo::clear_has_gem() {
-  _has_bits_[0] &= ~0x00000200u;
-}
-inline void SinglePlayerInfo::clear_gem() {
-  gem_ = 0u;
-  clear_has_gem();
-}
-inline ::google::protobuf::uint32 SinglePlayerInfo::gem() const {
-  return gem_;
-}
-inline void SinglePlayerInfo::set_gem(::google::protobuf::uint32 value) {
-  set_has_gem();
-  gem_ = value;
-}
-
-// optional uint32 crystal = 11;
-inline bool SinglePlayerInfo::has_crystal() const {
-  return (_has_bits_[0] & 0x00000400u) != 0;
-}
-inline void SinglePlayerInfo::set_has_crystal() {
-  _has_bits_[0] |= 0x00000400u;
-}
-inline void SinglePlayerInfo::clear_has_crystal() {
-  _has_bits_[0] &= ~0x00000400u;
-}
-inline void SinglePlayerInfo::clear_crystal() {
-  crystal_ = 0u;
-  clear_has_crystal();
-}
-inline ::google::protobuf::uint32 SinglePlayerInfo::crystal() const {
-  return crystal_;
-}
-inline void SinglePlayerInfo::set_crystal(::google::protobuf::uint32 value) {
-  set_has_crystal();
-  crystal_ = value;
-}
-
-// optional uint32 yellow_token = 12;
-inline bool SinglePlayerInfo::has_yellow_token() const {
-  return (_has_bits_[0] & 0x00000800u) != 0;
-}
-inline void SinglePlayerInfo::set_has_yellow_token() {
-  _has_bits_[0] |= 0x00000800u;
-}
-inline void SinglePlayerInfo::clear_has_yellow_token() {
-  _has_bits_[0] &= ~0x00000800u;
-}
-inline void SinglePlayerInfo::clear_yellow_token() {
-  yellow_token_ = 0u;
-  clear_has_yellow_token();
-}
-inline ::google::protobuf::uint32 SinglePlayerInfo::yellow_token() const {
-  return yellow_token_;
-}
-inline void SinglePlayerInfo::set_yellow_token(::google::protobuf::uint32 value) {
-  set_has_yellow_token();
-  yellow_token_ = value;
-}
-
-// optional uint32 blue_token = 13;
-inline bool SinglePlayerInfo::has_blue_token() const {
-  return (_has_bits_[0] & 0x00001000u) != 0;
-}
-inline void SinglePlayerInfo::set_has_blue_token() {
-  _has_bits_[0] |= 0x00001000u;
-}
-inline void SinglePlayerInfo::clear_has_blue_token() {
-  _has_bits_[0] &= ~0x00001000u;
-}
-inline void SinglePlayerInfo::clear_blue_token() {
-  blue_token_ = 0u;
-  clear_has_blue_token();
-}
-inline ::google::protobuf::uint32 SinglePlayerInfo::blue_token() const {
-  return blue_token_;
-}
-inline void SinglePlayerInfo::set_blue_token(::google::protobuf::uint32 value) {
-  set_has_blue_token();
-  blue_token_ = value;
-}
-
-// optional uint32 covered_count = 14;
-inline bool SinglePlayerInfo::has_covered_count() const {
-  return (_has_bits_[0] & 0x00002000u) != 0;
-}
-inline void SinglePlayerInfo::set_has_covered_count() {
-  _has_bits_[0] |= 0x00002000u;
-}
-inline void SinglePlayerInfo::clear_has_covered_count() {
-  _has_bits_[0] &= ~0x00002000u;
-}
-inline void SinglePlayerInfo::clear_covered_count() {
-  covered_count_ = 0u;
-  clear_has_covered_count();
-}
-inline ::google::protobuf::uint32 SinglePlayerInfo::covered_count() const {
-  return covered_count_;
-}
-inline void SinglePlayerInfo::set_covered_count(::google::protobuf::uint32 value) {
-  set_has_covered_count();
-  covered_count_ = value;
-}
-
-// optional bool is_knelt = 3;
-inline bool SinglePlayerInfo::has_is_knelt() const {
-  return (_has_bits_[0] & 0x00004000u) != 0;
-}
-inline void SinglePlayerInfo::set_has_is_knelt() {
-  _has_bits_[0] |= 0x00004000u;
-}
-inline void SinglePlayerInfo::clear_has_is_knelt() {
-  _has_bits_[0] &= ~0x00004000u;
-}
-inline void SinglePlayerInfo::clear_is_knelt() {
-  is_knelt_ = false;
-  clear_has_is_knelt();
-}
-inline bool SinglePlayerInfo::is_knelt() const {
-  return is_knelt_;
-}
-inline void SinglePlayerInfo::set_is_knelt(bool value) {
-  set_has_is_knelt();
-  is_knelt_ = value;
-}
-
-// repeated uint32 hands = 15;
-inline int SinglePlayerInfo::hands_size() const {
-  return hands_.size();
-}
-inline void SinglePlayerInfo::clear_hands() {
-  hands_.Clear();
-}
-inline ::google::protobuf::uint32 SinglePlayerInfo::hands(int index) const {
-  return hands_.Get(index);
-}
-inline void SinglePlayerInfo::set_hands(int index, ::google::protobuf::uint32 value) {
-  hands_.Set(index, value);
-}
-inline void SinglePlayerInfo::add_hands(::google::protobuf::uint32 value) {
-  hands_.Add(value);
-}
-inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
-SinglePlayerInfo::hands() const {
-  return hands_;
-}
-inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
-SinglePlayerInfo::mutable_hands() {
-  return &hands_;
-}
-
-// repeated uint32 covereds = 16;
-inline int SinglePlayerInfo::covereds_size() const {
-  return covereds_.size();
-}
-inline void SinglePlayerInfo::clear_covereds() {
-  covereds_.Clear();
-}
-inline ::google::protobuf::uint32 SinglePlayerInfo::covereds(int index) const {
-  return covereds_.Get(index);
-}
-inline void SinglePlayerInfo::set_covereds(int index, ::google::protobuf::uint32 value) {
-  covereds_.Set(index, value);
-}
-inline void SinglePlayerInfo::add_covereds(::google::protobuf::uint32 value) {
-  covereds_.Add(value);
-}
-inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
-SinglePlayerInfo::covereds() const {
-  return covereds_;
-}
-inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
-SinglePlayerInfo::mutable_covereds() {
-  return &covereds_;
-}
-
-// optional uint32 max_hand = 22;
-inline bool SinglePlayerInfo::has_max_hand() const {
+// optional bool ready = 18;
+inline bool SinglePlayerInfo::has_ready() const {
   return (_has_bits_[0] & 0x00020000u) != 0;
 }
-inline void SinglePlayerInfo::set_has_max_hand() {
+inline void SinglePlayerInfo::set_has_ready() {
   _has_bits_[0] |= 0x00020000u;
 }
-inline void SinglePlayerInfo::clear_has_max_hand() {
+inline void SinglePlayerInfo::clear_has_ready() {
   _has_bits_[0] &= ~0x00020000u;
 }
-inline void SinglePlayerInfo::clear_max_hand() {
-  max_hand_ = 0u;
-  clear_has_max_hand();
+inline void SinglePlayerInfo::clear_ready() {
+  ready_ = false;
+  clear_has_ready();
 }
-inline ::google::protobuf::uint32 SinglePlayerInfo::max_hand() const {
-  return max_hand_;
+inline bool SinglePlayerInfo::ready() const {
+  return ready_;
 }
-inline void SinglePlayerInfo::set_max_hand(::google::protobuf::uint32 value) {
-  set_has_max_hand();
-  max_hand_ = value;
+inline void SinglePlayerInfo::set_ready(bool value) {
+  set_has_ready();
+  ready_ = value;
 }
 
-// repeated string delete_field = 30;
+// repeated string delete_field = 19;
 inline int SinglePlayerInfo::delete_field_size() const {
   return delete_field_.size();
 }
@@ -5345,7 +3704,293 @@ SinglePlayerInfo::mutable_delete_field() {
 
 // GameInfo
 
-// repeated .network.SinglePlayerInfo player_infos = 1;
+// optional int32 room_id = 1;
+inline bool GameInfo::has_room_id() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void GameInfo::set_has_room_id() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void GameInfo::clear_has_room_id() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void GameInfo::clear_room_id() {
+  room_id_ = 0;
+  clear_has_room_id();
+}
+inline ::google::protobuf::int32 GameInfo::room_id() const {
+  return room_id_;
+}
+inline void GameInfo::set_room_id(::google::protobuf::int32 value) {
+  set_has_room_id();
+  room_id_ = value;
+}
+
+// optional int32 player_id = 2;
+inline bool GameInfo::has_player_id() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void GameInfo::set_has_player_id() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void GameInfo::clear_has_player_id() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void GameInfo::clear_player_id() {
+  player_id_ = 0;
+  clear_has_player_id();
+}
+inline ::google::protobuf::int32 GameInfo::player_id() const {
+  return player_id_;
+}
+inline void GameInfo::set_player_id(::google::protobuf::int32 value) {
+  set_has_player_id();
+  player_id_ = value;
+}
+
+// optional uint32 red_morale = 3;
+inline bool GameInfo::has_red_morale() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void GameInfo::set_has_red_morale() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void GameInfo::clear_has_red_morale() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void GameInfo::clear_red_morale() {
+  red_morale_ = 0u;
+  clear_has_red_morale();
+}
+inline ::google::protobuf::uint32 GameInfo::red_morale() const {
+  return red_morale_;
+}
+inline void GameInfo::set_red_morale(::google::protobuf::uint32 value) {
+  set_has_red_morale();
+  red_morale_ = value;
+}
+
+// optional uint32 blue_morale = 4;
+inline bool GameInfo::has_blue_morale() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void GameInfo::set_has_blue_morale() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void GameInfo::clear_has_blue_morale() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void GameInfo::clear_blue_morale() {
+  blue_morale_ = 0u;
+  clear_has_blue_morale();
+}
+inline ::google::protobuf::uint32 GameInfo::blue_morale() const {
+  return blue_morale_;
+}
+inline void GameInfo::set_blue_morale(::google::protobuf::uint32 value) {
+  set_has_blue_morale();
+  blue_morale_ = value;
+}
+
+// optional uint32 red_gem = 5;
+inline bool GameInfo::has_red_gem() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void GameInfo::set_has_red_gem() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void GameInfo::clear_has_red_gem() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void GameInfo::clear_red_gem() {
+  red_gem_ = 0u;
+  clear_has_red_gem();
+}
+inline ::google::protobuf::uint32 GameInfo::red_gem() const {
+  return red_gem_;
+}
+inline void GameInfo::set_red_gem(::google::protobuf::uint32 value) {
+  set_has_red_gem();
+  red_gem_ = value;
+}
+
+// optional uint32 blue_gem = 6;
+inline bool GameInfo::has_blue_gem() const {
+  return (_has_bits_[0] & 0x00000020u) != 0;
+}
+inline void GameInfo::set_has_blue_gem() {
+  _has_bits_[0] |= 0x00000020u;
+}
+inline void GameInfo::clear_has_blue_gem() {
+  _has_bits_[0] &= ~0x00000020u;
+}
+inline void GameInfo::clear_blue_gem() {
+  blue_gem_ = 0u;
+  clear_has_blue_gem();
+}
+inline ::google::protobuf::uint32 GameInfo::blue_gem() const {
+  return blue_gem_;
+}
+inline void GameInfo::set_blue_gem(::google::protobuf::uint32 value) {
+  set_has_blue_gem();
+  blue_gem_ = value;
+}
+
+// optional uint32 red_crystal = 7;
+inline bool GameInfo::has_red_crystal() const {
+  return (_has_bits_[0] & 0x00000040u) != 0;
+}
+inline void GameInfo::set_has_red_crystal() {
+  _has_bits_[0] |= 0x00000040u;
+}
+inline void GameInfo::clear_has_red_crystal() {
+  _has_bits_[0] &= ~0x00000040u;
+}
+inline void GameInfo::clear_red_crystal() {
+  red_crystal_ = 0u;
+  clear_has_red_crystal();
+}
+inline ::google::protobuf::uint32 GameInfo::red_crystal() const {
+  return red_crystal_;
+}
+inline void GameInfo::set_red_crystal(::google::protobuf::uint32 value) {
+  set_has_red_crystal();
+  red_crystal_ = value;
+}
+
+// optional uint32 blue_crystal = 8;
+inline bool GameInfo::has_blue_crystal() const {
+  return (_has_bits_[0] & 0x00000080u) != 0;
+}
+inline void GameInfo::set_has_blue_crystal() {
+  _has_bits_[0] |= 0x00000080u;
+}
+inline void GameInfo::clear_has_blue_crystal() {
+  _has_bits_[0] &= ~0x00000080u;
+}
+inline void GameInfo::clear_blue_crystal() {
+  blue_crystal_ = 0u;
+  clear_has_blue_crystal();
+}
+inline ::google::protobuf::uint32 GameInfo::blue_crystal() const {
+  return blue_crystal_;
+}
+inline void GameInfo::set_blue_crystal(::google::protobuf::uint32 value) {
+  set_has_blue_crystal();
+  blue_crystal_ = value;
+}
+
+// optional uint32 red_grail = 9;
+inline bool GameInfo::has_red_grail() const {
+  return (_has_bits_[0] & 0x00000100u) != 0;
+}
+inline void GameInfo::set_has_red_grail() {
+  _has_bits_[0] |= 0x00000100u;
+}
+inline void GameInfo::clear_has_red_grail() {
+  _has_bits_[0] &= ~0x00000100u;
+}
+inline void GameInfo::clear_red_grail() {
+  red_grail_ = 0u;
+  clear_has_red_grail();
+}
+inline ::google::protobuf::uint32 GameInfo::red_grail() const {
+  return red_grail_;
+}
+inline void GameInfo::set_red_grail(::google::protobuf::uint32 value) {
+  set_has_red_grail();
+  red_grail_ = value;
+}
+
+// optional uint32 blue_grail = 10;
+inline bool GameInfo::has_blue_grail() const {
+  return (_has_bits_[0] & 0x00000200u) != 0;
+}
+inline void GameInfo::set_has_blue_grail() {
+  _has_bits_[0] |= 0x00000200u;
+}
+inline void GameInfo::clear_has_blue_grail() {
+  _has_bits_[0] &= ~0x00000200u;
+}
+inline void GameInfo::clear_blue_grail() {
+  blue_grail_ = 0u;
+  clear_has_blue_grail();
+}
+inline ::google::protobuf::uint32 GameInfo::blue_grail() const {
+  return blue_grail_;
+}
+inline void GameInfo::set_blue_grail(::google::protobuf::uint32 value) {
+  set_has_blue_grail();
+  blue_grail_ = value;
+}
+
+// optional uint32 pile = 11;
+inline bool GameInfo::has_pile() const {
+  return (_has_bits_[0] & 0x00000400u) != 0;
+}
+inline void GameInfo::set_has_pile() {
+  _has_bits_[0] |= 0x00000400u;
+}
+inline void GameInfo::clear_has_pile() {
+  _has_bits_[0] &= ~0x00000400u;
+}
+inline void GameInfo::clear_pile() {
+  pile_ = 0u;
+  clear_has_pile();
+}
+inline ::google::protobuf::uint32 GameInfo::pile() const {
+  return pile_;
+}
+inline void GameInfo::set_pile(::google::protobuf::uint32 value) {
+  set_has_pile();
+  pile_ = value;
+}
+
+// optional uint32 discard = 12;
+inline bool GameInfo::has_discard() const {
+  return (_has_bits_[0] & 0x00000800u) != 0;
+}
+inline void GameInfo::set_has_discard() {
+  _has_bits_[0] |= 0x00000800u;
+}
+inline void GameInfo::clear_has_discard() {
+  _has_bits_[0] &= ~0x00000800u;
+}
+inline void GameInfo::clear_discard() {
+  discard_ = 0u;
+  clear_has_discard();
+}
+inline ::google::protobuf::uint32 GameInfo::discard() const {
+  return discard_;
+}
+inline void GameInfo::set_discard(::google::protobuf::uint32 value) {
+  set_has_discard();
+  discard_ = value;
+}
+
+// optional bool is_started = 13 [default = false];
+inline bool GameInfo::has_is_started() const {
+  return (_has_bits_[0] & 0x00001000u) != 0;
+}
+inline void GameInfo::set_has_is_started() {
+  _has_bits_[0] |= 0x00001000u;
+}
+inline void GameInfo::clear_has_is_started() {
+  _has_bits_[0] &= ~0x00001000u;
+}
+inline void GameInfo::clear_is_started() {
+  is_started_ = false;
+  clear_has_is_started();
+}
+inline bool GameInfo::is_started() const {
+  return is_started_;
+}
+inline void GameInfo::set_is_started(bool value) {
+  set_has_is_started();
+  is_started_ = value;
+}
+
+// repeated .network.SinglePlayerInfo player_infos = 14;
 inline int GameInfo::player_infos_size() const {
   return player_infos_.size();
 }
@@ -5368,317 +4013,6 @@ GameInfo::player_infos() const {
 inline ::google::protobuf::RepeatedPtrField< ::network::SinglePlayerInfo >*
 GameInfo::mutable_player_infos() {
   return &player_infos_;
-}
-
-// optional uint32 red_morale = 2;
-inline bool GameInfo::has_red_morale() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
-}
-inline void GameInfo::set_has_red_morale() {
-  _has_bits_[0] |= 0x00000002u;
-}
-inline void GameInfo::clear_has_red_morale() {
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline void GameInfo::clear_red_morale() {
-  red_morale_ = 0u;
-  clear_has_red_morale();
-}
-inline ::google::protobuf::uint32 GameInfo::red_morale() const {
-  return red_morale_;
-}
-inline void GameInfo::set_red_morale(::google::protobuf::uint32 value) {
-  set_has_red_morale();
-  red_morale_ = value;
-}
-
-// optional uint32 blue_morale = 3;
-inline bool GameInfo::has_blue_morale() const {
-  return (_has_bits_[0] & 0x00000004u) != 0;
-}
-inline void GameInfo::set_has_blue_morale() {
-  _has_bits_[0] |= 0x00000004u;
-}
-inline void GameInfo::clear_has_blue_morale() {
-  _has_bits_[0] &= ~0x00000004u;
-}
-inline void GameInfo::clear_blue_morale() {
-  blue_morale_ = 0u;
-  clear_has_blue_morale();
-}
-inline ::google::protobuf::uint32 GameInfo::blue_morale() const {
-  return blue_morale_;
-}
-inline void GameInfo::set_blue_morale(::google::protobuf::uint32 value) {
-  set_has_blue_morale();
-  blue_morale_ = value;
-}
-
-// optional uint32 red_gem = 4;
-inline bool GameInfo::has_red_gem() const {
-  return (_has_bits_[0] & 0x00000008u) != 0;
-}
-inline void GameInfo::set_has_red_gem() {
-  _has_bits_[0] |= 0x00000008u;
-}
-inline void GameInfo::clear_has_red_gem() {
-  _has_bits_[0] &= ~0x00000008u;
-}
-inline void GameInfo::clear_red_gem() {
-  red_gem_ = 0u;
-  clear_has_red_gem();
-}
-inline ::google::protobuf::uint32 GameInfo::red_gem() const {
-  return red_gem_;
-}
-inline void GameInfo::set_red_gem(::google::protobuf::uint32 value) {
-  set_has_red_gem();
-  red_gem_ = value;
-}
-
-// optional uint32 blue_gem = 5;
-inline bool GameInfo::has_blue_gem() const {
-  return (_has_bits_[0] & 0x00000010u) != 0;
-}
-inline void GameInfo::set_has_blue_gem() {
-  _has_bits_[0] |= 0x00000010u;
-}
-inline void GameInfo::clear_has_blue_gem() {
-  _has_bits_[0] &= ~0x00000010u;
-}
-inline void GameInfo::clear_blue_gem() {
-  blue_gem_ = 0u;
-  clear_has_blue_gem();
-}
-inline ::google::protobuf::uint32 GameInfo::blue_gem() const {
-  return blue_gem_;
-}
-inline void GameInfo::set_blue_gem(::google::protobuf::uint32 value) {
-  set_has_blue_gem();
-  blue_gem_ = value;
-}
-
-// optional uint32 red_crystal = 6;
-inline bool GameInfo::has_red_crystal() const {
-  return (_has_bits_[0] & 0x00000020u) != 0;
-}
-inline void GameInfo::set_has_red_crystal() {
-  _has_bits_[0] |= 0x00000020u;
-}
-inline void GameInfo::clear_has_red_crystal() {
-  _has_bits_[0] &= ~0x00000020u;
-}
-inline void GameInfo::clear_red_crystal() {
-  red_crystal_ = 0u;
-  clear_has_red_crystal();
-}
-inline ::google::protobuf::uint32 GameInfo::red_crystal() const {
-  return red_crystal_;
-}
-inline void GameInfo::set_red_crystal(::google::protobuf::uint32 value) {
-  set_has_red_crystal();
-  red_crystal_ = value;
-}
-
-// optional uint32 blue_crystal = 7;
-inline bool GameInfo::has_blue_crystal() const {
-  return (_has_bits_[0] & 0x00000040u) != 0;
-}
-inline void GameInfo::set_has_blue_crystal() {
-  _has_bits_[0] |= 0x00000040u;
-}
-inline void GameInfo::clear_has_blue_crystal() {
-  _has_bits_[0] &= ~0x00000040u;
-}
-inline void GameInfo::clear_blue_crystal() {
-  blue_crystal_ = 0u;
-  clear_has_blue_crystal();
-}
-inline ::google::protobuf::uint32 GameInfo::blue_crystal() const {
-  return blue_crystal_;
-}
-inline void GameInfo::set_blue_crystal(::google::protobuf::uint32 value) {
-  set_has_blue_crystal();
-  blue_crystal_ = value;
-}
-
-// optional uint32 red_grail = 8;
-inline bool GameInfo::has_red_grail() const {
-  return (_has_bits_[0] & 0x00000080u) != 0;
-}
-inline void GameInfo::set_has_red_grail() {
-  _has_bits_[0] |= 0x00000080u;
-}
-inline void GameInfo::clear_has_red_grail() {
-  _has_bits_[0] &= ~0x00000080u;
-}
-inline void GameInfo::clear_red_grail() {
-  red_grail_ = 0u;
-  clear_has_red_grail();
-}
-inline ::google::protobuf::uint32 GameInfo::red_grail() const {
-  return red_grail_;
-}
-inline void GameInfo::set_red_grail(::google::protobuf::uint32 value) {
-  set_has_red_grail();
-  red_grail_ = value;
-}
-
-// optional uint32 blue_grail = 9;
-inline bool GameInfo::has_blue_grail() const {
-  return (_has_bits_[0] & 0x00000100u) != 0;
-}
-inline void GameInfo::set_has_blue_grail() {
-  _has_bits_[0] |= 0x00000100u;
-}
-inline void GameInfo::clear_has_blue_grail() {
-  _has_bits_[0] &= ~0x00000100u;
-}
-inline void GameInfo::clear_blue_grail() {
-  blue_grail_ = 0u;
-  clear_has_blue_grail();
-}
-inline ::google::protobuf::uint32 GameInfo::blue_grail() const {
-  return blue_grail_;
-}
-inline void GameInfo::set_blue_grail(::google::protobuf::uint32 value) {
-  set_has_blue_grail();
-  blue_grail_ = value;
-}
-
-// optional uint32 pile = 10;
-inline bool GameInfo::has_pile() const {
-  return (_has_bits_[0] & 0x00000200u) != 0;
-}
-inline void GameInfo::set_has_pile() {
-  _has_bits_[0] |= 0x00000200u;
-}
-inline void GameInfo::clear_has_pile() {
-  _has_bits_[0] &= ~0x00000200u;
-}
-inline void GameInfo::clear_pile() {
-  pile_ = 0u;
-  clear_has_pile();
-}
-inline ::google::protobuf::uint32 GameInfo::pile() const {
-  return pile_;
-}
-inline void GameInfo::set_pile(::google::protobuf::uint32 value) {
-  set_has_pile();
-  pile_ = value;
-}
-
-// optional uint32 discard = 11;
-inline bool GameInfo::has_discard() const {
-  return (_has_bits_[0] & 0x00000400u) != 0;
-}
-inline void GameInfo::set_has_discard() {
-  _has_bits_[0] |= 0x00000400u;
-}
-inline void GameInfo::clear_has_discard() {
-  _has_bits_[0] &= ~0x00000400u;
-}
-inline void GameInfo::clear_discard() {
-  discard_ = 0u;
-  clear_has_discard();
-}
-inline ::google::protobuf::uint32 GameInfo::discard() const {
-  return discard_;
-}
-inline void GameInfo::set_discard(::google::protobuf::uint32 value) {
-  set_has_discard();
-  discard_ = value;
-}
-
-// repeated uint32 show_cards = 12;
-inline int GameInfo::show_cards_size() const {
-  return show_cards_.size();
-}
-inline void GameInfo::clear_show_cards() {
-  show_cards_.Clear();
-}
-inline ::google::protobuf::uint32 GameInfo::show_cards(int index) const {
-  return show_cards_.Get(index);
-}
-inline void GameInfo::set_show_cards(int index, ::google::protobuf::uint32 value) {
-  show_cards_.Set(index, value);
-}
-inline void GameInfo::add_show_cards(::google::protobuf::uint32 value) {
-  show_cards_.Add(value);
-}
-inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
-GameInfo::show_cards() const {
-  return show_cards_;
-}
-inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
-GameInfo::mutable_show_cards() {
-  return &show_cards_;
-}
-
-// optional uint32 show_from = 13;
-inline bool GameInfo::has_show_from() const {
-  return (_has_bits_[0] & 0x00001000u) != 0;
-}
-inline void GameInfo::set_has_show_from() {
-  _has_bits_[0] |= 0x00001000u;
-}
-inline void GameInfo::clear_has_show_from() {
-  _has_bits_[0] &= ~0x00001000u;
-}
-inline void GameInfo::clear_show_from() {
-  show_from_ = 0u;
-  clear_has_show_from();
-}
-inline ::google::protobuf::uint32 GameInfo::show_from() const {
-  return show_from_;
-}
-inline void GameInfo::set_show_from(::google::protobuf::uint32 value) {
-  set_has_show_from();
-  show_from_ = value;
-}
-
-// repeated string delete_field = 15;
-inline int GameInfo::delete_field_size() const {
-  return delete_field_.size();
-}
-inline void GameInfo::clear_delete_field() {
-  delete_field_.Clear();
-}
-inline const ::std::string& GameInfo::delete_field(int index) const {
-  return delete_field_.Get(index);
-}
-inline ::std::string* GameInfo::mutable_delete_field(int index) {
-  return delete_field_.Mutable(index);
-}
-inline void GameInfo::set_delete_field(int index, const ::std::string& value) {
-  delete_field_.Mutable(index)->assign(value);
-}
-inline void GameInfo::set_delete_field(int index, const char* value) {
-  delete_field_.Mutable(index)->assign(value);
-}
-inline void GameInfo::set_delete_field(int index, const char* value, size_t size) {
-  delete_field_.Mutable(index)->assign(
-    reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* GameInfo::add_delete_field() {
-  return delete_field_.Add();
-}
-inline void GameInfo::add_delete_field(const ::std::string& value) {
-  delete_field_.Add()->assign(value);
-}
-inline void GameInfo::add_delete_field(const char* value) {
-  delete_field_.Add()->assign(value);
-}
-inline void GameInfo::add_delete_field(const char* value, size_t size) {
-  delete_field_.Add()->assign(reinterpret_cast<const char*>(value), size);
-}
-inline const ::google::protobuf::RepeatedPtrField< ::std::string>&
-GameInfo::delete_field() const {
-  return delete_field_;
-}
-inline ::google::protobuf::RepeatedPtrField< ::std::string>*
-GameInfo::mutable_delete_field() {
-  return &delete_field_;
 }
 
 // -------------------------------------------------------------------
@@ -5753,6 +4087,79 @@ inline void Talk::set_allocated_txt(::std::string* txt) {
     clear_has_txt();
     txt_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   }
+}
+
+// -------------------------------------------------------------------
+
+// Error
+
+// required int32 id = 1;
+inline bool Error::has_id() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void Error::set_has_id() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void Error::clear_has_id() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void Error::clear_id() {
+  id_ = 0;
+  clear_has_id();
+}
+inline ::google::protobuf::int32 Error::id() const {
+  return id_;
+}
+inline void Error::set_id(::google::protobuf::int32 value) {
+  set_has_id();
+  id_ = value;
+}
+
+// required int32 dst_id = 2;
+inline bool Error::has_dst_id() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void Error::set_has_dst_id() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void Error::clear_has_dst_id() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void Error::clear_dst_id() {
+  dst_id_ = 0;
+  clear_has_dst_id();
+}
+inline ::google::protobuf::int32 Error::dst_id() const {
+  return dst_id_;
+}
+inline void Error::set_dst_id(::google::protobuf::int32 value) {
+  set_has_dst_id();
+  dst_id_ = value;
+}
+
+// repeated int32 args = 3;
+inline int Error::args_size() const {
+  return args_.size();
+}
+inline void Error::clear_args() {
+  args_.Clear();
+}
+inline ::google::protobuf::int32 Error::args(int index) const {
+  return args_.Get(index);
+}
+inline void Error::set_args(int index, ::google::protobuf::int32 value) {
+  args_.Set(index, value);
+}
+inline void Error::add_args(::google::protobuf::int32 value) {
+  args_.Add(value);
+}
+inline const ::google::protobuf::RepeatedField< ::google::protobuf::int32 >&
+Error::args() const {
+  return args_;
+}
+inline ::google::protobuf::RepeatedField< ::google::protobuf::int32 >*
+Error::mutable_args() {
+  return &args_;
 }
 
 // -------------------------------------------------------------------
@@ -5884,24 +4291,12 @@ namespace google {
 namespace protobuf {
 
 template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::network::JoinGameResponse_JoinGameResult>() {
-  return ::network::JoinGameResponse_JoinGameResult_descriptor();
-}
-template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::network::StartGameResponse_StartGameResult>() {
-  return ::network::StartGameResponse_StartGameResult_descriptor();
-}
-template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::network::ReadyForGameRequest_ReadyForGameType>() {
-  return ::network::ReadyForGameRequest_ReadyForGameType_descriptor();
+inline const EnumDescriptor* GetEnumDescriptor< ::network::ReadyForGameRequest_Type>() {
+  return ::network::ReadyForGameRequest_Type_descriptor();
 }
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::network::MessageType>() {
   return ::network::MessageType_descriptor();
-}
-template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::network::GameType>() {
-  return ::network::GameType_descriptor();
 }
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::network::GossipType>() {

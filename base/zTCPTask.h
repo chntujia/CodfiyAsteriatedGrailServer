@@ -78,10 +78,6 @@ public:
 		return true;
 	}
 
-	bool SendCmd(string msg)
-	{
-		return SendCmd(msg.c_str(), msg.size());
-	}
 protected:
 	 zSocket2  *m_pSocket;
 	 TaskState m_state;

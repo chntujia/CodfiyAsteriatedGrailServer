@@ -12,6 +12,7 @@
 #include "codec.h"
 using namespace std;
 
+#define GUEST 9
 
 
 class GrailState;
@@ -113,10 +114,13 @@ public:
 class GameGrail : public Game
 {
 public:
+	bool playing;
+	bool processing;
 	int m_roleStrategy;
 	int m_seatMode;
 	int m_maxAttempts;
-	GameInfo game_info;
+	int m_firstPlayerID;
+	GameInfo room_info;
 protected:
 	int m_roundId;
 	int m_maxPlayers;
@@ -124,12 +128,13 @@ protected:
 	int m_responseTime;
 	int m_actionTime;
 	int m_currentPlayerID;
+	
 	time_t m_roundEndTime;
 	boost::mutex m_mutex_for_wait;
 	boost::mutex m_mutex_for_notify;
 	boost::condition_variable m_condition_for_wait;	
-	typedef map< int, GameGrailPlayerContext* > PlayerContextList;
 	PlayerContextList m_playerContexts;
+	list< string > m_guestList;
 	typedef map< int, PlayerEntity* > PlayerEntityList;
     PlayerEntityList m_playerEntities;
 	typedef stack< GrailState* > StateStack;
@@ -141,9 +146,8 @@ public:
 	GameGrail(GameGrailConfig *config);
 	~GameGrail();
 	void sendMessage(int id, uint16_t proto_type, google::protobuf::Message& proto);
-
-	int playerEnterIntoTable(GameGrailPlayerContext *player);
-	bool isCanSitIntoTable() const { return m_playerContexts.size() < m_maxPlayers; }	
+	void sendMessageExcept(int id, uint16_t proto_type, google::protobuf::Message& proto);
+	int playerEnterIntoTable(string userId, int& playerId);
 
 	GrailState* topGameState() { return m_states.empty()? NULL: m_states.top(); }
 	void pushGameState(GrailState* state) { m_states.push(state); }
@@ -172,6 +176,23 @@ public:
 			m_ready[id] = 0;
 		}
 	}	
+	void setStartReady(int id, bool ready){
+		if(id<-1 || id>m_maxPlayers){
+			return;
+		}
+		m_playerContexts[id]->setReady(ready);
+	}
+	bool isAllStartReady(){
+		if(m_playerContexts.size() < m_maxPlayers){
+			return false;
+		}
+		for(int i = 0; i < m_maxPlayers; i++){
+			if(!m_playerContexts[i]->isReady())
+				return false;
+		}
+		return true;
+	}
+	bool isReady(int id);
 	bool waitForOne(int id, uint16_t proto_type, google::protobuf::Message& proto, int timeout, bool resetReady = true);
 	bool waitForOne(int id, uint16_t proto_type, google::protobuf::Message& proto, bool toResetReady = true) { return waitForOne(id, proto_type, proto, m_responseTime, toResetReady); }
 	bool waitForAll(uint16_t proto_type, void** proto_ptrs, int timeout, bool toResetReady = true);
@@ -207,24 +228,11 @@ public:
 	int setStateTimeline3(int dstID, HARM harm);
 	int setStateTimeline6(int dstID, HARM harm); //added by Tony
 	int setStateStartLoseMorale(int howMany, int dstID, HARM harm);
+    int setStateRoleStrategy();
+	int setStateCurrentPlayer(int playerID);
 	int setStateCheckTurnEnd();
+
 	Deck* initRoles();
-	void setRole(int playerID, int roleID){
-		if(playerID < 0 || playerID >= m_maxPlayers){
-			throw GE_INVALID_PLAYERID;
-		}
-		if(!isValidRoleID(roleID)){
-			throw GE_INVALID_ROLEID;
-		}
-		SinglePlayerInfo* player_it;
-		for(int i = 0; i < m_maxPlayers; i++){
-			player_it = (SinglePlayerInfo*)&(game_info.player_infos(i));
-			if(player_it->id() == playerID){
-				player_it->set_role_id(roleID);
-				break;
-			}
-		}
-	}
 	PlayerEntity* createRole(int playerID, int roleID, int color);
 	void initPlayerEntities();
 	void initDecks(){
@@ -233,10 +241,13 @@ public:
 		pile->randomize();
 		discard = new Deck(CARDSUM);
 	}
-	int setStateRoleStrategy();
-	int setStateCurrentPlayer(int playerID);
-protected:
-	bool isReady(int id);	
+	
+	void onPlayerEnter(int playerID);
+	void onGuestEnter(string userID);
+	void onUserLeave(string userID);
+	void toProto(GameInfo& game_info);
+	bool isTableFull() { return m_playerContexts.size() >= m_maxPlayers; }	
+protected:	
 	void GameRun();
 	void kickOffNotConnectedPlayers();
 	void updateTableStatusMessage();

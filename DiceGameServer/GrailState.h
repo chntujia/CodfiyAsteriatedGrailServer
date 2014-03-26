@@ -139,20 +139,23 @@ public:
 	int step;
 	int iterator;
 	GrailState(int s): state(s), step(STEP_INIT), iterator(0) {}
+	virtual ~GrailState() {}
 	void moveIterator(int ret) {
 		if(GE_SUCCESS == ret || STEP_DONE == step){
 			iterator++;
 			step = STEP_INIT;
 		}
 	}
-	virtual int handle(GameGrail* engine) { return GE_EMPTY_HANDLE; }	
+	virtual int handle(GameGrail* engine) = 0;	
 };
 
 class StateWaitForEnter : public GrailState
 {
 public:
-	StateWaitForEnter(): GrailState(STATE_WAIT_FOR_ENTER){}
+	StateWaitForEnter(): GrailState(STATE_WAIT_FOR_ENTER), isSet(false){}
 	int handle(GameGrail* engine);
+private:
+	bool isSet;
 };
 
 class StateSeatArrange : public GrailState
@@ -175,7 +178,8 @@ public:
 class StateRoleStrategy31 : public GrailState
 {
 public:
-	StateRoleStrategy31(): GrailState(STATE_ROLE_STRATEGY_31), isSet(false){}
+	StateRoleStrategy31(): GrailState(STATE_ROLE_STRATEGY_31), isSet(false){ memset(messages, 0, sizeof(messages)); }
+	~StateRoleStrategy31() { for(int i = 0; i < MAXPLAYER; i++) SAFE_DELETE(messages[i]);}
 	int handle(GameGrail* engine);
 private:
 	bool isSet;

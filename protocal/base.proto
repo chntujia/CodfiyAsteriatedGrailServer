@@ -1,31 +1,26 @@
 package network;
-
+import "action_respond.proto";
 enum MessageType {
-    MSG_LOGIN_REQ = 1;
-    MSG_LOGIN_REP = 2;
-    MSG_READY = 3;
-    MSG_START_REP = 4;
-    MSG_SINGLE_PLAYER = 5;
-    MSG_GAME = 6;
-    MSG_TALK = 7;
-    MSG_GOSSIP = 8;
-	MSG_ENTER_ROOM = 9;
-	MSG_SINGLE_ROOM = 10;
-	MSG_ROOMS = 11;
-	MSG_LOGOUT_REQ = 12;
-	MSG_LOGOUT_REP = 13;
-	MSG_REGISTER_REQ = 14;
-	MSG_REGISTER_REP = 15;
+    MSG_REGISTER_REQ = 1;
+	MSG_REGISTER_REP = 2;
+    MSG_LOGIN_REQ = 3;
+    MSG_LOGIN_REP = 4;
+	MSG_LOGOUT_REQ = 5;
+	MSG_LOGOUT_REP = 6;
+	
+	MSG_ROOMLIST_REQ = 7;
+	MSG_ROOMLIST_REP = 8;
+	MSG_CREATE_ROOM_REQ = 9;
+	MSG_ENTER_ROOM_REQ = 10;
+	MSG_ENTER_ROOM_REP = 11;
+	MSG_LEAVE_ROOM_REQ = 12;
+	MSG_READY_GAME_REQ = 13;
 
-	MSG_GAMELIST_REQ = 16;
-	MSG_GAMELIST_REP = 17;
-	MSG_CREATE_GAME_REQ = 18;
-	MSG_JOIN_GAME_REQ = 19;
-	MSG_JOIN_GMAE_REP = 20;
-	MSG_START_GAME_REQ = 21;
-	MSG_START_GAME_REP = 22;
-	MSG_READY_GAME_REQ = 23;
-	MSG_GAME_INFO_REP = 24;
+    MSG_SINGLE_PLAYER = 14;
+    MSG_GAME = 15;
+    MSG_TALK = 16;
+    MSG_GOSSIP = 17;
+	MSG_ERROR = 18;	
 }
 
 // c -> s 注册请求
@@ -38,7 +33,7 @@ message RegisterRequest {
 }
 
 // s -> c 注册响应
-message RegisterReply {
+message RegisterResponse {
 	optional uint32 state = 1;
 }
 
@@ -49,10 +44,8 @@ message LoginRequest {
 }
 
 // s -> c 登陆响应
-message LoginReply {
-    optional uint32 serial_num = 1;  // 个人id
-	optional uint32 state = 2;
-	optional string nickname = 3;
+message LoginResponse {
+	optional string nickname = 1;
 }
 
 // c -> s 登出请求
@@ -60,177 +53,99 @@ message LogoutRequest {
 }
 
 // s -> c 登出响应
-message LogoutReply {
+message LogoutResponse {
 	repeated uint32 args = 1;
 }
 
-// 游戏类型
-enum GameType {
-	GAME_TYPE_ALL = 1;
-	GAME_TYPE_THREE_ONE = 2;		// 31模式
-	GAME_TYPE_BP = 3;
-	GAME_TYPE_CP = 4;
-}
-
 // c -> s 获取游戏列表
-message GameListRequest {
-	required GameType type = 1;
+message RoomListRequest {
+	required ROLE_STRATEGY role_strategy = 1;
 }
 
 // s -> c 游戏列表
-message GameListResponse {
-	message GameInfo{
-		required int32 room_id = 1;
-		required string room_name = 2;
-		required int32 max_player = 3;
-		required int32 now_player = 4;
-		required GameType type = 5;
+message RoomListResponse {
+	message RoomInfo{
+		optional int32 room_id = 1;
+		optional string room_name = 2;
+		optional int32 max_player = 3;
+		optional int32 now_player = 4;
+		optional ROLE_STRATEGY role_strategy = 5;
 	}
-	repeated GameInfo game = 1;
+	repeated RoomInfo rooms = 1;
 }
 
 // c -> s 创建房间
-message CreateGameRequest {
-	required int32 user_id = 1;
-	required GameType type = 2;
-	required int32 max_player = 3;
+message CreateRoomRequest {
+	required ROLE_STRATEGY role_strategy = 1;
+	required int32 max_player = 2;
 }
 
 // c -> s 加入房间
-message JoinGameRequest {
-	required int32 user_id = 1;
-	required int32 romm_id = 2;
+message EnterRoomRequest {
+	required int32 room_id = 1;
+	optional string password = 2;
 }
 
-// s -> c 加入房间返回
-message JoinGameResponse {
-	required int32 user_id = 1;
-	required int32 romm_id = 2;
-	enum JoinGameResult {
-		JOIN_GAME_SUCCESS = 1;
-		JOIN_GMAE_FULL = 2;
-	}
-	required JoinGameResult result = 3;
-}
-
-// c -> s 开始游戏请求
-message StartGameRequest {
-	required int32 user_id = 1;
-	required int32 romm_id = 2;
-}
-
-// s -> c 开始游戏返回
-message StartGameResponse {
-	required int32 user_id = 1;
-	required int32 romm_id = 2;
-	enum StartGameResult {
-		JOIN_GAME_SUCCESS = 1;
-		JOIN_GMAE_FAIL = 2;
-	}
-	required StartGameResult result = 3;
+message LeaveRoomRequest {
 }
 
 // c -> s 游戏准备、取消准备
 message ReadyForGameRequest {
-	required int32 user_id = 1;
-	required int32 romm_id = 2;
-	enum ReadyForGameType {
-		READY_FOR_GMAE = 1;
-		CANCEL_REDAY_FOR_GAME = 2;
+	enum Type {
+		START_READY = 1;
+		CANCEL_START_REDAY = 2;
+		SEAT_READY = 3;
 	}
-	required ReadyForGameType result = 3;
+	required Type type = 1;
 }
-
-// s -> c 游戏房间信息
-message GameRoomInfo {
-	required int32 room_id = 1;
-	required GameType type = 2;
-	message PlayerInfo {
-		required int32 user_id = 1;
-		required string user_name = 2;
-		required int32 is_room_owner = 3;
-	}
-	repeated PlayerInfo player = 3;
-}
-
-// c -> s 创建房间
-message EnterRoom {
-	optional uint32 room_id = 1; // 房间号
-}
-
-// s -> c 房间信息
-message SingleRoom {
-	optional uint32 room_id = 1;
-	optional uint32 player_id = 3;       // 玩家在该房间中的编号，如果玩家不在的房间则不填
-
-	message RoomPlayer {
-		optional uint32 player_id = 1;
-		optional uint32 player_nickname = 2;
-	}
-	repeated RoomPlayer players = 2;
-}
-
-// s -> c 所有房间信息
-message Rooms {
-	repeated SingleRoom rooms = 1;
-}
-
-// s -> c 房间满员
-message ReadyToStart {
-}
-
-// c -> s 开始信息
-message StartReply {
-}
-
 
 // s -> c 单个玩家的所有信息，不需要更新的信息可以不填写，为节省数据包大小，repeated数据编号请尽量使用16以内数字
 message SinglePlayerInfo {
-	optional uint32 seat = 21;     // 座次
     optional uint32 id = 1;        // 编号
     optional uint32 team = 2;      // 0：蓝队，1：红队，（2：红队first_player，可以不使用）
-    optional string nickname = 20; // 昵称，仅在首次发送时使用
-    optional uint32 role_id = 4;   // 角色
+    optional uint32 role_id = 3;   // 角色
     
-    optional uint32 hand_count = 5;     // 手牌数
-    optional uint32 heal_count = 6;     // 治疗数
+    optional uint32 hand_count = 4;     // 手牌数
+    optional uint32 heal_count = 5;     // 治疗数
     
-    repeated uint32 ex_cards = 8;      // 其他角色赋予的专属牌序号（及状态）
-    repeated uint32 basic_cards = 9;       // 放置在面前的基础效果卡牌id
+    repeated uint32 ex_cards = 6;      // 其他角色赋予的专属牌序号（及状态）
+    repeated uint32 basic_cards = 7;       // 放置在面前的基础效果卡牌id
     
-    optional uint32 gem = 10;           // 宝石数量
-    optional uint32 crystal = 11;       // 水晶数量
-    optional uint32 yellow_token = 12; // 黄色指示物
-    optional uint32 blue_token = 13;   // 蓝色指示物
-    optional uint32 covered_count = 14; // 盖牌数量，暂不支持多种盖牌
+    optional uint32 gem = 8;           // 宝石数量
+    optional uint32 crystal = 9;       // 水晶数量
+    optional uint32 yellow_token = 10; // 黄色指示物
+    optional uint32 blue_token = 11;   // 蓝色指示物
+    optional uint32 covered_count = 12; // 盖牌数量，暂不支持多种盖牌
     
-    optional bool is_knelt = 3;   // 是否横置
+    optional bool is_knelt = 13;   // 是否横置
     
-    repeated uint32 hands = 15;    // 手牌card_id组成，仅在发送给本人时使用
-    repeated uint32 covereds = 16; // 盖牌card_id组合，仅在发送给本人时使用
+    repeated uint32 hands = 14;    // 手牌card_id组成，仅在发送给本人时使用
+    repeated uint32 covereds = 15; // 盖牌card_id组合，仅在发送给本人时使用
 
-	optional uint32 max_hand = 22;        // 最大手牌数变更
+	optional uint32 max_hand = 16;        // 最大手牌数变更
 
-	repeated string delete_field = 30;  // 删除某个域，用于清空数组
+	
+    optional string nickname = 17; // 昵称
+	optional bool ready = 18;
+	repeated string delete_field = 19;  // 删除某个域，用于清空数组
 }
 
 // s -> c 局信息
 message GameInfo {
-    repeated SinglePlayerInfo player_infos = 1;
-    optional uint32 red_morale = 2;
-    optional uint32 blue_morale = 3;
-    optional uint32 red_gem = 4;     // 红队宝石数量
-    optional uint32 blue_gem = 5;    // 蓝队宝石数量
-    optional uint32 red_crystal = 6; // 红队水晶数量
-    optional uint32 blue_crystal = 7;// 蓝队水晶数量
-    optional uint32 red_grail = 8;   // 红队星杯数
-    optional uint32 blue_grail = 9;  // 蓝队星杯数 
-	optional uint32 pile = 10;       // 牌堆
-	optional uint32 discard = 11;    // 弃牌区
-	repeated uint32 show_cards = 12; // 当前展示
-    optional uint32 show_from = 13;  // 展示者id，也有不填写的可能
-
-	repeated string delete_field = 15;  // 删除某个域，用于清空数组
+    optional int32 room_id = 1;
+	optional int32 player_id = 2;    
+    optional uint32 red_morale = 3;
+    optional uint32 blue_morale = 4;
+    optional uint32 red_gem = 5;     // 红队宝石数量
+    optional uint32 blue_gem = 6;    // 蓝队宝石数量
+    optional uint32 red_crystal = 7; // 红队水晶数量
+    optional uint32 blue_crystal = 8;// 蓝队水晶数量
+    optional uint32 red_grail = 9;   // 红队星杯数
+    optional uint32 blue_grail = 10;  // 蓝队星杯数 
+	optional uint32 pile = 11;       // 牌堆
+	optional uint32 discard = 12;    // 弃牌区
+	optional bool is_started = 13 [default = false];    
+	repeated SinglePlayerInfo player_infos = 14;
 }
 
 // c -> s 聊天
@@ -241,6 +156,12 @@ message Talk {
 enum GossipType {
     GOSSIP_TALK = 1;
     GOSSIP_NOTICE = 2;
+}
+
+message Error {
+	required int32 id = 1;
+	required int32 dst_id = 2;
+	repeated int32 args = 3;
 }
 
 // s -> c 聊天及公告等

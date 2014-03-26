@@ -42,12 +42,24 @@ void* proto_decoder(const char* msg, uint16_t& type)
 		proto = new LogoutRequest();
 		proto->ParseFromArray(msg + SIZEOF_HEADER, header_ptr->len - SIZEOF_HEADER);
 		break;
-	case MSG_ENTER_ROOM:
-		proto = new EnterRoom();
+	case MSG_ROOMLIST_REQ:
+		proto = new RoomListRequest();
 		proto->ParseFromArray(msg + SIZEOF_HEADER, header_ptr->len - SIZEOF_HEADER);
 		break;
-	case MSG_START_REP:
-		proto = new StartReply();
+	case MSG_CREATE_ROOM_REQ:
+		proto = new CreateRoomRequest();
+		proto->ParseFromArray(msg + SIZEOF_HEADER, header_ptr->len - SIZEOF_HEADER);
+		break;
+	case MSG_ENTER_ROOM_REQ:
+		proto = new EnterRoomRequest();
+		proto->ParseFromArray(msg + SIZEOF_HEADER, header_ptr->len - SIZEOF_HEADER);
+		break;
+	case MSG_LEAVE_ROOM_REQ:
+		proto = new LeaveRoomRequest();
+		proto->ParseFromArray(msg + SIZEOF_HEADER, header_ptr->len - SIZEOF_HEADER);
+		break;
+	case MSG_READY_GAME_REQ:
+		proto = new ReadyForGameRequest();
 		proto->ParseFromArray(msg + SIZEOF_HEADER, header_ptr->len - SIZEOF_HEADER);
 		break;
 	case MSG_TALK:

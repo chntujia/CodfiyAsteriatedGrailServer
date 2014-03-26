@@ -96,11 +96,12 @@ inline bool PlayerIdConst_Parse(
 enum ROLE_STRATEGY {
   ROLE_STRATEGY_RANDOM = 1,
   ROLE_STRATEGY_31 = 2,
-  ROLE_STRATEGY_BP = 3
+  ROLE_STRATEGY_BP = 3,
+  ROLE_STRATEGY_ALL = 9
 };
 bool ROLE_STRATEGY_IsValid(int value);
 const ROLE_STRATEGY ROLE_STRATEGY_MIN = ROLE_STRATEGY_RANDOM;
-const ROLE_STRATEGY ROLE_STRATEGY_MAX = ROLE_STRATEGY_BP;
+const ROLE_STRATEGY ROLE_STRATEGY_MAX = ROLE_STRATEGY_ALL;
 const int ROLE_STRATEGY_ARRAYSIZE = ROLE_STRATEGY_MAX + 1;
 
 const ::google::protobuf::EnumDescriptor* ROLE_STRATEGY_descriptor();
@@ -478,17 +479,27 @@ class TurnBegin : public ::google::protobuf::Message {
   inline ::google::protobuf::uint32 id() const;
   inline void set_id(::google::protobuf::uint32 value);
 
+  // optional uint32 round = 2;
+  inline bool has_round() const;
+  inline void clear_round();
+  static const int kRoundFieldNumber = 2;
+  inline ::google::protobuf::uint32 round() const;
+  inline void set_round(::google::protobuf::uint32 value);
+
   // @@protoc_insertion_point(class_scope:network.TurnBegin)
  private:
   inline void set_has_id();
   inline void clear_has_id();
+  inline void set_has_round();
+  inline void clear_has_round();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
   ::google::protobuf::uint32 id_;
+  ::google::protobuf::uint32 round_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(1 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
 
   friend void  protobuf_AddDesc_action_5frespond_2eproto();
   friend void protobuf_AssignDesc_action_5frespond_2eproto();
@@ -1731,6 +1742,28 @@ inline ::google::protobuf::uint32 TurnBegin::id() const {
 inline void TurnBegin::set_id(::google::protobuf::uint32 value) {
   set_has_id();
   id_ = value;
+}
+
+// optional uint32 round = 2;
+inline bool TurnBegin::has_round() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void TurnBegin::set_has_round() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void TurnBegin::clear_has_round() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void TurnBegin::clear_round() {
+  round_ = 0u;
+  clear_has_round();
+}
+inline ::google::protobuf::uint32 TurnBegin::round() const {
+  return round_;
+}
+inline void TurnBegin::set_round(::google::protobuf::uint32 value) {
+  set_has_round();
+  round_ = value;
 }
 
 // -------------------------------------------------------------------

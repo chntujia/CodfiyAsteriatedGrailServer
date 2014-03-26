@@ -18,10 +18,11 @@ enum PlayerIdConst {
 	PLAYER_NONE_ID = 100000;
 }
 
-enum ROLE_STRATEGY{
+enum ROLE_STRATEGY{    
 	ROLE_STRATEGY_RANDOM = 1;
 	ROLE_STRATEGY_31 = 2;
 	ROLE_STRATEGY_BP = 3;
+	ROLE_STRATEGY_ALL = 9;
 }
 
 // s -> c 备选角色
@@ -41,6 +42,7 @@ message PickBan {
 // s -> c 回合开始消息
 message TurnBegin {
     optional uint32 id = 1;    // 开始角色的id
+	optional uint32 round = 2; // 当前回合
 }
 
 
