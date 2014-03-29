@@ -188,6 +188,7 @@ GameGrail::GameGrail(GameGrailConfig *config) : playing(false), processing(true)
 
 GameGrail::~GameGrail()
 {
+	processing = false;
 	while(!m_states.empty()){
 		popGameState();
 	}
@@ -203,7 +204,6 @@ GameGrail::~GameGrail()
 	SAFE_DELETE(m_teamArea);
 	SAFE_DELETE(pile);
 	SAFE_DELETE(discard);
-	m_condition_for_wait.notify_one();
 }
 
 int GameGrail::popGameState_if(int state)
@@ -843,6 +843,9 @@ void GameGrail::GameRun()
 				m_gameId, error, topGameState()->state);
 		}
 	}
+	ztLoggerWrite(ZONE, e_Information, "GameGrail::GameRun() GameGrail [%d] %s end!!", 
+					m_gameId, m_gameName.c_str());
+	delete this;
 }
 
 int GameGrail::playerEnterIntoTable(string userId, int &playerId)

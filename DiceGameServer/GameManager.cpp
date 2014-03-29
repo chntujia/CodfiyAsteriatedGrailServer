@@ -26,15 +26,18 @@ int GameManager::createNewRoundId()
 int GameManager::createGame(int gameType, GameConfig *config)
 {
 	boost::mutex::scoped_lock lock(m_mutex_for_create);
-	GameGrail *game;
+	
 	switch(gameType)
 	{
 		case GAME_TYPE_GRAIL:
-			config->setTableId(m_gameGrailMap.size());
-			game = new GameGrail((GameGrailConfig*)config);
-			m_gameGrailMap.insert(GameMapType::value_type(config->getTableId(), game));
-			thread(gameThread, game);
-			break;
+			{
+				int tableId = m_gameGrailMap.size();
+				config->setTableId(tableId);
+				GameGrail *game = new GameGrail((GameGrailConfig*)config);
+				m_gameGrailMap.insert(GameMapType::value_type(tableId, game));
+				thread(gameThread, game);
+				break;
+			}
 			
 		default:
 			break;
@@ -50,8 +53,7 @@ int GameManager::deleteGame(int gameType, int tableId)
 		case GAME_TYPE_GRAIL:
 			{
 				GameGrail *game = (GameGrail*)m_gameGrailMap[tableId];
-				game->processing = false;
-				delete game;
+				game->terminate();
 				m_gameGrailMap.erase(tableId);
 				ztLoggerWrite(ZONE, e_Information, "GameManager::deleteGame() Table %d.", tableId);
 				break;

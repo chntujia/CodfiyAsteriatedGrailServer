@@ -145,6 +145,10 @@ protected:
 public:
 	GameGrail(GameGrailConfig *config);
 	~GameGrail();
+	void terminate(){
+		processing = false;
+		m_maxAttempts = 0;
+	}
 	void sendMessage(int id, uint16_t proto_type, google::protobuf::Message& proto);
 	void sendMessageExcept(int id, uint16_t proto_type, google::protobuf::Message& proto);
 	int playerEnterIntoTable(string userId, int& playerId);
