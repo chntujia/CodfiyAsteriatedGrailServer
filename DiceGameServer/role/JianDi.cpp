@@ -106,7 +106,7 @@ int JianDi::p_timeline_1(int &step, CONTEXT_TIMELINE_1 *con)
 int JianDi::p_timeline_2_hit(int &step, CONTEXT_TIMELINE_2_HIT *con)
 {
 	int ret;
-	if(con->attack.srcID != id){
+	if(con->attack.srcID != id || !con->attack.isActive){
 		return GE_SUCCESS;
 	}
 	//¡¾½£Æø¡¿²»Îª0

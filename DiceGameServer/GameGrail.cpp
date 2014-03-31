@@ -34,7 +34,7 @@
 #include "role\YongZhe.h"
 #include "role\MoQiang.h"
 #include "role\DieWu.h"
-
+#include "role\LingHun.h"
 using namespace boost;
 
 PlayerEntity* GameGrail::createRole(int id, int roleID, int color)
@@ -98,16 +98,16 @@ PlayerEntity* GameGrail::createRole(int id, int roleID, int color)
 	case 19:
 		return new JianDi(this,id,color);
 		break;
-		//case 20:
-		//    return new GeDouJia(this,id,color);
-		//    break;
+	case 20:
+		return new GeDou(this,id,color);
+		break;
 
 	case 21:
 		return new YongZhe(this,id,color);
 		break;
-		//case 22:
-		//    return new LingHun(this,id,color);
-		//break;
+	case 22:
+		return new LingHun(this,id,color);
+		break;
 	case 23:
 		return new WuNv(this,id,color);
 		break;
@@ -841,6 +841,10 @@ void GameGrail::GameRun()
 		catch(GrailError error)	{
 			ztLoggerWrite(ZONE, e_Error, "[Table %d] Handle throws error: %d. Current state: %d", 
 				m_gameId, error, topGameState()->state);
+		}
+		catch(std::exception const& e) {
+			ztLoggerWrite(ZONE, e_Error, "[Table %d] Handle throws error: %s. Current state: %d", 
+				m_gameId, e.what(), topGameState()->state);
 		}
 	}
 	ztLoggerWrite(ZONE, e_Information, "GameGrail::GameRun() GameGrail [%d] %s end!!", 

@@ -356,13 +356,16 @@ int MoGong::p_timeline_2_miss(int &step, CONTEXT_TIMELINE_2_MISS *con) {
 //°æ∂‡÷ÿ…‰ª˜°ø
 int MoGong::v_attack(int cardID, int dstID, bool realCard)
 {
-	PlayerEntity::v_attack(cardID,dstID,realCard);
+	int ret;
+	if(GE_SUCCESS != (ret = PlayerEntity::v_attack(cardID,dstID,realCard))){
+		return ret;
+	}
 	
 	if(used_DUO_CHONG_SHE_JI)
 	{
 	    if(lastTarget==dstID)
 			return GE_INVALID_PLAYERID;
-     }
+    }
 	lastTarget=dstID;
 	return GE_SUCCESS;
 }

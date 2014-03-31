@@ -144,6 +144,18 @@
     <ClInclude Include="role\GongNv.h">
       <Filter>role</Filter>
     </ClInclude>
+    <ClInclude Include="role\GeDou.h">
+      <Filter>role</Filter>
+    </ClInclude>
+    <ClInclude Include="role\LingHun.h">
+      <Filter>role</Filter>
+    </ClInclude>
+    <ClInclude Include="role\QiDao.h">
+      <Filter>role</Filter>
+    </ClInclude>
+    <ClInclude Include="role\YongZhe.h">
+      <Filter>role</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -264,6 +276,18 @@
       <Filter>role</Filter>
     </ClCompile>
     <ClCompile Include="role\GongNv.cpp">
+      <Filter>role</Filter>
+    </ClCompile>
+    <ClCompile Include="role\GeDou.cpp">
+      <Filter>role</Filter>
+    </ClCompile>
+    <ClCompile Include="role\LingHun.cpp">
+      <Filter>role</Filter>
+    </ClCompile>
+    <ClCompile Include="role\QiDao.cpp">
+      <Filter>role</Filter>
+    </ClCompile>
+    <ClCompile Include="role\YongZhe.cpp">
       <Filter>role</Filter>
     </ClCompile>
   </ItemGroup>

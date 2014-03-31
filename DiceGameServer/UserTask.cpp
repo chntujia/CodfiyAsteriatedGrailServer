@@ -31,7 +31,7 @@ void UserTask::OnQuit()
 	if(game){
 		game->onUserLeave(m_userId);
 	}
-	//UserSessionManager::getInstance().RemoveUser(m_userId, m_iTmpId);
+	UserSessionManager::getInstance().RemoveUser(m_userId, m_iTmpId);
 }
 
 void UserTask::OnCheck()

@@ -293,14 +293,13 @@ int TianShi::TianShiZhiGe()
 		if (GE_SUCCESS == (ret = engine->getReply(id, reply)))
 		{
 			Respond* respond = (Respond*) reply;
-			int dstID = respond->dst_ids(0);
-			PlayerEntity* dst = engine->getPlayerEntity(dstID);
 
 			if (respond->args_size() < 2)
 			{
 				return GE_SUCCESS;
 			}
-
+			int dstID = respond->dst_ids(0);
+			PlayerEntity* dst = engine->getPlayerEntity(dstID);
 			int card_id = respond->args(1);
 			int useGem = respond->args(0);
 
