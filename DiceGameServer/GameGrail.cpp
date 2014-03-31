@@ -26,11 +26,12 @@
 #include "role\WuNv.h"
 #include "role\LingFu.h"
 #include "role\GeDou.h"
-//#include "role\QiDao.h"
+#include "role\QiDao.h"
 #include "role\ZhongCai.h"
 #include "role\HongLian.h"
 #include "role\MoGong.h"
 #include "role\JianDi.h"
+#include "role\YongZhe.h"
 #include "role\MoQiang.h"
 #include "role\DieWu.h"
 
@@ -85,9 +86,9 @@ PlayerEntity* GameGrail::createRole(int id, int roleID, int color)
 	case 15:
 		return new ShenGuan(this,id,color);
 		break;
-		//case 16:
-		//    return new QiDao(this,id,color);
-		//    break;
+	case 16:
+		return new QiDao(this,id,color);
+		break;
 	case 17:
 		return new XianZhe(this,id,color);
 		break;
@@ -101,9 +102,9 @@ PlayerEntity* GameGrail::createRole(int id, int roleID, int color)
 		//    return new GeDouJia(this,id,color);
 		//    break;
 
-		//case 21:
-		//    return new YongZhe(this,id,color);
-		//    break;
+	case 21:
+		return new YongZhe(this,id,color);
+		break;
 		//case 22:
 		//    return new LingHun(this,id,color);
 		//break;
@@ -622,7 +623,7 @@ int GameGrail::setStateCheckBasicEffect()
 	{
 		pushGameState(new StateBeforeAction);
 	}
-	//ÖÐ¶¾ push timeline3 states here based on basicEffect by Fengyu
+	//ÖÐ¶¾ push timeline3 states here based on basicEffect
 	list<BasicEffect> basicEffects = player->getBasicEffect();
 	for(list<BasicEffect>::iterator it = basicEffects.begin(); it!=basicEffects.end(); it++)
 	{
@@ -701,11 +702,10 @@ int GameGrail::setStateTimeline1(int cardID, int dstID, int srcID, bool isActive
 	con->hitRate = RATE_NORMAL;
 	con->checkShield = true;
 
-	//FIXME: °µÃð by Fengyu 
+	// °µÃð
 	if(getCardByID(cardID)->getElement() == ELEMENT_DARKNESS){
 		con->hitRate = RATE_NOREATTACK;
 	}
-	////
 
 	pushGameState(new StateTimeline1(con));
 	return GE_SUCCESS;

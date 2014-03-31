@@ -23,7 +23,7 @@ class GameGrailPlayerContext;
 typedef map< int, GameGrailPlayerContext* > PlayerContextList;
 
 const int SUMMON[] = {1, 2, 3, 4, 5, 6, 7, 8, 9,10,
-	           11,12,13,14,15,   17,18,19,
+	           11,12,13,14,15, 16, 17,18,19,21,
 			         23,24,26,28};
 bool isValidRoleID(int roleID);
 
@@ -182,6 +182,12 @@ enum CAUSE{
 	DOU_SHEN_TIAN_QU = 2006,
 	XU_LI_CANG_YAN = 2025,
 	BAI_SHI_DOU_SHEN = 2046,
+	TIAO_XIN = 2101,
+    JIN_DUAN_ZHI_LI = 2102,
+	NU_HOU = 2103,
+	MING_JING_ZHI_SHUI = 2104,
+	SI_DOU = 2105,
+	JING_PI_LI_JIE = 2106,
     LING_HUN_ZHEN_BAO =2201,
     LING_HUN_CI_YU =2202,
     LING_HUN_ZENG_FU=2203,

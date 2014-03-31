@@ -1,7 +1,6 @@
 #include "QiDao.h"
 #include "..\GameGrail.h"
 #include "..\UserTask.h"
-using namespace std;
 
 //祈祷师 的赐福效果处理涉及 UserTask::cmdMsgParse 和 PlayerEntity::p_additional_action 函数，查找请使用关键词[QiDao]
 
@@ -250,26 +249,8 @@ int QiDao::p_additional_action(int chosen){
 	SkillMsg skill_msg;
 
 	if(chosen == XUN_JIE_CI_FU)// [Qidao]目前机制下，迅捷赐福判断不会经过祈祷的p_additional_action，因此移除效果在PlayerEntity::p_additional_action中完成
-	{							// 
-		/* 	PlayerEntity *target = engine->getPlayerEntity(playerID);
-			list<BasicEffect> effects = target->getBasicEffect();
-			for(list<BasicEffect>::iterator it = effects.begin(); it!=effects.end(); it++)
-			{
-					CardEntity* effectCard = getCardByID(it->card);
-			
-				//处理迅捷赐福
-				if(effectCard->checkSpeciality(XUN_JIE_CI_FU))
-				{
-				
-						engine->setStateMoveOneCardNotToHand(playerID, DECK_BASIC_EFFECT, -1, DECK_DISCARD, it->card, playerID, XUN_JIE_CI_FU, true);		
-				}
-		
-				
-			}
-			//宣告技能
-			Coder::skillNotice(playerID, playerID,XUN_JIE_CI_FU, skill_msg);
-			engine->sendMessage(-1, MSG_SKILL, skill_msg); */
-	}else if(chosen ==FA_LI_CHAO_XI){
+	{}
+	else if(chosen ==FA_LI_CHAO_XI){
 			//宣告技能
 			Coder::skillNotice(id, id, FA_LI_CHAO_XI, skill_msg);
 			engine->sendMessage(-1, MSG_SKILL, skill_msg);
