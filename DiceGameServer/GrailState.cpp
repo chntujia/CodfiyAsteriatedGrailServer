@@ -294,8 +294,18 @@ int StateBeforeAction::handle(GameGrail* engine)
 		}		
 	}
 	if(GE_SUCCESS == (ret = engine->popGameState_if(STATE_BEFORE_ACTION))){
+
+		//[Yongzhe]挑衅
+		PlayerEntity* pe = engine->getPlayerEntity(m_currentPlayerID);
+		if( GE_SUCCESS == pe->checkExclusiveEffect(EX_TIAO_XIN)){
+			engine->pushGameState(new StateActionPhase(ACTION_ATTACK, false));
+			return ret;
+		}
+		////
+
 		engine->pushGameState(new StateActionPhase(ACTION_ANY, false));
 	}
+
 	return ret;
 }
 
@@ -328,7 +338,7 @@ int StateActionPhase::handle(GameGrail* engine)
 					PlayerEntity* dst_pe = engine->getPlayerEntity(action->dst_ids().Get(0));
 																 //被挑衅状态下攻击勇者
 					if(dst_pe->getRoleID() == 21){			  
-																//检查角色是否允许发动攻击，如仲裁达到4能量的情形
+																//检查角色是否允许发动攻击，如仲裁达到4能量的情形，则不允许发动攻击，只能选择结束回合
 						if(GE_SUCCESS != (ret = src->v_allow_action(action, allowAction, canGiveUp))){
 							return ret;
 						}
