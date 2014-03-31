@@ -833,7 +833,7 @@ void GameGrail::GameRun()
 			if(currentState){
 				ret = currentState->handle(this);
 			}
-			if(ret != GE_SUCCESS){
+			if(ret != GE_SUCCESS && ret != GE_TIMEOUT && ret != GE_URGENT){
 				ztLoggerWrite(ZONE, e_Error, "[Table %d] Handle returns error: %d. Current state: %d", 
 					m_gameId, ret, currentState->state);
 			}

@@ -57,6 +57,9 @@ void UserTask::OnCheck()
 GameGrail* UserTask::getGame()
 {
 	Game *game;
+	if(m_tableId < 0){
+		return NULL;
+	}
 	if(0 != GameManager::getInstance().getGame(GAME_TYPE_GRAIL, m_tableId, &game)){
 		ztLoggerWrite(ZONE,e_Error, "UserTask::getGame() failed. TableId: %d", m_tableId);
 		return NULL;
@@ -221,6 +224,8 @@ bool UserTask::cmdMsgParse(const char *pstrMsg, const uint32_t nCmdLen)
 	}catch(GrailError e){
 		ztLoggerWrite(ZONE, e_Error, "[%s]UserTask throws error: %d, Received Message: %s", m_userId.c_str(), e, pstrMsg);
 		return false;
+	}catch(std::exception const& e) {
+		ztLoggerWrite(ZONE, e_Error, "[%s]UserTask throws error: %d, Received Message: %s",	m_userId.c_str(), e.what(), pstrMsg);
 	}
 }
 
