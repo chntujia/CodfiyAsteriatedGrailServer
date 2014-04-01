@@ -1,5 +1,6 @@
 #include "PlayerEntity.h"
 #include "GameGrail.h"
+#include "role\QiDao.h"
 using namespace network;
 PlayerEntity::PlayerEntity(GameGrail *engine,int ID, int isRed)
 {
@@ -541,35 +542,9 @@ int PlayerEntity::v_additional_action(int chosen)
 int PlayerEntity::p_additional_action(int chosen)
 {
 	//[QiDao]如果是迅捷赐福的额外行动，无法调用祈祷的p_additional_action,因此在这里移除效果。
-	if(chosen == XUN_JIE_CI_FU){
-		int targetCard = 0;
-		PlayerEntity *target = engine->getPlayerEntity(id);
-		list<BasicEffect> effects = target->getBasicEffect();
-		for(list<BasicEffect>::iterator it = effects.begin(); it!=effects.end(); it++)
-		{
-			CardEntity* effectCard = getCardByID(it->card);
-				//记录迅捷赐福效果的id
-			if(effectCard->checkSpeciality(XUN_JIE_CI_FU)){
-				targetCard = it->card;
-			}	
-		}
-		
-		list<ACTION_QUOTA>::iterator it;
-		for(it = additionalActions.begin(); it != additionalActions.end(); it++){
-			if(chosen == it->cause){
-				cout<<"chosen" <<it->cause<<endl;
-				SkillMsg skill;
-				Coder::skillNotice(id, id, chosen, skill);
-				engine->sendMessage(-1, MSG_SKILL, skill);			
-				engine->popGameState();
-				engine->pushGameState(new StateActionPhase(it->allowAction, true)); 
-				additionalActions.erase(it);
-				//移除迅捷赐福
-				engine->setStateMoveOneCardNotToHand(id, DECK_BASIC_EFFECT, -1, DECK_DISCARD,targetCard, id, XUN_JIE_CI_FU, true);
-				return GE_URGENT;
-			}
-		}
-	}
+	int XunJieCardID = -1;
+	if(chosen == XUN_JIE_CI_FU){XunJieCardID =  QiDao::GetXunJieEffectCard(engine,id);}
+	
 	
 	list<ACTION_QUOTA>::iterator it;
 	for(it = additionalActions.begin(); it != additionalActions.end(); it++){
@@ -579,7 +554,8 @@ int PlayerEntity::p_additional_action(int chosen)
 			engine->sendMessage(-1, MSG_SKILL, skill);			
 			engine->popGameState();
 			engine->pushGameState(new StateActionPhase(it->allowAction, true));
-			additionalActions.erase(it);
+			additionalActions.erase(it);		
+			if(chosen == XUN_JIE_CI_FU){engine->setStateMoveOneCardNotToHand(id, DECK_BASIC_EFFECT, -1, DECK_DISCARD, XunJieCardID, id, XUN_JIE_CI_FU, true);}//[QiDao]移除迅捷赐福
 			return GE_SUCCESS;
 		}
 	}

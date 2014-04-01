@@ -29,6 +29,23 @@ bool QiDao::cmdMsgParse(UserTask *session, uint16_t type, ::google::protobuf::Me
 	return false;
 }
 
+
+//返回迅捷赐福效果的CardID，用于之后的移除
+int QiDao::GetXunJieEffectCard(GameGrail* engine,int id){
+	int targetCard = 0;
+		PlayerEntity *target = engine->getPlayerEntity(id);
+		list<BasicEffect> effects = target->getBasicEffect();
+		for(list<BasicEffect>::iterator it = effects.begin(); it!=effects.end(); it++)
+		{
+			CardEntity* effectCard = getCardByID(it->card);
+				//记录迅捷赐福效果的id
+			if(effectCard->checkSpeciality(XUN_JIE_CI_FU)){
+				targetCard = it->card;
+			}	
+		}
+		return targetCard;
+}
+
 int QiDao::p_before_turn_begin(int &step, int currentPlayerID) 
 {
 	used_FaLiChaoXi = false;

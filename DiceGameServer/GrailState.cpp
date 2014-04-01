@@ -1,7 +1,7 @@
 #include "GrailState.h"
 #include "GameGrail.h"
 #include <Windows.h>
-
+#include "role\YongZhe.h"
 int StateWaitForEnter::handle(GameGrail* engine)
 {
 	//ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateWaitForEnter", engine->getGameId());
@@ -239,6 +239,7 @@ int StateWeaken::handle(GameGrail* engine)
 				return engine->setStateMoveCardsToHand(-1, DECK_PILE, m_currentPlayerID, DECK_HAND, howMany_t, cards, harm);
 			}
 			else{
+				YongZhe::weakenFlag = true;//[YongZhe]
 				engine->popGameState();
 				engine->pushGameState(new StateTurnEnd);
 				return GE_SUCCESS;
@@ -295,13 +296,7 @@ int StateBeforeAction::handle(GameGrail* engine)
 	}
 	if(GE_SUCCESS == (ret = engine->popGameState_if(STATE_BEFORE_ACTION))){
 
-		//[Yongzhe]挑衅
-		PlayerEntity* pe = engine->getPlayerEntity(m_currentPlayerID);
-		if( GE_SUCCESS == pe->checkExclusiveEffect(EX_TIAO_XIN)){
-			engine->pushGameState(new StateActionPhase(ACTION_ATTACK, false));
-			return ret;
-		}
-		////
+
 
 		engine->pushGameState(new StateActionPhase(ACTION_ANY, false));
 	}
@@ -315,6 +310,11 @@ int StateActionPhase::handle(GameGrail* engine)
 
 	int m_currentPlayerID = engine->getCurrentPlayerID();
 
+	PlayerEntity* pe = engine->getPlayerEntity(m_currentPlayerID);
+	if( GE_SUCCESS == pe->checkExclusiveEffect(EX_TIAO_XIN)){//[Yongzhe]挑衅
+		allowAction = ACTION_ATTACK;
+	}
+
 	CommandRequest cmd_req;
 	Coder::askForAction(m_currentPlayerID, allowAction, canGiveUp, cmd_req);
 	if(engine->waitForOne(m_currentPlayerID, MSG_CMD_REQ, cmd_req))
@@ -326,36 +326,10 @@ int StateActionPhase::handle(GameGrail* engine)
 			PlayerEntity *src;
 			src = engine->getPlayerEntity(m_currentPlayerID);
 
-			///[Yongzhe]挑衅	被挑衅时允许启动，允许对勇者攻击和发动额外攻击，或者放弃行动跳过回合
-			PlayerEntity* pe = engine->getPlayerEntity(m_currentPlayerID);
-			if( GE_SUCCESS == pe->checkExclusiveEffect(EX_TIAO_XIN)){
-																//被挑衅状态下放弃行动，或放弃额外行动
-				if(action->action_type() == ACTION_NONE){    
-					engine->popGameState_if(STATE_ACTION_PHASE);
-					return engine->setStateCheckTurnEnd();
-				}
-				if (action->action_type() == ACTION_ATTACK){
-					PlayerEntity* dst_pe = engine->getPlayerEntity(action->dst_ids().Get(0));
-																 //被挑衅状态下攻击勇者
-					if(dst_pe->getRoleID() == 21){			  
-																//检查角色是否允许发动攻击，如仲裁达到4能量的情形，则不允许发动攻击，只能选择结束回合
-						if(GE_SUCCESS != (ret = src->v_allow_action(action, allowAction, canGiveUp))){
-							return ret;
-						}
-						return basicAttack(action, engine);
-					}else{
-						return GE_INVALID_ACTION;
-					}
-				}else{
-					return GE_INVALID_ACTION;
-				}
-				
-			}
-			////
-
-			if(GE_SUCCESS != (ret = src->v_allow_action(action, allowAction, canGiveUp))){
+			if(GE_SUCCESS != (ret = YongZhe::TiaoXinEffect(engine, action, allowAction, canGiveUp))){
 				return ret;
-			}
+			}//[YongZhe] TiaoXinEffect()：存在挑衅时处理挑衅，不存在时 调用PlayerEntity 的 v_allow_action
+
 			switch(action->action_type())
 			{
 			case ACTION_ATTACK:
@@ -970,15 +944,7 @@ int StateTurnEnd::handle(GameGrail* engine)
 	int ret = GE_FATAL_ERROR;
 	int m_currentPlayerID = engine->getCurrentPlayerID();
 
-	//[Yongzhe] //FIXME 移除挑衅标记，按规则应当在行动开始前移除，但需要额外添加标记指示本回合行动，故放在回合结束移除。
-	PlayerEntity* pe = engine->getPlayerEntity(m_currentPlayerID);
-	if( GE_SUCCESS == pe->checkExclusiveEffect(EX_TIAO_XIN)){
-		pe->removeExclusiveEffect(EX_TIAO_XIN);
-		GameInfo update_info;	
-		Coder::exclusiveNotice(pe->getID(), pe->getExclusiveEffect(), update_info);
-		engine->sendMessage(-1, MSG_GAME, update_info);
-	}
-	////
+	YongZhe::RemoveTiaoXinEffect(engine);//[YongZhe]
 
 	while(iterator < engine->getGameMaxPlayers()){	    
 		ret = engine->getPlayerEntity(iterator)->p_turn_end(step, m_currentPlayerID);

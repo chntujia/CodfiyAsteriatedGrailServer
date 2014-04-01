@@ -4,6 +4,9 @@
 class YongZhe : public PlayerEntity
 {
 public:
+	static bool weakenFlag;//挑衅前触发了虚弱跳过
+	static int TiaoXinEffect(GameGrail *engine,Action* action, int allowAction,int canGiveUp);
+	static int RemoveTiaoXinEffect(GameGrail *engine);
 	YongZhe(GameGrail *engine, int id, int color);
 	int p_timeline_1(int &step, CONTEXT_TIMELINE_1* con);
 	int p_timeline_2_miss(int &step, CONTEXT_TIMELINE_2_MISS *con);

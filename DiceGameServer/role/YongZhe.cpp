@@ -2,6 +2,8 @@
 #include "..\GameGrail.h"
 #include "..\UserTask.h"
 
+
+bool YongZhe::weakenFlag = false;//静态成员变量初始化
 YongZhe::YongZhe(GameGrail *engine, int id, int color): PlayerEntity(engine, id, color)
 {
 	this->roleID = 21;//设置Role ID 为21， 用于在GrailState.cpp进行挑衅的攻击目标判断
@@ -17,6 +19,57 @@ YongZhe::YongZhe(GameGrail *engine, int id, int color): PlayerEntity(engine, id,
 	tap = false;
 	using_NuHou = 0;
 }
+int YongZhe::RemoveTiaoXinEffect(GameGrail *engine){
+	//[Yongzhe]
+	int m_currentPlayerID = engine->getCurrentPlayerID();
+	PlayerEntity* pe = engine->getPlayerEntity(m_currentPlayerID);
+	if( GE_SUCCESS == pe->checkExclusiveEffect(EX_TIAO_XIN)){
+		if(YongZhe::weakenFlag == false){
+			pe->removeExclusiveEffect(EX_TIAO_XIN);
+			GameInfo update_info;	
+			Coder::exclusiveNotice(pe->getID(), pe->getExclusiveEffect(), update_info);
+			engine->sendMessage(-1, MSG_GAME, update_info);
+		}
+		YongZhe::weakenFlag = false;
+	}
+	////
+	return GE_SUCCESS;
+}
+int YongZhe::TiaoXinEffect(GameGrail *engine,Action* action, int allowAction,int canGiveUp){
+	int m_currentPlayerID = engine->getCurrentPlayerID();
+	int ret = GE_SUCCESS;
+		///[Yongzhe]挑衅	被挑衅时允许启动，允许对勇者攻击和发动额外攻击，或者放弃行动跳过回合
+			PlayerEntity* src = engine->getPlayerEntity(m_currentPlayerID);
+			if( GE_SUCCESS == src->checkExclusiveEffect(EX_TIAO_XIN)){
+																//被挑衅状态下放弃行动，或放弃额外行动
+				if(action->action_type() == ACTION_NONE){    
+					return GE_SUCCESS;
+				}
+				if (action->action_type() == ACTION_ATTACK){
+					PlayerEntity* dst_pe = engine->getPlayerEntity(action->dst_ids().Get(0));
+																 //被挑衅状态下攻击勇者
+					if(dst_pe->getRoleID() == 21){			  																//检查角色是否允许发动攻击，如仲裁达到4能量的情形
+						if(GE_SUCCESS != (ret = src->v_allow_action(action, allowAction, canGiveUp))){
+							return ret;
+						}
+						return GE_SUCCESS;
+					}else{
+						return GE_INVALID_ACTION;
+					}
+				}else{
+					return GE_INVALID_ACTION;
+				}
+				
+			}else{
+				if(GE_SUCCESS != (ret = src->v_allow_action(action, allowAction, canGiveUp))){
+					return ret;
+				}
+			}
+			////
+	return ret;
+}
+
+
 
 bool YongZhe::cmdMsgParse(UserTask *session, uint16_t type, ::google::protobuf::Message *proto)
 {
@@ -321,12 +374,14 @@ int YongZhe::JinDuanZhiLiHit(CONTEXT_TIMELINE_2_HIT *con)//[响应]A 【禁断�
 				//发动精疲力竭
 				JingPiLiJie();
 				//对自己造成等同于火系牌数量的法术伤害③
-				HARM harm;
-				harm.cause = JIN_DUAN_ZHI_LI;
-				harm.point = fireCardNum;
-				harm.srcID = id;
-				harm.type = HARM_MAGIC;
-				engine->setStateTimeline3(id, harm);
+				if(fireCardNum>0){
+					HARM harm;
+					harm.cause = JIN_DUAN_ZHI_LI;
+					harm.point = fireCardNum;
+					harm.srcID = id;
+					harm.type = HARM_MAGIC;
+					engine->setStateTimeline3(id, harm);
+				}
 				//展示并丢弃手牌
 				if (cards.size() > 0)
 				{

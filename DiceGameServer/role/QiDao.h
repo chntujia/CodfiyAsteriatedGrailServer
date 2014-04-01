@@ -4,6 +4,8 @@
 class QiDao : public PlayerEntity
 {
 public:
+	
+	static int GetXunJieEffectCard(GameGrail* engine,int id);//返回迅捷赐福的cardID，在PlayerEntity.cpp中调用
 	QiDao(GameGrail *engine, int id, int color): PlayerEntity(engine, id, color){}
 	int p_before_turn_begin(int &step, int currentPlayerID) ;
 	int p_timeline_1(int &step, CONTEXT_TIMELINE_1* con);
