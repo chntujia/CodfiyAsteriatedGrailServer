@@ -116,6 +116,7 @@ class GameGrail : public Game
 public:
 	bool playing;
 	bool processing;
+	bool roleInited;
 	int m_roleStrategy;
 	int m_seatMode;
 	int m_maxAttempts;

@@ -173,7 +173,7 @@ void TeamArea::setMorale(int color, int value)
         this->moraleBLUE = value;
 }
 
-GameGrail::GameGrail(GameGrailConfig *config) : playing(false), processing(true)
+GameGrail::GameGrail(GameGrailConfig *config) : playing(false), processing(true), roleInited(false)
 {
 	m_gameId = config->getTableId();
 	m_gameName = config->getTableName();
@@ -621,7 +621,7 @@ int GameGrail::setStateCheckBasicEffect()
 	}
 	else
 	{
-		pushGameState(new StateBeforeAction);
+		pushGameState(new StateBoot);
 	}
 	//ÖÐ¶¾ push timeline3 states here based on basicEffect
 	list<BasicEffect> basicEffects = player->getBasicEffect();
@@ -976,11 +976,13 @@ void GameGrail::initPlayerEntities()
 	m_playerEntities[id]->setPost(m_playerEntities[post]);
 	m_playerEntities[id]->setPre(m_playerEntities[pre]);
 	m_teamArea = new TeamArea;
+
+	roleInited = true;
 }
 
 void GameGrail::onPlayerEnter(int playerID)
 {
-	if(!playing)
+	if(!roleInited)
 	{
 		GameInfo room_info;
 		Coder::roomInfo(m_playerContexts, room_info);
@@ -1004,7 +1006,7 @@ void GameGrail::onGuestEnter(string userID)
 	UserTask* session = UserSessionManager::getInstance().getUser(userID);
 	if(!session)
 		return;
-	if(!playing)
+	if(!roleInited)
 	{
 		GameInfo room_info;
 		Coder::roomInfo(m_playerContexts, room_info);
