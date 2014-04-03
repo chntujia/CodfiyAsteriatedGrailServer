@@ -242,8 +242,8 @@ bool HongLian::cmdMsgParse(UserTask *session, uint16_t type, ::google::protobuf:
 
 int HongLian::p_before_lose_morale(int &step, CONTEXT_LOSE_MORALE *con)
 {
-	//非红莲回合||不在热血沸腾||摸牌导致掉士气
-	if (engine->getCurrentPlayerID() != id  || !tap || HARM_NONE == con->harm.type || con->howMany <= 0 )
+	//不在热血沸腾||摸牌导致掉士气
+	if (!tap || HARM_NONE == con->harm.type || con->howMany <= 0 )
 		return GE_SUCCESS;
 
 	int ret = ReXueFeiTengLoseNoMorale(con);
