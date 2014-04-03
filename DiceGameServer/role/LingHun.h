@@ -26,6 +26,7 @@ private:
   int LingHunLianJieReact(CONTEXT_TIMELINE_6 *con);
   
   bool used_LING_HUN_LIAN_JIE;
+  bool used_LING_HUN_ZENG_FU;
   bool using_LING_HUN_LIAN_JIE;
   int  connectID;
 

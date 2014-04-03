@@ -6,6 +6,7 @@ LingHun::LingHun(GameGrail *engine, int id, int color): PlayerEntity(engine, id,
 {
   tokenMax[0]=6;
   tokenMax[1]=6;
+  used_LING_HUN_ZENG_FU = false;
   used_LING_HUN_LIAN_JIE=false;
   using_LING_HUN_LIAN_JIE=false;
   connectID=-1;
@@ -70,7 +71,7 @@ int LingHun::p_boot(int &step, int currentPlayerID)
 		case  LING_HUN_ZENG_FU:	  
 			  ret = LingHunZengFu();
 			if(toNextStep(ret) || ret == GE_URGENT){
-				if(token[0]>0&&token[1]>0&&!used_LING_HUN_LIAN_JIE)
+				if(token[0]>0&&token[1]>0&&!used_LING_HUN_LIAN_JIE && !used_LING_HUN_ZENG_FU)
 					 step=LING_HUN_LIAN_JIE;
 				else
 				     step = STEP_DONE;
@@ -265,6 +266,7 @@ int LingHun::p_magic_skill(int &step, Action* action)
 //--------------【灵魂增幅】-------------------------
 int LingHun::LingHunZengFu()
 {
+	used_LING_HUN_ZENG_FU = true;
 	CommandRequest cmd_req;
 	Coder::askForSkill(id, LING_HUN_ZENG_FU, cmd_req);
 	//有限等待，由UserTask调用tryNotify唤醒
