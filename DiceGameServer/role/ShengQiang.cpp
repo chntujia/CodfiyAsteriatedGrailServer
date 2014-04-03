@@ -181,7 +181,6 @@ int ShengQiang::p_magic_skill(int &step, Action* action)
 }
 int ShengQiang::HuiYao(int &step, Action* action)
 {
-	GameInfo update_info;
 	list<int> dstIDs;
 	int cardID = action->card_ids(0);
 	PlayerEntity * dstPlayer = engine->getPlayerEntity(id);
@@ -198,12 +197,12 @@ int ShengQiang::HuiYao(int &step, Action* action)
 		SkillMsg skill_msg;
 		Coder::skillNotice(id, dstIDs, HUI_YAO, skill_msg);
 		engine->sendMessage(-1, MSG_SKILL, skill_msg);
-		engine->setStateMoveOneCardNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardID, HUI_YAO, true);
-		
 		CardMsg show_card;
 		Coder::showCardNotice(id, 1, cardID, show_card);
-		engine->sendMessage(-1, MSG_GAME, update_info);
+		engine->sendMessage(-1, MSG_CARD, show_card);
+		engine->setStateMoveOneCardNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardID, HUI_YAO, true);
 		//插入了新状态，请return GE_URGENT
+		
 		return GE_URGENT;
 	}
 	else
@@ -213,6 +212,7 @@ int ShengQiang::HuiYao(int &step, Action* action)
 		{
 			dstPlayer = engine->getPlayerEntity(*it);
 			dstPlayer->addCrossNum(1);
+			GameInfo update_info;
 			Coder::crossNotice(*it, dstPlayer->getCrossNum(), update_info);
 			engine->sendMessage(-1, MSG_GAME, update_info);
 		}
@@ -224,7 +224,6 @@ int ShengQiang::HuiYao(int &step, Action* action)
 }
 int ShengQiang::ChengJie(int &step, Action* action)
 {
-	GameInfo update_info;
 	int dstID = action->dst_ids(0);
 	int cardID = action->card_ids(0);
 	PlayerEntity * srcPlayer = engine->getPlayerEntity(id);
@@ -234,18 +233,17 @@ int ShengQiang::ChengJie(int &step, Action* action)
 		SkillMsg skill_msg;
 		Coder::skillNotice(id, dstID, CHENG_JIE, skill_msg);
 		engine->sendMessage(-1, MSG_SKILL, skill_msg);
-
-		engine->setStateMoveOneCardNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardID, CHENG_JIE, true);
-		//插入了新状态，请return GE_URGENT
-
 		CardMsg show_card;
 		Coder::showCardNotice(id, 1, cardID, show_card);
-		engine->sendMessage(-1, MSG_GAME, update_info);
+		engine->sendMessage(-1, MSG_CARD, show_card);
+		engine->setStateMoveOneCardNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardID, CHENG_JIE, true);
+		//插入了新状态，请return GE_URGENT
 		return GE_URGENT;
 	}
 	else
 	{
 		dstPlayer->subCrossNum(1);
+		GameInfo update_info;
 		Coder::crossNotice(dstID, dstPlayer->getCrossNum(), update_info);
 		engine->sendMessage(-1, MSG_GAME, update_info);
 		srcPlayer->addCrossNum(1);
