@@ -243,7 +243,7 @@ bool HongLian::cmdMsgParse(UserTask *session, uint16_t type, ::google::protobuf:
 int HongLian::p_before_lose_morale(int &step, CONTEXT_LOSE_MORALE *con)
 {
 	//不在热血沸腾||摸牌导致掉士气
-	if (!tap || HARM_NONE == con->harm.type || con->howMany <= 0 )
+	if ( !tap || HARM_NONE == con->harm.type || con->howMany <= 0 )
 		return GE_SUCCESS;
 
 	int ret = ReXueFeiTengLoseNoMorale(con);
@@ -595,7 +595,7 @@ int HongLian::XingHongShiZi(int &step, Action* action)
 		engine->setStateMoveCardsNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cards.size(), cards, id, XING_HONG_SHI_ZI, true);
 		CardMsg show_card;
 		Coder::showCardNotice(id, 2, cards, show_card);
-		engine->sendMessage(-1, MSG_GAME, game_info);
+		engine->sendMessage(-1, MSG_CARD, show_card);
 		//插入了新状态，请return GE_URGENT
 		return GE_URGENT;
 	}
