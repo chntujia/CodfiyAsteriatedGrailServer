@@ -120,8 +120,11 @@ int TianShi::p_magic_skill(int &step, Action *action)
 		break;
 	case TIAN_SHI_ZHU_FU:
 		ret = TianShiZhuFu(step, action);
-		if (ret == GE_SUCCESS)
-			step = STEP_DONE;
+		if(GE_URGENT == ret){
+			step = TIAN_SHI_ZHU_FU;
+		}
+		else if (GE_SUCCESS == ret){
+			step = STEP_DONE;}
 		break;
 	default:
 		return GE_INVALID_ACTION;
@@ -178,14 +181,26 @@ int TianShi::TianShiZhiQiang(Action *action)
 
 int TianShi::TianShiZhuFu(int step, Action *action)
 {
+	int cardID = action->card_ids(0);
 	if (action->dst_ids_size() > 1)
 	{
 		SkillMsg skill_msg;
 		list<int> dst_ids;
 		dst_ids.push_back(action->dst_ids(0));
 		dst_ids.push_back(action->dst_ids(1));
-		Coder::skillNotice(id, dst_ids, TIAN_SHI_ZHI_GE, skill_msg);
-		engine->sendMessage(-1, MSG_SKILL, skill_msg);
+
+		if(step != TIAN_SHI_ZHU_FU)
+		{
+			Coder::skillNotice(id, dst_ids, TIAN_SHI_ZHU_FU, skill_msg);
+			engine->sendMessage(-1, MSG_SKILL, skill_msg);
+			CardMsg show_card;
+			Coder::showCardNotice(id, 1, cardID, show_card);
+			engine->sendMessage(-1, MSG_CARD, show_card);
+			engine->setStateMoveOneCardNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardID, TIAN_SHI_ZHU_FU, true);
+			//插入了新状态，请return GE_URGENT
+		
+			return GE_URGENT;
+		}
 
 		HARM zhufu;
 		zhufu.cause = TIAN_SHI_ZHU_FU;
@@ -193,15 +208,27 @@ int TianShi::TianShiZhuFu(int step, Action *action)
 		zhufu.srcID = id;
 		zhufu.type = HARM_NONE;
 		if (action->dst_ids(1) != id)
-			engine->pushGameState(new StateRequestHand(action->dst_ids(1), zhufu, id, DECK_HAND, true, true));
+			engine->pushGameState(new StateRequestHand(action->dst_ids(1), zhufu, id, DECK_HAND, false, true));
 		if (action->dst_ids(0) != id)
-			engine->pushGameState(new StateRequestHand(action->dst_ids(0), zhufu, id, DECK_HAND, true, true));
+			engine->pushGameState(new StateRequestHand(action->dst_ids(0), zhufu, id, DECK_HAND, false, true));
 	}
 	else
 	{
 		SkillMsg skill_msg;
-		Coder::skillNotice(id, action->dst_ids(0), TIAN_SHI_ZHI_GE, skill_msg);
-		engine->sendMessage(-1, MSG_SKILL, skill_msg);
+
+		if(step != TIAN_SHI_ZHU_FU)
+		{
+
+			Coder::skillNotice(id, action->dst_ids(0), TIAN_SHI_ZHU_FU, skill_msg);
+			engine->sendMessage(-1, MSG_SKILL, skill_msg);
+			CardMsg show_card;
+			Coder::showCardNotice(id, 1, cardID, show_card);
+			engine->sendMessage(-1, MSG_CARD, show_card);
+			engine->setStateMoveOneCardNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardID, TIAN_SHI_ZHU_FU, true);
+			//插入了新状态，请return GE_URGENT
+		
+			return GE_URGENT;
+		}
 
 		HARM zhufu;
 		zhufu.cause = TIAN_SHI_ZHU_FU;
@@ -209,7 +236,7 @@ int TianShi::TianShiZhuFu(int step, Action *action)
 		zhufu.srcID = id;
 		zhufu.type = HARM_NONE;
 		if (action->dst_ids(0) != id)
-			engine->pushGameState(new StateRequestHand(action->dst_ids(0), zhufu, id, DECK_HAND, true, true));
+			engine->pushGameState(new StateRequestHand(action->dst_ids(0), zhufu, id, DECK_HAND, false, true));
 	}
 	return GE_SUCCESS;
 }
@@ -293,13 +320,14 @@ int TianShi::TianShiZhiGe()
 		if (GE_SUCCESS == (ret = engine->getReply(id, reply)))
 		{
 			Respond* respond = (Respond*) reply;
+			int dstID = respond->dst_ids(0);
+			PlayerEntity* dst = engine->getPlayerEntity(dstID);
 
 			if (respond->args_size() < 2)
 			{
 				return GE_SUCCESS;
 			}
-			int dstID = respond->dst_ids(0);
-			PlayerEntity* dst = engine->getPlayerEntity(dstID);
+
 			int card_id = respond->args(1);
 			int useGem = respond->args(0);
 
@@ -370,3 +398,5 @@ int TianShi::ShenZhiBiHu(CONTEXT_LOSE_MORALE *con)
 		return GE_TIMEOUT;
 	}
 }
+
+
