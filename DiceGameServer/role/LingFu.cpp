@@ -125,20 +125,22 @@ int LingFu::FengXing(Action *action)
 	Coder::skillNotice(id, dstIDs, FENG_XING, skill);
 	engine->sendMessage(-1, MSG_SKILL, skill);
     //所有移牌操作都要用setStateMoveXXXX，ToHand的话要填好HARM，就算不是伤害
-	PlayerEntity* it = this->getPre();
+	
 	HARM fengXing;
 	fengXing.cause = FENG_XING;
 	fengXing.point = 1;
 	fengXing.srcID = id;
 	fengXing.type = HARM_NONE;
-	//先进后出，所以逆出牌顺序压，最后才是自己明弃牌
+	//先进后出，所以逆出牌顺序压，由自己开始明弃牌
+	PlayerEntity* start = this->getPre();
+	PlayerEntity* it = start;
 	do{
 		//没有手牌就不用弃
 		if(it->getHandCardNum() > 0 && (it->getID() == dst1ID || it->getID() == dst2ID)){
 			engine->pushGameState(new StateRequestHand(it->getID(), fengXing, -1, DECK_DISCARD, false, false));
 		}
 		it = it->getPre();
-	}while(it != this->getPre());
+	}while(it != start);
 	NianZhou();
 	CardMsg show_card;
 	Coder::showCardNotice(id, 1, cardID, show_card);
@@ -175,19 +177,21 @@ int LingFu::LeiMing_Effect(Action *action)
 	int dst1ID = action->dst_ids(0);
 	int dst2ID = action->dst_ids(1);
 	//填写伤害结构
-	PlayerEntity* it = this->getPre();
 	HARM leiMing;
 	leiMing.cause = LEI_MING;
 	leiMing.point = using_LingLiBengJie ? 2 : 1;
 	leiMing.srcID = id;
 	leiMing.type = HARM_MAGIC;
 	//先进后出，所以逆出牌顺序压
-	while(it != this){
+	PlayerEntity* start = this->getPre();
+	PlayerEntity* it = start;
+	do{
 		if(it->getID() == dst1ID || it->getID() == dst2ID){
 			engine->setStateTimeline3(it->getID(), leiMing);
 		}
 		it = it->getPre();
-	}
+	}while(it != start);
+	
 	//插入了新状态，请return GE_URGENT
 	return GE_URGENT;
 }

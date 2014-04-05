@@ -207,10 +207,16 @@ int TianShi::TianShiZhuFu(int step, Action *action)
 		zhufu.point = 1;
 		zhufu.srcID = id;
 		zhufu.type = HARM_NONE;
-		if (action->dst_ids(1) != id)
-			engine->pushGameState(new StateRequestHand(action->dst_ids(1), zhufu, id, DECK_HAND, false, true));
-		if (action->dst_ids(0) != id)
-			engine->pushGameState(new StateRequestHand(action->dst_ids(0), zhufu, id, DECK_HAND, false, true));
+		//先进后出，所以逆出牌顺序压，由自己开始弃牌
+		PlayerEntity* start = this->getPre();
+		PlayerEntity* it = start;
+		do{
+			//没有手牌就不用弃
+			if(it->getHandCardNum() > 0 && (it->getID() == action->dst_ids(0) || it->getID() == action->dst_ids(1))){
+				engine->pushGameState(new StateRequestHand(it->getID(), zhufu, -1, DECK_DISCARD, false, false));
+			}
+			it = it->getPre();
+		}while(it != start);
 	}
 	else
 	{
@@ -235,8 +241,7 @@ int TianShi::TianShiZhuFu(int step, Action *action)
 		zhufu.point = 2;
 		zhufu.srcID = id;
 		zhufu.type = HARM_NONE;
-		if (action->dst_ids(0) != id)
-			engine->pushGameState(new StateRequestHand(action->dst_ids(0), zhufu, id, DECK_HAND, false, true));
+		engine->pushGameState(new StateRequestHand(action->dst_ids(0), zhufu, id, DECK_HAND, false, false));
 	}
 	return GE_SUCCESS;
 }
