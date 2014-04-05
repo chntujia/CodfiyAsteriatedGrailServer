@@ -159,12 +159,12 @@ int ShenGuan::ShenShengQiYue()
 		if (GE_SUCCESS == (ret = engine->getReply(id, reply)))
 		{
 			Respond* respond = (Respond*) reply;
-			//发动
-			int dstID = respond->dst_ids(0);
-			int crossNum = respond->args(0);
-			PlayerEntity *dstPlayer = engine->getPlayerEntity(dstID);
+			//发动			
+			int crossNum = respond->args(0);			
 			if (crossNum > 0)
 			{
+				int dstID = respond->dst_ids(0);
+				PlayerEntity *dstPlayer = engine->getPlayerEntity(dstID);
 				network::SkillMsg skill_msg;
 				Coder::skillNotice(id, dstID, SHEN_SHENG_QI_YUE, skill_msg);
 				engine->sendMessage(-1, MSG_SKILL, skill_msg);
