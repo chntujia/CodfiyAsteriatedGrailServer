@@ -621,7 +621,7 @@ int GameGrail::setStateCheckBasicEffect()
 	}
 	else
 	{
-		pushGameState(new StateBoot);
+		pushGameState(new StateBeforeAction);
 	}
 	//ÖÐ¶¾ push timeline3 states here based on basicEffect
 	list<BasicEffect> basicEffects = player->getBasicEffect();

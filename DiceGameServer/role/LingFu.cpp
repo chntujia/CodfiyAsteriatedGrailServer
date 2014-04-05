@@ -374,7 +374,7 @@ int LingFu::BaiGuiYeXing_Expose(int cardID)
 int LingFu::BaiGuiYeXing_Effect()
 {
 	HARM baiGui;
-	baiGui.cause = LEI_MING;
+	baiGui.cause = BAI_GUI_YE_XING;
 	baiGui.point = using_LingLiBengJie ? 2 : 1;
 	baiGui.srcID = id;
 	baiGui.type = HARM_MAGIC;

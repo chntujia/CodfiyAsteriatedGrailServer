@@ -213,7 +213,7 @@ int TianShi::TianShiZhuFu(int step, Action *action)
 		do{
 			//没有手牌就不用弃
 			if(it->getHandCardNum() > 0 && (it->getID() == action->dst_ids(0) || it->getID() == action->dst_ids(1))){
-				engine->pushGameState(new StateRequestHand(it->getID(), zhufu, -1, DECK_DISCARD, false, false));
+				engine->pushGameState(new StateRequestHand(it->getID(), zhufu, id, DECK_HAND, false, false));
 			}
 			it = it->getPre();
 		}while(it != start);

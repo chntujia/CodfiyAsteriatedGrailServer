@@ -229,7 +229,7 @@ int StateWeaken::handle(GameGrail* engine)
 				int srcID_t = srcID;
 				int howMany_t = howMany;
 				engine->popGameState();
-				engine->pushGameState(new StateBoot);
+				engine->pushGameState(new StateBeforeAction);
 				HARM harm;
 				harm.type = HARM_NONE;
 				harm.point = howMany_t;
@@ -262,25 +262,6 @@ int StateWeaken::handle(GameGrail* engine)
 
 }
 
-int StateBoot::handle(GameGrail* engine)
-{
-	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateBoot", engine->getGameId());
-	int ret = GE_FATAL_ERROR;
-	int m_currentPlayerID = engine->getCurrentPlayerID();
-
-	while(iterator < engine->getGameMaxPlayers()){	    
-		ret = engine->getPlayerEntity(iterator)->p_boot(step, m_currentPlayerID);
-		moveIterator(ret);
-		if(GE_SUCCESS != ret){
-			return ret;
-		}		
-	}
-	if(GE_SUCCESS == (ret = engine->popGameState_if(STATE_BOOT))){
-		engine->pushGameState(new StateBeforeAction);
-	}
-	return ret;
-}
-
 int StateBeforeAction::handle(GameGrail* engine)
 {
 	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter handleBeforeAction", engine->getGameId());
@@ -295,12 +276,28 @@ int StateBeforeAction::handle(GameGrail* engine)
 		}		
 	}
 	if(GE_SUCCESS == (ret = engine->popGameState_if(STATE_BEFORE_ACTION))){
-
-
-
-		engine->pushGameState(new StateActionPhase(ACTION_ANY, false));
+		engine->pushGameState(new StateBoot);
 	}
 
+	return ret;
+}
+
+int StateBoot::handle(GameGrail* engine)
+{
+	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateBoot", engine->getGameId());
+	int ret = GE_FATAL_ERROR;
+	int m_currentPlayerID = engine->getCurrentPlayerID();
+
+	while(iterator < engine->getGameMaxPlayers()){	    
+		ret = engine->getPlayerEntity(iterator)->p_boot(step, m_currentPlayerID);
+		moveIterator(ret);
+		if(GE_SUCCESS != ret){
+			return ret;
+		}		
+	}
+	if(GE_SUCCESS == (ret = engine->popGameState_if(STATE_BOOT))){
+		engine->pushGameState(new StateActionPhase(ACTION_ANY, false));
+	}
 	return ret;
 }
 

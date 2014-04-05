@@ -141,7 +141,7 @@ int QiDao::p_after_magic(int &step, int playerID){
 //启动后，攻击+2符文
 int QiDao::p_timeline_1(int &step, CONTEXT_TIMELINE_1* con){
 	step = STEP_DONE;
-	if(id != engine->getCurrentPlayerID()){
+	if(id != con->attack.srcID || con->attack.isActive == false){
 		return GE_SUCCESS;
 	}
 	if(tap){

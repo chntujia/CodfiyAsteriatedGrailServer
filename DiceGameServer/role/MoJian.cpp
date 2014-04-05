@@ -148,7 +148,7 @@ int MoJian::p_timeline_2_hit(int &step, CONTEXT_TIMELINE_2_HIT * con)
 {
 
 	int ret = GE_INVALID_STEP;
-	if(con->attack.srcID != id||!tap){
+	if(con->attack.srcID != id){
 		return GE_SUCCESS;
 	}
 
@@ -314,18 +314,18 @@ int  MoJian::XiuLuoLianZhan(int playerID)
 int MoJian::AnYingZhiLi(CONTEXT_TIMELINE_2_HIT *con)
 {
    //在【暗影形态】下 发动的所有攻击伤害+1
-	if(tap)
- {	int ret;
-	int srcID = con->attack.srcID;
-	int dstID = con->attack.dstID;
-	if(srcID != id){
-		return GE_SUCCESS;
+	if(tap) {	
+		int ret;
+		int srcID = con->attack.srcID;
+		int dstID = con->attack.dstID;
+		if(srcID != id){
+			return GE_SUCCESS;
+		}
+		SkillMsg skill;
+		Coder::skillNotice(id, con->attack.dstID, AN_YING_ZHI_LI, skill);
+		engine->sendMessage(-1, MSG_SKILL, skill);
+		con->harm.point += 1;
 	}
-	SkillMsg skill;
-	Coder::skillNotice(id, con->attack.dstID, AN_YING_ZHI_LI, skill);
-	engine->sendMessage(-1, MSG_SKILL, skill);
-	con->harm.point += 1;
-  }
 	return GE_SUCCESS;
 }
 

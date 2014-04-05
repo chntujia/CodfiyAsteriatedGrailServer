@@ -173,6 +173,9 @@ int MoDao::MoBaoChongJi(Action* action)
 	network::SkillMsg skill;
 	Coder::skillNotice(id, dstIDs, MO_BAO_CHONG_JI, skill);
 	engine->sendMessage(-1, MSG_SKILL, skill);
+	CardMsg show_card;
+	Coder::showCardNotice(id, 1, cardID, show_card);
+	engine->sendMessage(-1, MSG_CARD, show_card);
     //所有移牌操作都要用setStateMoveXXXX，ToHand的话要填好HARM，就算不是伤害
 	PlayerEntity* it = this->getPre();
 	HARM moBao;
