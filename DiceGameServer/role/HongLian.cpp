@@ -349,6 +349,9 @@ int HongLian::XueXingDaoYan()
 		if (GE_SUCCESS == (ret = engine->getReply(id, reply)))
 		{
 			Respond* respond = (Respond*) reply;
+			if(respond->args(0) == 0){
+				return ret;
+			}
 			//·¢¶¯
 			list<int> dst;
 			//list<int> cross;
