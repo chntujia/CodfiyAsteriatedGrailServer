@@ -9,6 +9,9 @@ void player_talk(GameGrail* engine, int m_playerId, Talk* talk)
 	}
 	else
 	{
+		if(m_playerId == GUEST){
+			return;
+		}
 		Gossip gossip;
 		gossip.set_type(GOSSIP_TALK);
 		gossip.set_id(m_playerId);

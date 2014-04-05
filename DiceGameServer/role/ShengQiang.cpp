@@ -207,16 +207,15 @@ int ShengQiang::HuiYao(int &step, Action* action)
 	}
 	else
 	{
+		GameInfo update_info;
 		list<int>::iterator it;
 		for (it = dstIDs.begin(); it != dstIDs.end(); it++)
 		{
 			dstPlayer = engine->getPlayerEntity(*it);
 			dstPlayer->addCrossNum(1);
-			GameInfo update_info;
-			Coder::crossNotice(*it, dstPlayer->getCrossNum(), update_info);
-			engine->sendMessage(-1, MSG_GAME, update_info);
+			Coder::crossNotice(*it, dstPlayer->getCrossNum(), update_info);			
 		}
-		
+		engine->sendMessage(-1, MSG_GAME, update_info);
 		addAction(ACTION_ATTACK, HUI_YAO);
 
 		return GE_SUCCESS;
