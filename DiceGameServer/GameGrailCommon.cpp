@@ -1,4 +1,6 @@
 #include "GameGrailCommon.h"
+CardEntity* cardList[CARDSUM];
+
 CardEntity* getCardByID(int id)
 {
     if(id>=0 && id<150)

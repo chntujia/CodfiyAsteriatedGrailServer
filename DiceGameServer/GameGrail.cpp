@@ -547,7 +547,7 @@ int GameGrail::drawCardsFromPile(int howMany, vector< int > &cards)
 		pilePtr = discard->popAll(temp);
 		pile->push(pilePtr, temp);
 		pile->randomize();
-		if(!pile->pop(howMany-outPtr,out+outPtr)){
+		if(GE_SUCCESS != pile->pop(howMany-outPtr,out+outPtr)){
 			ztLoggerWrite(ZONE, e_Error, "[Table %d] Running out of cards.", m_gameId);
 			throw GE_CARD_NOT_ENOUGH;
 		}
@@ -847,6 +847,7 @@ void GameGrail::GameRun()
 				m_gameId, e.what(), topGameState()->state);
 		}
 	}
+	GameManager::getInstance().deleteGame(GAME_TYPE_GRAIL, m_gameId);
 	ztLoggerWrite(ZONE, e_Information, "GameGrail::GameRun() GameGrail [%d] %s end!!", 
 					m_gameId, m_gameName.c_str());
 	delete this;

@@ -7,7 +7,7 @@
 #include "GameGrailCommon.h"
 #include "DiceGameServer.h"
 #include "GMCommand.h"
-CardEntity* cardList[150];
+
 int _tmain(int argc, _TCHAR* argv[])
 {
 	// ≥ı ºªØgm÷∏¡Ó
