@@ -3,7 +3,7 @@
 #include "UserSessionManager.h"
 #include "GameManager.h"
 #include "Communication.h"
-
+#include "role\QiDao.h"
 #include <boost/algorithm/string.hpp>
 
 uint32_t UserTask::m_sIDSeq = 10000;
@@ -183,24 +183,10 @@ bool UserTask::cmdMsgParse(const char *pstrMsg, const uint32_t nCmdLen)
 				case RESPOND_HEAL:
 					tryNotify(m_playerId, STATE_ASK_FOR_CROSS, 0, respond);
 					break;			
+				case WEI_LI_CI_FU:
+					QiDao::WeiLiCiFuParse(this, m_playerId, proto);
+					break;
 				default:
-					////[QiDao]如果是威力赐福响应，需要调用祈祷师的p_cmdMsgParse
-					if(respond->respond_id() == WEI_LI_CI_FU){
-
-						int playerNum = getGame()->getGameMaxPlayers();
-						for(int pid = 0;pid<playerNum;pid++){
-							PlayerEntity* pe = getGame()->getPlayerEntity(pid);
-							if(pe->getRoleID() == 16){
-								if(pe->cmdMsgParse(this, type, proto) == false){
-									ztLoggerWrite(ZONE, e_Error, "[%s]Received undefine MSG_RESPOND: %s,\n size:%d, type:%d,\n To proto: %s", m_userId.c_str(), pstrMsg, *size, type, proto->DebugString().c_str());
-									delete proto;
-								}	
-								break;
-							}
-						}
-						break; //退出switch
-					}
-
 					//尝试从角色的cmdMsgParse里找匹配
 					if(getGame()->getPlayerEntity(m_playerId)->cmdMsgParse(this, type, proto) == false){
 						ztLoggerWrite(ZONE, e_Error, "[%s]Received undefine MSG_RESPOND: %s,\n size:%d, type:%d,\n To proto: %s", m_userId.c_str(), pstrMsg, *size, type, proto->DebugString().c_str());

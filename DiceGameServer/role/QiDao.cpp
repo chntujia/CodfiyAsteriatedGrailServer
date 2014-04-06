@@ -3,6 +3,11 @@
 #include "..\UserTask.h"
 
 //祈祷师 的赐福效果处理涉及 UserTask::cmdMsgParse 和 PlayerEntity::p_additional_action 函数，查找请使用关键词[QiDao]
+void QiDao::WeiLiCiFuParse(UserTask* session, int playerId, ::google::protobuf::Message *proto)
+{
+	Respond* respond = (Respond*)proto;
+	session->tryNotify(playerId, STATE_TIMELINE_2_HIT,  WEI_LI_CI_FU, respond);
+}
 
 bool QiDao::cmdMsgParse(UserTask *session, uint16_t type, ::google::protobuf::Message *proto)
 {
@@ -12,11 +17,6 @@ bool QiDao::cmdMsgParse(UserTask *session, uint16_t type, ::google::protobuf::Me
 		Respond* respond = (Respond*)proto;
 		switch(respond->respond_id())
 		{
-			case  WEI_LI_CI_FU:
-				//tryNotify负责向游戏主线程传消息，只有id等于当前等待id，声明state等于当前state，声明step等于当前step，游戏主线程才会接受
-							//威力赐福的notify对象不是祈祷师自己， [QiDao]威力赐福响应，目前由UserTask::cmdMsgParse来调用祈祷的 cmdMsgParse
-				session->tryNotify(engine->getCurrentPlayerID(), STATE_TIMELINE_2_HIT,  WEI_LI_CI_FU, respond);
-				return true;
 			case QI_DAO:
 				session->tryNotify(id, STATE_BOOT, QI_DAO, respond);
 				return true;
@@ -110,6 +110,7 @@ int QiDao::p_after_attack(int &step, int playerID){
 	return GE_SUCCESS;
 }
 int QiDao::p_after_magic(int &step, int playerID){
+	XunJieCiFuEffect(playerID);
 	if(playerID != id){return GE_SUCCESS;}
 	int ret = GE_INVALID_STEP;
 	while(STEP_DONE != step)
@@ -183,10 +184,7 @@ int QiDao::p_timeline_2_hit(int &step, CONTEXT_TIMELINE_2_HIT * con)
 int QiDao::WeiLiCiFuEffect( CONTEXT_TIMELINE_2_HIT * con){
 	int ret = GE_INVALID_ACTION;
 	int playerID = con->attack.srcID;
-	// 主动攻击允许发动
-	if(playerID != engine->getCurrentPlayerID()){
-		return GE_SUCCESS;
-	}
+
 	PlayerEntity *target = engine->getPlayerEntity(playerID);
 	list<BasicEffect> effects = target->getBasicEffect();
 	bool pushed = false;
