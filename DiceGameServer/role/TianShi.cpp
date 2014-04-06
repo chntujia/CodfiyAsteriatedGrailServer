@@ -175,6 +175,10 @@ int TianShi::TianShiZhiQiang(Action *action)
 	SkillMsg skill_msg;
 	Coder::skillNotice(id, action->dst_ids(0), TIAN_SHI_ZHI_QIANG, skill_msg);
 	engine->sendMessage(-1, MSG_SKILL, skill_msg);
+	CardMsg show_card;
+	Coder::showCardNotice(id, 1, action->card_ids(0), show_card);
+	engine->sendMessage(-1, MSG_CARD, show_card);
+	
 	engine->setStateMoveOneCardNotToHand(id, DECK_HAND, action->dst_ids(0), DECK_BASIC_EFFECT, action->card_ids(0), id, CAUSE_USE, true);
 	return GE_SUCCESS;
 }
@@ -325,14 +329,14 @@ int TianShi::TianShiZhiGe()
 		if (GE_SUCCESS == (ret = engine->getReply(id, reply)))
 		{
 			Respond* respond = (Respond*) reply;
-			int dstID = respond->dst_ids(0);
-			PlayerEntity* dst = engine->getPlayerEntity(dstID);
 
 			if (respond->args_size() < 2)
 			{
 				return GE_SUCCESS;
 			}
 
+			int dstID = respond->dst_ids(0);
+			PlayerEntity* dst = engine->getPlayerEntity(dstID);
 			int card_id = respond->args(1);
 			int useGem = respond->args(0);
 

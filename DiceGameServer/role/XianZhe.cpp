@@ -152,6 +152,10 @@ int XianZhe::MoDaoFaDian(Action *action)
 	Coder::skillNotice(id, action->dst_ids(0), MO_DAO_FA_DIAN, skill_msg);
 	engine->sendMessage(-1, MSG_SKILL, skill_msg);
 
+	CardMsg show_card;
+	Coder::showCardNotice(id, cards.size(), cards, show_card);
+	engine->sendMessage(-1, MSG_CARD, show_card);
+
 	setGem(gem-1);
 	GameInfo game_info;
 	Coder::energyNotice(id, gem, crystal, game_info);
@@ -184,6 +188,10 @@ int XianZhe::ShengJieFaDian(int &step, Action *action)
 		SkillMsg skill_msg;
 		Coder::skillNotice(id, action->dst_ids(0), SHENG_JIE_FA_DIAN, skill_msg);
 		engine->sendMessage(-1, MSG_SKILL, skill_msg);
+
+		CardMsg show_card;
+		Coder::showCardNotice(id, cards.size(), cards, show_card);
+		engine->sendMessage(-1, MSG_CARD, show_card);
 
 		setGem(gem-1);
 		GameInfo game_info;
@@ -243,6 +251,10 @@ int XianZhe::FaShuFanTan()
 			SkillMsg skill_msg;
 			Coder::skillNotice(id, dst->getID(), FA_SHU_FAN_TAN, skill_msg);
 			engine->sendMessage(-1, MSG_SKILL, skill_msg);
+
+			CardMsg show_card;
+			Coder::showCardNotice(id, cards.size(), cards, show_card);
+			engine->sendMessage(-1, MSG_CARD, show_card);
 
 			HARM FanTan1;
 			FanTan1.cause = FA_SHU_FAN_TAN;

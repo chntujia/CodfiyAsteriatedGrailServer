@@ -264,6 +264,9 @@ int ZhongCai::PanJueTianPing(Action* action)
 	
 	// +1ษ๓ละ
 	setToken(0, token[0]+1);
+	SkillMsg skill_msg;
+	Coder::skillNotice(id, id, YI_SHI_ZHONG_DUAN, skill_msg);
+	engine->sendMessage(-1, MSG_SKILL, skill_msg);
 
 	GameInfo game_info;
 	Coder::energyNotice(id, gem, crystal, game_info);
