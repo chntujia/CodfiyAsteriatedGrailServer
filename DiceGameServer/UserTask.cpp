@@ -145,8 +145,12 @@ bool UserTask::cmdMsgParse(const char *pstrMsg, const uint32_t nCmdLen)
 		case MSG_PICK_BAN:
 			{
 				PickBan* pick = (PickBan*)proto;
-				if(pick->strategy() == ROLE_STRATEGY_31 && pick->is_pick()){
+				int strategy = getGame()->m_roleStrategy;
+				if(strategy == ROLE_STRATEGY_31 && pick->is_pick()){
 					tryNotify(m_playerId, STATE_ROLE_STRATEGY_31, 0, pick);
+				}
+				else if(strategy == ROLE_STRATEGY_ANY && pick->is_pick()){
+					tryNotify(m_playerId, STATE_ROLE_STRATEGY_ANY, 0, pick);
 				}
 				break;
 			}

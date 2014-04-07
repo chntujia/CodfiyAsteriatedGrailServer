@@ -53,7 +53,6 @@ int GameManager::deleteGame(int gameType, int tableId)
 		case GAME_TYPE_GRAIL:
 			{
 				GameGrail *game = (GameGrail*)m_gameGrailMap[tableId];
-				game->terminate();
 				m_gameGrailMap.erase(tableId);
 				ztLoggerWrite(ZONE, e_Information, "GameManager::deleteGame() Table %d.", tableId);
 				break;

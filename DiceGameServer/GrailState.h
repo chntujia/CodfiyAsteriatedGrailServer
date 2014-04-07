@@ -8,6 +8,7 @@ enum STATE{
 	STATE_SEAT_ARRANGE,	
 	STATE_ROLE_STRATEGY_RANDOM,
 	STATE_ROLE_STRATEGY_31,
+	STATE_ROLE_STRATEGY_ANY,
 	STATE_ROLE_STRATEGY_BP,
 	STATE_GAME_START,
 	STATE_BEFORE_TURN_BEGIN,
@@ -180,6 +181,17 @@ class StateRoleStrategy31 : public GrailState
 public:
 	StateRoleStrategy31(): GrailState(STATE_ROLE_STRATEGY_31), isSet(false){ memset(messages, 0, sizeof(messages)); }
 	~StateRoleStrategy31() { for(int i = 0; i < MAXPLAYER; i++) SAFE_DELETE(messages[i]);}
+	int handle(GameGrail* engine);
+private:
+	bool isSet;
+	RoleRequest* messages[MAXPLAYER];
+};
+
+class StateRoleStrategyAny : public GrailState
+{
+public:
+	StateRoleStrategyAny(): GrailState(STATE_ROLE_STRATEGY_ANY), isSet(false){ memset(messages, 0, sizeof(messages)); }
+	~StateRoleStrategyAny() { for(int i = 0; i < MAXPLAYER; i++) SAFE_DELETE(messages[i]);}
 	int handle(GameGrail* engine);
 private:
 	bool isSet;

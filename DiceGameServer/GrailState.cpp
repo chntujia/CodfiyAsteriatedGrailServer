@@ -148,6 +148,43 @@ int StateRoleStrategy31::handle(GameGrail* engine)
 	return isTimeOut ? GE_TIMEOUT : GE_SUCCESS;
 }
 
+int StateRoleStrategyAny::handle(GameGrail* engine)
+{
+	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateRoleStrategyAny", engine->getGameId());
+	int ret;
+	int playerNum = engine->getGameMaxPlayers();
+	if(!isSet){
+		for(int i = 0; i < playerNum; i++){	
+			messages[i] = new RoleRequest;
+			Coder::askForRole(i, sizeof(SUMMON)/sizeof(int), SUMMON, *messages[i]);
+		}
+		isSet = true;
+	}
+	void* reply;
+	int chosen;
+	GameInfo& game_info = engine->room_info;
+	bool isTimeOut = !engine->waitForAll(network::MSG_ROLE_REQ, (void**)messages, 180, true);
+			
+	for(int i = 0; i < engine->getGameMaxPlayers(); i++){	
+		if(GE_SUCCESS == (ret = engine->getReply(i, reply))){
+			PickBan *respond = (PickBan*)reply;
+			chosen = respond->role_ids(0);
+			Coder::roleNotice(i, chosen, game_info);
+		}
+		else{
+			chosen = messages[i]->role_ids(i);
+			Coder::roleNotice(i, chosen, game_info);
+		}
+	}
+	game_info.set_is_started(true);
+	engine->sendMessage(-1, MSG_GAME, game_info);
+
+	engine->initPlayerEntities();
+	engine->popGameState();
+	engine->pushGameState(new StateGameStart);
+	return isTimeOut ? GE_TIMEOUT : GE_SUCCESS;
+}
+
 int StateGameStart::handle(GameGrail* engine)
 {
 	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateGameStart", engine->getGameId());

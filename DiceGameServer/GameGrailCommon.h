@@ -25,6 +25,7 @@ typedef map< int, GameGrailPlayerContext* > PlayerContextList;
 const int SUMMON[] = {1, 2, 3, 4, 5, 6, 7, 8, 9,10,
 	                 11,12,13,14,15,16,17,18,19,20,
 			         21,22,23,24,25,26,   28,29};
+
 bool isValidRoleID(int roleID);
 
 enum GrailError{
@@ -665,7 +666,7 @@ public:
 		else
 			player_info->set_blue_token(howMany);
 	}
-	static void askForRole(int ID, int howMany, int *roles, RoleRequest& cmd_req)
+	static void askForRole(int ID, int howMany, const int *roles, RoleRequest& cmd_req)
 	{
 		cmd_req.set_strategy(ROLE_STRATEGY_31);
 		for(int i = 0; i < howMany; i++){

@@ -186,7 +186,7 @@ GameGrail::GameGrail(GameGrailConfig *config) : playing(false), processing(true)
 	m_maxPlayers = config->maxPlayers;
 	m_roleStrategy = config->roleStrategy;
 	m_seatMode = 0;
-	m_responseTime = 20;
+	m_responseTime = 60;
 	m_maxAttempts = 2;
 	pushGameState(new StateWaitForEnter);
 }
@@ -899,6 +899,9 @@ int GameGrail::setStateRoleStrategy()
 	case ROLE_STRATEGY_31:
 		pushGameState(new StateRoleStrategy31);
 		break;
+	case ROLE_STRATEGY_ANY:
+		pushGameState(new StateRoleStrategyAny);
+		break;
 	case ROLE_STRATEGY_BP:
 		//pushGameState(new GrailState(STATE_ROLE_STRATEGY_BP));
 		break;
@@ -1063,7 +1066,7 @@ void GameGrail::onUserLeave(string userID)
 			if(it->second->isConnected())
 				return;
 		}
-		GameManager::getInstance().deleteGame(GAME_TYPE_GRAIL, m_gameId);
+		terminate();
 	}
 }
 
