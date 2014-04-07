@@ -226,7 +226,6 @@ int ShenGuan::ShuiZhiShenLi(int &step, Action* action)
 	int cardID = action->card_ids(0);
 	int dstID = action->dst_ids(0);
 	PlayerEntity *dstPlayer = engine->getPlayerEntity(dstID);
-	int give;
 	if(step == SHUI_ZHI_SHEN_LI)
 	{
 		SkillMsg skill_msg;

@@ -65,7 +65,6 @@ int ShengNv::v_magic_skill(Action *action)
 	int cardID;
 	int playerID = action->src_id();
 	CardEntity* card;
-	PlayerEntity* dst;
 
 	if(playerID != id){
 		return GE_INVALID_PLAYERID;

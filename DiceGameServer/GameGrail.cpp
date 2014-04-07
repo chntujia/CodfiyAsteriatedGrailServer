@@ -35,6 +35,7 @@
 #include "role\MoQiang.h"
 #include "role\DieWu.h"
 #include "role\LingHun.h"
+#include "role\NvWuShen.h"
 using namespace boost;
 
 PlayerEntity* GameGrail::createRole(int id, int roleID, int color)
@@ -113,6 +114,9 @@ PlayerEntity* GameGrail::createRole(int id, int roleID, int color)
 		break;
 	case 24:
 		return new DieWu(this,id,color);
+		break;
+	case 25:
+		return new NvWuShen(this, id, color);
 		break;
 	case 26:
 		return new MoGong(this,id,color);
@@ -952,6 +956,7 @@ void GameGrail::initPlayerEntities()
 		player_it = (SinglePlayerInfo*)&(room_info.player_infos().Get(i));
 		id = player_it->id();
 		roleID = player_it->role_id();
+		//roleID = 25;
 		color = player_it->team();
 		//FIXME: È«·âÓ¡Ê±´ú
 		m_playerEntities[id] = createRole(id, roleID, color);

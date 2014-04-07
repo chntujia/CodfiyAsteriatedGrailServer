@@ -6,7 +6,7 @@ class WuNv : public PlayerEntity
 public:
 	WuNv(GameGrail *engine, int id, int color): PlayerEntity(engine, id, color){tap =false; tongShengID = -1;}
 	bool cmdMsgParse(UserTask *session, uint16_t type, ::google::protobuf::Message *proto);
-	int p_before_turn_begin(int &step, int currentPlayerID);
+	int p_turn_begin(int &step, int currentPlayerID);
 	int p_boot(int &step, int currentPlayerID);
 	int p_timeline_4(int &step, CONTEXT_TIMELINE_4 *con);
 	int p_hand_change(int &step, int playerID);

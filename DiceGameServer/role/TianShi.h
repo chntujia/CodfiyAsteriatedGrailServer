@@ -6,7 +6,7 @@ class TianShi : public PlayerEntity
 public:
 	TianShi(GameGrail *engine, int id, int color): PlayerEntity(engine, id, color){}
 	bool cmdMsgParse(UserTask *session, uint16_t type, ::google::protobuf::Message *proto);
-	int p_turn_begin(int &step, int currentPlayerID);
+	int p_before_turn_begin(int &step, int currentPlayerID);
 	int v_magic_skill(Action* action);
 	int p_magic_skill(int &step, Action *action);
 	int p_basic_effect_change(int &step, int dstID, int card, int doerID, int cause);

@@ -16,7 +16,7 @@ bool TianShi::cmdMsgParse(UserTask *session, uint16_t type, ::google::protobuf::
 			return true;
 		case TIAN_SHI_ZHI_GE:
 			//tryNotify负责向游戏主线程传消息，只有id等于当前等待id，声明state等于当前state，声明step等于当前step，游戏主线程才会接受
-			session->tryNotify(id, STATE_TURN_BEGIN, TIAN_SHI_ZHI_GE, respond);
+			session->tryNotify(id, STATE_BEFORE_TURN_BEGIN, TIAN_SHI_ZHI_GE, respond);
 			return true;
 		case SHEN_ZHI_BI_HU:
 			//tryNotify负责向游戏主线程传消息，只有id等于当前等待id，声明state等于当前state，声明step等于当前step，游戏主线程才会接受
@@ -28,7 +28,7 @@ bool TianShi::cmdMsgParse(UserTask *session, uint16_t type, ::google::protobuf::
 	return false;
 }
 
-int TianShi::p_turn_begin(int &step, int currentPlayerID)
+int TianShi::p_before_turn_begin(int &step, int currentPlayerID)
 {
 	if (currentPlayerID != id || gem+crystal == 0)
 		return GE_SUCCESS;

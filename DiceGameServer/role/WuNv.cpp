@@ -22,7 +22,7 @@ bool WuNv::cmdMsgParse(UserTask *session, uint16_t type, ::google::protobuf::Mes
 	return false;
 }
 
-int WuNv::p_before_turn_begin(int &step, int currentPlayerID)
+int WuNv::p_turn_begin(int &step, int currentPlayerID)
 {
 	int ret = GE_INVALID_STEP;
 	if (currentPlayerID != id || !tap)

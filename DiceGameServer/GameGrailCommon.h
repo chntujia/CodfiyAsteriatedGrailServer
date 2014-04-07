@@ -24,7 +24,7 @@ typedef map< int, GameGrailPlayerContext* > PlayerContextList;
 
 const int SUMMON[] = {1, 2, 3, 4, 5, 6, 7, 8, 9,10,
 	                 11,12,13,14,15,16,17,18,19,20,
-			         21,22,23,24,   26,   28,29};
+			         21,22,23,24,25,26,   28,29};
 bool isValidRoleID(int roleID);
 
 enum GrailError{
@@ -224,6 +224,12 @@ enum CAUSE{
     MO_YAN=2605,
     MO_YAN_GAI_PAI=26051,
     CHONG_NENG_MO_YAN=2606,
+	SHEN_SHENG_ZHUI_JI_AFTER_ATTACK = 2701,
+	SHEN_SHENG_ZHUI_JI_AFTER_MAGIC = 27011,
+	ZHI_XU_ZHI_YIN = 2702,
+	HE_PING_XING_ZHE = 2703,
+	JUN_SHEN_WEI_GUANG = 2704,
+	YING_LING_ZHAO_HUAN = 2705,
 	XING_HONG_SHENG_YUE = 2801,
     XING_HONG_XIN_YANG = 2802,
 	XUE_XING_DAO_YAN = 2803,
