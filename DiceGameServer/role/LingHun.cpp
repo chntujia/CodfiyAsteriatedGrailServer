@@ -322,12 +322,12 @@ int LingHun::LingHunCiYu(Action* action)
 	Coder::skillNotice(id, dstID, LING_HUN_CI_YU, skill_msg);
 	engine->sendMessage(-1, MSG_SKILL, skill_msg);	
 		
-	    setToken(1,token[1]-3);              //蓝色灵魂-3	
-		dstPlayer->setGem(dstPlayer->getGem()+2);
-		network::GameInfo update;
-		Coder::tokenNotice(id,1,token[1],update);
-		Coder::energyNotice(dstID, gem, crystal, update);
-		engine->sendMessage(-1, MSG_GAME, update);
+	setToken(1,token[1]-3);              //蓝色灵魂-3	
+	dstPlayer->setGem(dstPlayer->getGem()+2);
+	network::GameInfo update;
+	Coder::tokenNotice(id,1,token[1],update);
+	Coder::energyNotice(dstID, dstPlayer->getGem(), dstPlayer->getCrystal(), update);
+	engine->sendMessage(-1, MSG_GAME, update);
 
 		//展示手牌
 	CardMsg show_card;
