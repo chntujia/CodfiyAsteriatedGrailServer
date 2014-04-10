@@ -36,6 +36,7 @@ enum STATE{
 	STATE_TIMELINE_3,
 	STATE_TIMELINE_4,
 	STATE_TIMELINE_5,
+	STATE_TIMELINE_6_START,
 	STATE_TIMELINE_6,
 	STATE_TIMELINE_6_DRAWN,
 	STATE_ASK_FOR_CROSS,		
@@ -454,6 +455,15 @@ public:
 	~StateTimeline5(){ SAFE_DELETE(context); }
 	int handle(GameGrail* engine);
 	CONTEXT_TIMELINE_5 *context;
+};
+
+class StateTimeline6Start : public GrailState
+{
+public:
+	StateTimeline6Start(CONTEXT_TIMELINE_6 *con): GrailState(STATE_TIMELINE_6_START), context(con){}
+	~StateTimeline6Start(){ SAFE_DELETE(context); }
+	int handle(GameGrail* engine);
+	CONTEXT_TIMELINE_6 *context;
 };
 
 class StateTimeline6 : public GrailState

@@ -8,7 +8,6 @@ LingHun::LingHun(GameGrail *engine, int id, int color): PlayerEntity(engine, id,
   tokenMax[1]=6;
   used_LING_HUN_ZENG_FU = false;
   used_LING_HUN_LIAN_JIE=false;
-  using_LING_HUN_LIAN_JIE=false;
   connectID=-1;
 }
 
@@ -35,7 +34,7 @@ bool LingHun::cmdMsgParse(UserTask *session, uint16_t type, ::google::protobuf::
 			//tryNotify负责向游戏主线程传消息，只有id等于当前等待id，声明state等于当前state，声明step等于当前step，游戏主线程才会接受
 			session->tryNotify(id,STATE_BOOT,LING_HUN_ZENG_FU, respond);  //用什么状态？？？
 		case LING_HUN_LIAN_JIE_REACT:
-			session->tryNotify(id,STATE_TIMELINE_6,LING_HUN_LIAN_JIE_REACT, respond);
+			session->tryNotify(id,STATE_TIMELINE_6_START,LING_HUN_LIAN_JIE_REACT, respond);
 			return true;
 		}
 	}
@@ -94,7 +93,7 @@ int LingHun::p_timeline_1(int &step, CONTEXT_TIMELINE_1 *con)
 {
 	int ret = GE_INVALID_STEP;
 	//天枪主动攻击可发动
-	if(con->attack.srcID != id){
+	if(con->attack.srcID != id || !con->attack.isActive){
 		return GE_SUCCESS;
 	}
 	//若成功则继续往下走，失败则返回，step会保留，下次再进来就不会重走
@@ -126,10 +125,10 @@ int LingHun::p_timeline_1(int &step, CONTEXT_TIMELINE_1 *con)
 }
 
 
-int LingHun::p_timeline_6(int &step, CONTEXT_TIMELINE_6 *con) 
+int LingHun::p_timeline_6_start(int &step, CONTEXT_TIMELINE_6 *con) 
 {    
 	//【灵魂链接】已使用                被攻击对象为灵魂或链接对象           【单次链接只能转移一次伤害】                                                       
-    if(used_LING_HUN_LIAN_JIE==true&&(con->dstID==id||con->dstID==connectID)&&!using_LING_HUN_LIAN_JIE)
+    if(used_LING_HUN_LIAN_JIE==true&&(con->dstID==id||con->dstID==connectID))
      {
           int ret = GE_INVALID_STEP;
 			//初始化step
@@ -151,12 +150,6 @@ int LingHun::p_timeline_6(int &step, CONTEXT_TIMELINE_6 *con)
 	return GE_SUCCESS;
   }
 }
-
- int LingHun::p_timeline_6_drawn(int &step, CONTEXT_TIMELINE_6_DRAWN *con) 
- { 
-	 using_LING_HUN_LIAN_JIE=false;     //本次转移伤害结束
-	 return GE_SUCCESS;
- }
 
  //【灵魂术士】：普通技：被动 【灵魂吞噬】：（我方每有1点士气下降）你+1【黄色灵魂】
 
@@ -580,42 +573,34 @@ int LingHun::LingHunLianJieReact(CONTEXT_TIMELINE_6 *con)
 	           HARM harm;
 	           harm.cause =LING_HUN_LIAN_JIE;
                harm.point=respond->args(0);
-	           harm.srcID =con->dstID;
+	           harm.srcID =con->harm.srcID;
 	           harm.type = HARM_MAGIC;
+
 	           con->harm.point=con->harm.point-respond->args(0);
 
 			   setToken(1,token[1]-respond->args(0));
 				network::GameInfo update_info;
 				Coder::tokenNotice(id,1,token[1], update_info);
 				engine->sendMessage(-1, MSG_GAME, update_info);
-				using_LING_HUN_LIAN_JIE=true;
 			
 				if(dstID==id)                            //伤害转给链接对象
 				{
-				//  setStateTimeline6(id,con->harm);
-					//获取角色的编号 
-				   engine->setStateTimeline6(id,con->harm);    
 				   engine->setStateTimeline6(connectID,harm);
-		            con->harm.point=0;
-				   engine->setStateTimeline6(id,con->harm);
 				}
 				else
 				{
-				 // setStateTimeline6Drawn(connectID,con->harm);
-				   engine->setStateTimeline6(connectID,con->harm);
-				   engine->setStateTimeline6(id,harm);   
-				   con->harm.point=0;
-				   engine->setStateTimeline6(id,con->harm);     //酱油状态
+				   engine->setStateTimeline6(id,harm);
 				}	
 				 
 	     	
-				  return GE_SUCCESS;
+				  return GE_URGENT;
 	  }
 			else
 			{
 				return GE_SUCCESS;
 			}
 		}
+		return ret;
 	}
 	else{
 		//超时啥都不用做

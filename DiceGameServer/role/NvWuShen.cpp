@@ -353,7 +353,7 @@ int NvWuShen::YingLingZhaoHuan(CONTEXT_TIMELINE_2_HIT *con)
 				tap = true;
 				engine->sendMessage(-1, MSG_GAME, game_info);
 				con->harm.point += 1;
-				if(respond->args(1) == 1){
+				if(respond->args(1)==1){
 					int cardID = respond->card_ids(0);
 					CardEntity* card = getCardByID(cardID);
 					if( card->getType() == TYPE_MAGIC ){
@@ -363,6 +363,9 @@ int NvWuShen::YingLingZhaoHuan(CONTEXT_TIMELINE_2_HIT *con)
 					engine->sendMessage(-1, MSG_CARD, show_card);
 					engine->setStateMoveOneCardNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardID, id, YING_LING_ZHAO_HUAN, true);
 					}
+					else {
+					return GE_INVALID_CARDID;
+					}
 				}
 				skill.Clear();
 				Coder::skillNotice(id, id, HE_PING_XING_ZHE, skill);
@@ -370,7 +373,10 @@ int NvWuShen::YingLingZhaoHuan(CONTEXT_TIMELINE_2_HIT *con)
 				game_info.Clear();
 				Coder::tapNotice(id, tap, game_info);
 				engine->sendMessage(-1, MSG_GAME, game_info);
-				return GE_URGENT;
+				if(respond->args(1)==1)
+					return GE_URGENT;
+				else
+					return GE_SUCCESS;
 			}
 			//取消直接返回
 			return GE_SUCCESS;

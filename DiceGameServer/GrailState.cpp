@@ -1159,7 +1159,7 @@ int StateTimeline5::handle(GameGrail* engine)
 		newCon->dstID = context->dstID;
 		newCon->harm = context->harm;
 		if(GE_SUCCESS == (ret = engine->popGameState_if(STATE_TIMELINE_5))){
-			engine->pushGameState(new StateTimeline6(newCon));
+			engine->pushGameState(new StateTimeline6Start(newCon));
 		}
 		else{
 			SAFE_DELETE(newCon);
@@ -1171,6 +1171,30 @@ int StateTimeline5::handle(GameGrail* engine)
 	return ret;
 }
 
+int StateTimeline6Start::handle(GameGrail* engine)
+{
+	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateTimeline6Start", engine->getGameId());
+	int ret = GE_FATAL_ERROR;
+	int m_currentPlayerID = engine->getCurrentPlayerID();
+
+	while(iterator < engine->getGameMaxPlayers()){	    
+		ret = engine->getPlayerEntity(iterator)->p_timeline_6_start(step, context);
+		moveIterator(ret);
+		if(GE_SUCCESS != ret){
+			return ret;
+		}		
+	}
+	CONTEXT_TIMELINE_6* newCon = new CONTEXT_TIMELINE_6;
+	newCon->dstID = context->dstID;
+	newCon->harm = context->harm;
+	if(GE_SUCCESS == (ret = engine->popGameState_if(STATE_TIMELINE_6_START))){
+		engine->pushGameState(new StateTimeline6(newCon));
+	}
+	else{
+		SAFE_DELETE(newCon);
+	}
+
+}
 int StateTimeline6::handle(GameGrail* engine)
 {
 	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateTimeline6", engine->getGameId());
