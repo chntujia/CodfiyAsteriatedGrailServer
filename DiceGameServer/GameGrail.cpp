@@ -36,6 +36,8 @@
 #include "role\DieWu.h"
 #include "role\LingHun.h"
 #include "role\NvWuShen.h"
+#include "role\YingLingRenXing.h"
+
 using namespace boost;
 
 PlayerEntity* GameGrail::createRole(int id, int roleID, int color)
@@ -120,6 +122,9 @@ PlayerEntity* GameGrail::createRole(int id, int roleID, int color)
 		break;
 	case 26:
 		return new MoGong(this,id,color);
+		break;
+	case 27:
+		return new YingLingRenXing(this, id, color);
 		break;
 	case 28:
 		return new HongLian(this,id,color);
