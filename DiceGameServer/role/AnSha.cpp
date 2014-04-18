@@ -151,6 +151,10 @@ int AnSha::ShuiYing(CONTEXT_TIMELINE_3 *con)
 			}
 			if (cards.size() > 0)
 			{
+				//展示并丢弃手牌
+				CardMsg show_card;
+				Coder::showCardNotice(id, cards.size(), cards, show_card);
+				engine->sendMessage(-1, MSG_CARD, show_card);
 				ret = engine->setStateMoveCardsNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cards.size(), cards, id, SHUI_YING, true);
 				
 				SkillMsg skill_msg;

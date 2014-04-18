@@ -385,6 +385,9 @@ int YongZhe::JinDuanZhiLiHit(CONTEXT_TIMELINE_2_HIT *con)//[响应]A 【禁断�
 				//展示并丢弃手牌
 				if (cards.size() > 0)
 				{
+					CardMsg show_card;
+					Coder::showCardNotice(id, cards.size(), cards, show_card);
+					engine->sendMessage(-1, MSG_CARD, show_card);
 					int ret = engine->setStateMoveCardsNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cards.size(), cards, id, JIN_DUAN_ZHI_LI, true);
 					
 				}
