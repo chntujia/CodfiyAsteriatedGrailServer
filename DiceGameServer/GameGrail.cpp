@@ -1079,13 +1079,13 @@ void GameGrail::onUserLeave(string userID)
 				break;
 			}
 		}
-		for(PlayerContextList::iterator it = m_playerContexts.begin(); it != m_playerContexts.end(); it++)
-		{
-			if(it->second->isConnected())
-				return;
-		}
-		terminate();
 	}
+	for(PlayerContextList::iterator it = m_playerContexts.begin(); it != m_playerContexts.end(); it++)
+	{
+		if(it->second->isConnected())
+			return;
+	}
+	terminate();
 }
 
 void GameGrail::toProto(GameInfo& game_info)
