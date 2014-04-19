@@ -156,6 +156,12 @@
     <ClInclude Include="role\YongZhe.h">
       <Filter>role</Filter>
     </ClInclude>
+    <ClInclude Include="role\NvWuShen.h">
+      <Filter>role</Filter>
+    </ClInclude>
+    <ClInclude Include="role\YingLingRenXing.h">
+      <Filter>role</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -288,6 +294,12 @@
       <Filter>role</Filter>
     </ClCompile>
     <ClCompile Include="role\YongZhe.cpp">
+      <Filter>role</Filter>
+    </ClCompile>
+    <ClCompile Include="role\NvWuShen.cpp">
+      <Filter>role</Filter>
+    </ClCompile>
+    <ClCompile Include="role\YingLingRenXing.cpp">
       <Filter>role</Filter>
     </ClCompile>
   </ItemGroup>

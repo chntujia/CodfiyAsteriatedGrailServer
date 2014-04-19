@@ -163,7 +163,7 @@ int StateRoleStrategyAny::handle(GameGrail* engine)
 	void* reply;
 	int chosen;
 	GameInfo& game_info = engine->room_info;
-	bool isTimeOut = !engine->waitForAll(network::MSG_ROLE_REQ, (void**)messages, 180, true);
+	bool isTimeOut = !engine->waitForAll(network::MSG_ROLE_REQ, (void**)messages, true);
 			
 	for(int i = 0; i < engine->getGameMaxPlayers(); i++){	
 		if(GE_SUCCESS == (ret = engine->getReply(i, reply))){
@@ -172,8 +172,7 @@ int StateRoleStrategyAny::handle(GameGrail* engine)
 			Coder::roleNotice(i, chosen, game_info);
 		}
 		else{
-			chosen = messages[i]->role_ids(i);
-			Coder::roleNotice(i, chosen, game_info);
+			Coder::roleNotice(i, i + 1, game_info);
 		}
 	}
 	game_info.set_is_started(true);
@@ -1159,7 +1158,7 @@ int StateTimeline5::handle(GameGrail* engine)
 		newCon->dstID = context->dstID;
 		newCon->harm = context->harm;
 		if(GE_SUCCESS == (ret = engine->popGameState_if(STATE_TIMELINE_5))){
-			engine->pushGameState(new StateTimeline6Start(newCon));
+			engine->pushGameState(new StateTimeline6(newCon));
 		}
 		else{
 			SAFE_DELETE(newCon);
@@ -1171,30 +1170,6 @@ int StateTimeline5::handle(GameGrail* engine)
 	return ret;
 }
 
-int StateTimeline6Start::handle(GameGrail* engine)
-{
-	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateTimeline6Start", engine->getGameId());
-	int ret = GE_FATAL_ERROR;
-	int m_currentPlayerID = engine->getCurrentPlayerID();
-
-	while(iterator < engine->getGameMaxPlayers()){	    
-		ret = engine->getPlayerEntity(iterator)->p_timeline_6_start(step, context);
-		moveIterator(ret);
-		if(GE_SUCCESS != ret){
-			return ret;
-		}		
-	}
-	CONTEXT_TIMELINE_6* newCon = new CONTEXT_TIMELINE_6;
-	newCon->dstID = context->dstID;
-	newCon->harm = context->harm;
-	if(GE_SUCCESS == (ret = engine->popGameState_if(STATE_TIMELINE_6_START))){
-		engine->pushGameState(new StateTimeline6(newCon));
-	}
-	else{
-		SAFE_DELETE(newCon);
-	}
-
-}
 int StateTimeline6::handle(GameGrail* engine)
 {
 	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateTimeline6", engine->getGameId());
@@ -1417,19 +1392,11 @@ int StateCoverChange::handle(GameGrail* engine)
 
 int StateRequestHand::handle(GameGrail* engine)
 {
+	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateRequestHand, howMany %d", engine->getGameId(), harm.point);
+	int ret = GE_FATAL_ERROR;
 	//最多把手牌全弃，若手牌为零，直接pop
 	int atMost = engine->getPlayerEntity(targetID)->getHandCardNum();
 	harm.point = harm.point > atMost ? atMost : harm.point;
-	if(harm.point < 1){
-		engine->popGameState();
-		return GE_SUCCESS;
-	}
-	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateRequestHand, howMany %d", engine->getGameId(), harm.point);
-	int ret = GE_FATAL_ERROR;
-
-	CommandRequest cmd_req;
-	Coder::askForDiscard(targetID, harm.point, harm.cause, isShown, cmd_req);
-
 	int targetID_t = targetID;
 	int dstOwner_t = dstOwner;
 	int dstArea_t = dstArea;
@@ -1438,6 +1405,15 @@ int StateRequestHand::handle(GameGrail* engine)
 	vector<int> toDiscard(harm.point);
 	PlayerEntity *target = engine->getPlayerEntity(targetID);
 	PlayerEntity *causer = engine->getPlayerEntity(harm.srcID);
+
+	if(harm.point < 1){
+		engine->popGameState();
+		return causer->p_request_hand_give_up(step, targetID_t, harm_t.cause);		 
+	}
+
+	CommandRequest cmd_req;
+	Coder::askForDiscard(targetID, harm.point, harm.cause, isShown, cmd_req);
+
 	if(engine->waitForOne(targetID, MSG_CMD_REQ, cmd_req))
 	{
 		void* reply;

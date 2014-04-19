@@ -192,7 +192,9 @@ GameGrail::GameGrail(GameGrailConfig *config) : playing(false), processing(true)
 	m_roleStrategy = config->roleStrategy;
 	m_seatMode = 0;
 	m_responseTime = 60;
-	m_maxAttempts = 2;
+	m_maxAttempts = 1;
+	m_teamArea = NULL;
+	pile = discard = NULL;
 	pushGameState(new StateWaitForEnter);
 }
 
@@ -272,7 +274,7 @@ void GameGrail::sendMessage(int id, uint16_t proto_type, google::protobuf::Messa
 void GameGrail::sendMessageExcept(int id, uint16_t proto_type, google::protobuf::Message& proto)
 {
 #ifdef Debug
-	ztLoggerWrite(ZONE, e_Debug, "[Table %d] send to %d, type:%d, string:\n%s \nsize: %d", m_gameId, id, proto_type, proto.DebugString().c_str(), proto.ByteSize());
+	ztLoggerWrite(ZONE, e_Debug, "[Table %d] send to all except %d, type:%d, string:\n%s \nsize: %d", m_gameId, id, proto_type, proto.DebugString().c_str(), proto.ByteSize());
 #endif
 	UserTask *ref;
 
@@ -396,7 +398,7 @@ int GameGrail::getReply(int id, void* &reply)
 	std::map<int, GameGrailPlayerContext*>::iterator iter;
 	if((iter=m_playerContexts.find(id)) == m_playerContexts.end()){
 		return GE_INVALID_PLAYERID;
-	}
+	} 
 	reply = iter->second->getBuf();
 	if(!reply){
 		return GE_NO_REPLY;
@@ -839,21 +841,32 @@ void GameGrail::GameRun()
 		try{
 			ret = GE_NO_STATE;
 			currentState = topGameState();
-			if(currentState){
+			if(currentState){				
 				ret = currentState->handle(this);
+				if(currentState->errorCount > 3){
+					ztLoggerWrite(ZONE, e_Error, "[Table %d] State: %d is popped because of too many errors ", m_gameId, currentState->state);
+					popGameState();
+				}
+			}
+			else{
+				ztLoggerWrite(ZONE, e_Error, "[Table %d] Empty state", m_gameId);
+				break;
 			}
 			if(ret != GE_SUCCESS && ret != GE_TIMEOUT && ret != GE_URGENT){
 				ztLoggerWrite(ZONE, e_Error, "[Table %d] Handle returns error: %d. Current state: %d", 
 					m_gameId, ret, currentState->state);
+				currentState->errorCount++;
 			}
 		}
 		catch(GrailError error)	{
 			ztLoggerWrite(ZONE, e_Error, "[Table %d] Handle throws error: %d. Current state: %d", 
 				m_gameId, error, topGameState()->state);
+			currentState->errorCount++;
 		}
 		catch(std::exception const& e) {
 			ztLoggerWrite(ZONE, e_Error, "[Table %d] Handle throws error: %s. Current state: %d", 
 				m_gameId, e.what(), topGameState()->state);
+			currentState->errorCount++;
 		}
 	}
 	GameManager::getInstance().deleteGame(GAME_TYPE_GRAIL, m_gameId);

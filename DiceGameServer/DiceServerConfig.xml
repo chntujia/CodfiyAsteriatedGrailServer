@@ -2,7 +2,7 @@
 <config>
   <server
     ip ="192.168.133.193"
-    port ="11227"
+    port ="11228"
 	  thread_num = "4"
     check_intertime = "600"
     log_level = "debug"/>

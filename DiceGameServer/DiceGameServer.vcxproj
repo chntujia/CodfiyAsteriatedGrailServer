@@ -113,6 +113,7 @@
     <ClInclude Include="role\MoGong.h" />
     <ClInclude Include="role\MoJian.h" />
     <ClInclude Include="role\MoQiang.h" />
+    <ClInclude Include="role\NvWuShen.h" />
     <ClInclude Include="role\QiDao.h" />
     <ClInclude Include="role\ShengNv.h" />
     <ClInclude Include="role\ShengQiang.h" />
@@ -121,6 +122,7 @@
     <ClInclude Include="role\TianShi.h" />
     <ClInclude Include="role\WuNv.h" />
     <ClInclude Include="role\XianZhe.h" />
+    <ClInclude Include="role\YingLingRenXing.h" />
     <ClInclude Include="role\YongZhe.h" />
     <ClInclude Include="role\YuanSu.h" />
     <ClInclude Include="role\ZhongCai.h" />
@@ -160,6 +162,7 @@
     <ClCompile Include="role\MoGong.cpp" />
     <ClCompile Include="role\MoJian.cpp" />
     <ClCompile Include="role\MoQiang.cpp" />
+    <ClCompile Include="role\NvWuShen.cpp" />
     <ClCompile Include="role\QiDao.cpp" />
     <ClCompile Include="role\ShengNv.cpp" />
     <ClCompile Include="role\ShengQiang.cpp" />
@@ -168,6 +171,7 @@
     <ClCompile Include="role\TianShi.cpp" />
     <ClCompile Include="role\WuNv.cpp" />
     <ClCompile Include="role\XianZhe.cpp" />
+    <ClCompile Include="role\YingLingRenXing.cpp" />
     <ClCompile Include="role\YongZhe.cpp" />
     <ClCompile Include="role\YuanSu.cpp" />
     <ClCompile Include="role\ZhongCai.cpp" />

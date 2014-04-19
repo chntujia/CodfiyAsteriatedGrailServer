@@ -119,7 +119,6 @@ public:
 	virtual int p_timeline_3(int &step, CONTEXT_TIMELINE_3 *con) { return GE_SUCCESS; }
 	virtual int p_timeline_4(int &step, CONTEXT_TIMELINE_4 *con) { return GE_SUCCESS; }
 	virtual int p_timeline_5(int &step, CONTEXT_TIMELINE_5 *con) { return GE_SUCCESS; }
-	virtual int p_timeline_6_start(int &step, CONTEXT_TIMELINE_6 *con) { return GE_SUCCESS; }
 	virtual int p_timeline_6(int &step, CONTEXT_TIMELINE_6 *con) { return GE_SUCCESS; }
 	virtual int p_timeline_6_drawn(int &step, CONTEXT_TIMELINE_6_DRAWN *con) { return GE_SUCCESS; }
 	virtual int p_before_lose_morale(int &step, CONTEXT_LOSE_MORALE *con) { return GE_SUCCESS; }

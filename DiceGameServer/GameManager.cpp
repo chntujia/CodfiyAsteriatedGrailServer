@@ -90,7 +90,7 @@ int GameManager::enterRoom(int gameType, string userId, void* req)
 				session->setTableID(roomId);
 				session->setPlayerID(playerId);
 			}
-			if(lastGame){
+			if(lastGame && lastGame->getGameId() != roomId){
 				lastGame->onUserLeave(userId);
 			}
 			if(ret == SIT_TABLE_SUCCESS)
