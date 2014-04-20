@@ -55,21 +55,22 @@ int MoGong::v_magic_skill(Action *action)
 
 	switch(actionID)
 	{
-	
 	case LEI_GUANG_SAN_SHE:
 		// 本回合未使用【魔贯冲击】，或【魔贯冲击】不可用     +存在【风系】充能 才发动！！！
-	{	  int LeiXi=0;
-		  list<int>::iterator it;
-		for (it = coverCards.begin(); it != coverCards.end(); ++it)
 		{
-			if(getCardByID((*it))->getElement() ==ELEMENT_THUNDER)
-                          LeiXi++;
+			CardEntity* card;
+			list<int>::iterator it;
+			for (it = coverCards.begin(); it != coverCards.end(); ++it)
+			{
+				card = getCardByID(*it);
+				if(card->getElement() !=ELEMENT_THUNDER || GE_SUCCESS != checkOneCoverCard(cardID))
+					return GE_INVALID_ACTION;
+			}
+				  //使用了【魔贯冲击】  【雷光散射】不可用
+			if(!avilable_LEI_GUANG_SAN_SHE){
+				return GE_INVALID_ACTION;
+			}
 		}
-		      //使用了【魔贯冲击】                          雷系牌为0    【雷光散射】不可用
-		if(LeiXi==0||!avilable_LEI_GUANG_SAN_SHE){
-			return GE_INVALID_ACTION;
-		}
-	}
 		break;
 	
 	//通过角色相关的检
@@ -164,7 +165,7 @@ int MoGong::p_attack_skill(int &step, Action *action)
 //统一在p_before_turn_begin 初始化各种回合变量
 int MoGong::p_before_turn_begin(int &step, int currentPlayerID) 
 {
-	used_MO_GUAN_CHONG_JI=false; 
+	used_MO_GUAN_CHONG_JI=false;
 	used_DUO_CHONG_SHE_JI=false;
 	using_DUO_CHONG_SHE_JI=false;
 	available_MO_GUAN_CHONG_JI=true;
@@ -260,7 +261,7 @@ int MoGong::p_timeline_1(int &step, CONTEXT_TIMELINE_1 *con)
 		return GE_SUCCESS;
 	}
 
-	    if(used_DUO_CHONG_SHE_JI)
+	    if(using_DUO_CHONG_SHE_JI)
 		{
 		   ret =DuoChongSheJi_Effect(con);
 		   if(toNextStep(ret)|| ret == GE_URGENT){
@@ -361,7 +362,7 @@ int MoGong::v_attack(int cardID, int dstID, bool realCard)
 		return ret;
 	}
 	
-	if(used_DUO_CHONG_SHE_JI)
+	if(using_DUO_CHONG_SHE_JI)
 	{
 	    if(lastTarget==dstID)
 			return GE_INVALID_PLAYERID;
@@ -624,11 +625,6 @@ int MoGong::MoYan()
 
 int MoGong::ChongNengGaiPai()
 {
-  //【充能】满了
-	if(coverCards.size() > 7){
-		return GE_SUCCESS;
-	}
-
 	CommandRequest cmd_req;
 	Coder::askForSkill(id,CHONG_NENG_GAI_PAI, cmd_req);
 
@@ -768,7 +764,7 @@ int MoGong::DuoChongSheJi_QiPai(Action *action)
 	//暗系攻击
 	engine->setStateTimeline1(virtualCardID, dstID, id, true);
 	engine->setStateUseCard(virtualCardID, dstID, id, false, false);
-	 using_DUO_CHONG_SHE_JI=true;
+	using_DUO_CHONG_SHE_JI=true;
 	return GE_URGENT;
 }
 
@@ -778,6 +774,7 @@ int MoGong::DuoChongSheJi_Effect(CONTEXT_TIMELINE_1 *con)
  //    engine->setStateMoveCardsNotToHand(id,DECK_COVER, -1, DECK_DISCARD, cards.size(), cards, id,LEI_GUANG_SAN_SHE,true);  //
 	 con->hitRate = RATE_NOREATTACK;       //暗系的主动攻击
 	 con->harm.point = con->harm.point-1;  //伤害减1
+	 using_DUO_CHONG_SHE_JI=false;
 	 return GE_SUCCESS;
 
 }
@@ -795,7 +792,7 @@ int MoGong::DuoChongSheJi(int playerID)
 		}
 
 	//是不是魔弓    || 本回合使用【魔贯冲击】   ||已使【多重射击】
-	if(playerID != id ||used_MO_GUAN_CHONG_JI||using_DUO_CHONG_SHE_JI||FengXi==0){
+	if(playerID != id ||used_MO_GUAN_CHONG_JI||used_DUO_CHONG_SHE_JI||FengXi==0){
 		return GE_SUCCESS;
 	}
 	addAction(ACTION_ATTACK, DUO_CHONG_SHE_JI);
@@ -810,11 +807,12 @@ int MoGong::LeiGuangSanShe(Action *action)
 	int cardID =action->card_ids(0);
 	int cardNum=action->card_ids_size();
 	PlayerEntity * dstPlayer = engine->getPlayerEntity(id);
-
+	int color = dstPlayer->getColor();
 	dstPlayer = dstPlayer->getPost();
 	while(dstPlayer->getID() != id)
 	{
-		dstIDs.push_back(dstPlayer->getID());
+		if(color != dstPlayer->getColor())
+			dstIDs.push_back(dstPlayer->getID());
 		dstPlayer = dstPlayer->getPost();
 	}
 	SkillMsg skill_msg;

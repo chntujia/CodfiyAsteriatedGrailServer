@@ -269,7 +269,7 @@ int DieWu::DuFen(CONTEXT_TIMELINE_5 *con)
 int DieWu::ChaoSheng(CONTEXT_TIMELINE_6 *con)
 {
 	PlayerEntity *self = engine->getPlayerEntity(id);
-	if(con->dstID != id || self->getCoverCardNum() < 1) {
+	if(con->dstID != id || self->getCoverCardNum() < 1 || con->harm.point < 1) {
 		return GE_SUCCESS;
 	}
 	CommandRequest cmd_req;
