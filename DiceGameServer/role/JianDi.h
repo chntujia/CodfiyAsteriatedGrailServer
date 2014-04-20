@@ -24,14 +24,13 @@ public:
  int BuQuYiZhi();
  int JianQiZhan(CONTEXT_TIMELINE_2_HIT *con);
  int TianShiZhiHun();
- int TianShiZhiHun_Effect();
+ int TianShiZhiHun_EffectHit();
+ int TianShiZhiHun_EffectMiss();
  int EMoZhiHun();
- int EMoZhiHun_Effect();
+ int EMoZhiHun_EffectMiss();
 
 private:
-bool used_JIAN_HUN_SHOU_HU;
 bool used_TIAN_SHI_ZHI_HUN;
 bool used_E_MO_ZHI_HUN;
-bool used_BU_QU_YI_ZHI;
 int flag;  //0:非天使非恶魔  1：天使   2：恶魔
 };
