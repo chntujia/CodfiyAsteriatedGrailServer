@@ -31,6 +31,8 @@ bool DieWu::cmdMsgParse(UserTask* session, uint16_t type, ::google::protobuf::Me
 
 int DieWu::p_before_turn_begin(int &step, int currentPlayerID) 
 {
+	if(id != currentPlayerID || !tap)
+		return GE_SUCCESS;
 	tap = false;
 	GameInfo game_info;
 	Coder::tapNotice(id, tap, game_info);
@@ -168,8 +170,7 @@ int DieWu::p_cover_change(int &step, int dstID, int direction, int howMany, vect
 	}
 
 	step=DIAO_LING;
-    if (getCardByID(cards[0])->getType()==TYPE_MAGIC)
-	    ret = Diao_Ling(cards);
+	ret = Diao_Ling(cards);
 	if(toNextStep(ret)||ret == GE_URGENT) {
 		step = STEP_DONE;
 	}
@@ -476,6 +477,8 @@ int DieWu::Diao_Ling(vector<int> cards)
 		int dstID;
 		CommandRequest cmd_req;
 		Coder::askForSkill(id,DIAO_LING, cmd_req);
+		Command *cmd = (Command*)(&cmd_req.commands(cmd_req.commands_size()-1));
+		cmd->add_args(getCardByID(cards[i])->getType());
 		//有限等待，由UserTask调用tryNotify唤醒
 		if(engine->waitForOne(id, network::MSG_CMD_REQ, cmd_req))
 		{
