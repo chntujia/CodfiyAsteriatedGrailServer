@@ -16,12 +16,6 @@ bool NvWuShen::cmdMsgParse(UserTask *session, uint16_t type, ::google::protobuf:
 		case YING_LING_ZHAO_HUAN:
 			session->tryNotify(id, STATE_TIMELINE_2_HIT, YING_LING_ZHAO_HUAN, respond);
 			return true;
-		case SHEN_SHENG_ZHUI_JI_AFTER_ATTACK:
-			session->tryNotify(id, STATE_AFTER_ATTACK, SHEN_SHENG_ZHUI_JI_AFTER_ATTACK, respond);
-			return true;
-		case SHEN_SHENG_ZHUI_JI_AFTER_MAGIC:
-			session->tryNotify(id, STATE_AFTER_MAGIC, SHEN_SHENG_ZHUI_JI_AFTER_MAGIC, respond);
-			return true;
 		}
 	}
 	//没匹配则返回false
@@ -49,8 +43,8 @@ int NvWuShen::p_after_attack(int &step, int playerID)
 	}
 	//若成功则继续往下走，失败则返回，step会保留，下次再进来就不会重走
 	//一般超时也会继续下一步
-	step = SHEN_SHENG_ZHUI_JI_AFTER_ATTACK;
-	ret = ShenShengZhuiJiAfterAttack(playerID);
+	step = SHEN_SHENG_ZHUI_JI;
+	ret = ShenShengZhuiJi(playerID);
 	if(toNextStep(ret) || ret == GE_URGENT){
 		//全部走完后，请把step设成STEP_DONE
 		step = STEP_DONE;
@@ -66,8 +60,8 @@ int NvWuShen::p_after_magic(int &step, int playerID)
 	}
 	//若成功则继续往下走，失败则返回，step会保留，下次再进来就不会重走
 	//一般超时也会继续下一步
-	step = SHEN_SHENG_ZHUI_JI_AFTER_MAGIC;
-	ret = ShenShengZhuiJiAfterMagic(playerID);
+	step = SHEN_SHENG_ZHUI_JI;
+	ret = ShenShengZhuiJi(playerID);
 	if(toNextStep(ret) || ret == GE_URGENT){
 		//全部走完后，请把step设成STEP_DONE
 		step = STEP_DONE;
@@ -140,75 +134,28 @@ int NvWuShen::p_timeline_2_hit(int &step, CONTEXT_TIMELINE_2_HIT *con)
 	}
 	return ret;
 }
-
-int NvWuShen::ShenShengZhuiJiAfterAttack(int playerID)
+int NvWuShen::p_additional_action(int chosen)
 {
-	if(playerID != id || getCrossNum() < 1){
-		return GE_SUCCESS;
-	}
-	int ret;
-	CommandRequest cmd_req;
-	GameInfo update_info;
-	Coder::askForSkill(id, SHEN_SHENG_ZHUI_JI_AFTER_ATTACK, cmd_req);
-	//有限等待，由UserTask调用tryNotify唤醒
-	if(engine->waitForOne(id, network::MSG_CMD_REQ, cmd_req))
+	if(chosen == SHEN_SHENG_ZHUI_JI)
 	{
-		void* reply;
-		if (GE_SUCCESS == (ret = engine->getReply(playerID, reply)))
-		{
-			Respond* respond = (Respond*) reply;
-			if(respond->args(0) == 1){
-				network::SkillMsg skill;
-				Coder::skillNotice(id, id, SHEN_SHENG_ZHUI_JI_AFTER_ATTACK, skill);
-				engine->sendMessage(-1, MSG_SKILL, skill);
-				subCrossNum(1);
-				Coder::crossNotice(id, getCrossNum(), update_info);
-				engine->sendMessage(-1, MSG_GAME, update_info);
-				addAction(ACTION_ATTACK, SHEN_SHENG_ZHUI_JI_AFTER_ATTACK);
-				return GE_SUCCESS;
-			}
-		}
-		return ret;
+		network::SkillMsg skill;
+		Coder::skillNotice(id, id, SHEN_SHENG_ZHUI_JI, skill);
+		engine->sendMessage(-1, MSG_SKILL, skill);
+		subCrossNum(1);
+		GameInfo update_info;
+		Coder::crossNotice(id, getCrossNum(), update_info);
+		engine->sendMessage(-1, MSG_GAME, update_info);
 	}
-	else{
-		//超时啥都不用做
-		return GE_TIMEOUT;
-	}
+	return PlayerEntity::p_additional_action(chosen);
 }
 
-int NvWuShen::ShenShengZhuiJiAfterMagic(int playerID)
+int NvWuShen::ShenShengZhuiJi(int playerID)
 {
 	if(playerID != id || getCrossNum() < 1){
 		return GE_SUCCESS;
 	}
-	int ret;
-	CommandRequest cmd_req;
-	GameInfo update_info;
-	Coder::askForSkill(id, SHEN_SHENG_ZHUI_JI_AFTER_MAGIC, cmd_req);
-	//有限等待，由UserTask调用tryNotify唤醒
-	if(engine->waitForOne(id, network::MSG_CMD_REQ, cmd_req))
-	{
-		void* reply;
-		if (GE_SUCCESS == (ret = engine->getReply(playerID, reply)))
-		{
-			Respond* respond = (Respond*) reply;
-			if(respond->args(0) == 1){
-				network::SkillMsg skill;
-				Coder::skillNotice(id, id, SHEN_SHENG_ZHUI_JI_AFTER_MAGIC, skill);
-				engine->sendMessage(-1, MSG_SKILL, skill);
-				subCrossNum(1);
-				Coder::crossNotice(id, getCrossNum(), update_info);
-				engine->sendMessage(-1, MSG_GAME, update_info);
-				addAction(ACTION_ATTACK, SHEN_SHENG_ZHUI_JI_AFTER_MAGIC);
-				return GE_SUCCESS;
-			}
-		}
-		return ret;
-	}
-	else{
-		//超时啥都不用做
-		return GE_TIMEOUT;
-	}
+	addAction(ACTION_ATTACK, SHEN_SHENG_ZHUI_JI);
+	return GE_SUCCESS;
 }
 
 int NvWuShen::ZhiXuZhiYin(int &step, Action* action)
