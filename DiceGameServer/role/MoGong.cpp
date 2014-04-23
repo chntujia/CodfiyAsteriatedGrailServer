@@ -398,16 +398,9 @@ int MoGong::v_additional_action(int chosen)
 	switch(chosen)
 	{
 	case DUO_CHONG_SHE_JI:
-		// 本回合未使用【魔贯冲击】，或【魔贯冲击】不可用     +存在【风系】充能 才发动！！！
-		  int FengXi=0;
-		  list<int>::iterator it;
-		for (it = coverCards.begin(); it != coverCards.end(); ++it)
-		{
-			if(getCardByID((*it))->getElement() == ELEMENT_WIND)
-                          FengXi++;
-		}
+		// 本回合未使用【魔贯冲击】，或【魔贯冲击】不可用     +有盖牌 才发动！！！
 
-		if((used_MO_GUAN_CHONG_JI &&available_MO_GUAN_CHONG_JI)||FengXi==0){
+		if((used_MO_GUAN_CHONG_JI &&available_MO_GUAN_CHONG_JI)||this->getCoverCardNum() == 0){
 			return GE_INVALID_ACTION;
 		}
 		break;
@@ -780,19 +773,8 @@ int MoGong::DuoChongSheJi_Effect(CONTEXT_TIMELINE_1 *con)
 }
 int MoGong::DuoChongSheJi(int playerID)
 {
-	/*
-	    逻辑：风系充能是否足够？
-	*/
-	  int FengXi=0;
-		  list<int>::iterator it;
-		for (it = coverCards.begin(); it != coverCards.end(); ++it)
-		{
-			if(getCardByID((*it))->getElement() == ELEMENT_WIND)
-                          FengXi++;
-		}
-
 	//是不是魔弓    || 本回合使用【魔贯冲击】   ||已使【多重射击】
-	if(playerID != id ||used_MO_GUAN_CHONG_JI||used_DUO_CHONG_SHE_JI||FengXi==0){
+	if(playerID != id ||used_MO_GUAN_CHONG_JI || this->getCoverCardNum() == 0){
 		return GE_SUCCESS;
 	}
 	addAction(ACTION_ATTACK, DUO_CHONG_SHE_JI);
