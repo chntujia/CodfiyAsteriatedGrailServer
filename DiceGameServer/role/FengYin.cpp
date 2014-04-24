@@ -190,7 +190,7 @@ int FengYin::WuXiShuFu(Action *action)
 	return GE_SUCCESS;
 }
 
-int FengYin::WuXiShuFu_Effect(GameGrail *engine)
+int FengYin::WuXiShuFu_Effect(GameGrail *engine, int& srcId)
 {
 	int m_currentPlayerID = engine->getCurrentPlayerID();
 	PlayerEntity* target = engine->getPlayerEntity(m_currentPlayerID);
@@ -217,6 +217,10 @@ int FengYin::WuXiShuFu_Effect(GameGrail *engine)
 		}
 		pit = pit->getPost();
 	}while(pit != target && howMany < 4);
+	for(int i = 0; i < engine->getGameMaxPlayers(); i++){
+		if(engine->getPlayerEntity(i)->getRoleID() == 4) 
+			srcId = i;
+	}
 	return howMany>4 ? 4 : howMany;
 }
 

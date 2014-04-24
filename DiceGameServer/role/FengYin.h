@@ -9,7 +9,7 @@ public:
 	int p_show_hand(int &step, int playerID, int howMany, vector<int> cards, HARM harm);
 	int p_magic_skill(int &step, Action* action);
 	int v_magic_skill(Action *action);
-	static int WuXiShuFu_Effect(GameGrail *engine);
+	static int WuXiShuFu_Effect(GameGrail *engine, int&srcID);
 private:
 	int FaShuJiDang(int playerID);
 	int FengYin_Effect(int playerID, int howMany, vector<int> cards);

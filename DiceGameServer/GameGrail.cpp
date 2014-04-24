@@ -191,7 +191,7 @@ GameGrail::GameGrail(GameGrailConfig *config) : playing(false), processing(true)
 	m_maxPlayers = config->maxPlayers;
 	m_roleStrategy = config->roleStrategy;
 	m_seatMode = 0;
-	m_responseTime = 60;
+	m_responseTime = 15;
 	m_maxAttempts = 1;
 	m_teamArea = NULL;
 	pile = discard = NULL;
@@ -622,7 +622,7 @@ int GameGrail::setStateCheckBasicEffect()
 	PlayerEntity *player = getPlayerEntity(m_currentPlayerID);
 	int weakenCardID = -1;
 	int weakenSrcID = -1;
-	int howMany = FengYin::WuXiShuFu_Effect(this);
+	int howMany = FengYin::WuXiShuFu_Effect(this, weakenSrcID);
 	if( player->checkBasicEffectByName(NAME_WEAKEN, &weakenCardID, &weakenSrcID) == GE_SUCCESS ){
 		howMany += 3;				
 	}
