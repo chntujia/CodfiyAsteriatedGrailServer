@@ -272,7 +272,8 @@ int StateWeaken::handle(GameGrail* engine)
 				harm.srcID = srcID_t;
 				harm.cause = CAUSE_WEAKEN;
 				vector< int > cards;
-				return engine->setStateMoveCardsToHand(-1, DECK_PILE, m_currentPlayerID, DECK_HAND, howMany_t, cards, harm);
+				engine->setStateMoveCardsToHand(-1, DECK_PILE, m_currentPlayerID, DECK_HAND, howMany_t, cards, harm);
+				return GE_URGENT;
 			}
 			else{
 				YongZhe::weakenFlag = true;//[YongZhe]

@@ -256,7 +256,7 @@ int LingFu::NianZhou()
 int LingFu::p_timeline_2_hit(int &step, CONTEXT_TIMELINE_2_HIT *con)
 {
 	int ret;
-	if(con->attack.srcID != id){
+	if(con->attack.srcID != id || !con->attack.isActive){
 		return GE_SUCCESS;
 	}
 	ret = BaiGuiYeXing_Cast();
