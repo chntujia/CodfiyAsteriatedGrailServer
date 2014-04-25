@@ -187,8 +187,10 @@ int MaoXian::TeShuJiaGong(Action *action)
 	}
 	Coder::energyNotice(id, gem, crystal, update_info);
 	TeamArea* team = engine->getTeamArea();
-	team->setGem(color, team->getGem(color) + team->getCrystal(color));
+	int crystal_t = team->getCrystal(color);
 	team->setCrystal(color, 0);
+	team->setGem(color, team->getGem(color) + crystal_t);
+	
 	Coder::stoneNotice(color, team->getGem(color), team->getCrystal(color), update_info);
 	engine->sendMessage(-1, MSG_GAME, update_info);
 	addAction(ACTION_ATTACK_MAGIC, TE_SHU_JIA_GONG);

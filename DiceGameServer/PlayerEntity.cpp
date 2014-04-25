@@ -433,12 +433,12 @@ int PlayerEntity::v_missile(int cardID, int dstID, bool realCard)
 	if(getCardByID(cardID)->getName() != NAME_MISSILE){
 		return GE_INVALID_CARDID; 
 	}
-	PlayerEntity *it = this;
-	while((it = it->getPost())->getColor() == color)
-		;
-	if(dstID != it->getID()){
-		return GE_INVALID_PLAYERID;
-	}
+	//PlayerEntity *it = this;
+	//while((it = it->getPost())->getColor() == color)
+	//	;
+	//if(dstID != it->getID()){
+	//	return GE_INVALID_PLAYERID;
+	//}
 	return GE_SUCCESS;
 }
 

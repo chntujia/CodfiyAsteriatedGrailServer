@@ -135,18 +135,18 @@ int MoDao::v_missile(int cardID, int dstID, bool realCard)
 	if(GE_SUCCESS != (ret = checkOneHandCard(cardID) || card->getName() != NAME_MISSILE && card->getElement() != ELEMENT_FIRE && card->getElement() != ELEMENT_EARTH)){
 		return GE_INVALID_CARDID; 
 	}
-	PlayerEntity *it = this;
-	while((it = it->getPost())->getColor() == color)
-		;
-	if(dstID == it->getID()){
-		return GE_SUCCESS;
-	}
-	it = this;
-	while((it = it->getPre())->getColor() == color)
-		;
-	if(dstID == it->getID()){
-		return GE_SUCCESS;
-	}
+	//PlayerEntity *it = this;
+	//while((it = it->getPost())->getColor() == color)
+	//	;
+	//if(dstID == it->getID()){
+	//	return GE_SUCCESS;
+	//}
+	//it = this;
+	//while((it = it->getPre())->getColor() == color)
+	//	;
+	//if(dstID == it->getID()){
+	//	return GE_SUCCESS;
+	//}
 	return GE_INVALID_PLAYERID;
 }
 

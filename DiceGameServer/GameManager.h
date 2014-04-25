@@ -44,6 +44,7 @@ public:
 private:
 	boost::mutex m_mutex_for_enter;
 	boost::mutex m_mutex_for_create;
+	int m_next_roomId;
 };
 
 void gameThread(Game* game);

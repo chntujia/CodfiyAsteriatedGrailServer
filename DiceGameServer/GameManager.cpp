@@ -10,6 +10,7 @@ using namespace boost;
 GameManager::GameManager()
 {
 	initRoundSeed();
+	m_next_roomId = 0;
 }
 
 void GameManager::initRoundSeed()
@@ -31,7 +32,7 @@ int GameManager::createGame(int gameType, GameConfig *config)
 	{
 		case GAME_TYPE_GRAIL:
 			{
-				int tableId = m_gameGrailMap.size();
+				int tableId = m_next_roomId++;
 				config->setTableId(tableId);
 				GameGrail *game = new GameGrail((GameGrailConfig*)config);
 				m_gameGrailMap.insert(GameMapType::value_type(tableId, game));
