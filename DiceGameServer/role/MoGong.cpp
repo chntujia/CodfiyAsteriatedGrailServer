@@ -44,7 +44,6 @@ bool MoGong::cmdMsgParse(UserTask* session, uint16_t type, ::google::protobuf::M
 int MoGong::v_magic_skill(Action *action)
 {
 	int actionID = action->action_id();
-	int cardID;
 	int playerID = action->src_id();
 	CardEntity* card;
 	PlayerEntity* dst;
@@ -63,7 +62,7 @@ int MoGong::v_magic_skill(Action *action)
 			for (it = coverCards.begin(); it != coverCards.end(); ++it)
 			{
 				card = getCardByID(*it);
-				if(card->getElement() !=ELEMENT_THUNDER || GE_SUCCESS != checkOneCoverCard(cardID))
+				if(card->getElement() !=ELEMENT_THUNDER || GE_SUCCESS != checkOneCoverCard(*it))
 					return GE_INVALID_ACTION;
 			}
 				  //Ê¹ÓÃÁË¡¾Ä§¹á³å»÷¡¿  ¡¾À×¹âÉ¢Éä¡¿²»¿ÉÓÃ
@@ -648,7 +647,7 @@ int MoGong::ChongNengGaiPai()
 	             }
 
 			  
-			   engine->setStateMoveCardsNotToHand(id,DECK_HAND,id, DECK_COVER, cards.size(), cards, id,CHONG_NENG_GAI_PAI,true);	
+			   engine->setStateMoveCardsNotToHand(id,DECK_HAND,id, DECK_COVER, cards.size(), cards, id,CHONG_NENG_GAI_PAI);	
 			   
 			}
 		}
@@ -689,7 +688,7 @@ int MoGong::MoGuanChongJi(CONTEXT_TIMELINE_1 *con)
 				int cardID;
 				cardID=respond->card_ids(0);
 				//ÒÆ³ý¸ÇÅÆ
-				engine->setStateMoveOneCardNotToHand(id,DECK_COVER, -1, DECK_DISCARD, cardID, id, MO_GUAN_CHONG_JI, true);
+				engine->setStateMoveOneCardNotToHand(id,DECK_COVER, -1, DECK_DISCARD, cardID, id, MO_GUAN_CHONG_JI);
 				
 			//	engine->setStateMoveCardsNotToHand(id,DECK_COVER, -1, DECK_DISCARD, cards.size(), cards, id,LEI_GUANG_SAN_SHE,true);
 				con->harm.point=con->harm.point+1;  //ÉËº¦¼Ó1
@@ -726,7 +725,10 @@ int MoGong::MoGuanChongJi_Hit(CONTEXT_TIMELINE_2_HIT *con)
 				int cardID;
 				cardID=respond->card_ids(0);
 				//ÒÆ³ý¸ÇÅÆ
-				engine->setStateMoveOneCardNotToHand(id,DECK_COVER, -1, DECK_DISCARD, cardID, id, MO_GUAN_CHONG_JI_HIT, true);
+				CardMsg show_card;
+				Coder::showCardNotice(id,1,cardID, show_card);
+				engine->sendMessage(-1, MSG_CARD, show_card);
+				engine->setStateMoveOneCardNotToHand(id,DECK_COVER, -1, DECK_DISCARD, cardID, id, MO_GUAN_CHONG_JI_HIT);
 		   }
 		}
 		return ret;
@@ -752,7 +754,7 @@ int MoGong::DuoChongSheJi_QiPai(Action *action)
 	CardMsg show_card;
 	Coder::showCardNotice(id,1,cardID, show_card);
 	engine->sendMessage(-1, MSG_CARD, show_card);
-	engine->setStateMoveOneCardNotToHand(id, DECK_COVER, -1, DECK_DISCARD,cardID, id,DUO_CHONG_SHE_JI, false);
+	engine->setStateMoveOneCardNotToHand(id, DECK_COVER, -1, DECK_DISCARD,cardID, id,DUO_CHONG_SHE_JI);
 
 	//°µÏµ¹¥»÷
 	engine->setStateTimeline1(virtualCardID, dstID, id, true);
@@ -835,8 +837,10 @@ int MoGong::LeiGuangSanShe(Action *action)
 	 if (getCardByID(card_id)->getElement() == ELEMENT_THUNDER && checkOneCoverCard(card_id) == GE_SUCCESS)
 		 cards.push_back(card_id);
 	}
-    
-    engine->setStateMoveCardsNotToHand(id,DECK_COVER, -1, DECK_DISCARD, cards.size(), cards, id,LEI_GUANG_SAN_SHE,true);
+    CardMsg show_card;
+	Coder::showCardNotice(id,cardNum,cards, show_card);
+	engine->sendMessage(-1, MSG_CARD, show_card);
+    engine->setStateMoveCardsNotToHand(id,DECK_COVER, -1, DECK_DISCARD, cards.size(), cards, id,LEI_GUANG_SAN_SHE);
 
 	return GE_URGENT;
 }
