@@ -288,7 +288,7 @@ int TianShi::TianShiJiBan()
 	}
 
 	SkillMsg skill_msg;
-	Coder::skillNotice(id, dstID, TIAN_SHI_ZHI_GE, skill_msg);
+	Coder::skillNotice(id, dstID, TIAN_SHI_JI_BAN, skill_msg);
 	engine->sendMessage(-1, MSG_SKILL, skill_msg);
 
 	PlayerEntity* player = engine->getPlayerEntity(dstID);

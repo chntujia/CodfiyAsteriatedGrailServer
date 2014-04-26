@@ -390,10 +390,10 @@ int LingHun::LingHunJingXiang(Action* action)
 	int max=dstPlayer->getHandCardMax();
 	int currentHandCards=dstPlayer->getHandCardNum();
 
-	setToken(0,token[0]-2); //ª∆…´¡ÈªÍ+2	
+	setToken(0,token[0]-2); //ª∆…´¡ÈªÍ-2	
 	network::GameInfo update;
 	Coder::tokenNotice(id,0,token[0],update);
-	Coder::energyNotice(id, gem, crystal, update);
+
 	engine->sendMessage(-1, MSG_GAME, update);
 
 	if(cardNum>3)      cardNum=3;
@@ -408,17 +408,18 @@ int LingHun::LingHunJingXiang(Action* action)
 	Coder::skillNotice(id, dstID, LING_HUN_JING_XIANG, skill_msg);
 	engine->sendMessage(-1, MSG_SKILL, skill_msg);
 
-	HARM  harm;
-	harm.type = HARM_MAGIC;
-	harm.point = (currentHandCards+3)<max?3:(max-currentHandCards);  //!!!!!!
-	harm.srcID = id;
-	harm.cause = LING_HUN_JING_XIANG;
-	engine->setStateTimeline3(dstID, harm);
-
-	CardMsg show_card;
-	Coder::showCardNotice(id, cardNum, cardIDs, show_card);
-	engine->sendMessage(-1, MSG_CARD, show_card);
-	engine->setStateMoveCardsNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardNum, cardIDs,LING_HUN_JING_XIANG,true);//∆˙≈∆£¨…À∫¶
+    int drawNum = (currentHandCards+3)<max?3:(max-currentHandCards);
+	if(drawNum>0){
+		HARM  jingXiang;
+		jingXiang.type = HARM_NONE;
+		jingXiang.point = drawNum; 
+		jingXiang.srcID = id;
+		jingXiang.cause = LING_HUN_JING_XIANG;
+		engine->setStateMoveCardsToHand(-1, DECK_PILE, dstID, DECK_HAND, jingXiang.point, vector< int >(), jingXiang,false);
+	}
+	if(cardNum>0){
+		engine->setStateMoveCardsNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardNum, cardIDs,LING_HUN_JING_XIANG,true);//∆˙≈∆£¨…À∫¶
+	}
 
 	//≤Â»Î¡À–¬◊¥Ã¨£¨«Îreturn GE_URGENT
 	return GE_URGENT;

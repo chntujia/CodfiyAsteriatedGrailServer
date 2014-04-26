@@ -500,6 +500,8 @@ int GameGrail::setStateMoveCards(int srcOwner, int srcArea, int dstOwner, int ds
 
 int GameGrail::setStateMoveCardsToHand(int srcOwner, int srcArea, int dstOwner, int dstArea, int howMany, vector< int > cards, HARM harm, bool isShown)
 {
+	if(howMany <= 0)
+		return GE_SUCCESS;
 	return setStateMoveCards(srcOwner, srcArea, dstOwner, dstArea, howMany, cards, harm, isShown);
 }
 
@@ -512,6 +514,8 @@ int GameGrail::setStateMoveOneCardToHand(int srcOwner, int srcArea, int dstOwner
 
 int GameGrail::setStateMoveCardsNotToHand(int srcOwner, int srcArea, int dstOwner, int dstArea, int howMany, vector< int > cards, int doerID, int cause, bool isShown)
 {
+	if(howMany <= 0)
+		return GE_SUCCESS;
 	HARM harm;
 	harm.type = HARM_NONE;
 	harm.point = howMany;
