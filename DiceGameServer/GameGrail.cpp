@@ -191,8 +191,8 @@ GameGrail::GameGrail(GameGrailConfig *config) : playing(false), processing(true)
 	m_maxPlayers = config->maxPlayers;
 	m_roleStrategy = config->roleStrategy;
 	m_seatMode = 0;
-	m_responseTime = 15;
-	m_maxAttempts = 1;
+	m_responseTime = 60;
+	m_maxAttempts = 2;
 	m_teamArea = NULL;
 	pile = discard = NULL;
 	pushGameState(new StateWaitForEnter);
@@ -239,6 +239,9 @@ void GameGrail::sendMessage(int id, uint16_t proto_type, google::protobuf::Messa
 
 	if(id == -1){
 		for(PlayerContextList::iterator it = m_playerContexts.begin(); it != m_playerContexts.end(); it++){
+			if(!it->second->isConnected()){
+				continue;
+			}
 			ref = UserSessionManager::getInstance().getUser(it->second->getUserId());
 			if(ref){
 				ref->sendProto(proto_type, proto);
@@ -260,6 +263,9 @@ void GameGrail::sendMessage(int id, uint16_t proto_type, google::protobuf::Messa
 	else{
 		PlayerContextList::iterator it = m_playerContexts.find(id);
 		if(it != m_playerContexts.end()){
+			if(!it->second->isConnected()){
+				return;
+			}
 			ref = UserSessionManager::getInstance().getUser(it->second->getUserId());
 			if(ref){
 				ref->sendProto(proto_type, proto);
@@ -1070,9 +1076,10 @@ void GameGrail::onUserLeave(string userID)
 	else{
 		for(PlayerContextList::iterator it = m_playerContexts.begin(); it != m_playerContexts.end(); it++)
 		{
-			if(it->second->getUserId() == userID)
+			PlayerContext* context = it->second;
+			if(context->getUserId() == userID)
 			{
-				it->second->setConnect(false);
+				context->setConnect(false);
 				Error error;
 				Coder::errorMsg(GE_DISCONNECTED, it->first, error);
 				sendMessage(-1, MSG_ERROR, error);	

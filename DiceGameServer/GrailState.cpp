@@ -34,21 +34,27 @@ int StateSeatArrange::handle(GameGrail* engine)
 			Deck ids(m_maxPlayers);
 			ids.init(0, m_maxPlayers - 1);
 			//FIXME: disable random for debug
-			//ids.randomize();
+			ids.randomize();
 
 			// 随机玩家队伍，这里用Deck只是为了使用它的打乱功能
 			Deck colors(m_maxPlayers);
 			int temp[8];
 			memset(temp, 0, m_maxPlayers/2 * sizeof(int));
-			for (int i = m_maxPlayers/2; i < m_maxPlayers; ++i)
+			for (int i = m_maxPlayers/2; i < m_maxPlayers-1; ++i)
 				temp[i] = 1;
-			colors.push(m_maxPlayers, temp);
+			colors.push(m_maxPlayers - 1, temp);
 			//FIXME: disable random for debug
-			//colors.randomize();
+			colors.randomize();
 			
 			SinglePlayerInfo *player_info;
 			int it;
-			for(int i = 0; i < m_maxPlayers; i++){
+			//首位必红
+			player_info = game_info.add_player_infos();
+			ids.pop(1, &it);
+			player_info->set_id(it);
+			player_info->set_team(1);
+
+			for(int i = 1; i < m_maxPlayers; i++){
 				
 				player_info = game_info.add_player_infos();
 

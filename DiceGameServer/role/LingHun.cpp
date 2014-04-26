@@ -116,7 +116,7 @@ int LingHun::p_timeline_1(int &step, CONTEXT_TIMELINE_1 *con)
 				step=STEP_DONE;
 			break;
 		case  LING_HUN_ZHUAN_HUAN:	  
-			ret =LingHunZhuanHuan(con);
+			ret = LingHunZhuanHuan(con);
 			if(toNextStep(ret) || ret == GE_URGENT){
 				step = STEP_DONE;
 			}	
@@ -459,7 +459,8 @@ int LingHun::LingHunZhuanHuan(CONTEXT_TIMELINE_1 *con)
 {
 	//黄魂转换为蓝魂
 	//蓝魂转换为黄魂
-
+	if(!con->attack.isActive)
+		return GE_SUCCESS;
 	int ret;
 	//满足发动条件，询问客户端是否发动
 	CommandRequest cmd_req;
@@ -550,7 +551,7 @@ int LingHun::LingHunLianJie(){
 
 int LingHun::LingHunLianJieReact(CONTEXT_TIMELINE_6 *con)
 {
-	if(token[1] < 0 || using_LING_HUN_LIAN_JIE  || con->harm.point < 0){
+	if(token[1] < 1 || using_LING_HUN_LIAN_JIE  || con->harm.point < 1){
 		return GE_SUCCESS;
 	}
 	int  ret;
