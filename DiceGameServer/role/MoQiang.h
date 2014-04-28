@@ -20,6 +20,7 @@ public:
 	 int v_remissile(int cardID, bool realCard);
 	 int v_block(int cardID);
 	 int AnZhiHuanYing();
+	 //int AnZhiHuanYing();
 	 int ChongYing(Action* action);
 	 int AnZhiJieFang_Effect(CONTEXT_TIMELINE_2_HIT *con);
 	 int AnZhiZhangBi(CONTEXT_TIMELINE_3 *con);

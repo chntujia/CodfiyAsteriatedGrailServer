@@ -39,6 +39,7 @@ bool MoQiang::cmdMsgParse(UserTask *session, uint16_t type, ::google::protobuf::
 //统一在p_before_turn_begin 初始化各种回合变量
 int  MoQiang::p_before_turn_begin(int &step, int currentPlayerID) 
 {
+	cardCount = 0;
 	using_AnZhiJieFang=false;
 	using_HuanYingXingCeng=false;
 	availabel_QiHeiZhiQiang=true;
@@ -108,6 +109,18 @@ int MoQiang::p_timeline_2_hit(int &step, CONTEXT_TIMELINE_2_HIT * con)
 			   }			
 			}
 			else
+				step=CHONG_YING;
+			break;
+
+		case CHONG_YING:
+			if(used_ChongYing)
+			{
+			  con->harm.point+= cardCount;
+			  if(toNextStep(ret)){
+				   step=QI_HEI_ZHI_QIANG;
+			   }			
+			}
+			else
 				step=QI_HEI_ZHI_QIANG;
 			break;
 
@@ -140,6 +153,11 @@ int MoQiang::p_timeline_2_hit(int &step, CONTEXT_TIMELINE_2_HIT * con)
 //【暗之障壁】
 int MoQiang::p_timeline_3(int &step, CONTEXT_TIMELINE_3 *con)
 {
+	/*if(con->harm.srcID == id)
+	{
+	   if(used_ChongYing)
+		   con->harm.point+= cardCount;
+	}*/
 	if (con->dstID == id)
 	{
 		// 【暗之障壁】
@@ -164,11 +182,6 @@ int MoQiang::p_timeline_3(int &step, CONTEXT_TIMELINE_3 *con)
 	    }
 	}
 
-	if(con->harm.srcID == id)
-	{
-	   if(used_ChongYing)
-		   con->harm.point+= cardCount;
-	}
 	return GE_SUCCESS;
 }
 
@@ -239,7 +252,7 @@ int MoQiang::v_request_hand(int cardSrc, int howMany, vector<int> cards, HARM ha
 		PlayerEntity* dst =engine->getPlayerEntity(cardSrc);
 		CardEntity* card = getCardByID(cardID);
 		
-		if(card->getType() == TYPE_MAGIC||dst->getCardElement(cardID) ==ELEMENT_THUNDER){
+		if((card->getType() == TYPE_MAGIC||dst->getCardElement(cardID) ==ELEMENT_THUNDER) && color != dst->getColor()){
 			cardCount++;
 		}
 	}
@@ -408,17 +421,17 @@ int MoQiang::ChongYing(Action* action)
 	chongying_discard.srcID = id;
 	chongying_discard.type = HARM_NONE;
 	
-	//先进后出，所以逆出牌顺序压，最后才是魔导自己明弃法牌
-	do{
+	//先进后出，所以逆出牌顺序压，最后才是魔枪自己明弃法牌
+	while(it != this){
 		//bool isShown = false, bool canGiveUp = false
 		if(it->getColor()!=color)
-		engine->pushGameState(new StateRequestHand(it->getID(),chongying, -1, DECK_DISCARD, true, false)); //不能弃牌
+		engine->pushGameState(new StateRequestHand(it->getID(),chongying, -1, DECK_DISCARD, true, false)); //不能不弃牌
 		else
          engine->pushGameState(new StateRequestHand(it->getID(),chongying_discard, -1, DECK_DISCARD, true, true));
 
 		it = it->getPre();
-	}while(it != this);
-	
+	}
+	engine->pushGameState(new StateRequestHand(this->getID(),chongying_discard, -1, DECK_DISCARD, true, true));
 	engine->setStateMoveOneCardNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardID, id, CHONG_YING, true);
 
 	addAction(ACTION_ATTACK,CHONG_YING);
@@ -505,6 +518,10 @@ int MoQiang::AnZhiZhangBi(CONTEXT_TIMELINE_3 *con)
 //【漆黑之枪】
 int MoQiang::QiHeiZhiQiang(CONTEXT_TIMELINE_2_HIT *con)
 {
+	int dstHandCardNum = engine->getPlayerEntity(con->attack.dstID)->getHandCardNum();
+	if(dstHandCardNum < 1|| dstHandCardNum >2 ||  con->attack.srcID != id || using_AnZhiJieFang || !tap || 0 == getEnergy()){
+		return GE_SUCCESS;
+	}
    int ret;
     CommandRequest cmd_req;
 	Coder::askForSkill(id,QI_HEI_ZHI_QIANG, cmd_req);
