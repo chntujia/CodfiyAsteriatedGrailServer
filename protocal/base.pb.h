@@ -47,6 +47,7 @@ class RoomListResponse_RoomInfo;
 class CreateRoomRequest;
 class EnterRoomRequest;
 class LeaveRoomRequest;
+class JoinTeamRequest;
 class ReadyForGameRequest;
 class SinglePlayerInfo;
 class GameInfo;
@@ -54,6 +55,26 @@ class Talk;
 class Error;
 class Gossip;
 
+enum JoinTeamRequest_Team {
+  JoinTeamRequest_Team_TEAM_A = 1,
+  JoinTeamRequest_Team_TEAM_B = 0,
+  JoinTeamRequest_Team_TEAM_RANDOM = 2
+};
+bool JoinTeamRequest_Team_IsValid(int value);
+const JoinTeamRequest_Team JoinTeamRequest_Team_Team_MIN = JoinTeamRequest_Team_TEAM_B;
+const JoinTeamRequest_Team JoinTeamRequest_Team_Team_MAX = JoinTeamRequest_Team_TEAM_RANDOM;
+const int JoinTeamRequest_Team_Team_ARRAYSIZE = JoinTeamRequest_Team_Team_MAX + 1;
+
+const ::google::protobuf::EnumDescriptor* JoinTeamRequest_Team_descriptor();
+inline const ::std::string& JoinTeamRequest_Team_Name(JoinTeamRequest_Team value) {
+  return ::google::protobuf::internal::NameOfEnum(
+    JoinTeamRequest_Team_descriptor(), value);
+}
+inline bool JoinTeamRequest_Team_Parse(
+    const ::std::string& name, JoinTeamRequest_Team* value) {
+  return ::google::protobuf::internal::ParseNamedEnum<JoinTeamRequest_Team>(
+    JoinTeamRequest_Team_descriptor(), name, value);
+}
 enum ReadyForGameRequest_Type {
   ReadyForGameRequest_Type_START_READY = 1,
   ReadyForGameRequest_Type_CANCEL_START_REDAY = 2,
@@ -87,12 +108,13 @@ enum MessageType {
   MSG_ENTER_ROOM_REQ = 10,
   MSG_ENTER_ROOM_REP = 11,
   MSG_LEAVE_ROOM_REQ = 12,
-  MSG_READY_GAME_REQ = 13,
-  MSG_SINGLE_PLAYER = 14,
-  MSG_GAME = 15,
-  MSG_TALK = 16,
-  MSG_GOSSIP = 17,
-  MSG_ERROR = 18
+  MSG_JOIN_TEAM_REQ = 13,
+  MSG_READY_GAME_REQ = 14,
+  MSG_SINGLE_PLAYER = 15,
+  MSG_GAME = 16,
+  MSG_TALK = 17,
+  MSG_GOSSIP = 18,
+  MSG_ERROR = 19
 };
 bool MessageType_IsValid(int value);
 const MessageType MessageType_MIN = MSG_REGISTER_REQ;
@@ -1262,6 +1284,113 @@ class LeaveRoomRequest : public ::google::protobuf::Message {
 };
 // -------------------------------------------------------------------
 
+class JoinTeamRequest : public ::google::protobuf::Message {
+ public:
+  JoinTeamRequest();
+  virtual ~JoinTeamRequest();
+
+  JoinTeamRequest(const JoinTeamRequest& from);
+
+  inline JoinTeamRequest& operator=(const JoinTeamRequest& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const JoinTeamRequest& default_instance();
+
+  void Swap(JoinTeamRequest* other);
+
+  // implements Message ----------------------------------------------
+
+  JoinTeamRequest* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const JoinTeamRequest& from);
+  void MergeFrom(const JoinTeamRequest& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  typedef JoinTeamRequest_Team Team;
+  static const Team TEAM_A = JoinTeamRequest_Team_TEAM_A;
+  static const Team TEAM_B = JoinTeamRequest_Team_TEAM_B;
+  static const Team TEAM_RANDOM = JoinTeamRequest_Team_TEAM_RANDOM;
+  static inline bool Team_IsValid(int value) {
+    return JoinTeamRequest_Team_IsValid(value);
+  }
+  static const Team Team_MIN =
+    JoinTeamRequest_Team_Team_MIN;
+  static const Team Team_MAX =
+    JoinTeamRequest_Team_Team_MAX;
+  static const int Team_ARRAYSIZE =
+    JoinTeamRequest_Team_Team_ARRAYSIZE;
+  static inline const ::google::protobuf::EnumDescriptor*
+  Team_descriptor() {
+    return JoinTeamRequest_Team_descriptor();
+  }
+  static inline const ::std::string& Team_Name(Team value) {
+    return JoinTeamRequest_Team_Name(value);
+  }
+  static inline bool Team_Parse(const ::std::string& name,
+      Team* value) {
+    return JoinTeamRequest_Team_Parse(name, value);
+  }
+
+  // accessors -------------------------------------------------------
+
+  // required .network.JoinTeamRequest.Team team = 1;
+  inline bool has_team() const;
+  inline void clear_team();
+  static const int kTeamFieldNumber = 1;
+  inline ::network::JoinTeamRequest_Team team() const;
+  inline void set_team(::network::JoinTeamRequest_Team value);
+
+  // @@protoc_insertion_point(class_scope:network.JoinTeamRequest)
+ private:
+  inline void set_has_team();
+  inline void clear_has_team();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  int team_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(1 + 31) / 32];
+
+  friend void  protobuf_AddDesc_base_2eproto();
+  friend void protobuf_AssignDesc_base_2eproto();
+  friend void protobuf_ShutdownFile_base_2eproto();
+
+  void InitAsDefaultInstance();
+  static JoinTeamRequest* default_instance_;
+};
+// -------------------------------------------------------------------
+
 class ReadyForGameRequest : public ::google::protobuf::Message {
  public:
   ReadyForGameRequest();
@@ -1567,7 +1696,7 @@ class SinglePlayerInfo : public ::google::protobuf::Message {
   inline ::std::string* release_nickname();
   inline void set_allocated_nickname(::std::string* nickname);
 
-  // optional bool ready = 18;
+  // optional bool ready = 18 [default = false];
   inline bool has_ready() const;
   inline void clear_ready();
   static const int kReadyFieldNumber = 18;
@@ -3171,6 +3300,33 @@ inline void EnterRoomRequest::set_allocated_password(::std::string* password) {
 
 // -------------------------------------------------------------------
 
+// JoinTeamRequest
+
+// required .network.JoinTeamRequest.Team team = 1;
+inline bool JoinTeamRequest::has_team() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void JoinTeamRequest::set_has_team() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void JoinTeamRequest::clear_has_team() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void JoinTeamRequest::clear_team() {
+  team_ = 1;
+  clear_has_team();
+}
+inline ::network::JoinTeamRequest_Team JoinTeamRequest::team() const {
+  return static_cast< ::network::JoinTeamRequest_Team >(team_);
+}
+inline void JoinTeamRequest::set_team(::network::JoinTeamRequest_Team value) {
+  assert(::network::JoinTeamRequest_Team_IsValid(value));
+  set_has_team();
+  team_ = value;
+}
+
+// -------------------------------------------------------------------
+
 // ReadyForGameRequest
 
 // required .network.ReadyForGameRequest.Type type = 1;
@@ -3634,7 +3790,7 @@ inline void SinglePlayerInfo::set_allocated_nickname(::std::string* nickname) {
   }
 }
 
-// optional bool ready = 18;
+// optional bool ready = 18 [default = false];
 inline bool SinglePlayerInfo::has_ready() const {
   return (_has_bits_[0] & 0x00020000u) != 0;
 }
@@ -4290,6 +4446,10 @@ inline void Gossip::set_id(::google::protobuf::uint32 value) {
 namespace google {
 namespace protobuf {
 
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::network::JoinTeamRequest_Team>() {
+  return ::network::JoinTeamRequest_Team_descriptor();
+}
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::network::ReadyForGameRequest_Type>() {
   return ::network::ReadyForGameRequest_Type_descriptor();

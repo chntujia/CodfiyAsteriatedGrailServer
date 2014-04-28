@@ -58,6 +58,10 @@ void* proto_decoder(const char* msg, uint16_t& type)
 		proto = new LeaveRoomRequest();
 		proto->ParseFromArray(msg + SIZEOF_HEADER, header_ptr->len - SIZEOF_HEADER);
 		break;
+	case MSG_JOIN_TEAM_REQ:
+		proto = new JoinTeamRequest();
+		proto->ParseFromArray(msg + SIZEOF_HEADER, header_ptr->len - SIZEOF_HEADER);
+		break;
 	case MSG_READY_GAME_REQ:
 		proto = new ReadyForGameRequest();
 		proto->ParseFromArray(msg + SIZEOF_HEADER, header_ptr->len - SIZEOF_HEADER);

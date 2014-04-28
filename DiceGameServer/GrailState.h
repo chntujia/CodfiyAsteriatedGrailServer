@@ -166,6 +166,11 @@ public:
 	StateSeatArrange(): GrailState(STATE_SEAT_ARRANGE), isSet(false){}
 	int handle(GameGrail* engine);
 private:
+	void assignTeam(GameGrail* engine);
+	vector< int > assignColor(int mode, int playerNum);
+
+	vector< int > red;
+	vector< int > blue;
 	GameInfo* messages[MAXPLAYER];
 	bool isSet;
 };

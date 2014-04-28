@@ -14,13 +14,14 @@ enum MessageType {
 	MSG_ENTER_ROOM_REQ = 10;
 	MSG_ENTER_ROOM_REP = 11;
 	MSG_LEAVE_ROOM_REQ = 12;
-	MSG_READY_GAME_REQ = 13;
+	MSG_JOIN_TEAM_REQ = 13;
+	MSG_READY_GAME_REQ = 14;
 
-    MSG_SINGLE_PLAYER = 14;
-    MSG_GAME = 15;
-    MSG_TALK = 16;
-    MSG_GOSSIP = 17;
-	MSG_ERROR = 18;	
+    MSG_SINGLE_PLAYER = 15;
+    MSG_GAME = 16;
+    MSG_TALK = 17;
+    MSG_GOSSIP = 18;
+	MSG_ERROR = 19;	
 }
 
 // c -> s 注册请求
@@ -89,6 +90,15 @@ message EnterRoomRequest {
 message LeaveRoomRequest {
 }
 
+message JoinTeamRequest {
+    enum Team {
+		TEAM_A = 1;
+		TEAM_B = 0;
+		TEAM_RANDOM = 2;
+	}
+	required Team team = 1;
+}
+
 // c -> s 游戏准备、取消准备
 message ReadyForGameRequest {
 	enum Type {
@@ -126,7 +136,7 @@ message SinglePlayerInfo {
 
 	
     optional string nickname = 17; // 昵称
-	optional bool ready = 18;
+	optional bool ready = 18 [default = false];
 	repeated string delete_field = 19;  // 删除某个域，用于清空数组
 }
 

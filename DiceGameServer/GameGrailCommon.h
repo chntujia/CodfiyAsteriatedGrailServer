@@ -8,7 +8,7 @@
 #include <boost/interprocess/sync/scoped_lock.hpp>
 #include "base.pb.h"
 #include "action_respond.pb.h"
-
+#include <algorithm>
 #include <list>
 
 using namespace boost::interprocess;
@@ -23,8 +23,8 @@ class GameGrailPlayerContext;
 typedef map< int, GameGrailPlayerContext* > PlayerContextList;
 
 const int SUMMON[] = {1, 2, 3, 4, 5, 6, 7, 8, 9,10,
-	                 11,12,13,14,15,16,17,18,19,20,
-			         21,22,23,24,25,26,27,28,29};
+	                 11,12,13,14,15,16,17,18,   
+					    22,23,24,25,26,27};
 bool isValidRoleID(int roleID);
 
 enum GrailError{
@@ -692,7 +692,7 @@ public:
     static string banNotice(int ID, int role);
     static string askForPick(int ID);
     static string pickNotice(int ID, int role);
-	static void roomInfo(PlayerContextList players, GameInfo& room_info)
+	static void roomInfo(PlayerContextList players, list< int > teamA, list< int > teamB, GameInfo& room_info)
 	{
 		SinglePlayerInfo *player_info;
 
@@ -703,6 +703,10 @@ public:
 			//FIXME: nickname
 			player_info->set_nickname(it->second->getUserId());
 			player_info->set_ready(it->second->isReady());
+			if(teamA.end() != std::find(teamA.begin(), teamA.end(), it->first))
+				player_info->set_team(1);
+			else if(teamB.end() != std::find(teamB.begin(), teamB.end(), it->first))
+				player_info->set_team(0);			
 		}
 	}
 	static void errorMsg(int id, int dstId, Error& error)

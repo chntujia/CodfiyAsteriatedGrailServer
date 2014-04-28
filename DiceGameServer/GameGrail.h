@@ -122,6 +122,7 @@ public:
 	int m_maxAttempts;
 	int m_firstPlayerID;
 	GameInfo room_info;
+	list< int > teamA, teamB;
 protected:
 	int m_roundId;
 	int m_maxPlayers;
@@ -132,9 +133,11 @@ protected:
 	
 	time_t m_roundEndTime;
 	boost::mutex m_mutex_for_wait;
+	boost::mutex m_mutex_for_pregame;
 	boost::mutex m_mutex_for_notify;
 	boost::condition_variable m_condition_for_wait;	
 	PlayerContextList m_playerContexts;
+	
 	list< string > m_guestList;
 	typedef map< int, PlayerEntity* > PlayerEntityList;
     PlayerEntityList m_playerEntities;
@@ -168,11 +171,11 @@ public:
 	PlayerEntity* getPlayerEntity(int id);
 	TeamArea* getTeamArea() { return m_teamArea; }
 
-	//return true when notified, false when timeout
-	void resetReady(int id = -1){
+	void resetReady(int id = -1){		
 		if(id<-1 || id>m_maxPlayers){
 			return;
 		}
+		boost::mutex::scoped_lock lock(m_mutex_for_pregame);
 		if(id == -1){
 			memset(m_ready, 0, sizeof(m_ready));
 		}
@@ -181,11 +184,42 @@ public:
 			m_ready[id] = 0;
 		}
 	}	
-	void setStartReady(int id, bool ready){
+	void setStartReady(int id, bool ready){	
 		if(id<-1 || id>m_maxPlayers){
 			return;
 		}
+		boost::mutex::scoped_lock lock(m_mutex_for_pregame);
 		m_playerContexts[id]->setReady(ready);
+		GameInfo update;
+		SinglePlayerInfo *player = update.add_player_infos();
+		player->set_id(id);
+		player->set_ready(ready);
+		sendMessage(-1, MSG_GAME, update);
+	}
+	void setTeam(int id, int team){
+		if(id<-1 || id>m_maxPlayers){
+			return;
+		}
+		boost::mutex::scoped_lock lock(m_mutex_for_pregame);
+		teamA.remove(id);
+		teamB.remove(id);
+		GameInfo update;
+		SinglePlayerInfo *player = update.add_player_infos();
+		player->set_id(id);
+		if(team == JoinTeamRequest_Team_TEAM_A && teamA.size() < m_maxPlayers/2){
+			teamA.push_back(id);
+			player->set_team(team);
+			sendMessage(-1, MSG_GAME, update);
+		}
+		else if(team == JoinTeamRequest_Team_TEAM_B && teamB.size() < m_maxPlayers/2){
+			teamB.push_back(id);
+			player->set_team(team);
+			sendMessage(-1, MSG_GAME, update);
+		}
+		else if(team == JoinTeamRequest_Team_TEAM_RANDOM){
+			player->set_team(team);
+			sendMessage(-1, MSG_GAME, update);
+		}		
 	}
 	bool isAllStartReady(){
 		if(m_playerContexts.size() < m_maxPlayers){

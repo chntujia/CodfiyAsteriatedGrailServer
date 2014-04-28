@@ -1,6 +1,8 @@
 #include "GrailState.h"
 #include "GameGrail.h"
 #include <Windows.h>
+#include <algorithm>
+#include <cstdlib> 
 #include "role\YongZhe.h"
 int StateWaitForEnter::handle(GameGrail* engine)
 {
@@ -28,48 +30,32 @@ int StateSeatArrange::handle(GameGrail* engine)
 
 	if(!isSet)
 	{
-		if(engine->m_seatMode == 0)
-		{
-			// 随机位置玩家编号，这里用Deck只是为了使用它的打乱功能
-			Deck ids(m_maxPlayers);
-			ids.init(0, m_maxPlayers - 1);
-			//FIXME: disable random for debug
-			ids.randomize();
+		assignTeam(engine);
+		vector< int > colors = assignColor(engine->m_seatMode, m_maxPlayers);
 
-			// 随机玩家队伍，这里用Deck只是为了使用它的打乱功能
-			Deck colors(m_maxPlayers);
-			int temp[8];
-			memset(temp, 0, m_maxPlayers/2 * sizeof(int));
-			for (int i = m_maxPlayers/2; i < m_maxPlayers-1; ++i)
-				temp[i] = 1;
-			colors.push(m_maxPlayers - 1, temp);
-			//FIXME: disable random for debug
-			colors.randomize();
-			
-			SinglePlayerInfo *player_info;
-			int it;
-			//首位必红
+		SinglePlayerInfo *player_info;
+
+		for(int i = 0; i < m_maxPlayers; i++){
 			player_info = game_info.add_player_infos();
-			ids.pop(1, &it);
-			player_info->set_id(it);
-			player_info->set_team(1);
-
-			for(int i = 1; i < m_maxPlayers; i++){
-				
-				player_info = game_info.add_player_infos();
-
-				ids.pop(1, &it);
-				player_info->set_id(it);
-
-				colors.pop(1, &it);
-				player_info->set_team(it);
+			int color = colors.back();
+			colors.pop_back();
+			int id;
+			if(color){
+				id = red.back();
+				red.pop_back();
 			}
-			game_info.set_is_started(true);
-			for(int i = 0; i < m_maxPlayers; i++){
-				messages[i] = &game_info;
+			else{
+				id = blue.back();
+				blue.pop_back();
 			}
-			engine->resetReady();
+			player_info->set_id(id);
+			player_info->set_team(color);
 		}
+		game_info.set_is_started(true);
+		for(int i = 0; i < m_maxPlayers; i++){
+			messages[i] = &game_info;
+		}
+		engine->resetReady();
 		isSet = true;
 	}
 	if(engine->waitForAll(MSG_GAME, (void**)messages, false)){
@@ -79,6 +65,48 @@ int StateSeatArrange::handle(GameGrail* engine)
 	else{
 		return GE_TIMEOUT;
 	}
+}
+
+void StateSeatArrange::assignTeam(GameGrail* engine)
+{
+	int m_maxPlayers = engine->getGameMaxPlayers();
+	list< int > red_l = engine->teamA;
+	list< int > blue_l = engine->teamB;
+	if(rand() % 2)
+		red_l.swap(blue_l);
+	vector< int > ids;
+	for(int i = 0; i < m_maxPlayers; i++)
+		ids.push_back(i);
+	std::random_shuffle (ids.begin(), ids.end());
+	for(int i = 0; i < m_maxPlayers; i++){
+		if(red_l.end() == std::find(red_l.begin(), red_l.end(), i) && blue_l.end() == std::find(blue_l.begin(), blue_l.end(), i)){
+			if(red_l.size() < m_maxPlayers/2)
+				red_l.push_back(i);
+			else if(blue_l.size() < m_maxPlayers/2)
+				blue_l.push_back(i);
+		}
+	}
+	vector< int > red_v( red_l.begin(), red_l.end() );
+	vector< int > blue_v( blue_l.begin(), blue_l.end() );
+	std::random_shuffle (red_v.begin(), red_v.end());
+	std::random_shuffle (blue_v.begin(), blue_v.end());
+	red = red_v;
+	blue = blue_v;
+}
+
+vector< int > StateSeatArrange::assignColor(int mode, int playerNum)
+{
+	vector< int > colors;
+	if(mode == 0)
+	{		
+		for(int i = 0; i < playerNum/2; i++)
+			colors.push_back(1);
+		for(int i = 0; i < playerNum/2; i++)
+			colors.push_back(0);
+		//首位必红
+		std::random_shuffle (++colors.begin(), colors.end());	
+	}
+	return colors;
 }
 
 int StateRoleStrategyRandom::handle(GameGrail* engine)

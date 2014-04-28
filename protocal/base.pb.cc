@@ -56,6 +56,10 @@ const ::google::protobuf::internal::GeneratedMessageReflection*
 const ::google::protobuf::Descriptor* LeaveRoomRequest_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   LeaveRoomRequest_reflection_ = NULL;
+const ::google::protobuf::Descriptor* JoinTeamRequest_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  JoinTeamRequest_reflection_ = NULL;
+const ::google::protobuf::EnumDescriptor* JoinTeamRequest_Team_descriptor_ = NULL;
 const ::google::protobuf::Descriptor* ReadyForGameRequest_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   ReadyForGameRequest_reflection_ = NULL;
@@ -276,7 +280,23 @@ void protobuf_AssignDesc_base_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(LeaveRoomRequest));
-  ReadyForGameRequest_descriptor_ = file->message_type(11);
+  JoinTeamRequest_descriptor_ = file->message_type(11);
+  static const int JoinTeamRequest_offsets_[1] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(JoinTeamRequest, team_),
+  };
+  JoinTeamRequest_reflection_ =
+    new ::google::protobuf::internal::GeneratedMessageReflection(
+      JoinTeamRequest_descriptor_,
+      JoinTeamRequest::default_instance_,
+      JoinTeamRequest_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(JoinTeamRequest, _has_bits_[0]),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(JoinTeamRequest, _unknown_fields_),
+      -1,
+      ::google::protobuf::DescriptorPool::generated_pool(),
+      ::google::protobuf::MessageFactory::generated_factory(),
+      sizeof(JoinTeamRequest));
+  JoinTeamRequest_Team_descriptor_ = JoinTeamRequest_descriptor_->enum_type(0);
+  ReadyForGameRequest_descriptor_ = file->message_type(12);
   static const int ReadyForGameRequest_offsets_[1] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ReadyForGameRequest, type_),
   };
@@ -292,7 +312,7 @@ void protobuf_AssignDesc_base_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(ReadyForGameRequest));
   ReadyForGameRequest_Type_descriptor_ = ReadyForGameRequest_descriptor_->enum_type(0);
-  SinglePlayerInfo_descriptor_ = file->message_type(12);
+  SinglePlayerInfo_descriptor_ = file->message_type(13);
   static const int SinglePlayerInfo_offsets_[19] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SinglePlayerInfo, id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SinglePlayerInfo, team_),
@@ -325,7 +345,7 @@ void protobuf_AssignDesc_base_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(SinglePlayerInfo));
-  GameInfo_descriptor_ = file->message_type(13);
+  GameInfo_descriptor_ = file->message_type(14);
   static const int GameInfo_offsets_[14] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(GameInfo, room_id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(GameInfo, player_id_),
@@ -353,7 +373,7 @@ void protobuf_AssignDesc_base_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(GameInfo));
-  Talk_descriptor_ = file->message_type(14);
+  Talk_descriptor_ = file->message_type(15);
   static const int Talk_offsets_[1] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Talk, txt_),
   };
@@ -368,7 +388,7 @@ void protobuf_AssignDesc_base_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(Talk));
-  Error_descriptor_ = file->message_type(15);
+  Error_descriptor_ = file->message_type(16);
   static const int Error_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Error, id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Error, dst_id_),
@@ -385,7 +405,7 @@ void protobuf_AssignDesc_base_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(Error));
-  Gossip_descriptor_ = file->message_type(16);
+  Gossip_descriptor_ = file->message_type(17);
   static const int Gossip_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Gossip, type_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Gossip, txt_),
@@ -441,6 +461,8 @@ void protobuf_RegisterTypes(const ::std::string&) {
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
     LeaveRoomRequest_descriptor_, &LeaveRoomRequest::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+    JoinTeamRequest_descriptor_, &JoinTeamRequest::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
     ReadyForGameRequest_descriptor_, &ReadyForGameRequest::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
     SinglePlayerInfo_descriptor_, &SinglePlayerInfo::default_instance());
@@ -481,6 +503,8 @@ void protobuf_ShutdownFile_base_2eproto() {
   delete EnterRoomRequest_reflection_;
   delete LeaveRoomRequest::default_instance_;
   delete LeaveRoomRequest_reflection_;
+  delete JoinTeamRequest::default_instance_;
+  delete JoinTeamRequest_reflection_;
   delete ReadyForGameRequest::default_instance_;
   delete ReadyForGameRequest_reflection_;
   delete SinglePlayerInfo::default_instance_;
@@ -522,19 +546,22 @@ void protobuf_AddDesc_base_2eproto() {
     " \002(\0162\026.network.ROLE_STRATEGY\022\022\n\nmax_play"
     "er\030\002 \002(\005\"5\n\020EnterRoomRequest\022\017\n\007room_id\030"
     "\001 \002(\005\022\020\n\010password\030\002 \001(\t\"\022\n\020LeaveRoomRequ"
-    "est\"\207\001\n\023ReadyForGameRequest\022/\n\004type\030\001 \002("
-    "\0162!.network.ReadyForGameRequest.Type\"\?\n\004"
-    "Type\022\017\n\013START_READY\020\001\022\026\n\022CANCEL_START_RE"
-    "DAY\020\002\022\016\n\nSEAT_READY\020\003\"\347\002\n\020SinglePlayerIn"
-    "fo\022\n\n\002id\030\001 \001(\r\022\014\n\004team\030\002 \001(\r\022\017\n\007role_id\030"
-    "\003 \001(\r\022\022\n\nhand_count\030\004 \001(\r\022\022\n\nheal_count\030"
-    "\005 \001(\r\022\020\n\010ex_cards\030\006 \003(\r\022\023\n\013basic_cards\030\007"
-    " \003(\r\022\013\n\003gem\030\010 \001(\r\022\017\n\007crystal\030\t \001(\r\022\024\n\014ye"
-    "llow_token\030\n \001(\r\022\022\n\nblue_token\030\013 \001(\r\022\025\n\r"
-    "covered_count\030\014 \001(\r\022\020\n\010is_knelt\030\r \001(\010\022\r\n"
-    "\005hands\030\016 \003(\r\022\020\n\010covereds\030\017 \003(\r\022\020\n\010max_ha"
-    "nd\030\020 \001(\r\022\020\n\010nickname\030\021 \001(\t\022\r\n\005ready\030\022 \001("
-    "\010\022\024\n\014delete_field\030\023 \003(\t\"\267\002\n\010GameInfo\022\017\n\007"
+    "est\"o\n\017JoinTeamRequest\022+\n\004team\030\001 \002(\0162\035.n"
+    "etwork.JoinTeamRequest.Team\"/\n\004Team\022\n\n\006T"
+    "EAM_A\020\001\022\n\n\006TEAM_B\020\000\022\017\n\013TEAM_RANDOM\020\002\"\207\001\n"
+    "\023ReadyForGameRequest\022/\n\004type\030\001 \002(\0162!.net"
+    "work.ReadyForGameRequest.Type\"\?\n\004Type\022\017\n"
+    "\013START_READY\020\001\022\026\n\022CANCEL_START_REDAY\020\002\022\016"
+    "\n\nSEAT_READY\020\003\"\356\002\n\020SinglePlayerInfo\022\n\n\002i"
+    "d\030\001 \001(\r\022\014\n\004team\030\002 \001(\r\022\017\n\007role_id\030\003 \001(\r\022\022"
+    "\n\nhand_count\030\004 \001(\r\022\022\n\nheal_count\030\005 \001(\r\022\020"
+    "\n\010ex_cards\030\006 \003(\r\022\023\n\013basic_cards\030\007 \003(\r\022\013\n"
+    "\003gem\030\010 \001(\r\022\017\n\007crystal\030\t \001(\r\022\024\n\014yellow_to"
+    "ken\030\n \001(\r\022\022\n\nblue_token\030\013 \001(\r\022\025\n\rcovered"
+    "_count\030\014 \001(\r\022\020\n\010is_knelt\030\r \001(\010\022\r\n\005hands\030"
+    "\016 \003(\r\022\020\n\010covereds\030\017 \003(\r\022\020\n\010max_hand\030\020 \001("
+    "\r\022\020\n\010nickname\030\021 \001(\t\022\024\n\005ready\030\022 \001(\010:\005fals"
+    "e\022\024\n\014delete_field\030\023 \003(\t\"\267\002\n\010GameInfo\022\017\n\007"
     "room_id\030\001 \001(\005\022\021\n\tplayer_id\030\002 \001(\005\022\022\n\nred_"
     "morale\030\003 \001(\r\022\023\n\013blue_morale\030\004 \001(\r\022\017\n\007red"
     "_gem\030\005 \001(\r\022\020\n\010blue_gem\030\006 \001(\r\022\023\n\013red_crys"
@@ -546,17 +573,18 @@ void protobuf_AddDesc_base_2eproto() {
     "\n\005Error\022\n\n\002id\030\001 \002(\005\022\016\n\006dst_id\030\002 \002(\005\022\014\n\004a"
     "rgs\030\003 \003(\005\"D\n\006Gossip\022!\n\004type\030\001 \001(\0162\023.netw"
     "ork.GossipType\022\013\n\003txt\030\002 \001(\t\022\n\n\002id\030\003 \001(\r*"
-    "\376\002\n\013MessageType\022\024\n\020MSG_REGISTER_REQ\020\001\022\024\n"
+    "\225\003\n\013MessageType\022\024\n\020MSG_REGISTER_REQ\020\001\022\024\n"
     "\020MSG_REGISTER_REP\020\002\022\021\n\rMSG_LOGIN_REQ\020\003\022\021"
     "\n\rMSG_LOGIN_REP\020\004\022\022\n\016MSG_LOGOUT_REQ\020\005\022\022\n"
     "\016MSG_LOGOUT_REP\020\006\022\024\n\020MSG_ROOMLIST_REQ\020\007\022"
     "\024\n\020MSG_ROOMLIST_REP\020\010\022\027\n\023MSG_CREATE_ROOM"
     "_REQ\020\t\022\026\n\022MSG_ENTER_ROOM_REQ\020\n\022\026\n\022MSG_EN"
-    "TER_ROOM_REP\020\013\022\026\n\022MSG_LEAVE_ROOM_REQ\020\014\022\026"
-    "\n\022MSG_READY_GAME_REQ\020\r\022\025\n\021MSG_SINGLE_PLA"
-    "YER\020\016\022\014\n\010MSG_GAME\020\017\022\014\n\010MSG_TALK\020\020\022\016\n\nMSG"
-    "_GOSSIP\020\021\022\r\n\tMSG_ERROR\020\022*0\n\nGossipType\022\017"
-    "\n\013GOSSIP_TALK\020\001\022\021\n\rGOSSIP_NOTICE\020\002", 2154);
+    "TER_ROOM_REP\020\013\022\026\n\022MSG_LEAVE_ROOM_REQ\020\014\022\025"
+    "\n\021MSG_JOIN_TEAM_REQ\020\r\022\026\n\022MSG_READY_GAME_"
+    "REQ\020\016\022\025\n\021MSG_SINGLE_PLAYER\020\017\022\014\n\010MSG_GAME"
+    "\020\020\022\014\n\010MSG_TALK\020\021\022\016\n\nMSG_GOSSIP\020\022\022\r\n\tMSG_"
+    "ERROR\020\023*0\n\nGossipType\022\017\n\013GOSSIP_TALK\020\001\022\021"
+    "\n\rGOSSIP_NOTICE\020\002", 2297);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "base.proto", &protobuf_RegisterTypes);
   RegisterRequest::default_instance_ = new RegisterRequest();
@@ -571,6 +599,7 @@ void protobuf_AddDesc_base_2eproto() {
   CreateRoomRequest::default_instance_ = new CreateRoomRequest();
   EnterRoomRequest::default_instance_ = new EnterRoomRequest();
   LeaveRoomRequest::default_instance_ = new LeaveRoomRequest();
+  JoinTeamRequest::default_instance_ = new JoinTeamRequest();
   ReadyForGameRequest::default_instance_ = new ReadyForGameRequest();
   SinglePlayerInfo::default_instance_ = new SinglePlayerInfo();
   GameInfo::default_instance_ = new GameInfo();
@@ -589,6 +618,7 @@ void protobuf_AddDesc_base_2eproto() {
   CreateRoomRequest::default_instance_->InitAsDefaultInstance();
   EnterRoomRequest::default_instance_->InitAsDefaultInstance();
   LeaveRoomRequest::default_instance_->InitAsDefaultInstance();
+  JoinTeamRequest::default_instance_->InitAsDefaultInstance();
   ReadyForGameRequest::default_instance_->InitAsDefaultInstance();
   SinglePlayerInfo::default_instance_->InitAsDefaultInstance();
   GameInfo::default_instance_->InitAsDefaultInstance();
@@ -628,6 +658,7 @@ bool MessageType_IsValid(int value) {
     case 16:
     case 17:
     case 18:
+    case 19:
       return true;
     default:
       return false;
@@ -3672,6 +3703,244 @@ void LeaveRoomRequest::Swap(LeaveRoomRequest* other) {
 
 // ===================================================================
 
+const ::google::protobuf::EnumDescriptor* JoinTeamRequest_Team_descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return JoinTeamRequest_Team_descriptor_;
+}
+bool JoinTeamRequest_Team_IsValid(int value) {
+  switch(value) {
+    case 0:
+    case 1:
+    case 2:
+      return true;
+    default:
+      return false;
+  }
+}
+
+#ifndef _MSC_VER
+const JoinTeamRequest_Team JoinTeamRequest::TEAM_A;
+const JoinTeamRequest_Team JoinTeamRequest::TEAM_B;
+const JoinTeamRequest_Team JoinTeamRequest::TEAM_RANDOM;
+const JoinTeamRequest_Team JoinTeamRequest::Team_MIN;
+const JoinTeamRequest_Team JoinTeamRequest::Team_MAX;
+const int JoinTeamRequest::Team_ARRAYSIZE;
+#endif  // _MSC_VER
+#ifndef _MSC_VER
+const int JoinTeamRequest::kTeamFieldNumber;
+#endif  // !_MSC_VER
+
+JoinTeamRequest::JoinTeamRequest()
+  : ::google::protobuf::Message() {
+  SharedCtor();
+}
+
+void JoinTeamRequest::InitAsDefaultInstance() {
+}
+
+JoinTeamRequest::JoinTeamRequest(const JoinTeamRequest& from)
+  : ::google::protobuf::Message() {
+  SharedCtor();
+  MergeFrom(from);
+}
+
+void JoinTeamRequest::SharedCtor() {
+  _cached_size_ = 0;
+  team_ = 1;
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+}
+
+JoinTeamRequest::~JoinTeamRequest() {
+  SharedDtor();
+}
+
+void JoinTeamRequest::SharedDtor() {
+  if (this != default_instance_) {
+  }
+}
+
+void JoinTeamRequest::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* JoinTeamRequest::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return JoinTeamRequest_descriptor_;
+}
+
+const JoinTeamRequest& JoinTeamRequest::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_base_2eproto();
+  return *default_instance_;
+}
+
+JoinTeamRequest* JoinTeamRequest::default_instance_ = NULL;
+
+JoinTeamRequest* JoinTeamRequest::New() const {
+  return new JoinTeamRequest;
+}
+
+void JoinTeamRequest::Clear() {
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    team_ = 1;
+  }
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  mutable_unknown_fields()->Clear();
+}
+
+bool JoinTeamRequest::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
+  ::google::protobuf::uint32 tag;
+  while ((tag = input->ReadTag()) != 0) {
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // required .network.JoinTeamRequest.Team team = 1;
+      case 1: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+          int value;
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
+                 input, &value)));
+          if (::network::JoinTeamRequest_Team_IsValid(value)) {
+            set_team(static_cast< ::network::JoinTeamRequest_Team >(value));
+          } else {
+            mutable_unknown_fields()->AddVarint(1, value);
+          }
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectAtEnd()) return true;
+        break;
+      }
+
+      default: {
+      handle_uninterpreted:
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          return true;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+  return true;
+#undef DO_
+}
+
+void JoinTeamRequest::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // required .network.JoinTeamRequest.Team team = 1;
+  if (has_team()) {
+    ::google::protobuf::internal::WireFormatLite::WriteEnum(
+      1, this->team(), output);
+  }
+
+  if (!unknown_fields().empty()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+}
+
+::google::protobuf::uint8* JoinTeamRequest::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
+  // required .network.JoinTeamRequest.Team team = 1;
+  if (has_team()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
+      1, this->team(), target);
+  }
+
+  if (!unknown_fields().empty()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  return target;
+}
+
+int JoinTeamRequest::ByteSize() const {
+  int total_size = 0;
+
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    // required .network.JoinTeamRequest.Team team = 1;
+    if (has_team()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::EnumSize(this->team());
+    }
+
+  }
+  if (!unknown_fields().empty()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void JoinTeamRequest::MergeFrom(const ::google::protobuf::Message& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  const JoinTeamRequest* source =
+    ::google::protobuf::internal::dynamic_cast_if_available<const JoinTeamRequest*>(
+      &from);
+  if (source == NULL) {
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+    MergeFrom(*source);
+  }
+}
+
+void JoinTeamRequest::MergeFrom(const JoinTeamRequest& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (from.has_team()) {
+      set_team(from.team());
+    }
+  }
+  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+}
+
+void JoinTeamRequest::CopyFrom(const ::google::protobuf::Message& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void JoinTeamRequest::CopyFrom(const JoinTeamRequest& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool JoinTeamRequest::IsInitialized() const {
+  if ((_has_bits_[0] & 0x00000001) != 0x00000001) return false;
+
+  return true;
+}
+
+void JoinTeamRequest::Swap(JoinTeamRequest* other) {
+  if (other != this) {
+    std::swap(team_, other->team_);
+    std::swap(_has_bits_[0], other->_has_bits_[0]);
+    _unknown_fields_.Swap(&other->_unknown_fields_);
+    std::swap(_cached_size_, other->_cached_size_);
+  }
+}
+
+::google::protobuf::Metadata JoinTeamRequest::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = JoinTeamRequest_descriptor_;
+  metadata.reflection = JoinTeamRequest_reflection_;
+  return metadata;
+}
+
+
+// ===================================================================
+
 const ::google::protobuf::EnumDescriptor* ReadyForGameRequest_Type_descriptor() {
   protobuf_AssignDescriptorsOnce();
   return ReadyForGameRequest_Type_descriptor_;
@@ -4334,7 +4603,7 @@ bool SinglePlayerInfo::MergePartialFromCodedStream(
         break;
       }
 
-      // optional bool ready = 18;
+      // optional bool ready = 18 [default = false];
       case 18: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
@@ -4480,7 +4749,7 @@ void SinglePlayerInfo::SerializeWithCachedSizes(
       17, this->nickname(), output);
   }
 
-  // optional bool ready = 18;
+  // optional bool ready = 18 [default = false];
   if (has_ready()) {
     ::google::protobuf::internal::WireFormatLite::WriteBool(18, this->ready(), output);
   }
@@ -4596,7 +4865,7 @@ void SinglePlayerInfo::SerializeWithCachedSizes(
         17, this->nickname(), target);
   }
 
-  // optional bool ready = 18;
+  // optional bool ready = 18 [default = false];
   if (has_ready()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(18, this->ready(), target);
   }
@@ -4714,7 +4983,7 @@ int SinglePlayerInfo::ByteSize() const {
           this->nickname());
     }
 
-    // optional bool ready = 18;
+    // optional bool ready = 18 [default = false];
     if (has_ready()) {
       total_size += 2 + 1;
     }

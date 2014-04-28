@@ -1022,7 +1022,7 @@ void GameGrail::onPlayerEnter(int playerID)
 	if(!roleInited)
 	{
 		GameInfo room_info;
-		Coder::roomInfo(m_playerContexts, room_info);
+		Coder::roomInfo(m_playerContexts, teamA, teamB, room_info);
 		sendMessageExcept(playerID, MSG_GAME, room_info);
 
 		room_info.set_room_id(m_gameId);
@@ -1046,7 +1046,7 @@ void GameGrail::onGuestEnter(string userID)
 	if(!roleInited)
 	{
 		GameInfo room_info;
-		Coder::roomInfo(m_playerContexts, room_info);
+		Coder::roomInfo(m_playerContexts, teamA, teamB, room_info);
 		room_info.set_room_id(m_gameId);
 		room_info.set_player_id(GUEST);
 		session->sendProto(MSG_GAME, room_info);
@@ -1071,7 +1071,7 @@ void GameGrail::onUserLeave(string userID)
 				delete it->second;
 				m_playerContexts.erase(it);
 				GameInfo game_info;
-				Coder::roomInfo(m_playerContexts, game_info);
+				Coder::roomInfo(m_playerContexts, teamA, teamB, game_info);
 				sendMessage(-1, MSG_GAME, game_info);	
 				break;
 			}

@@ -58,6 +58,7 @@ private:
 	void handleEnterRoom(int game_type, void* request);
 	void handleLeaveRoom(int game_type, void* request);
 	void handleRoomList(int game_type, void* request);
+	void handleJoinTeam(int game_type, void* request);
 	void handleReadyGame(int game_type, void* request);
 };
 

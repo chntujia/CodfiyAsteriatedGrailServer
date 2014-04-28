@@ -136,6 +136,12 @@ bool UserTask::cmdMsgParse(const char *pstrMsg, const uint32_t nCmdLen)
 				delete proto;    // 如果不需要tryNotify或者tryNotify不带reply的话，释放message对象，这一步相当重要
 				break;	
 			}
+		case MSG_JOIN_TEAM_REQ:
+			{
+				handleJoinTeam(GAME_TYPE_GRAIL, proto);		
+				delete proto;
+				break;
+			}
 		case MSG_READY_GAME_REQ:
 			{
 				handleReadyGame(GAME_TYPE_GRAIL, proto);					
@@ -280,6 +286,18 @@ void UserTask::handleReadyGame(int game_type, void* req)
 		tryNotify(m_playerId, STATE_SEAT_ARRANGE);
 		break;
 	}
+}
+
+void UserTask::handleJoinTeam(int game_type, void* req)
+{
+	JoinTeamRequest* request = (JoinTeamRequest*)req;
+	GameGrail* game = getGame();
+	if(game){
+		game->setTeam(m_playerId, request->team());
+	}
+	else
+		ztLoggerWrite(ZONE, e_Warning, "UserTask::cmdMsgParse() userId [%s] cannot join team. Table %d.", 
+					m_userId.c_str(), m_tableId);
 }
 
 bool UserTask::msgParse(const void *pstrMsg, const uint32_t nCmdLen)
