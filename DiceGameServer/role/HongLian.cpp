@@ -97,24 +97,11 @@ int HongLian::p_after_attack(int &step, int playerID)
 	}
 	//若成功则继续往下走，失败则返回，step会保留，下次再进来就不会重走
 	//一般超时也会继续下一步
-	while(STEP_DONE != step)
-	{
-		switch(step)
-		{
-		case STEP_INIT:
-			//初始化step
-			step = JIE_JIAO_JIE_ZAO;
-			break;
-		case  JIE_JIAO_JIE_ZAO:
-			ret = JieJiaoJieZao(playerID);
-			if(toNextStep(ret)){
-				step = STEP_DONE;;
-			}			
-			break;
-		default:
-			return GE_INVALID_STEP;
-		}
-	}
+	step = JIE_JIAO_JIE_ZAO;
+	ret = JieJiaoJieZao(playerID);
+	if(toNextStep(ret)|| ret == GE_URGENT){
+		step = STEP_DONE;;
+	}			
 	return ret;
 }
 
@@ -126,24 +113,11 @@ int HongLian::p_after_magic(int &step, int playerID)
 	}
 	//若成功则继续往下走，失败则返回，step会保留，下次再进来就不会重走
 	//一般超时也会继续下一步
-	while(STEP_DONE != step)
-	{
-		switch(step)
-		{
-		case STEP_INIT:
-			//初始化step
-			step = JIE_JIAO_JIE_ZAO_AFTER_MAGIC;
-			break;
-		case  JIE_JIAO_JIE_ZAO_AFTER_MAGIC:
-			ret = JieJiaoJieZaoAfterMagic(playerID);
-			if(toNextStep(ret)){
-				step = STEP_DONE;;
-			}			
-			break;
-		default:
-			return GE_INVALID_STEP;
-		}
-	}
+	step = JIE_JIAO_JIE_ZAO;
+	ret = JieJiaoJieZao(playerID);
+	if(toNextStep(ret)|| ret == GE_URGENT){
+		step = STEP_DONE;;
+	}			
 	return ret;
 }
 
@@ -224,18 +198,32 @@ bool HongLian::cmdMsgParse(UserTask *session, uint16_t type, ::google::protobuf:
 		case SHA_LU_SHENG_YAN:
 			session->tryNotify(id, STATE_TIMELINE_2_HIT, SHA_LU_SHENG_YAN, respond);
 			return true;
-		case JIE_JIAO_JIE_ZAO:
-			session->tryNotify(id, STATE_AFTER_ATTACK, JIE_JIAO_JIE_ZAO, respond);
-			return true;
-		case JIE_JIAO_JIE_ZAO_AFTER_MAGIC:
-			session->tryNotify(id, STATE_AFTER_MAGIC, JIE_JIAO_JIE_ZAO_AFTER_MAGIC, respond);
-			return true;
 		}
 	}
 	//没匹配则返回false
 	return false;
 }
-
+int HongLian::p_additional_action(int chosen)
+{
+	if(chosen == JIE_JIAO_JIE_ZAO)
+	{
+		network::SkillMsg skill;
+		Coder::skillNotice(id, id, JIE_JIAO_JIE_ZAO, skill);
+		engine->sendMessage(-1, MSG_SKILL, skill);
+		if(crystal>0){
+			setCrystal(--crystal);
+		}
+		else{
+			setGem(--gem);
+		}
+		GameInfo update_info;
+		Coder::energyNotice(id, gem, crystal, update_info);
+		tap = false;
+		Coder::tapNotice(id, false, update_info);
+		engine->sendMessage(-1, MSG_GAME, update_info);
+	}
+	return PlayerEntity::p_additional_action(chosen);
+}
 int HongLian::p_before_lose_morale(int &step, CONTEXT_LOSE_MORALE *con)
 {
 	//不在热血沸腾||摸牌导致掉士气
@@ -482,7 +470,7 @@ int HongLian::ReXueFeiTengReset()
 	GameInfo game_info;
 	tap = false;
 	Coder::tapNotice(id, false, game_info);
-	engine->sendMessage(-1, MSG_GAME, game_info);
+	//engine->sendMessage(-1, MSG_GAME, game_info);
 	addCrossNum(2);
 	Coder::crossNotice(id,getCrossNum(),game_info);
 	engine->sendMessage(-1, MSG_GAME, game_info);
@@ -494,46 +482,11 @@ int HongLian::JieJiaoJieZao(int playerID)
 	if(playerID != id || 0 == getEnergy() || !tap){
 		return GE_SUCCESS;
 	}
-	int ret;
-	CommandRequest cmd_req;
-	GameInfo update_info;
-	Coder::askForSkill(id, JIE_JIAO_JIE_ZAO, cmd_req);
-	//有限等待，由UserTask调用tryNotify唤醒
-	if(engine->waitForOne(id, network::MSG_CMD_REQ, cmd_req))
-	{
-		void* reply;
-		if (GE_SUCCESS == (ret = engine->getReply(playerID, reply)))
-		{
-			Respond* respond = (Respond*) reply;
-			if(respond->args(0) == 1){
-				if(crystal>0){
-				setCrystal(--crystal);
-				}
-				else{
-				setGem(--gem);
-				}
-				Coder::energyNotice(id, gem, crystal, update_info);
-				engine->sendMessage(-1, MSG_GAME, update_info);
-			//发动
-				network::SkillMsg skill;
-				Coder::skillNotice(id, id, JIE_JIAO_JIE_ZAO, skill);
-				engine->sendMessage(-1, MSG_SKILL, skill);
-				tap = false;
-				Coder::tapNotice(id, false, update_info);
-				engine->sendMessage(-1, MSG_GAME, update_info);
-				addAction(ACTION_ATTACK_MAGIC, JIE_JIAO_JIE_ZAO);
-				return GE_SUCCESS;
-			}
-		}
-		return ret;
-	}
-	else{
-		//超时啥都不用做
-		return GE_TIMEOUT;
-	}
+	addAction(ACTION_ATTACK_MAGIC, JIE_JIAO_JIE_ZAO);
+	return GE_SUCCESS;
 }
 
-int HongLian::JieJiaoJieZaoAfterMagic(int playerID)
+/*int HongLian::JieJiaoJieZaoAfterMagic(int playerID)
 {
 	if(playerID != id || 0 == getEnergy() || !tap){
 		return GE_SUCCESS;
@@ -575,7 +528,7 @@ int HongLian::JieJiaoJieZaoAfterMagic(int playerID)
 		//超时啥都不用做
 		return GE_TIMEOUT;
 	}
-}
+}*/
 
 int HongLian::XingHongShiZi(int &step, Action* action)
 {

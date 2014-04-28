@@ -15,6 +15,7 @@ public:
 	int v_magic_skill(Action *action);
 	int p_magic_skill(int &step, Action* action);
 	bool cmdMsgParse(UserTask* session, uint16_t type, ::google::protobuf::Message *proto);
+	int p_additional_action(int chosen);
 	int p_before_lose_morale(int &step, CONTEXT_LOSE_MORALE *con);
 	int p_true_lose_morale(int &step, CONTEXT_LOSE_MORALE *con);
 	int p_turn_end(int &step, int playerID);
@@ -28,7 +29,7 @@ private:
 	int ReXueFeiTengLoseNoMorale(CONTEXT_LOSE_MORALE *con);
 	int ReXueFeiTengReset();
 	int JieJiaoJieZao(int playerID);
-	int JieJiaoJieZaoAfterMagic(int playerID);
+	//int JieJiaoJieZaoAfterMagic(int playerID);
 	int XingHongShiZi(int &step, Action* action);
 
 	bool used_XingHongShengYue;
