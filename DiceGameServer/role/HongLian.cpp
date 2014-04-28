@@ -58,22 +58,14 @@ int HongLian::p_timeline_2_hit(int &step, CONTEXT_TIMELINE_2_HIT *con)
 	if(con->attack.srcID != id){
 		return GE_SUCCESS;
 	}
-	while(STEP_DONE != step)
+	if(step == STEP_INIT){
+		step = SHA_LU_SHENG_YAN;
+	}
+	if(step == SHA_LU_SHENG_YAN)
 	{
-		switch(step)
-		{
-		case STEP_INIT:
-			//³õÊ¼»¯step
-			step = SHA_LU_SHENG_YAN;
-			break;
-		case SHA_LU_SHENG_YAN:
-			ret = ShaLuShengYan(con);
-			if(toNextStep(ret)){
-				step = STEP_DONE;
-			}			
-			break;
-		default:
-			return GE_INVALID_STEP;
+		ret = ShaLuShengYan(con);
+		if(toNextStep(ret)){
+			step = STEP_DONE;
 		}
 	}
 	return ret;
@@ -88,6 +80,10 @@ int HongLian::p_timeline_4(int &step, CONTEXT_TIMELINE_4 *con)
 	if (con->dstID == id && con->harm.srcID != id && con->crossAvailable>0)
 	{
 		ret = XingHongXinYang(con);
+	}
+	else
+	{
+		ret = GE_SUCCESS;
 	}
 	step = STEP_DONE;
 	return ret;
