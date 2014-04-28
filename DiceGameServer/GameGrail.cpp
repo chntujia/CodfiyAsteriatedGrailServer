@@ -37,6 +37,7 @@
 #include "role\LingHun.h"
 #include "role\NvWuShen.h"
 #include "role\YingLingRenXing.h"
+#include "role\MoNv.h"
 
 using namespace boost;
 
@@ -131,6 +132,9 @@ PlayerEntity* GameGrail::createRole(int id, int roleID, int color)
 		break;
 	case 29:
 		return new MoQiang(this,id,color);
+		break;
+	case 30:
+		return new MoNv(this,id,color);
 		break;
 	}
 	throw GE_INVALID_ROLEID;
@@ -643,6 +647,7 @@ int GameGrail::setStateCheckBasicEffect()
 	else
 	{
 		pushGameState(new StateBeforeAction);
+		pushGameState(new StateBetweenWeakAndAction);
 	}
 	//ÖÐ¶¾ push timeline3 states here based on basicEffect
 	list<BasicEffect> basicEffects = player->getBasicEffect();

@@ -232,13 +232,14 @@ int MoQiang::p_magic_skill(int &step, Action* action)
 
 
 //FIXME: 如果以后有人能转换法牌，会无法通过这里
-int MoQiang::v_request_hand(int howMany, vector<int> cards, HARM harm)
+int MoQiang::v_request_hand(int cardSrc, int howMany, vector<int> cards, HARM harm)
 {
 	if(harm.cause ==CHONG_YING){
 		int cardID = cards[0];
+		PlayerEntity* dst =engine->getPlayerEntity(cardSrc);
 		CardEntity* card = getCardByID(cardID);
 		
-		if(card->getType() == TYPE_MAGIC||card->getElement()==ELEMENT_THUNDER){
+		if(card->getType() == TYPE_MAGIC||dst->getCardElement(cardID) ==ELEMENT_THUNDER){
 			cardCount++;
 		}
 	}
@@ -408,7 +409,7 @@ int MoQiang::ChongYing(Action* action)
 	chongying_discard.type = HARM_NONE;
 	
 	//先进后出，所以逆出牌顺序压，最后才是魔导自己明弃法牌
-	while(it != this){
+	do{
 		//bool isShown = false, bool canGiveUp = false
 		if(it->getColor()!=color)
 		engine->pushGameState(new StateRequestHand(it->getID(),chongying, -1, DECK_DISCARD, true, false)); //不能弃牌
@@ -416,7 +417,7 @@ int MoQiang::ChongYing(Action* action)
          engine->pushGameState(new StateRequestHand(it->getID(),chongying_discard, -1, DECK_DISCARD, true, true));
 
 		it = it->getPre();
-	}
+	}while(it != this);
 	
 	engine->setStateMoveOneCardNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardID, id, CHONG_YING, true);
 

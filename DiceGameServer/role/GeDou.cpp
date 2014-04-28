@@ -56,7 +56,7 @@ int GeDou::p_boot(int &step, int currentPlayerID)
 	}
 	step = BAI_SHI_DOU_SHEN;
 	ret = BaiShiDouShen(currentPlayerID);
-	if(toNextStep(ret) || ret == GE_SUCCESS){
+	if(toNextStep(ret) || ret == GE_URGENT){
 			step = STEP_DONE;
 	}
 	return ret;

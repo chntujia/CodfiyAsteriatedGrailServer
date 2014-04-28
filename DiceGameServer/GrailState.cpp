@@ -300,6 +300,7 @@ int StateWeaken::handle(GameGrail* engine)
 				int howMany_t = howMany;
 				engine->popGameState();
 				engine->pushGameState(new StateBeforeAction);
+				engine->pushGameState(new StateBetweenWeakAndAction);
 				HARM harm;
 				harm.type = HARM_NONE;
 				harm.point = howMany_t;
@@ -313,6 +314,7 @@ int StateWeaken::handle(GameGrail* engine)
 				YongZhe::weakenFlag = true;//[YongZhe]
 				engine->popGameState();
 				engine->pushGameState(new StateTurnEnd);
+				engine->pushGameState(new StateBetweenWeakAndAction);
 				return GE_SUCCESS;
 			}
 		}
@@ -328,9 +330,27 @@ int StateWeaken::handle(GameGrail* engine)
 		engine->sendMessage(-1, MSG_RESPOND, weak_respond);
 		engine->popGameState();
 		engine->pushGameState(new StateTurnEnd);
+		engine->pushGameState(new StateBetweenWeakAndAction);
 		return GE_TIMEOUT;
 	}
 
+}
+
+int StateBetweenWeakAndAction::handle(GameGrail* engine)
+{
+	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateBetweenWeakAndAction", engine->getGameId());
+	int ret = GE_FATAL_ERROR;
+	int m_currentPlayerID = engine->getCurrentPlayerID();
+
+	while(iterator < engine->getGameMaxPlayers()){	    
+		ret = engine->getPlayerEntity(iterator)->p_between_weak_and_action(step, m_currentPlayerID);
+		moveIterator(ret);
+		if(GE_SUCCESS != ret){
+			return ret;
+		}		
+	}
+	ret = engine->popGameState_if(STATE_BETWEEN_WEAK_AND_ACTION);
+	return ret;
 }
 
 int StateBeforeAction::handle(GameGrail* engine)
@@ -712,8 +732,23 @@ int StateAttacked::handle(GameGrail* engine)
 				if(GE_SUCCESS == (ret=engine->getPlayerEntity(context->attack.dstID)->v_reattack(card_id, temp.attack.cardID, reply_attack->dst_ids().Get(0), temp.attack.srcID, context->hitRate))){
 					// 反馈玩家行动
 					reply_attack->set_src_id(context->attack.dstID);					
+					
+					bool realCard = true;
+					int realCardID = card_id;
+					while(iterator < engine->getGameMaxPlayers()){	    
+						ret = engine->getPlayerEntity(iterator)->p_reattack(step, card_id, temp.attack.dstID, reply_attack->dst_ids().Get(0), realCard);
+						moveIterator(ret);
+					}
 					engine->popGameState();
-					return engine->setStateReattack(temp.attack.cardID, card_id, temp.attack.srcID, temp.attack.dstID, reply_attack->dst_ids().Get(0), temp.attack.isActive, true);
+					engine->setStateReattack(temp.attack.cardID, card_id, temp.attack.srcID, temp.attack.dstID, reply_attack->dst_ids().Get(0), temp.attack.isActive, realCard);
+					if(!realCard)
+					{
+						CardMsg show_card;
+						Coder::showCardNotice(temp.attack.dstID, 1, realCardID, show_card);
+						engine->sendMessage(-1, MSG_CARD, show_card);
+						engine->setStateMoveOneCardNotToHand(temp.attack.dstID, DECK_HAND, -1, DECK_DISCARD, realCardID, temp.attack.dstID, CAUSE_USE, true);
+					}
+					return GE_URGENT;
 				}
 				break;
 			case RA_BLOCK:
@@ -1466,7 +1501,7 @@ int StateRequestHand::handle(GameGrail* engine)
 						toDiscard[i] = respond->card_ids(i);
 				}
 				if(GE_SUCCESS != (ret = target->checkHandCards(harm.point, toDiscard)) ||
-				   GE_SUCCESS != (ret = causer->v_request_hand(harm.point, toDiscard, harm))){
+				   GE_SUCCESS != (ret = causer->v_request_hand(targetID, harm.point, toDiscard, harm))){
 					return ret;
 				}
 				if(isShown){

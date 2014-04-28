@@ -13,7 +13,7 @@ public:
 	 int p_lose_morale(int &step, CONTEXT_LOSE_MORALE *con);
 	 int v_magic_skill(Action *action);
 	 int p_magic_skill(int &step, Action* action);
-	 int v_request_hand(int howMany, vector<int> cards, HARM harm);
+	 int v_request_hand(int cardSrc, int howMany, vector<int> cards, HARM harm);
 	 int v_missile(int cardID, int dstID, bool realCard);
 	 int v_shield(int cardID, PlayerEntity* dst);
 	 int v_weaken(int cardID, PlayerEntity* dst);

@@ -83,6 +83,11 @@ public:
 	PlayerEntity* getPre(){ return prePlayer; }
     list< int > getHandCards(){return this->handCards;}
     int getRoleID(){return roleID;}
+	//改变牌类别技能
+	virtual int getCardElement(int cardID) {
+		CardEntity* card = getCardByID(cardID);
+		return card->getElement();
+	}
     bool tapped(){return this->tap;}
     bool isHandCardsMaxFixed(){return this->handCardsMaxFixed;}
 	bool containsAction(int cause);
@@ -104,6 +109,7 @@ public:
 	//回合限定等统一在这里初始化
 	virtual int p_before_turn_begin(int &step, int currentPlayerID) { return GE_SUCCESS; }
 	virtual int p_turn_begin(int &step, int currentPlayerID) { return GE_SUCCESS; }
+	virtual int p_between_weak_and_action(int &step, int currentPlayerID) { return GE_SUCCESS; }
 	virtual int p_before_action(int &step, int currentPlayerID) { return GE_SUCCESS; }
 	virtual int p_boot(int &step, int currentPlayerID) { return GE_SUCCESS; }
 	virtual int p_before_attack(int &step, int dstID, int srcID) { return GE_SUCCESS; }
@@ -135,6 +141,7 @@ public:
 	virtual int p_special_skill(int &step, Action *action) { return GE_EMPTY_HANDLE; }
 	virtual int p_request_hand_give_up(int &step, int targetID, int cause) { return GE_SUCCESS; }
     virtual int p_request_cover_give_up(int &step, int targetID, int cause) { return GE_SUCCESS; }
+	virtual int p_reattack(int &step, int &cardID, int doerID, int targetID, bool &realCard) { return GE_SUCCESS; }
 
 	virtual int v_allow_action(Action* action, int allow, bool canGiveUp);
 	virtual int v_attack(int cardID, int dstID, bool realCard = true);
@@ -152,7 +159,7 @@ public:
 	virtual int v_attack_skill(Action *action) { return GE_EMPTY_HANDLE; }
 	virtual int v_magic_skill(Action *action) { return GE_EMPTY_HANDLE; }
 	virtual int v_special_skill(Action *action) { return GE_EMPTY_HANDLE; }
-	virtual int v_request_hand(int howMany, vector<int> cards, HARM harm) { return GE_SUCCESS; }
+	virtual int v_request_hand(int cardSrc, int howMany, vector<int> cards, HARM harm) { return GE_SUCCESS; }
     virtual int v_request_cover(int howMany, vector<int> cards, HARM harm) { return GE_SUCCESS; }
 protected:
     int id;//玩家id

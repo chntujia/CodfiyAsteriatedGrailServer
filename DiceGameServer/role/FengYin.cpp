@@ -130,14 +130,14 @@ int FengYin::FengYin_Effect(int playerID, int howMany, vector<int> cards)
 		{
 			for(int i = 0; i < howMany; i++)
 			{
-				CardEntity* card = getCardByID(cards[i]);
-				if(card->getElement() == feng->getElement()){
+				PlayerEntity* cardSrc = engine->getPlayerEntity(playerID);
+				if(cardSrc->getCardElement(cards[i]) == feng->getElement()){
 					pushed = true;
 					HARM feng;
 					feng.type = HARM_MAGIC;
 					feng.point = 3;
 					feng.srcID = it->srcUser;
-					feng.cause = getMapping(card->getElement());
+					feng.cause = getMapping(cardSrc->getCardElement(cards[i]));
 
 					engine->setStateTimeline3(playerID, feng);
 					engine->setStateMoveOneCardNotToHand(playerID, DECK_BASIC_EFFECT, -1, DECK_DISCARD, it->card, playerID, feng.cause, true);

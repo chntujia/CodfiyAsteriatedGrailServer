@@ -14,6 +14,7 @@ enum STATE{
 	STATE_BEFORE_TURN_BEGIN,
 	STATE_TURN_BEGIN,
 	STATE_WEAKEN,
+	STATE_BETWEEN_WEAK_AND_ACTION,
 	STATE_BEFORE_ACTION,
 	STATE_BOOT,	
 	STATE_ACTION_PHASE,
@@ -38,7 +39,7 @@ enum STATE{
 	STATE_TIMELINE_5,
 	STATE_TIMELINE_6,
 	STATE_TIMELINE_6_DRAWN,
-	STATE_ASK_FOR_CROSS,		
+	STATE_ASK_FOR_CROSS,
 	STATE_SHOW_HAND,
 	STATE_HAND_CHANGE,
 	STATE_BASIC_EFFECT_CHANGE,
@@ -233,6 +234,13 @@ public:
 	int handle(GameGrail* engine);
 	int srcID;
 	int howMany;	
+};
+
+class StateBetweenWeakAndAction : public GrailState
+{
+public:
+	StateBetweenWeakAndAction(): GrailState(STATE_BETWEEN_WEAK_AND_ACTION){}
+	int handle(GameGrail* engine);
 };
 
 class StateBeforeAction : public GrailState

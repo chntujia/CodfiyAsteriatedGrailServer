@@ -2,7 +2,7 @@
 #include "..\GameGrail.h"
 #include "..\UserTask.h"
 //FIXME: 如果以后有人能转换法牌，会无法通过这里
-int MoDao::v_request_hand(int howMany, vector<int> cards, HARM harm)
+int MoDao::v_request_hand(int cardSrc, int howMany, vector<int> cards, HARM harm)
 {
 	if(harm.cause == MO_BAO_CHONG_JI){
 		int cardID = cards[0];
