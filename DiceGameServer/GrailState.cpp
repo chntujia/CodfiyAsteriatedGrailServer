@@ -30,6 +30,7 @@ int StateSeatArrange::handle(GameGrail* engine)
 
 	if(!isSet)
 	{
+		srand (time(NULL));
 		assignTeam(engine);
 		vector< int > colors = assignColor(engine->m_seatMode, m_maxPlayers);
 
@@ -37,8 +38,7 @@ int StateSeatArrange::handle(GameGrail* engine)
 
 		for(int i = 0; i < m_maxPlayers; i++){
 			player_info = game_info.add_player_infos();
-			int color = colors.back();
-			colors.pop_back();
+			int color = colors[i];
 			int id;
 			if(color){
 				id = red.back();
