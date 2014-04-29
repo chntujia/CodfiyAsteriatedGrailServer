@@ -112,6 +112,7 @@
     <ClInclude Include="role\MoDao.h" />
     <ClInclude Include="role\MoGong.h" />
     <ClInclude Include="role\MoJian.h" />
+    <ClInclude Include="role\MoNv.h" />
     <ClInclude Include="role\MoQiang.h" />
     <ClInclude Include="role\NvWuShen.h" />
     <ClInclude Include="role\QiDao.h" />
@@ -161,6 +162,7 @@
     <ClCompile Include="role\MoDao.cpp" />
     <ClCompile Include="role\MoGong.cpp" />
     <ClCompile Include="role\MoJian.cpp" />
+    <ClCompile Include="role\MoNv.cpp" />
     <ClCompile Include="role\MoQiang.cpp" />
     <ClCompile Include="role\NvWuShen.cpp" />
     <ClCompile Include="role\QiDao.cpp" />

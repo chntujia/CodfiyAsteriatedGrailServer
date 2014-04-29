@@ -693,7 +693,7 @@ public:
     static string banNotice(int ID, int role);
     static string askForPick(int ID);
     static string pickNotice(int ID, int role);
-	static void roomInfo(PlayerContextList players, GameInfo& room_info)
+	static void roomInfo(PlayerContextList players, list< int > teamA, list< int > teamB, GameInfo& room_info)
 	{
 		SinglePlayerInfo *player_info;
 
@@ -704,6 +704,10 @@ public:
 			//FIXME: nickname
 			player_info->set_nickname(it->second->getUserId());
 			player_info->set_ready(it->second->isReady());
+			if(teamA.end() != std::find(teamA.begin(), teamA.end(), it->first))
+				player_info->set_team(1);
+			else if(teamB.end() != std::find(teamB.begin(), teamB.end(), it->first))
+				player_info->set_team(0);			
 		}
 	}
 	static void errorMsg(int id, int dstId, Error& error)
