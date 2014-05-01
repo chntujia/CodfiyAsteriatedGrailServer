@@ -140,7 +140,6 @@ public:
 	const int state;
 	int step;
 	int iterator;
-	int errorCount;
 	GrailState(int s): state(s), step(STEP_INIT), iterator(0), errorCount(0) {}
 	virtual ~GrailState() {}
 	void moveIterator(int ret) {
@@ -150,6 +149,10 @@ public:
 		}
 	}
 	virtual int handle(GameGrail* engine) = 0;	
+	int getErrorCount() { return errorCount; }
+	void increaseErrorCount() { errorCount++; }
+private:
+	int errorCount;
 };
 
 class StateWaitForEnter : public GrailState

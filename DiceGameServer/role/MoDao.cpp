@@ -147,7 +147,7 @@ int MoDao::v_missile(int cardID, int dstID, bool realCard)
 	//if(dstID == it->getID()){
 	//	return GE_SUCCESS;
 	//}
-	return GE_INVALID_PLAYERID;
+	return GE_SUCCESS;
 }
 
 int MoDao::v_remissile(int cardID, bool realCard)

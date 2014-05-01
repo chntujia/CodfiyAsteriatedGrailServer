@@ -856,12 +856,13 @@ void GameGrail::GameRun()
 		try{
 			ret = GE_NO_STATE;
 			currentState = topGameState();
-			if(currentState){				
-				ret = currentState->handle(this);
-				if(currentState->errorCount > 3){
+			if(currentState){	
+				if(currentState->getErrorCount() > 3){
 					ztLoggerWrite(ZONE, e_Error, "[Table %d] State: %d is popped because of too many errors ", m_gameId, currentState->state);
 					popGameState();
 				}
+				ret = currentState->handle(this);
+
 			}
 			else{
 				ztLoggerWrite(ZONE, e_Error, "[Table %d] Empty state", m_gameId);
@@ -870,18 +871,18 @@ void GameGrail::GameRun()
 			if(ret != GE_SUCCESS && ret != GE_TIMEOUT && ret != GE_URGENT){
 				ztLoggerWrite(ZONE, e_Error, "[Table %d] Handle returns error: %d. Current state: %d", 
 					m_gameId, ret, currentState->state);
-				currentState->errorCount++;
+				currentState->increaseErrorCount();
 			}
 		}
 		catch(GrailError error)	{
 			ztLoggerWrite(ZONE, e_Error, "[Table %d] Handle throws error: %d. Current state: %d", 
 				m_gameId, error, topGameState()->state);
-			currentState->errorCount++;
+			currentState->increaseErrorCount();
 		}
 		catch(std::exception const& e) {
 			ztLoggerWrite(ZONE, e_Error, "[Table %d] Handle throws error: %s. Current state: %d", 
 				m_gameId, e.what(), topGameState()->state);
-			currentState->errorCount++;
+			currentState->increaseErrorCount();
 		}
 	}
 	GameManager::getInstance().deleteGame(GAME_TYPE_GRAIL, m_gameId);
