@@ -853,9 +853,10 @@ void GameGrail::GameRun()
 	GrailState* currentState;
 	while(processing)
 	{
-		try{
-			ret = GE_NO_STATE;
-			currentState = topGameState();
+		ret = GE_NO_STATE;
+		currentState = topGameState();
+		int stateCode = currentState->state;
+		try{			
 			if(currentState){	
 				if(currentState->getErrorCount() > 3){
 					ztLoggerWrite(ZONE, e_Error, "[Table %d] State: %d is popped because of too many errors ", m_gameId, currentState->state);
@@ -869,20 +870,26 @@ void GameGrail::GameRun()
 				break;
 			}
 			if(ret != GE_SUCCESS && ret != GE_TIMEOUT && ret != GE_URGENT){
-				ztLoggerWrite(ZONE, e_Error, "[Table %d] Handle returns error: %d. Current state: %d", 
-					m_gameId, ret, currentState->state);
-				currentState->increaseErrorCount();
+				//currentState是出错的那个state，可能已经被pop掉
+				GrailState* topState = topGameState();
+				ztLoggerWrite(ZONE, e_Error, "[Table %d] Handle returns error: %d. Current state: %d, Top state: %d, Top iterator: %d, Top step: %d", 
+					m_gameId, ret, stateCode, topState->state, topState->iterator, topState->step);
+				topState->increaseErrorCount();
 			}
 		}
 		catch(GrailError error)	{
-			ztLoggerWrite(ZONE, e_Error, "[Table %d] Handle throws error: %d. Current state: %d", 
-				m_gameId, error, topGameState()->state);
-			currentState->increaseErrorCount();
+			//currentState是出错的那个state，可能已经被pop掉
+			GrailState* topState = topGameState();
+			ztLoggerWrite(ZONE, e_Error, "[Table %d] Handle returns error: %d. Current state: %d, Top state: %d, Top iterator: %d, Top step: %d", 
+				m_gameId, ret, stateCode, topState->state, topState->iterator, topState->step);
+			topState->increaseErrorCount();
 		}
 		catch(std::exception const& e) {
-			ztLoggerWrite(ZONE, e_Error, "[Table %d] Handle throws error: %s. Current state: %d", 
-				m_gameId, e.what(), topGameState()->state);
-			currentState->increaseErrorCount();
+			//currentState是出错的那个state，可能已经被pop掉
+			GrailState* topState = topGameState();
+			ztLoggerWrite(ZONE, e_Error, "[Table %d] Handle returns error: %d. Current state: %d, Top state: %d, Top iterator: %d, Top step: %d", 
+				m_gameId, ret, stateCode, topState->state, topState->iterator, topState->step);
+			topState->increaseErrorCount();
 		}
 	}
 	GameManager::getInstance().deleteGame(GAME_TYPE_GRAIL, m_gameId);

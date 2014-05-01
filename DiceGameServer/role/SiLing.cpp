@@ -38,7 +38,7 @@ int SiLing::p_after_magic(int &step, int playerID)
 
 int SiLing::p_timeline_4(int &step, CONTEXT_TIMELINE_4 *con)
 {
-	int ret = GE_INVALID_STEP;
+	int ret = GE_SUCCESS;
 	step = SHENG_DU;
 	int srcID = con->dstID;
 	if (con->dstID == id && con->harm.type == HARM_ATTACK && con->crossAvailable>0)
