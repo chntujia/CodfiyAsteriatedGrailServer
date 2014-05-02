@@ -27,7 +27,6 @@ private:
 	int AnYingZhiLi(CONTEXT_TIMELINE_2_HIT *con);
 	int AnYingNingJu();
 	int AnYingNingJuReset();
-	int AnYingNingJuSelfHurt();
 	int HeiAnZhenChanNoReattack(CONTEXT_TIMELINE_1 *con);
     int HeiAnZhenChanBuPai(CONTEXT_TIMELINE_2_HIT* con);
 	int AnYingLiuXing(Action* action);

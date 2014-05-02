@@ -157,7 +157,7 @@ int TianShi::p_basic_effect_change(int &step, int dstID, int card, int doerID, i
 int TianShi::p_lose_morale(int &step, CONTEXT_LOSE_MORALE *con)
 {
 	int ret = GE_SUCCESS;
-	if (engine->getPlayerEntity(con->dstID)->getColor() == getColor() && con->harm.type == HARM_MAGIC && crystal+gem > 0)
+	if (engine->getPlayerEntity(con->dstID)->getColor() == getColor() && con->harm.type == HARM_MAGIC  && con->harm.point > 0 && crystal+gem > 0)
 	{
 		step = SHEN_ZHI_BI_HU;
 		ret = ShenZhiBiHu(con);

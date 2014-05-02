@@ -57,10 +57,8 @@ int MoJian::p_boot(int &step,int currentPlayerID)
 		return GE_SUCCESS;
 	step =AN_YING_NING_JU;
 	int ret = AnYingNingJu();
-
 	if(toNextStep(ret) || ret == GE_URGENT){
-		//全部走完后，请把step设成STEP_DONE	
-		AnYingNingJuSelfHurt();
+		//全部走完后，请把step设成STEP_DONE
 		step = STEP_DONE;
 	}
 	return ret;
@@ -354,6 +352,13 @@ int MoJian::AnYingNingJu()
 				GameInfo game_info;
 				Coder::tapNotice(id, true, game_info);
 				engine->sendMessage(-1, MSG_GAME, game_info);
+				HARM harm;
+				harm.type=HARM_MAGIC;
+				harm.point=1;
+				harm.srcID=id;
+				harm.cause=AN_YING_NING_JU;				
+				engine->setStateTimeline3(id, harm);
+				return GE_URGENT;
 			}
 		}
 		return ret;
@@ -362,7 +367,6 @@ int MoJian::AnYingNingJu()
 		//超时啥都不用做
 		return GE_TIMEOUT;
 	}
-	return GE_SUCCESS;
  }
 
 /*
@@ -378,29 +382,6 @@ int MoJian::AnYingNingJuReset()
 
 	return GE_SUCCESS;
 }
-
-/*
-  【暗影凝聚】对自己造成一点法术伤害
-*/
-
-int MoJian::AnYingNingJuSelfHurt()
-{
-   if (tap)
-	{	
-		int cardID=1;
-		//设置一点的伤害
-		HARM harm;
-		harm.type=HARM_MAGIC;
-		harm.point=1;
-		harm.srcID=id;
-		harm.cause=AN_YING_NING_JU;
-	   //移一张手牌到手上
-		int ret=engine->setStateTimeline3(id, harm);
-		return ret;
-	}
-  return GE_SUCCESS;
-}
-
 
 int MoJian::HeiAnZhenChanNoReattack(CONTEXT_TIMELINE_1 *con)
 {

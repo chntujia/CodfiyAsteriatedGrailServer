@@ -101,7 +101,6 @@ int ZhongCai::v_magic_skill(Action* action)
 	switch(actionID)
 	{
 	case MO_RI_SHEN_PAN:
-		dst = engine->getPlayerEntity(action->dst_ids(0));
 		//  Ã»ÓÐÉóÅÐ
 		if (token[0] == 0){
 			return GE_INVALID_ACTION;
@@ -128,12 +127,12 @@ int ZhongCai::p_magic_skill(int &step, Action *action)
 	{
 	case MO_RI_SHEN_PAN:
 		ret = MoRiShenPan(action);
-		if (ret == GE_SUCCESS)
+		if (ret == GE_URGENT)
 			step = STEP_DONE;
 		break;
 	case PAN_JUE_TIAN_PING:
 		ret = PanJueTianPing(action);
-		if (ret == GE_SUCCESS)
+		if (ret == GE_URGENT)
 			step = STEP_DONE;
 		break;
 	default:
@@ -236,7 +235,7 @@ int ZhongCai::MoRiShenPan(Action* action)
 	GameInfo game_info;
 	Coder::tokenNotice(id, 0, token[0], game_info);
 	engine->sendMessage(-1, MSG_GAME, game_info);
-	return GE_SUCCESS;
+	return GE_URGENT;
 }
 	
 int ZhongCai::ShenPanLangChao()
@@ -302,7 +301,7 @@ int ZhongCai::PanJueTianPing(Action* action)
 	}
 	
 	engine->sendMessage(-1, MSG_GAME, game_info);
-	return GE_SUCCESS;
+	return GE_URGENT;
 }
 
 int ZhongCai::ZhongCaiYiShiAddToken()

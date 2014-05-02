@@ -861,6 +861,7 @@ void GameGrail::GameRun()
 				if(currentState->getErrorCount() > 3){
 					ztLoggerWrite(ZONE, e_Error, "[Table %d] State: %d is popped because of too many errors ", m_gameId, currentState->state);
 					popGameState();
+					continue;
 				}
 				ret = currentState->handle(this);
 

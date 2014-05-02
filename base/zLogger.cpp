@@ -188,7 +188,10 @@ void CZTLoger::Log( const char* zone,
 
 	fflush(m_pFile);
 
-	if(eLevel > e_Error) return;
+	if(eLevel > e_Error) {
+		va_end(args);
+		return;
+	}
 	fprintf(stdout,"%s %s %s: ",_strtime(strCurTime),zone,ELogMsg[eLevel].msg);
 	vfprintf(stdout,format,args);
 	fprintf(stdout,"\n");
