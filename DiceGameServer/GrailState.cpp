@@ -220,7 +220,7 @@ int StateRoleStrategyAny::handle(GameGrail* engine)
 
 int StateGameStart::handle(GameGrail* engine)
 {
-	ztLoggerWrite(ZONE, e_Information, "[Table %d] Enter StateGameStart. GameInfo: %s", engine->getGameId(), engine->room_info.DebugString());
+	ztLoggerWrite(ZONE, e_Information, "[Table %d] Enter StateGameStart. GameInfo: %s", engine->getGameId(), engine->room_info.DebugString().c_str());
 	if(!isSet){
 		isSet=true;
 		engine->initDecks();

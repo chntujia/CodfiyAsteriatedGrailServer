@@ -230,7 +230,7 @@ int ShengNv::ZhiLiaoShu(int &step, Action* action)
 		CardMsg show_card;
 		Coder::showCardNotice(id, 1, cardID, show_card);
 		engine->sendMessage(-1, MSG_CARD, show_card);
-		engine->setStateMoveOneCardNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardID, ZHI_LIAO_SHU, true);
+		engine->setStateMoveOneCardNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardID, id, ZHI_LIAO_SHU, true);
 		//≤Â»Î¡À–¬◊¥Ã¨£¨«Îreturn GE_URGENT
 		return GE_URGENT;
 	}
