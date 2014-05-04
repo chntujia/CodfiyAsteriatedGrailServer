@@ -64,7 +64,7 @@ int HongLian::p_timeline_2_hit(int &step, CONTEXT_TIMELINE_2_HIT *con)
 	if(step == SHA_LU_SHENG_YAN)
 	{
 		ret = ShaLuShengYan(con);
-		if(toNextStep(ret)){
+		if(toNextStep(ret) || ret == GE_URGENT){
 			step = STEP_DONE;
 		}
 	}

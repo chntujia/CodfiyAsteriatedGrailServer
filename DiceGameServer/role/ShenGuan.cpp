@@ -32,7 +32,9 @@ int ShenGuan::p_boot(int &step, int currentPlayerID)
 	if (currentPlayerID != id || getEnergy() == 0 || crossNum == 0)
 		return GE_SUCCESS;
 	ret = ShenShengQiYue();
-	step = STEP_DONE;
+	if(toNextStep(ret)){
+		step = STEP_DONE;
+	}
 	return ret;
 }
 
@@ -42,9 +44,8 @@ int ShenGuan::p_timeline_4(int &step, CONTEXT_TIMELINE_4 *con)
 	step = SHENG_SHI_SHOU_HU;
 	int srcID = con->dstID;
 	ret = ShengShiShouHu(con);
-	if(toNextStep(ret))
-	{
-	step = STEP_DONE;
+	if(toNextStep(ret))	{
+		step = STEP_DONE;
 	}
 	return ret;
 }
@@ -54,9 +55,8 @@ int ShenGuan::p_after_special(int &step, int srcID)
 	int ret = GE_INVALID_STEP;
 	step = SHEN_SHENG_QI_SHI;
 	ret = ShenShengQiShi(step, srcID);
-	if(toNextStep(ret))
-	{
-	step = STEP_DONE;
+	if(toNextStep(ret))	{
+		step = STEP_DONE;
 	}
 	return ret;
 }

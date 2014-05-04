@@ -234,29 +234,15 @@ int GongNv::p_timeline_1(int &step, CONTEXT_TIMELINE_1 *con)
 	if(con->attack.srcID != id){ //确认攻击是否由该id发动
 		return GE_SUCCESS;
 	}
-	while(STEP_DONE != step)
-	{
-		switch(step)
-		{
-		case STEP_INIT:
-			step = SHAN_DIAN_JIAN;
-
-		case SHAN_DIAN_JIAN:
-				// 检测是否雷系攻击
-			ret = ShanDianJian(con);
-			step = JING_ZHUN_SHE_JI;
-			break;
-
-		case JING_ZHUN_SHE_JI:
-
-			ret = JingZhunSheJi(con);
-			if(toNextStep(ret)){
-				step = STEP_DONE;
-			}
-				break;
-
-		default:
-			return GE_INVALID_STEP;
+	if(step == STEP_INIT || step == SHAN_DIAN_JIAN){
+		step = SHAN_DIAN_JIAN;
+		ret = ShanDianJian(con);
+	}
+	if(ret == GE_SUCCESS){
+		step = JING_ZHUN_SHE_JI;
+		ret = JingZhunSheJi(con);
+		if(toNextStep(ret)){
+			step = STEP_DONE;
 		}
 	}
 
@@ -274,21 +260,11 @@ int GongNv::p_timeline_2_miss(int &step, CONTEXT_TIMELINE_2_MISS *con){
 		return GE_SUCCESS;
 	}
 
-	while(STEP_DONE != step){
-		switch(step)
-		{
-		case STEP_INIT:
-			step = GUAN_CHUAN_SHE_JI;
-			break;
-
-		case GUAN_CHUAN_SHE_JI:
-			ret = GuanChuanSheJi(con);
-			if(toNextStep(ret)|| ret == GE_URGENT){
-				step = STEP_DONE;
-			}
-			break;
-		default:
-			return GE_INVALID_STEP;
+	if(step == STEP_INIT || step == GUAN_CHUAN_SHE_JI){
+		step = GUAN_CHUAN_SHE_JI;
+		ret = GuanChuanSheJi(con);
+		if(toNextStep(ret)|| ret == GE_URGENT){
+			step = STEP_DONE;
 		}
 	}
 	return ret;

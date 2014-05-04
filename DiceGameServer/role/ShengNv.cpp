@@ -160,11 +160,8 @@ int ShengNv::LianMin()
 
 				return engine->setStateChangeMaxHand(id, true, true, 7);
 			}
-			else
-				return ret;
 		}
-		else
-			return ret;
+		return ret;
 	}
 	else{
 		//超时啥都不用做

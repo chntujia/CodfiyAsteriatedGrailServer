@@ -65,8 +65,8 @@ int MoJian::p_boot(int &step,int currentPlayerID)
 }
 
 /**
- 【暗影流星】
- **/
+【暗影流星】
+**/
 int MoJian::v_magic_skill(Action *action)
 {
 	int actionID = action->action_id();
@@ -78,14 +78,14 @@ int MoJian::v_magic_skill(Action *action)
 		return GE_INVALID_PLAYERID;
 	}
 
-    if(action->action_id()==AN_YING_LIU_XING&&tap)
+	if(action->action_id()==AN_YING_LIU_XING&&tap)
 	{
-	  //判断是否有两张法术牌
+		//判断是否有两张法术牌
 		if(action->card_ids_size()!=2)
 		{
 			return GE_INVALID_ACTION;
 		}
-		
+
 		for(int i =0;i<action->card_ids_size();i++)
 		{
 			cardID = action->card_ids(i);
@@ -95,12 +95,12 @@ int MoJian::v_magic_skill(Action *action)
 				return GE_INVALID_ACTION;
 			}
 		}
-	   return GE_SUCCESS;
+		return GE_SUCCESS;
 
 	}
 
-else 
-	    return GE_INVALID_ACTION;
+	else 
+		return GE_INVALID_ACTION;
 }
 
 int MoJian::p_magic_skill(int &step, Action* action)
@@ -109,7 +109,7 @@ int MoJian::p_magic_skill(int &step, Action* action)
 	int actionID = action->action_id();
 	if(action->action_id()==AN_YING_LIU_XING&&tap)
 	{
-	    ret = AnYingLiuXing(action);
+		ret = AnYingLiuXing(action);
 		if(GE_URGENT == ret){
 			step = STEP_DONE;
 		}
@@ -117,31 +117,31 @@ int MoJian::p_magic_skill(int &step, Action* action)
 	}
 	else
 	{
-	   return GE_INVALID_ACTION;
+		return GE_INVALID_ACTION;
 	}
-   
+
 }
 
 int MoJian::p_timeline_1(int &step, CONTEXT_TIMELINE_1 *con) 
 { 	
 	//获取当前英雄的宝石数，判断宝石数是否大于1,且进行【黑暗震颤】【回合限度】
-	if (engine->getCurrentPlayerID() == id && con->attack.isActive&&getGem()>0&&!used_HeiAnZhenChan)
+	if (con->attack.srcID == id && con->attack.isActive && gem > 0 && !used_HeiAnZhenChan)
 	{
 		// 潜行不能应战
-		 step =HEI_AN_ZHEN_CHAN;
+		step =HEI_AN_ZHEN_CHAN;
 		int ret =HeiAnZhenChanNoReattack(con);
 		if(toNextStep(ret) || ret == GE_URGENT){
-		//全部走完后，请把step设成STEP_DONE	
-		step = STEP_DONE;
+			//全部走完后，请把step设成STEP_DONE	
+			step = STEP_DONE;
 		}
 		return  ret;
 	}
-	else  return  GE_SUCCESS;
-	
+	else 
+		return  GE_SUCCESS;	
 }
 
 
- //【暗影之力】及【黑暗震颤】补拍
+//【暗影之力】及【黑暗震颤】补拍
 int MoJian::p_timeline_2_hit(int &step, CONTEXT_TIMELINE_2_HIT * con)
 {
 
@@ -149,32 +149,21 @@ int MoJian::p_timeline_2_hit(int &step, CONTEXT_TIMELINE_2_HIT * con)
 	if(con->attack.srcID != id){
 		return GE_SUCCESS;
 	}
+	if(step == STEP_INIT || step == AN_YING_ZHI_LI){
+		//初始化step
+		step = AN_YING_ZHI_LI;
+		ret = AnYingZhiLi(con);
+		if(toNextStep(ret)){
+			if(using_HeiAnZhenChan)
+				step =HEI_AN_ZHEN_CHAN_BU_PAI;
+			else 
+				step=STEP_DONE;
+		}			
+	}
+	if(step == HEI_AN_ZHEN_CHAN_BU_PAI){
 
-	while(STEP_DONE != step)
-	{
-		switch(step)
-		{
-		case STEP_INIT:
-			//初始化step
-			step = AN_YING_ZHI_LI;
-			break;
-		case AN_YING_ZHI_LI:
-			ret = AnYingZhiLi(con);
-			if(toNextStep(ret)){
-				if(using_HeiAnZhenChan)
-				    step =HEI_AN_ZHEN_CHAN_BU_PAI;
-				else 
-					step=STEP_DONE;
-			}			
-			break;
-		case HEI_AN_ZHEN_CHAN_BU_PAI:
-
-			ret =HeiAnZhenChanBuPai(con);  //命中则补手牌
-				step =STEP_DONE;	
-			break;
-		default:
-			return GE_INVALID_STEP;
-		}
+		ret =HeiAnZhenChanBuPai(con);  //命中则补手牌
+		step =STEP_DONE;	
 	}
 	return ret;
 }
@@ -183,35 +172,22 @@ int MoJian::p_timeline_2_hit(int &step, CONTEXT_TIMELINE_2_HIT * con)
 int MoJian::p_after_attack(int &step, int playerID)
 {
 	int ret = GE_INVALID_STEP;
-	//不是剑圣就不用跑了
 	if(playerID != id){
 		return GE_SUCCESS;
 	}
-	//若成功则继续往下走，失败则返回，step会保留，下次再进来就不会重走
-	//一般超时也会继续下一步
-	while(STEP_DONE != step)
-	{
-		switch(step)
-		{
-		case STEP_INIT:
-			//初始化step
-			step = XIU_LUO_LIAN_ZHAN;
-			break;
-		case  XIU_LUO_LIAN_ZHAN:
-			ret =XiuLuoLianZhan(playerID);
-			if(toNextStep(ret)){
-				step = STEP_DONE;;
-			}			
-			break;
-		default:
-			return GE_INVALID_STEP;
-		}
+	if(step == STEP_INIT || step == XIU_LUO_LIAN_ZHAN){
+		//初始化step
+		step = XIU_LUO_LIAN_ZHAN;
+		ret =XiuLuoLianZhan(playerID);
+		if(toNextStep(ret)){
+			step = STEP_DONE;;
+		}			
 	}
 	return ret;
 }
 
 /**
-       【修罗连斩】：只接受火系攻击
+【修罗连斩】：只接受火系攻击
 **/  
 
 int  MoJian::v_attack(int cardID, int dstID, bool realCard)
@@ -227,7 +203,7 @@ int  MoJian::v_attack(int cardID, int dstID, bool realCard)
 }
 
 /**
-   【暗影抗拒】：本角色行动阶段法术牌不可用
+【暗影抗拒】：本角色行动阶段法术牌不可用
 **/
 int MoJian::v_additional_action(int chosen)
 {
@@ -261,7 +237,7 @@ int MoJian::p_additional_action(int chosen)
 }
 
 /***
-    【暗影抗拒】：法术牌不可用
+【暗影抗拒】：法术牌不可用
 ***/
 
 //魔弹：非本人
@@ -295,7 +271,7 @@ int MoJian::v_weaken(int cardID, PlayerEntity* dst)
 }
 
 /***
-   【修罗连斩】
+【修罗连斩】
 ***/
 int  MoJian::XiuLuoLianZhan(int playerID)
 {
@@ -307,11 +283,11 @@ int  MoJian::XiuLuoLianZhan(int playerID)
 	return GE_SUCCESS;
 }
 /*
-    【暗影之力】  命中的时候加一点伤害  
+【暗影之力】  命中的时候加一点伤害  
 */
 int MoJian::AnYingZhiLi(CONTEXT_TIMELINE_2_HIT *con)
 {
-   //在【暗影形态】下 发动的所有攻击伤害+1
+	//在【暗影形态】下 发动的所有攻击伤害+1
 	if(tap) {	
 		int ret;
 		int srcID = con->attack.srcID;
@@ -328,11 +304,11 @@ int MoJian::AnYingZhiLi(CONTEXT_TIMELINE_2_HIT *con)
 }
 
 /*
-   【暗影凝聚】
+【暗影凝聚】
 */
 int MoJian::AnYingNingJu()
- {
-    CommandRequest cmd_req;
+{
+	CommandRequest cmd_req;
 	Coder::askForSkill(id, AN_YING_NING_JU, cmd_req);
 	//有限等待，由UserTask调用tryNotify唤醒
 	if(engine->waitForOne(id, network::MSG_CMD_REQ, cmd_req))
@@ -367,10 +343,10 @@ int MoJian::AnYingNingJu()
 		//超时啥都不用做
 		return GE_TIMEOUT;
 	}
- }
+}
 
 /*
-  回合开始：【暗影形态】--》【正常状态】
+回合开始：【暗影形态】--》【正常状态】
 */
 int MoJian::AnYingNingJuReset()
 {
@@ -403,18 +379,18 @@ int MoJian::HeiAnZhenChanNoReattack(CONTEXT_TIMELINE_1 *con)
 				network::SkillMsg skill;
 				Coder::skillNotice(id, dstID,HEI_AN_ZHEN_CHAN, skill);  //gaidong
 				engine->sendMessage(-1, MSG_SKILL, skill);
-              
+
 				//更新能量信息
 				gem -= 1;
 				GameInfo game_info;
 				Coder::energyNotice(id, gem, crystal, game_info);
 				engine->sendMessage(-1, MSG_GAME, game_info);
-            
+
 				//攻击不能应战
-				 used_HeiAnZhenChan=true;
-				 using_HeiAnZhenChan=true;
-	             con->hitRate = RATE_NOREATTACK;
-				
+				used_HeiAnZhenChan=true;
+				using_HeiAnZhenChan=true;
+				con->hitRate = RATE_NOREATTACK;
+
 			}
 		}
 		return ret;
@@ -424,7 +400,7 @@ int MoJian::HeiAnZhenChanNoReattack(CONTEXT_TIMELINE_1 *con)
 		//超时啥都不用做
 		return GE_TIMEOUT;
 	}
-     return GE_SUCCESS;
+	return GE_SUCCESS;
 }
 
 //命中则补手牌
@@ -476,7 +452,7 @@ int MoJian::AnYingLiuXing(Action* action)
 	Coder::showCardNotice(id, 2, cardIDs, show_card);
 	engine->sendMessage(-1, MSG_CARD, show_card);
 	engine->setStateMoveCardsNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardNum, cardIDs, id, AN_YING_LIU_XING, true);//弃牌，伤害
-   
+
 	//插入了新状态，请return GE_URGENT
 	return GE_URGENT;
 }
