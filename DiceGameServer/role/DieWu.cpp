@@ -219,7 +219,7 @@ int DieWu::WuDong(Action *action)
 	else
 	{
 		cardID=action->card_ids(0);
-		engine->setStateMoveOneCardNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardID, id, WU_DONG, true);
+		engine->setStateMoveOneCardNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardID, id, WU_DONG, false);
 	}
 	 //≤Â»Î¡À–¬◊¥Ã¨£¨«Îreturn GE_URGENT
 	return GE_URGENT;
