@@ -200,7 +200,7 @@ int ShengQiang::HuiYao(int &step, Action* action)
 		CardMsg show_card;
 		Coder::showCardNotice(id, 1, cardID, show_card);
 		engine->sendMessage(-1, MSG_CARD, show_card);
-		engine->setStateMoveOneCardNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardID, HUI_YAO, true);
+		engine->setStateMoveOneCardNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardID, id, HUI_YAO, true);
 		//插入了新状态，请return GE_URGENT
 		
 		return GE_URGENT;
@@ -235,7 +235,7 @@ int ShengQiang::ChengJie(int &step, Action* action)
 		CardMsg show_card;
 		Coder::showCardNotice(id, 1, cardID, show_card);
 		engine->sendMessage(-1, MSG_CARD, show_card);
-		engine->setStateMoveOneCardNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardID, CHENG_JIE, true);
+		engine->setStateMoveOneCardNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardID, id, CHENG_JIE, true);
 		//插入了新状态，请return GE_URGENT
 		return GE_URGENT;
 	}

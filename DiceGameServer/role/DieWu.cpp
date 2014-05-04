@@ -205,7 +205,7 @@ int DieWu::WuDong(Action *action)
 	    harm1.type = HARM_NONE;
 	    harm1.point = 1;
 	    harm1.cause = WU_DONG;
-	    engine->setStateMoveCardsNotToHand(-1, DECK_PILE,id, DECK_COVER, 1, cards, id, WU_DONG);
+	    engine->setStateMoveCardsNotToHand(-1, DECK_PILE,id, DECK_COVER, 1, cards, id, WU_DONG, false);
       
 	 if(flag==1)
 	{
@@ -252,7 +252,7 @@ int DieWu::DuFen(CONTEXT_TIMELINE_5 *con)
 				Coder::skillNotice(id, id,DU_FEN, skill);
 				engine->sendMessage(-1, MSG_SKILL, skill);
 				//ÒÆ³ý¸ÇÅÆ
-				engine->setStateMoveOneCardNotToHand(id,DECK_COVER, -1, DECK_DISCARD, cardID, id,DU_FEN);
+				engine->setStateMoveOneCardNotToHand(id,DECK_COVER, -1, DECK_DISCARD, cardID, id, DU_FEN, false);
 				
 				con->harm.point=con->harm.point+1;  //ÉËº¦¼Ó1
 				return GE_URGENT;
@@ -294,7 +294,7 @@ int DieWu::ChaoSheng(CONTEXT_TIMELINE_6 *con)
 				Coder::skillNotice(id, id,CHAO_SHENG, skill);
 				engine->sendMessage(-1, MSG_SKILL, skill);
 				//ÒÆ³ý¸ÇÅÆ
-				engine->setStateMoveOneCardNotToHand(id,DECK_COVER, -1, DECK_DISCARD, cardID, id,CHAO_SHENG);
+				engine->setStateMoveOneCardNotToHand(id,DECK_COVER, -1, DECK_DISCARD, cardID, id, CHAO_SHENG, true);
 				con->harm.point=con->harm.point-1;  //µÖÓùÒ»µãÉËº¦À´Ô´
 				return GE_URGENT;
 		   }
@@ -357,7 +357,7 @@ int DieWu::JingHuaShuiYue(CONTEXT_TIMELINE_5 *con)
 	        	engine->setStateTimeline3(con->dstID , harm);
 				engine->setStateTimeline3(con->dstID , harm);
 				con->harm.point=0;   //µÖÓù¸Ã´ÎÉËº¦
-				engine->setStateMoveCardsNotToHand(id,DECK_COVER, -1, DECK_DISCARD, 2, cards, id, JING_HUA_SHUI_YUE);
+				engine->setStateMoveCardsNotToHand(id, DECK_COVER, -1, DECK_DISCARD, 2, cards, id, JING_HUA_SHUI_YUE, true);
 				return GE_URGENT;
 		   }
 		   return GE_SUCCESS;
@@ -387,7 +387,7 @@ int DieWu::YongHua(Action *action)
    engine->sendMessage(-1, MSG_GAME, game_info);
 
      //½«ÅÆ¿â¶¥4ÕÅÅÆÒÆµ½¸ÇÅÆÇø
-   engine->setStateMoveCardsNotToHand(-1,DECK_PILE,id,DECK_COVER,4,cards, id, YONG_HUA);
+   engine->setStateMoveCardsNotToHand(-1,DECK_PILE,id,DECK_COVER,4,cards, id, YONG_HUA, false);
    engine->setStateChangeMaxHand(id, false, false, 6, -1);
 
    return GE_URGENT;
@@ -429,7 +429,7 @@ int DieWu::DaoNiZhiDie(Action *action)
 				}
 				covercards.push_back(covercard_id[j]);
 			}
-			engine->setStateMoveCardsNotToHand(id, DECK_COVER, -1, DECK_DISCARD,covercards.size(),covercards, id,DAO_NI_ZHI_DIE);
+			engine->setStateMoveCardsNotToHand(id, DECK_COVER, -1, DECK_DISCARD,covercards.size(),covercards, id, DAO_NI_ZHI_DIE, false);
 		}
 		else
 		{

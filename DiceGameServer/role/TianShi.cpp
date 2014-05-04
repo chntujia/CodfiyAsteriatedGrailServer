@@ -200,7 +200,7 @@ int TianShi::TianShiZhuFu(int step, Action *action)
 			CardMsg show_card;
 			Coder::showCardNotice(id, 1, cardID, show_card);
 			engine->sendMessage(-1, MSG_CARD, show_card);
-			engine->setStateMoveOneCardNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardID, TIAN_SHI_ZHU_FU, true);
+			engine->setStateMoveOneCardNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardID, id, TIAN_SHI_ZHU_FU, true);
 			//插入了新状态，请return GE_URGENT
 		
 			return GE_URGENT;
@@ -234,7 +234,7 @@ int TianShi::TianShiZhuFu(int step, Action *action)
 			CardMsg show_card;
 			Coder::showCardNotice(id, 1, cardID, show_card);
 			engine->sendMessage(-1, MSG_CARD, show_card);
-			engine->setStateMoveOneCardNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardID, TIAN_SHI_ZHU_FU, true);
+			engine->setStateMoveOneCardNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardID, id, TIAN_SHI_ZHU_FU, true);
 			//插入了新状态，请return GE_URGENT
 		
 			return GE_URGENT;

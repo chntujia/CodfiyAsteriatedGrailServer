@@ -647,7 +647,7 @@ int MoGong::ChongNengGaiPai()
 	             }
 
 			  
-			   engine->setStateMoveCardsNotToHand(id,DECK_HAND,id, DECK_COVER, cards.size(), cards, id,CHONG_NENG_GAI_PAI);	
+			   engine->setStateMoveCardsNotToHand(id, DECK_HAND, id, DECK_COVER, cards.size(), cards, id, CHONG_NENG_GAI_PAI, false);	
 			   
 			}
 		}
@@ -688,7 +688,7 @@ int MoGong::MoGuanChongJi(CONTEXT_TIMELINE_1 *con)
 				int cardID;
 				cardID=respond->card_ids(0);
 				//ÒÆ³ý¸ÇÅÆ
-				engine->setStateMoveOneCardNotToHand(id,DECK_COVER, -1, DECK_DISCARD, cardID, id, MO_GUAN_CHONG_JI);
+				engine->setStateMoveOneCardNotToHand(id, DECK_COVER, -1, DECK_DISCARD, cardID, id, MO_GUAN_CHONG_JI, true);
 				
 			//	engine->setStateMoveCardsNotToHand(id,DECK_COVER, -1, DECK_DISCARD, cards.size(), cards, id,LEI_GUANG_SAN_SHE,true);
 				con->harm.point=con->harm.point+1;  //ÉËº¦¼Ó1
@@ -728,7 +728,7 @@ int MoGong::MoGuanChongJi_Hit(CONTEXT_TIMELINE_2_HIT *con)
 				CardMsg show_card;
 				Coder::showCardNotice(id,1,cardID, show_card);
 				engine->sendMessage(-1, MSG_CARD, show_card);
-				engine->setStateMoveOneCardNotToHand(id,DECK_COVER, -1, DECK_DISCARD, cardID, id, MO_GUAN_CHONG_JI_HIT);
+				engine->setStateMoveOneCardNotToHand(id,DECK_COVER, -1, DECK_DISCARD, cardID, id, MO_GUAN_CHONG_JI_HIT, true);
 		   }
 		}
 		return ret;
@@ -754,7 +754,7 @@ int MoGong::DuoChongSheJi_QiPai(Action *action)
 	CardMsg show_card;
 	Coder::showCardNotice(id,1,cardID, show_card);
 	engine->sendMessage(-1, MSG_CARD, show_card);
-	engine->setStateMoveOneCardNotToHand(id, DECK_COVER, -1, DECK_DISCARD,cardID, id,DUO_CHONG_SHE_JI);
+	engine->setStateMoveOneCardNotToHand(id, DECK_COVER, -1, DECK_DISCARD, cardID, id, DUO_CHONG_SHE_JI, true);
 
 	//°µÏµ¹¥»÷
 	engine->setStateTimeline1(virtualCardID, dstID, id, true);
@@ -840,7 +840,7 @@ int MoGong::LeiGuangSanShe(Action *action)
     CardMsg show_card;
 	Coder::showCardNotice(id,cardNum,cards, show_card);
 	engine->sendMessage(-1, MSG_CARD, show_card);
-    engine->setStateMoveCardsNotToHand(id,DECK_COVER, -1, DECK_DISCARD, cards.size(), cards, id,LEI_GUANG_SAN_SHE);
+    engine->setStateMoveCardsNotToHand(id,DECK_COVER, -1, DECK_DISCARD, cards.size(), cards, id, LEI_GUANG_SAN_SHE, true);
 
 	return GE_URGENT;
 }

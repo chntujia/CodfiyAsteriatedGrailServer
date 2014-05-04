@@ -375,7 +375,7 @@ int LingHun::LingHunZhenBao(Action *action)
 	engine->setStateTimeline3(dstID, harm);
 
 	// ∂™∆˙ ÷≈∆
-	engine->setStateMoveOneCardNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardID, LING_HUN_ZHEN_BAO, true);//!!!
+	engine->setStateMoveOneCardNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardID, id, LING_HUN_ZHEN_BAO, true);
 
 	return GE_URGENT;
 }
@@ -415,10 +415,10 @@ int LingHun::LingHunJingXiang(Action* action)
 		jingXiang.point = drawNum; 
 		jingXiang.srcID = id;
 		jingXiang.cause = LING_HUN_JING_XIANG;
-		engine->setStateMoveCardsToHand(-1, DECK_PILE, dstID, DECK_HAND, jingXiang.point, vector< int >(), jingXiang,false);
+		engine->setStateMoveCardsToHand(-1, DECK_PILE, dstID, DECK_HAND, jingXiang.point, vector< int >(), jingXiang, false);
 	}
 	if(cardNum>0){
-		engine->setStateMoveCardsNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardNum, cardIDs,LING_HUN_JING_XIANG,true);//∆˙≈∆£¨…À∫¶
+		engine->setStateMoveCardsNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardNum, cardIDs, id, LING_HUN_JING_XIANG, false);//∆˙≈∆£¨…À∫¶
 	}
 
 	//≤Â»Î¡À–¬◊¥Ã¨£¨«Îreturn GE_URGENT
@@ -449,7 +449,7 @@ int LingHun::LingHunZhaoHuan(Action* action)
 	CardMsg show_card;
 	Coder::showCardNotice(id, cardNum, cardIDs, show_card);
 	engine->sendMessage(-1, MSG_CARD, show_card);
-	engine->setStateMoveCardsNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardNum, cardIDs,LING_HUN_ZHAO_HUAN,true);//∆˙≈∆£¨…À∫¶
+	engine->setStateMoveCardsNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardNum, cardIDs, id, LING_HUN_ZHAO_HUAN, true);//∆˙≈∆£¨…À∫¶
 
 	//≤Â»Î¡À–¬◊¥Ã¨£¨«Îreturn GE_URGENT
 	return GE_URGENT;

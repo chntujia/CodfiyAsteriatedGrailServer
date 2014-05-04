@@ -123,7 +123,7 @@ int MoNv::MoNvZhiNu()
 					harm.point = drawNum;
 					harm.cause = MO_NV_ZHI_NU;
 					vector<int> cards;
-					engine->setStateMoveCardsToHand(-1, DECK_PILE, id, DECK_HAND, drawNum, cards, harm);
+					engine->setStateMoveCardsToHand(-1, DECK_PILE, id, DECK_HAND, drawNum, cards, harm, false);
 					ret =  GE_URGENT;
 				}
 				return ret;
@@ -529,7 +529,7 @@ int MoNv::TiShenWanOu(CONTEXT_TIMELINE_3 *con)
 				harm.type = HARM_NONE;
 				harm.point = 1;
 				harm.cause = TI_SHEN_WAN_OU;
-				int ret = engine->setStateMoveCardsToHand(-1, DECK_PILE, mateID, DECK_HAND, 1, cards, harm);
+				int ret = engine->setStateMoveCardsToHand(-1, DECK_PILE, mateID, DECK_HAND, 1, cards, harm, false);
 				
 				CardMsg show_card;
 				Coder::showCardNotice(id, 1, cardID, show_card);

@@ -262,7 +262,7 @@ int ShengNv::ZhiYuZhiGuang(int &step, Action* action)
 		CardMsg show_card;
 		Coder::showCardNotice(id, 1, cardID, show_card);
 		engine->sendMessage(-1, MSG_CARD, show_card);
-		engine->setStateMoveOneCardNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardID, ZHI_YU_ZHI_GUANG, true);
+		engine->setStateMoveOneCardNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardID, id, ZHI_YU_ZHI_GUANG, true);
 		//≤Â»Î¡À–¬◊¥Ã¨£¨«Îreturn GE_URGENT
 		return GE_URGENT;
 	}

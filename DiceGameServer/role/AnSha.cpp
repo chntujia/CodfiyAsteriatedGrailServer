@@ -119,7 +119,7 @@ int AnSha::FanShi(CONTEXT_TIMELINE_6_DRAWN *con)
 	harm.type = HARM_NONE;
 	harm.point = 1;
 	harm.cause = FAN_SHI;
-	int ret = engine->setStateMoveCardsToHand(-1, DECK_PILE, con->harm.srcID, DECK_HAND, 1, cards, harm);
+	int ret = engine->setStateMoveCardsToHand(-1, DECK_PILE, con->harm.srcID, DECK_HAND, 1, cards, harm, false);
 
 	SkillMsg skill_msg;
 	Coder::skillNotice(id, con->harm.srcID, FAN_SHI, skill_msg);

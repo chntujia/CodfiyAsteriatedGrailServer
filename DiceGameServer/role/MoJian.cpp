@@ -439,7 +439,7 @@ int MoJian::HeiAnZhenChanBuPai(CONTEXT_TIMELINE_2_HIT* con)
 	harm.type = HARM_NONE;
 	harm.point =num;                  //最大手牌减去当前手牌
 	harm.cause = HEI_AN_ZHEN_CHAN;
-	engine->setStateMoveCardsToHand(-1, DECK_PILE, con->harm.srcID, DECK_HAND, num, cards, harm);
+	engine->setStateMoveCardsToHand(-1, DECK_PILE, con->harm.srcID, DECK_HAND, num, cards, harm, false);
 	SkillMsg skill_msg;
 	Coder::skillNotice(id, con->harm.srcID, HEI_AN_ZHEN_CHAN, skill_msg);
 	engine->sendMessage(-1, MSG_SKILL, skill_msg);
@@ -475,7 +475,7 @@ int MoJian::AnYingLiuXing(Action* action)
 	CardMsg show_card;
 	Coder::showCardNotice(id, 2, cardIDs, show_card);
 	engine->sendMessage(-1, MSG_CARD, show_card);
-	engine->setStateMoveCardsNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardNum, cardIDs, AN_YING_LIU_XING, true);//弃牌，伤害
+	engine->setStateMoveCardsNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardNum, cardIDs, id, AN_YING_LIU_XING, true);//弃牌，伤害
    
 	//插入了新状态，请return GE_URGENT
 	return GE_URGENT;

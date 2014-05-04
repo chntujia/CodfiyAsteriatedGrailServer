@@ -235,7 +235,7 @@ int StateGameStart::handle(GameGrail* engine)
 	harm.cause = CAUSE_DEFAULT;
 	//LIFO
 	for(int i = iterator; i < engine->getGameMaxPlayers(); i++){
-		ret = engine->setStateMoveCardsToHand(-1, DECK_PILE, i, DECK_HAND, 4, cards, harm);
+		ret = engine->setStateMoveCardsToHand(-1, DECK_PILE, i, DECK_HAND, 4, cards, harm, false);
 		iterator++;
 		return ret;
 	}
@@ -307,7 +307,7 @@ int StateWeaken::handle(GameGrail* engine)
 				harm.srcID = srcID_t;
 				harm.cause = CAUSE_WEAKEN;
 				vector< int > cards;
-				engine->setStateMoveCardsToHand(-1, DECK_PILE, m_currentPlayerID, DECK_HAND, howMany_t, cards, harm);
+				engine->setStateMoveCardsToHand(-1, DECK_PILE, m_currentPlayerID, DECK_HAND, howMany_t, cards, harm, false);
 				return GE_URGENT;
 			}
 			else{
@@ -547,7 +547,7 @@ int StateActionPhase::basicSpecial(Action *action, GameGrail* engine)
 			buy.point = 3;
 			buy.srcID = m_currentPlayerID;
 			buy.type = HARM_NONE;
-			engine->setStateMoveCardsToHand(-1, DECK_PILE, m_currentPlayerID, DECK_HAND, 3, cards, buy);
+			engine->setStateMoveCardsToHand(-1, DECK_PILE, m_currentPlayerID, DECK_HAND, 3, cards, buy, false);
 			engine->pushGameState(new StateBeforeSpecial(m_currentPlayerID));
 			return GE_SUCCESS;
 		}
@@ -599,7 +599,7 @@ int StateActionPhase::basicSpecial(Action *action, GameGrail* engine)
 			synthesize.point = 3;
 			synthesize.srcID = m_currentPlayerID;
 			synthesize.type = HARM_NONE;
-			engine->setStateMoveCardsToHand(-1, DECK_PILE, m_currentPlayerID, DECK_HAND, 3, cards, synthesize);
+			engine->setStateMoveCardsToHand(-1, DECK_PILE, m_currentPlayerID, DECK_HAND, 3, cards, synthesize, false);
 			engine->pushGameState(new StateBeforeSpecial(m_currentPlayerID));
 			return GE_SUCCESS;
 		}
@@ -1262,7 +1262,7 @@ int StateTimeline6::handle(GameGrail* engine)
 		newCon->harm = context->harm;
 		if(GE_SUCCESS == (ret = engine->popGameState_if(STATE_TIMELINE_6))){
 			engine->pushGameState(new StateTimeline6Drawn(newCon));
-			ret = engine->setStateMoveCardsToHand(-1, DECK_PILE, temp.dstID, DECK_HAND, temp.harm.point, cards, temp.harm);
+			ret = engine->setStateMoveCardsToHand(-1, DECK_PILE, temp.dstID, DECK_HAND, temp.harm.point, cards, temp.harm, false);
 		}
 		else{
 			SAFE_DELETE(newCon);

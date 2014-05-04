@@ -218,7 +218,7 @@ int SiLing::WenYi(Action *action)
 	CardMsg show_card;
 	Coder::showCardNotice(id, 1, cardID, show_card);
 	engine->sendMessage(-1, MSG_CARD, show_card);
-	engine->setStateMoveOneCardNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardID, WEN_YI, true);
+	engine->setStateMoveOneCardNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardID, id, WEN_YI, true);
 	return GE_URGENT;
 }
 
@@ -251,7 +251,7 @@ int SiLing::SiWangZhiChu(Action* action)
 	chuShou.srcID = id;
 	chuShou.cause = SI_WANG_ZHI_CHU;
 	engine->setStateTimeline3(dstID, chuShou);
-	engine->setStateMoveCardsNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardNum, cardIDs, SI_WANG_ZHI_CHU, true);
+	engine->setStateMoveCardsNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardNum, cardIDs, id, SI_WANG_ZHI_CHU, true);
 	//≤Â»Î¡À–¬◊¥Ã¨£¨«Îreturn GE_URGENT
 	return GE_URGENT;
 }

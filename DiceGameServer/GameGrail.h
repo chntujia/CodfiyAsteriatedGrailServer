@@ -242,15 +242,15 @@ public:
 	int drawCardsFromPile(int howMany, vector< int > &cards);
 	//setState前缀的函数涉及插入状态
 	//底层API原则上不直接调用
-	int setStateMoveCards(int srcOwner, int srcArea, int dstOwner, int dstArea, int howMany, vector< int > cards, HARM harm, bool isShown = false);
+	int setStateMoveCards(int srcOwner, int srcArea, int dstOwner, int dstArea, int howMany, vector< int > cards, HARM harm, bool isShown);
 	//移牌至手上，需提供HARM，若从摸牌堆上移出，cards不用赋值
-	int setStateMoveCardsToHand(int srcOwner, int srcArea, int dstOwner, int dstArea, int howMany, vector< int > cards, HARM harm, bool isShown = false);
+	int setStateMoveCardsToHand(int srcOwner, int srcArea, int dstOwner, int dstArea, int howMany, vector< int > cards, HARM harm, bool isShown);
 	//上面的简化，移1牌至手上，需提供HARM，若从摸牌堆上移出，cards不用赋值
-	int setStateMoveOneCardToHand(int srcOwner, int srcArea, int dstOwner, int dstArea, int cardID, HARM harm, bool isShown = false);
+	int setStateMoveOneCardToHand(int srcOwner, int srcArea, int dstOwner, int dstArea, int cardID, HARM harm, bool isShown);
 	//移牌至手上以外的地方，需提供原因，若从摸牌堆上移出，cards不用赋值
-	int setStateMoveCardsNotToHand(int srcOwner, int srcArea, int dstOwner, int dstArea, int howMany, vector< int > cards, int doerID, int cause, bool isShown = false);
+	int setStateMoveCardsNotToHand(int srcOwner, int srcArea, int dstOwner, int dstArea, int howMany, vector< int > cards, int doerID, int cause, bool isShown);
 	//上面的简化，移1牌至手上以外的地方，需提供原因，若从摸牌堆上移出，cards不用赋值
-	int setStateMoveOneCardNotToHand(int srcOwner, int srcArea, int dstOwner, int dstArea, int cardID, int doerID, int cause, bool isShown = false);
+	int setStateMoveOneCardNotToHand(int srcOwner, int srcArea, int dstOwner, int dstArea, int cardID, int doerID, int cause, bool isShown);
 
 	int setStateUseCard(int cardID, int dstID, int srcID, bool stay = false, bool realCard = true);
 	int setStateChangeMaxHand(int dstID, bool using_fixed, bool fixed = false, int howmany = 6, int handCardsRange = 0);

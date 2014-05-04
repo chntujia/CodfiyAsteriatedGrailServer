@@ -333,7 +333,7 @@ int WuNv::NiLiu(int &step, Action* action)
 		network::SkillMsg skill;
 		Coder::skillNotice(id, id, NI_LIU, skill);
 		engine->sendMessage(-1, MSG_SKILL, skill);
-		engine->setStateMoveCardsNotToHand(id, DECK_HAND, -1, DECK_DISCARD, 2, cardIDs, NI_LIU, false);
+		engine->setStateMoveCardsNotToHand(id, DECK_HAND, -1, DECK_DISCARD, 2, cardIDs, id, NI_LIU, false);
 		//≤Â»Î¡À–¬◊¥Ã¨£¨«Îreturn GE_URGENT
 		step = NI_LIU;
 		return GE_URGENT;
