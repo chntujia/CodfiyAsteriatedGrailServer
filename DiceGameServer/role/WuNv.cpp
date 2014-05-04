@@ -366,7 +366,7 @@ int WuNv::XueZhiZuZhou(int &step, Action* action)
 
 		HARM harm;
 		harm.point = 2;
-		harm.srcID = dstID;
+		harm.srcID = id;
 		harm.type = HARM_MAGIC;
 		harm.cause = XUE_ZHI_ZU_ZHOU;
 		engine->setStateTimeline3(dstID, harm);
