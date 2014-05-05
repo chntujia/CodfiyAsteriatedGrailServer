@@ -113,30 +113,28 @@ int QiDao::p_after_magic(int &step, int playerID){
 	XunJieCiFuEffect(playerID);
 	if(playerID != id){return GE_SUCCESS;}
 	int ret = GE_INVALID_STEP;
-	while(STEP_DONE != step)
+	if(step == STEP_INIT)
 	{
-
-		switch(step){
-			case STEP_INIT:
-				step = XUN_JIE_CI_FU;
-			case XUN_JIE_CI_FU:
-				XunJieCiFuEffect(playerID);
-				step = FA_LI_CHAO_XI;
-			case FA_LI_CHAO_XI:
-				if(playerID != id){
-					step = STEP_DONE;
-					return GE_SUCCESS;
-				}
-				ret = FaLiChaoXi(playerID);
-				if(toNextStep(ret)){
-					//全部走完后，请把step设成STEP_DONE
-					step = STEP_DONE;
-				}
-			default:
-				return GE_SUCCESS;
+		step = XUN_JIE_CI_FU;
+	}
+	if(step = XUN_JIE_CI_FU)
+	{
+		ret = XunJieCiFuEffect(playerID);
+		step = FA_LI_CHAO_XI;
+	}
+	if(step == FA_LI_CHAO_XI)
+	{
+		if(playerID != id){
+			step = STEP_DONE;
+			return GE_SUCCESS;
+		}
+		ret = FaLiChaoXi(playerID);
+		if(toNextStep(ret)){
+			//全部走完后，请把step设成STEP_DONE
+			step = STEP_DONE;
 		}
 	}
-	return GE_SUCCESS;
+	return ret;
 }
 
 //启动后，攻击+2符文
@@ -146,11 +144,7 @@ int QiDao::p_timeline_1(int &step, CONTEXT_TIMELINE_1* con){
 		return GE_SUCCESS;
 	}
 	if(tap){
-		int sign =token[0];
-		sign += 2;
-		if(sign>3){sign = 3;}
-
-		token[0] = sign;
+		setToken(0,(token[0]+2));
 			//向客户端发送更新祈祷符文信息
 		GameInfo update_info;
 		Coder::tokenNotice(id, 0, token[0], update_info);
@@ -216,6 +210,7 @@ int QiDao::WeiLiCiFuEffect( CONTEXT_TIMELINE_2_HIT * con){
 						engine->setStateMoveOneCardNotToHand(playerID, DECK_BASIC_EFFECT, -1, DECK_DISCARD, it->card, playerID, WEI_LI_CI_FU, true);	
 						return GE_URGENT;
 					}
+					return GE_SUCCESS;
 				}
 					
 			}else{

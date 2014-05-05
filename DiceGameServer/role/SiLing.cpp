@@ -167,6 +167,7 @@ int SiLing::BuXiu(int playerID)
 				Coder::crossNotice(dstID, dstPlayer->getCrossNum(), update_info);
 				engine->sendMessage(-1, MSG_GAME, update_info);
 			}
+			return GE_SUCCESS;
 		}
 		return ret;
 	}

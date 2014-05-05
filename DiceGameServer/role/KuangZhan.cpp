@@ -29,12 +29,6 @@ bool KuangZhan::cmdMsgParse(UserTask *session, uint16_t type, ::google::protobuf
 	return false;
 }
 
-int KuangZhan::p_after_attack(int &step, int currentPlayerID) 
-{
-	used_XueYingKuangDao = false;
-	return GE_SUCCESS; 
-}
-
 //在出错的时候，p_xxxx有可能执行不止一次，若每次都重头来过的话。。。所以需要step记录执行到哪里
 int KuangZhan::p_timeline_1(int &step, CONTEXT_TIMELINE_1 *con)
 {
@@ -120,16 +114,17 @@ int KuangZhan::XueYingKuangDao(CONTEXT_TIMELINE_1 *con)
 				network::SkillMsg skill;
 				Coder::skillNotice(id, dstID, XUE_YING_KUANG_DAO, skill);
 				engine->sendMessage(-1, MSG_SKILL, skill);
-				used_XueYingKuangDao = true;
+				if(dstHandCardNum == 2)
+				{
+					con->harm.point+=2;
+				}
+				if(dstHandCardNum == 3)
+				{
+					con->harm.point+=1;
+				}
 			}
-			if(dstHandCardNum == 2)
-			{
-				con->harm.point+=2;
-			}
-			if(dstHandCardNum == 3)
-			{
-				con->harm.point+=1;
-			}
+			return GE_SUCCESS;
+			
 		}
 		return ret;
 	}
@@ -169,6 +164,7 @@ int KuangZhan::XueXingPaoXiao(CONTEXT_TIMELINE_1 *con)
 				engine->sendMessage(-1, MSG_SKILL, skill);
 				con->hitRate = RATE_NOMISS;
 			}
+			return GE_SUCCESS;
 		}
 		return ret;
 	}
@@ -222,6 +218,7 @@ int KuangZhan::SiLie(CONTEXT_TIMELINE_2_HIT *con)
 				Coder::energyNotice(id, gem, crystal, update_info);
 				engine->sendMessage(-1, MSG_GAME, update_info);
 			}
+			return GE_SUCCESS;
 		}
 		return ret;
 	}

@@ -4,10 +4,11 @@
 class QiDao : public PlayerEntity
 {
 public:
-	
+	QiDao(GameGrail *engine, int id, int color): PlayerEntity(engine, id, color){
+		tokenMax[0]=3;
+	}
 	static int GetXunJieEffectCard(GameGrail* engine,int id);//返回迅捷赐福的cardID，在PlayerEntity.cpp中调用
 	static void WeiLiCiFuParse(UserTask* session, int playerID, ::google::protobuf::Message *proto);
-	QiDao(GameGrail *engine, int id, int color): PlayerEntity(engine, id, color){}
 	int p_before_turn_begin(int &step, int currentPlayerID) ;
 	int p_timeline_1(int &step, CONTEXT_TIMELINE_1* con);
 	int p_timeline_2_hit(int &step, CONTEXT_TIMELINE_2_HIT * con);

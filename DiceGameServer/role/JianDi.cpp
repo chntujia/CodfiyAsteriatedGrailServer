@@ -69,75 +69,81 @@ int JianDi::p_timeline_1(int &step, CONTEXT_TIMELINE_1 *con)
 	if(step == STEP_INIT) {
     //发动天使之魂
 	if(flag==1)
-	 {
-	   step =TIAN_SHI_ZHI_HUN;
-	 }
+	{
+		step =TIAN_SHI_ZHI_HUN;
+	}
 	//发动恶魔之魂
 	else if(flag==2)
-	  {
-	    step =E_MO_ZHI_HUN;
-	  }
+	{
+		step =E_MO_ZHI_HUN;
+	}
 	else 
 	{
-	   step =STEP_DONE;
+		step =STEP_DONE;
 	}
-  }
+	}
   
-  if(step==TIAN_SHI_ZHI_HUN)
-  {
-      ret=TianShiZhiHun();
-	   if(toNextStep(ret)|| ret == GE_URGENT){
+	if(step==TIAN_SHI_ZHI_HUN)
+	{
+		ret=TianShiZhiHun();
+		if(toNextStep(ret)|| ret == GE_URGENT){
 			step = STEP_DONE;
-	   }
-  }
-  
-  if(step==E_MO_ZHI_HUN)
-  {
-      ret=EMoZhiHun();
-	    if(toNextStep(ret)|| ret == GE_URGENT){
-	        step = STEP_DONE;
-	    }
-  }
-    return GE_SUCCESS;
+		}
+	}
+
+	if(step==E_MO_ZHI_HUN)
+	{
+		ret=EMoZhiHun();
+		if(toNextStep(ret)|| ret == GE_URGENT){
+			step = STEP_DONE;
+		}
+	}
+	return ret;
 }
 
 //【剑气斩】 【恶魔之魂】【天使之魂】
 int JianDi::p_timeline_2_hit(int &step, CONTEXT_TIMELINE_2_HIT *con)
 {
-	int ret;
+	int ret = GE_INVALID_STEP;
 	if(con->attack.srcID != id || !con->attack.isActive){
 		return GE_SUCCESS;
 	}
 	//【剑气】不为0
-	if(token[0]>0)
+	if(step == STEP_INIT)
 	{
-	    if(step == STEP_INIT)
-		{
-		    step=JIAN_QI_ZHAN;
-		}			
-	if(step ==JIAN_QI_ZHAN){
+		step=JIAN_QI_ZHAN;
+	}
+	if(step ==JIAN_QI_ZHAN)
+	{
 		ret = JianQiZhan(con);
-		if(toNextStep(ret)){
+		if(toNextStep(ret) || GE_URGENT == ret)
+		{
 			//全部走完后，请把step设成STEP_DONE
-			   step = STEP_DONE;
-		    }
-	    }
+			step = E_MO_ZHI_HUN;
+		}
 	}
-
-	if(used_E_MO_ZHI_HUN)
+	if(step == E_MO_ZHI_HUN)
 	{
-	  //若命中，伤害+1
-	  con->harm.point+=1;
-	  used_E_MO_ZHI_HUN=false;
+		if(used_E_MO_ZHI_HUN)
+		{
+			//若命中，伤害+1
+			con->harm.point+=1;
+			used_E_MO_ZHI_HUN=false;
+		}
+		step = TIAN_SHI_ZHI_HUN;
 	}
-
-	if(used_TIAN_SHI_ZHI_HUN)
+	
+	if(step == TIAN_SHI_ZHI_HUN)
 	{
-		//若命中，剑帝+2治疗
-	    TianShiZhiHun_EffectHit();
-		used_TIAN_SHI_ZHI_HUN=false;
+		if(used_TIAN_SHI_ZHI_HUN)
+		{
+			//若命中，剑帝+2治疗
+			TianShiZhiHun_EffectHit();
+			used_TIAN_SHI_ZHI_HUN=false;
+		}
+		step = STEP_DONE;
 	}
-	return GE_SUCCESS;
+	return ret;
 }
 
 //【佯攻】【恶魔之魂】【天使之魂】【剑魂守护】
@@ -147,38 +153,44 @@ int JianDi::p_timeline_2_miss(int &step, CONTEXT_TIMELINE_2_MISS *con) {
 	if(con->srcID != id || !con->isActive){
 		return GE_SUCCESS;
 	}
-	int ret;
-	//【佯攻】
-	YangGon();
-
-	//【剑魂守护】
-	if(coverCards.size() < 3 && !used_TIAN_SHI_ZHI_HUN && !used_E_MO_ZHI_HUN)
+	int ret = GE_INVALID_STEP;
+	if(step == STEP_INIT)
 	{
-	    if(step == STEP_INIT)
+		step = YANG_GONG;
+	}
+	if(step == YANG_GONG)
+	{
+		YangGon();
+		step = JIAN_HUN_SHOU_HU;
+	}
+	if(step == JIAN_HUN_SHOU_HU)
+	{
+		ret = JianHunShouHu(con);
+		if(toNextStep(ret) || GE_URGENT == ret)
 		{
-		    step = JIAN_HUN_SHOU_HU;
-		}			
-	    if(step == JIAN_HUN_SHOU_HU)
-		{
-			ret = JianHunShouHu(con);
-			if(toNextStep(ret))
-			{
-				//全部走完后，请把step设成STEP_DONE
-			    step = STEP_DONE;
-			}
+			//全部走完后，请把step设成STEP_DONE
+			step = TIAN_SHI_ZHI_HUN;
 		}
 	}
-	if (used_TIAN_SHI_ZHI_HUN)
+	if(step == TIAN_SHI_ZHI_HUN)
 	{
-		TianShiZhiHun_EffectMiss();
-		used_TIAN_SHI_ZHI_HUN = false;
+		if (used_TIAN_SHI_ZHI_HUN )
+		{
+			TianShiZhiHun_EffectMiss();
+			used_TIAN_SHI_ZHI_HUN = false;
+		}
+		step = E_MO_ZHI_HUN;
 	}
-	if(used_E_MO_ZHI_HUN)
+	if(step == E_MO_ZHI_HUN)
 	{
-        EMoZhiHun_EffectMiss();
-	    used_E_MO_ZHI_HUN = false;
+		if(used_E_MO_ZHI_HUN)
+		{
+			EMoZhiHun_EffectMiss();
+			used_E_MO_ZHI_HUN = false;
+		}
+		step = STEP_DONE;
 	}
-	return GE_SUCCESS;
+	return ret;
 }
 
 int JianDi::p_after_attack(int &step, int playerID)
@@ -206,7 +218,7 @@ int JianDi::p_after_attack(int &step, int playerID)
 	if(step ==BU_QU_YI_ZHI)
 	{
 		ret = BuQuYiZhi();
-		if(toNextStep(ret))
+		if(toNextStep(ret) || GE_URGENT == ret)
 		{
 			//全部走完后，请把step设成STEP_DONE
 			   step = STEP_DONE;
@@ -228,6 +240,9 @@ int JianDi::TianShiYuEMo()
 //【佯攻】
 int JianDi::YangGon()
 {
+	network::SkillMsg skill;
+	Coder::skillNotice(id, id,YANG_GONG, skill);
+	engine->sendMessage(-1, MSG_SKILL, skill);
 	setToken(0,token[0]+1);
 	network::GameInfo update_info;
 	Coder::tokenNotice(id,0,token[0], update_info);
@@ -237,43 +252,22 @@ int JianDi::YangGon()
 //【剑魂守护】
 int JianDi::JianHunShouHu(CONTEXT_TIMELINE_2_MISS* con)
 {
-    int ret;
+	if(getCoverCardNum() >= 3 || used_TIAN_SHI_ZHI_HUN || used_E_MO_ZHI_HUN)
+		return GE_SUCCESS;
 	int cardID;
-	CommandRequest cmd_req;
-	Coder::askForSkill(id,JIAN_HUN_SHOU_HU, cmd_req);
-	//有限等待，由UserTask调用tryNotify唤醒
-	if(engine->waitForOne(id, network::MSG_CMD_REQ, cmd_req))
-	{
-		void* reply;
-		if (GE_SUCCESS == (ret = engine->getReply(id, reply)))
-		{
-			Respond* respond = (Respond*) reply;
-			//发动
-			if(respond->args(0)==1)         //启动
-			{
-			    network::SkillMsg skill;
-				Coder::skillNotice(id, id,JIAN_HUN_SHOU_HU, skill);
-				engine->sendMessage(-1, MSG_SKILL, skill);
+	network::SkillMsg skill;
+	Coder::skillNotice(id, id,JIAN_HUN_SHOU_HU, skill);
+	engine->sendMessage(-1, MSG_SKILL, skill);
 
-				cardID=con->cardID;
-				vector<int> cards;
-				cards.push_back(cardID);
-				addCoverCards(1, cards);  
-
-				//更新盖牌
-	            GameInfo game_info;
-	            Coder::coverNotice(id,getCoverCards(), game_info);
-	            engine->sendMessage(-1, MSG_GAME, game_info);
-			}
-			return GE_SUCCESS;
-		}
-		return ret;
-	}
-	else
-	{
-		//超时啥都不用做
-        return GE_TIMEOUT;
-	}
+	cardID=con->cardID;
+	vector<int> cards;
+	cards.push_back(cardID);
+	addCoverCards(1, cards); 
+	//更新盖牌
+	GameInfo game_info;
+	Coder::coverNotice(id,getCoverCards(), game_info);
+	engine->sendMessage(-1, MSG_GAME, game_info);
+	return GE_SUCCESS;
 }
 //【不屈意志】
 int JianDi::BuQuYiZhi()
@@ -298,19 +292,17 @@ int JianDi::BuQuYiZhi()
 
 				//更新能量
 				if(crystal > 0)
-				  setCrystal(--crystal);
+					setCrystal(--crystal);
 				else if (gem > 0)
-                  setGem(--gem);
+					setGem(--gem);
 
 				GameInfo game_info;
 				Coder::energyNotice(id, gem, crystal,game_info);
-				engine->sendMessage(-1, MSG_GAME, game_info);
 
 				//添加一【剑气】
 				setToken(0,token[0]+1);
-				network::GameInfo update_info;
-				Coder::tokenNotice(id,0,token[0], update_info);
-				engine->sendMessage(-1, MSG_GAME, update_info);
+				Coder::tokenNotice(id,0,token[0], game_info);
+				engine->sendMessage(-1, MSG_GAME, game_info);
 	           
 				//摸一张手牌
 				HARM  harm;
@@ -334,7 +326,9 @@ int JianDi::BuQuYiZhi()
 }
 //【剑气斩】
 int JianDi::JianQiZhan(CONTEXT_TIMELINE_2_HIT *con)
-{   
+{
+	if(token[0] == 0)
+		return GE_SUCCESS;
 	int ret;
 	int dstID;
 	int JianQiCount;
@@ -370,13 +364,14 @@ int JianDi::JianQiZhan(CONTEXT_TIMELINE_2_HIT *con)
 	            harm.point =JianQiCount;  //摸牌数量
 	            harm.cause =JIAN_QI_ZHAN;
 				engine->setStateTimeline3(dstID,harm);
+				return GE_URGENT;
 	        }
 			else
 			{
 				return GE_SUCCESS;
 			}
 		}
-		return GE_TIMEOUT;
+		return ret;
 	}
 	else
 	{
@@ -402,27 +397,27 @@ int JianDi::TianShiZhiHun()
 			if(respond->args(0)==1)         //启动
 			{
 				//宣告技能
-			    network::SkillMsg skill;
+				network::SkillMsg skill;
 				Coder::skillNotice(id, id,TIAN_SHI_ZHI_HUN, skill);
 				engine->sendMessage(-1, MSG_SKILL, skill);
 				
-			   used_TIAN_SHI_ZHI_HUN = true;
+				used_TIAN_SHI_ZHI_HUN = true;
 
            //移除一个【天使之魂】
-		      card_id = respond->card_ids(0);
-			  engine->setStateMoveOneCardNotToHand(id,DECK_COVER,-1,DECK_DISCARD,card_id,id,TIAN_SHI_ZHI_HUN,false);
-			//  TianShiYuEMo();
+				card_id = respond->card_ids(0);
+				engine->setStateMoveOneCardNotToHand(id,DECK_COVER,-1,DECK_DISCARD,card_id,id,TIAN_SHI_ZHI_HUN,false);
+				return GE_URGENT;
 			}
 		
 			return GE_SUCCESS ;
 		}
-		  return ret;
+		return ret;
 	}
 
-else{
-	//超时啥都不用做
-	  return GE_TIMEOUT;
-}
+	else{
+		//超时啥都不用做
+		return GE_TIMEOUT;
+	}
 
 }
 
@@ -435,6 +430,7 @@ int JianDi::TianShiZhiHun_EffectHit()
 	engine->sendMessage(-1, MSG_GAME, update_info);
 	return GE_SUCCESS;
 }
+
 int JianDi::TianShiZhiHun_EffectMiss()
 {
     //+1【士气】
@@ -458,13 +454,14 @@ int JianDi::TianShiZhiHun_EffectMiss()
 	engine->sendMessage(-1, MSG_GAME, game_info);
 	return GE_SUCCESS;
 }
+
 //【恶魔之魂】
 int JianDi::EMoZhiHun()
 {
 	int ret;
 	int card_id;
-	 CommandRequest cmd_req;
-	 Coder::askForSkill(id,E_MO_ZHI_HUN, cmd_req);
+	CommandRequest cmd_req;
+	Coder::askForSkill(id,E_MO_ZHI_HUN, cmd_req);
 	//有限等待，由UserTask调用tryNotify唤醒
 	if(engine->waitForOne(id, network::MSG_CMD_REQ, cmd_req))
 	{
@@ -479,31 +476,32 @@ int JianDi::EMoZhiHun()
 			    network::SkillMsg skill;
 				Coder::skillNotice(id, id,E_MO_ZHI_HUN, skill);
 				engine->sendMessage(-1, MSG_SKILL, skill);
-				
-			   used_E_MO_ZHI_HUN=true;
-
-           //移除一个【恶魔之魂】
-		      card_id = respond->card_ids(0);
-			  engine->setStateMoveOneCardNotToHand(id, DECK_COVER,-1,DECK_DISCARD,card_id,id,E_MO_ZHI_HUN,false);
-			//  TianShiYuEMo();
+				used_E_MO_ZHI_HUN=true;
+				//移除一个【恶魔之魂】
+				card_id = respond->card_ids(0);
+				engine->setStateMoveOneCardNotToHand(id, DECK_COVER,-1,DECK_DISCARD,card_id,id,E_MO_ZHI_HUN,false);
+				GameInfo game_info;
+				Coder::coverNotice(id,getCoverCards(), game_info);
+				engine->sendMessage(-1, MSG_GAME, game_info);
+				return GE_URGENT;
 			}
 			return GE_SUCCESS;
 		}
-		  return ret;
+		return ret;
 	}
 
-else{
-	//超时啥都不用做
-	  return GE_TIMEOUT;
-}
+	else{
+		//超时啥都不用做
+		  return GE_TIMEOUT;
+	}
 }
 
 int JianDi::EMoZhiHun_EffectMiss()
 {
 	//+2 【剑气】
-	   setToken(0,token[0]+2);
-	   network::GameInfo update_info;
-	   Coder::tokenNotice(id,0,token[0], update_info);
-	   engine->sendMessage(-1, MSG_GAME, update_info);
+	setToken(0,token[0]+2);
+	network::GameInfo update_info;
+	Coder::tokenNotice(id,0,token[0], update_info);
+	engine->sendMessage(-1, MSG_GAME, update_info);
 	return GE_SUCCESS;
 }

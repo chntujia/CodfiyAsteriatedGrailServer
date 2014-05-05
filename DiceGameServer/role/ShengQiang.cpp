@@ -42,23 +42,15 @@ int ShengQiang::p_timeline_1(int &step, CONTEXT_TIMELINE_1 *con)
 	}
 	//若成功则继续往下走，失败则返回，step会保留，下次再进来就不会重走
 	//一般超时也会继续下一步
-	while(STEP_DONE != step)
+	if(step == STEP_INIT)
 	{
-		switch(step)
-		{
-		case STEP_INIT:
-			//初始化step
-			step = TIAN_QIANG;
-			break;
-		case TIAN_QIANG:
-			ret = TianQiang(con);
-			if(toNextStep(ret)){
-				step = STEP_DONE;
-			}			
-			break;
-		
-		default:
-			return GE_INVALID_STEP;
+		step = TIAN_QIANG;
+	}
+	if(step == TIAN_QIANG)
+	{
+		ret = TianQiang(con);
+		if(toNextStep(ret)){
+			step = STEP_DONE;
 		}
 	}
 	return ret;
@@ -69,28 +61,22 @@ int ShengQiang::p_timeline_2_hit(int &step, CONTEXT_TIMELINE_2_HIT *con)
 	if(con->attack.srcID != id){
 		return GE_SUCCESS;
 	}
-	while(STEP_DONE != step)
+	if(step == STEP_INIT)
 	{
-		switch(step)
-		{
-		case STEP_INIT:
-			//初始化step
-			step = DI_QIANG;
-			break;
-		case DI_QIANG:
-			ret = DiQiang(con);
-			if(toNextStep(ret)){
-				step = SHENG_JI;
-			}			
-			break;
-		case SHENG_JI:
-			ret = ShengJi(con);
-			if(toNextStep(ret)){
-				step = STEP_DONE;
-			}			
-			break;
-		default:
-			return GE_INVALID_STEP;
+		step = DI_QIANG;
+	}
+	if(step == DI_QIANG)
+	{
+		ret = DiQiang(con);
+		if(toNextStep(ret)){
+			step = SHENG_JI;
+		}
+	}
+	if(step == SHENG_JI)
+	{
+		ret = ShengJi(con);
+		if(toNextStep(ret)){
+			step = STEP_DONE;
 		}
 	}
 	return ret;
@@ -307,6 +293,7 @@ int ShengQiang::TianQiang(CONTEXT_TIMELINE_1 *con)
 				con->hitRate = RATE_NOREATTACK;
 				used_TianQiang = true;
 			}
+			return GE_SUCCESS;
 		}
 		return ret;
 	}
@@ -352,6 +339,7 @@ int ShengQiang::DiQiang(CONTEXT_TIMELINE_2_HIT *con)
 				con->harm.point += crossUsed;
 				used_DiQiang = true;
 			}
+			return GE_SUCCESS;
 		}
 		return ret;
 	}

@@ -107,7 +107,6 @@ int DieWu::p_timeline_4(int &step, CONTEXT_TIMELINE_4 *con)
 	step = DAO_NI_ZHI_DIE;
 	if (con->harm.cause == DAO_NI_ZHI_DIE && con->crossAvailable > 0)
 	{
-		// Ê¥äÂ
 		ret = DaoNiCross(con);
 	}
 	step = STEP_DONE;

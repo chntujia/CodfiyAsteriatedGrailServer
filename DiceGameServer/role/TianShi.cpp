@@ -110,21 +110,22 @@ int TianShi::p_magic_skill(int &step, Action *action)
 	{
 	case TIAN_SHI_ZHI_QIANG:
 		ret = TianShiZhiQiang(action);
-		if (ret == GE_SUCCESS)
+		if (ret == GE_SUCCESS || ret == GE_URGENT)
 			step = STEP_DONE;
 		break;
 	case FENG_ZHI_JIE_JING:
 		ret = FengZhiJieJing(action);
-		if (ret == GE_SUCCESS)
+		if (ret == GE_SUCCESS || ret == GE_URGENT)
 			step = STEP_DONE;
 		break;
 	case TIAN_SHI_ZHU_FU:
 		ret = TianShiZhuFu(step, action);
-		if(GE_URGENT == ret){
+		if(GE_URGENT == ret && step == TIAN_SHI_ZHU_FU){
+			step = STEP_DONE;}
+		if(GE_URGENT == ret && step != STEP_DONE){
 			step = TIAN_SHI_ZHU_FU;
 		}
-		else if (GE_SUCCESS == ret){
-			step = STEP_DONE;}
+		
 		break;
 	default:
 		return GE_INVALID_ACTION;
@@ -221,6 +222,7 @@ int TianShi::TianShiZhuFu(int step, Action *action)
 			}
 			it = it->getPre();
 		}while(it != start);
+		return GE_URGENT;
 	}
 	else
 	{
@@ -246,6 +248,7 @@ int TianShi::TianShiZhuFu(int step, Action *action)
 		zhufu.srcID = id;
 		zhufu.type = HARM_NONE;
 		engine->pushGameState(new StateRequestHand(action->dst_ids(0), zhufu, id, DECK_HAND, false, false));
+		return GE_URGENT;
 	}
 	return GE_SUCCESS;
 }
@@ -264,7 +267,7 @@ int TianShi::FengZhiJieJing(Action *action)
 
 	engine->setStateMoveOneCardNotToHand(id, DECK_HAND, -1, DECK_DISCARD, card_id, id, FENG_ZHI_JIE_JING, true);
 	
-	return GE_SUCCESS;
+	return GE_URGENT;
 }
 
 int TianShi::TianShiJiBan()
@@ -356,8 +359,9 @@ int TianShi::TianShiZhiGe()
 			engine->sendMessage(-1, MSG_SKILL, skill_msg);
 
 			engine->pushGameState(new StateBasicEffectChange(dstID, CHANGE_REMOVE, card_id, id, TIAN_SHI_ZHI_GE));
-			return GE_SUCCESS;
+			return GE_URGENT;
 		}
+		return GE_SUCCESS;
 	}
 	else{
 		return GE_TIMEOUT;
