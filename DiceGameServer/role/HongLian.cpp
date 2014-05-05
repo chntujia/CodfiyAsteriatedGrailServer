@@ -30,23 +30,15 @@ int HongLian::p_timeline_1(int &step, CONTEXT_TIMELINE_1 *con)
 	}
 	//若成功则继续往下走，失败则返回，step会保留，下次再进来就不会重走
 	//一般超时也会继续下一步
-	while(STEP_DONE != step)
+	if(step == STEP_INIT)
 	{
-		switch(step)
-		{
-		case STEP_INIT:
-			//初始化step
-			step = XING_HONG_SHENG_YUE;
-			break;
-		case XING_HONG_SHENG_YUE:
-			ret = XingHongShengYue(con);
-			if(toNextStep(ret)){
-				step = STEP_DONE;
-			}			
-			break;
-		
-		default:
-			return GE_INVALID_STEP;
+		step = XING_HONG_SHENG_YUE;
+	}
+	if(step == XING_HONG_SHENG_YUE)
+	{
+		ret = XingHongShengYue(con);
+		if(toNextStep(ret)){
+			step = STEP_DONE;
 		}
 	}
 	return ret;
@@ -128,12 +120,9 @@ int HongLian::p_magic_skill(int &step, Action* action)
 	{
 	case XING_HONG_SHI_ZI:
 		ret = XingHongShiZi(step, action);
-		if(GE_URGENT == ret){
-			step = XING_HONG_SHI_ZI;
-		}
-		else if (GE_SUCCESS == ret){
+		if(toNextStep(ret) || GE_URGENT == ret){
 			step = STEP_DONE;
-		}		
+		}
 		break;
 
 	default:
@@ -486,50 +475,6 @@ int HongLian::JieJiaoJieZao(int playerID)
 	return GE_SUCCESS;
 }
 
-/*int HongLian::JieJiaoJieZaoAfterMagic(int playerID)
-{
-	if(playerID != id || 0 == getEnergy() || !tap){
-		return GE_SUCCESS;
-	}
-	int ret;
-	CommandRequest cmd_req;
-	GameInfo update_info;
-	Coder::askForSkill(id, JIE_JIAO_JIE_ZAO_AFTER_MAGIC, cmd_req);
-	//有限等待，由UserTask调用tryNotify唤醒
-	if(engine->waitForOne(id, network::MSG_CMD_REQ, cmd_req))
-	{
-		void* reply;
-		if (GE_SUCCESS == (ret = engine->getReply(playerID, reply)))
-		{
-			Respond* respond = (Respond*) reply;
-			if(respond->args(0) == 1){
-				if(crystal>0){
-				setCrystal(--crystal);
-				}
-				else{
-				setGem(--gem);
-				}
-				Coder::energyNotice(id, gem, crystal, update_info);
-				engine->sendMessage(-1, MSG_GAME, update_info);
-			//发动
-				network::SkillMsg skill;
-				Coder::skillNotice(id, id, JIE_JIAO_JIE_ZAO_AFTER_MAGIC, skill);
-				engine->sendMessage(-1, MSG_SKILL, skill);
-				tap = false;
-				Coder::tapNotice(id, false, update_info);
-				engine->sendMessage(-1, MSG_GAME, update_info);
-				addAction(ACTION_ATTACK_MAGIC, JIE_JIAO_JIE_ZAO_AFTER_MAGIC);
-				return GE_SUCCESS;
-			}
-		}
-		return ret;
-	}
-	else{
-		//超时啥都不用做
-		return GE_TIMEOUT;
-	}
-}*/
-
 int HongLian::XingHongShiZi(int &step, Action* action)
 {
 	GameInfo game_info;
@@ -539,20 +484,14 @@ int HongLian::XingHongShiZi(int &step, Action* action)
 	for (i = 0; i < action->card_ids_size(); ++i)
 		cards.push_back(action->card_ids(i));
 	
-	if(step != XING_HONG_SHI_ZI)
-	{
 		SkillMsg skill_msg;
 		Coder::skillNotice(id, action->dst_ids(0), XING_HONG_SHI_ZI, skill_msg);
 		engine->sendMessage(-1, MSG_SKILL, skill_msg);
-		engine->setStateMoveCardsNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cards.size(), cards, id, XING_HONG_SHI_ZI, true);
+		
 		CardMsg show_card;
 		Coder::showCardNotice(id, 2, cards, show_card);
 		engine->sendMessage(-1, MSG_CARD, show_card);
-		//插入了新状态，请return GE_URGENT
-		return GE_URGENT;
-	}
-	else
-	{
+
 		if(crystal>0)
 		{
 			setCrystal(--crystal);
@@ -582,7 +521,6 @@ int HongLian::XingHongShiZi(int &step, Action* action)
 
 		engine->setStateTimeline3(action->dst_ids(0), harm);
 		engine->setStateTimeline3(id, selfHarm);
-
-		return GE_SUCCESS;
-	}
+		engine->setStateMoveCardsNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cards.size(), cards, id, XING_HONG_SHI_ZI, true);
+		return GE_URGENT;
 }

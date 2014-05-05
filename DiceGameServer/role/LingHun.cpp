@@ -57,40 +57,27 @@ int LingHun::p_boot(int &step, int currentPlayerID)
 	if (currentPlayerID != id ){
 		return GE_SUCCESS;
 	}
-	do
+	if(step == STEP_INIT)
 	{
-		switch(step)
-		{
-		case STEP_INIT:
-			if(gem > 0){
-				step = LING_HUN_ZENG_FU;
-			}
-			else {	
-				if(token[0] > 0 && token[1] > 0 && !used_LING_HUN_LIAN_JIE)
-					step = LING_HUN_LIAN_JIE;
-				else 
-					step = STEP_DONE;
-			}
-			break;
-		case  LING_HUN_ZENG_FU:	  
-			ret = LingHunZengFu();
-			if(toNextStep(ret)){
-				if(token[0] > 0 && token[1] > 0 && !used_LING_HUN_LIAN_JIE && !used_LING_HUN_ZENG_FU)
-					step = LING_HUN_LIAN_JIE;
-				else
-					step = STEP_DONE;
-			}	
-			break;	
-		case  LING_HUN_LIAN_JIE:	  
-			ret = LingHunLianJie();
-			if(toNextStep(ret)){
+		step = LING_HUN_ZENG_FU;
+	}
+	if(step == LING_HUN_ZENG_FU)
+	{
+		ret = LingHunZengFu();
+		if(toNextStep(ret)){
+			if(token[0] > 0 && token[1] > 0 && !used_LING_HUN_LIAN_JIE && !used_LING_HUN_ZENG_FU)
+				step = LING_HUN_LIAN_JIE;
+			else
 				step = STEP_DONE;
-			}	
-			break;	
-		default:
-			return GE_INVALID_STEP;
 		}
-	}while(STEP_DONE != step && toNextStep(ret));
+	}
+	if(step == LING_HUN_LIAN_JIE)
+	{
+		ret = LingHunLianJie();
+		if(toNextStep(ret)){
+			step = STEP_DONE;
+		}
+	}
 	return ret;
 }
 
@@ -102,29 +89,17 @@ int LingHun::p_timeline_1(int &step, CONTEXT_TIMELINE_1 *con)
 	}
 	//若成功则继续往下走，失败则返回，step会保留，下次再进来就不会重走
 	//一般超时也会继续下一步
-	do
+	if(step == STEP_INIT)
 	{
-		switch(step)
-		{
-		case STEP_INIT:
-			//初始化step
-			if(token[0]>0||token[1]>0)   //当黄魂及蓝魂都为0的时候，不提示【灵魂转换】
-			{
-				step = LING_HUN_ZHUAN_HUAN;
-			}
-			else 
-				step=STEP_DONE;
-			break;
-		case  LING_HUN_ZHUAN_HUAN:	  
-			ret = LingHunZhuanHuan(con);
-			if(toNextStep(ret) || ret == GE_URGENT){
-				step = STEP_DONE;
-			}	
-			break;	
-		default:
-			return GE_INVALID_STEP;
+		step = LING_HUN_ZHUAN_HUAN;
+	}
+	if(step == LING_HUN_ZHUAN_HUAN)
+	{
+		ret = LingHunZhuanHuan(con);
+		if(toNextStep(ret) || ret == GE_URGENT){
+			step = STEP_DONE;
 		}
-	}while(STEP_DONE != step && toNextStep(ret));
+	}
 	return ret;
 }
 
@@ -262,6 +237,8 @@ int LingHun::p_magic_skill(int &step, Action* action)
 //--------------【灵魂增幅】-------------------------
 int LingHun::LingHunZengFu()
 {
+	if(getGem() <=0)
+		return GE_SUCCESS;
 	CommandRequest cmd_req;
 	Coder::askForSkill(id, LING_HUN_ZENG_FU, cmd_req);
 	//有限等待，由UserTask调用tryNotify唤醒
@@ -294,6 +271,7 @@ int LingHun::LingHunZengFu()
 				else
 					return GE_INVALID_ACTION;
 			}
+			return GE_SUCCESS;
 		}
 		return ret;
 	}
@@ -460,7 +438,7 @@ int LingHun::LingHunZhuanHuan(CONTEXT_TIMELINE_1 *con)
 {
 	//黄魂转换为蓝魂
 	//蓝魂转换为黄魂
-	if(!con->attack.isActive)
+	if(!con->attack.isActive || (token[0]<=0 && token[1]<=0))
 		return GE_SUCCESS;
 	int ret;
 	//满足发动条件，询问客户端是否发动
