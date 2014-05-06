@@ -82,6 +82,9 @@ int ZhongCai::v_allow_action(Action* action, int allow, bool canGiveUp)
 	if (token[0] < 4)
 		return PlayerEntity::v_allow_action(action, allow, canGiveUp);
 
+	if(canGiveUp && action->action_type() == ACTION_NONE)
+		return GE_SUCCESS;
+
 	if (action->action_type() != ACTION_MAGIC_SKILL || action->action_id() != MO_RI_SHEN_PAN)
 		return GE_INVALID_ACTION;
 

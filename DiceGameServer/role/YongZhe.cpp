@@ -2,8 +2,6 @@
 #include "..\GameGrail.h"
 #include "..\UserTask.h"
 
-
-bool YongZhe::weakenFlag = false;//静态成员变量初始化
 YongZhe::YongZhe(GameGrail *engine, int id, int color): PlayerEntity(engine, id, color)
 {
 	this->roleID = 21;//设置Role ID 为21， 用于在GrailState.cpp进行挑衅的攻击目标判断
@@ -19,57 +17,17 @@ YongZhe::YongZhe(GameGrail *engine, int id, int color): PlayerEntity(engine, id,
 	tap = false;
 	using_NuHou = 0;
 }
-int YongZhe::RemoveTiaoXinEffect(GameGrail *engine){
-	//[Yongzhe]
-	int m_currentPlayerID = engine->getCurrentPlayerID();
-	PlayerEntity* pe = engine->getPlayerEntity(m_currentPlayerID);
+
+int YongZhe::RemoveTiaoXinEffect(int currentPlayer){
+	PlayerEntity* pe = engine->getPlayerEntity(currentPlayer);
 	if( GE_SUCCESS == pe->checkExclusiveEffect(EX_TIAO_XIN)){
-		if(YongZhe::weakenFlag == false){
-			pe->removeExclusiveEffect(EX_TIAO_XIN);
-			GameInfo update_info;	
-			Coder::exclusiveNotice(pe->getID(), pe->getExclusiveEffect(), update_info);
-			engine->sendMessage(-1, MSG_GAME, update_info);
-		}
-		YongZhe::weakenFlag = false;
+		pe->removeExclusiveEffect(EX_TIAO_XIN);
+		GameInfo update_info;	
+		Coder::exclusiveNotice(pe->getID(), pe->getExclusiveEffect(), update_info);
+		engine->sendMessage(-1, MSG_GAME, update_info);
 	}
-	////
 	return GE_SUCCESS;
 }
-int YongZhe::TiaoXinEffect(GameGrail *engine,Action* action, int allowAction,int canGiveUp){
-	int m_currentPlayerID = engine->getCurrentPlayerID();
-	int ret = GE_SUCCESS;
-		///[Yongzhe]挑衅	被挑衅时允许启动，允许对勇者攻击和发动额外攻击，或者放弃行动跳过回合
-			PlayerEntity* src = engine->getPlayerEntity(m_currentPlayerID);
-			if( GE_SUCCESS == src->checkExclusiveEffect(EX_TIAO_XIN)){
-																//被挑衅状态下放弃行动，或放弃额外行动
-				if(action->action_type() == ACTION_NONE){    
-					return GE_SUCCESS;
-				}
-				if (action->action_type() == ACTION_ATTACK){
-					PlayerEntity* dst_pe = engine->getPlayerEntity(action->dst_ids().Get(0));
-																 //被挑衅状态下攻击勇者
-					if(dst_pe->getRoleID() == 21){			  																//检查角色是否允许发动攻击，如仲裁达到4能量的情形
-						if(GE_SUCCESS != (ret = src->v_allow_action(action, allowAction, canGiveUp))){
-							return ret;
-						}
-						return GE_SUCCESS;
-					}else{
-						return GE_INVALID_ACTION;
-					}
-				}else{
-					return GE_INVALID_ACTION;
-				}
-				
-			}else{
-				if(GE_SUCCESS != (ret = src->v_allow_action(action, allowAction, canGiveUp))){
-					return ret;
-				}
-			}
-			////
-	return ret;
-}
-
-
 
 bool YongZhe::cmdMsgParse(UserTask *session, uint16_t type, ::google::protobuf::Message *proto)
 {
@@ -193,41 +151,22 @@ int YongZhe::MingJingZhiShui(CONTEXT_TIMELINE_1 *con){
 
 int YongZhe::p_timeline_1(int &step, CONTEXT_TIMELINE_1* con){
 	int ret = GE_INVALID_STEP;
-	if(engine->getCurrentPlayerID() != id){//是否自己的回合（主动攻击）
+	if(con->attack.srcID != id || !con->attack.isActive){ //确认攻击是否由该id发动
 		return GE_SUCCESS;
 	}
-	if(con->attack.srcID != id){ //确认攻击是否由该id发动
-		return GE_SUCCESS;
-	}
-	while(STEP_DONE != step)
-	{
-		switch(step)
-		{
-		case STEP_INIT:
-			step = NU_HOU;
-			break;
-		case NU_HOU:
-				// 怒吼响应
-
-			ret = NuHou(con);
-			if(toNextStep(ret)){
-				step = MING_JING_ZHI_SHUI;
-			}
-			break;
-
-		case MING_JING_ZHI_SHUI:
-				
-			ret = MingJingZhiShui(con);
-			if(toNextStep(ret)){
-				step = STEP_DONE;
-			}
-			break;
-
-		default:
-			return GE_INVALID_STEP;
+	if(step == STEP_INIT || step == NU_HOU){
+		step = NU_HOU;
+		ret = NuHou(con);
+		if(toNextStep(ret)){
+			step = MING_JING_ZHI_SHUI;
 		}
 	}
-
+	if(step == MING_JING_ZHI_SHUI){				
+		ret = MingJingZhiShui(con);
+		if(toNextStep(ret)){
+			step = STEP_DONE;
+		}
+	}
 	return ret;
 }
 
@@ -247,23 +186,32 @@ int YongZhe::NuHouMiss(CONTEXT_TIMELINE_2_MISS *con){
 
 int YongZhe::p_timeline_2_hit(int &step, CONTEXT_TIMELINE_2_HIT * con)
 {
-	if(engine->getCurrentPlayerID()  != id){//是否自己的回合（主动攻击）
-		return GE_SUCCESS;
-	}
-	if(con->attack.srcID != id){ //确认攻击是否由该id发动
+	if(con->attack.srcID != id || !con->attack.isActive){ //确认攻击是否由该id发动
 		return GE_SUCCESS;
 	}
 	step = JIN_DUAN_ZHI_LI;
-	int ret =JinDuanZhiLiHit(con);
-	step = STEP_DONE;
+	int ret = JinDuanZhiLiHit(con);
+	if(toNextStep(ret) || ret == GE_URGENT){
+		step = STEP_DONE;
+	}
 	return ret;
+}
+
+int YongZhe::p_before_turn_begin(int &step, int currentPlayerID){
+	toRemoveTiaoXin = false;
+	step = STEP_DONE;
+	return GE_SUCCESS;
 }
 
 int YongZhe::p_before_action(int &step, int currentPlayerID) { 
 	/*
 		挑衅效果判断在 GrailState.cpp中完成，请使用[YongZhe]标记定位
 	*/
-
+	PlayerEntity* pe = engine->getPlayerEntity(currentPlayerID);
+	if( GE_SUCCESS == pe->checkExclusiveEffect(EX_TIAO_XIN)){
+		toRemoveTiaoXin = true;
+	}
+	
 	//解除精疲力竭
 	if(currentPlayerID == id){
 		if(tap){
@@ -289,18 +237,30 @@ int YongZhe::p_before_action(int &step, int currentPlayerID) {
 
 	return GE_SUCCESS;
 }
+
+int YongZhe::p_turn_end(int &step, int playerID)
+{
+	if(toRemoveTiaoXin){
+		int ret = RemoveTiaoXinEffect(playerID);
+		if(ret == GE_SUCCESS){
+			step = STEP_DONE;
+		}
+		return ret;
+	}
+	else 
+		return GE_SUCCESS;
+}
+
 int YongZhe::JingPiLiJie(){
 	tap = true;
 	GameInfo game_info;
 	Coder::tapNotice(id, true, game_info);
-	engine->sendMessage(-1, MSG_GAME, game_info);
 
 	addAction(ACTION_ATTACK, JING_PI_LI_JIE);
 
 	this->setHandCardsMaxFixed(true,4);
-	GameInfo game_info2;
-	Coder::handcardMaxNotice(id, this->getHandCardMax(), game_info2);
-	engine->sendMessage(-1, MSG_GAME, game_info2);
+	Coder::handcardMaxNotice(id, this->getHandCardMax(), game_info);
+	engine->sendMessage(-1, MSG_GAME, game_info);
 	
 	return GE_SUCCESS;
 }
@@ -309,11 +269,7 @@ int YongZhe::JinDuanZhiLiHit(CONTEXT_TIMELINE_2_HIT *con)//[响应]A 【禁断�
 {
 	int energy = getEnergy();
 	if(energy<=0){
-		if(energy < 0){
-			return GE_FATAL_ERROR;
-		}
-		return GE_SUCCESS;
-	
+		return GE_SUCCESS;	
 	}
 	int ret = GE_SUCCESS;
 
@@ -343,7 +299,6 @@ int YongZhe::JinDuanZhiLiHit(CONTEXT_TIMELINE_2_HIT *con)//[响应]A 【禁断�
 					setGem(--gem);
 				}
 				Coder::energyNotice(id, gem, crystal, update_info);
-				engine->sendMessage(-1, MSG_GAME, update_info);
 
 				//计算特殊牌数目
 				vector<int> cards;
@@ -388,7 +343,7 @@ int YongZhe::JinDuanZhiLiHit(CONTEXT_TIMELINE_2_HIT *con)//[响应]A 【禁断�
 					CardMsg show_card;
 					Coder::showCardNotice(id, cards.size(), cards, show_card);
 					engine->sendMessage(-1, MSG_CARD, show_card);
-					int ret = engine->setStateMoveCardsNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cards.size(), cards, id, JIN_DUAN_ZHI_LI, true);
+					engine->setStateMoveCardsNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cards.size(), cards, id, JIN_DUAN_ZHI_LI, true);
 					
 				}
 				
@@ -439,7 +394,6 @@ int YongZhe::JinDuanZhiLiMiss(CONTEXT_TIMELINE_2_MISS *con)//[响应]A 【禁断
 					setGem(--gem);
 				}
 				Coder::energyNotice(id, gem, crystal, update_info);
-				engine->sendMessage(-1, MSG_GAME, update_info);
 
 				//计算特殊牌数目
 				vector<int> cards;
@@ -463,7 +417,6 @@ int YongZhe::JinDuanZhiLiMiss(CONTEXT_TIMELINE_2_MISS *con)//[响应]A 【禁断
 				setToken(0,token[0]+magicCardNum);
 
 				Coder::tokenNotice(id, 0, token[0], update_info);
-				engine->sendMessage(-1, MSG_GAME, update_info);
 
 				//每有1张水系牌，你+1点【知性】
 				setToken(1,token[1]+waterCardNum);
@@ -476,9 +429,10 @@ int YongZhe::JinDuanZhiLiMiss(CONTEXT_TIMELINE_2_MISS *con)//[响应]A 【禁断
 				//展示并丢弃手牌
 				if (cards.size() > 0)
 				{
-					int ret = engine->setStateMoveCardsNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cards.size(), cards, id, JIN_DUAN_ZHI_LI, true);
-				
-						
+					CardMsg show_card;
+					Coder::showCardNotice(id, cards.size(), cards, show_card);
+					engine->sendMessage(-1, MSG_CARD, show_card);
+					int ret = engine->setStateMoveCardsNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cards.size(), cards, id, JIN_DUAN_ZHI_LI, true);					
 				}
 				return GE_URGENT;
 			}
@@ -486,38 +440,22 @@ int YongZhe::JinDuanZhiLiMiss(CONTEXT_TIMELINE_2_MISS *con)//[响应]A 【禁断
 	}
 	return GE_SUCCESS;
 }
+
 int YongZhe::p_timeline_2_miss(int &step, CONTEXT_TIMELINE_2_MISS * con)
 {
-	int ret = GE_SUCCESS;
-	if(engine->getCurrentPlayerID() != id){//是否自己的回合（主动攻击）
+	int ret = GE_INVALID_STEP;
+	if(con->srcID != id || !con->isActive){ //确认攻击是否由该id发动
 		return GE_SUCCESS;
 	}
-	if(con->srcID != id){ //确认攻击是否由该id发动
-		return GE_SUCCESS;
+	if(step == STEP_INIT || step == NU_HOU){
+		step = NU_HOU;
+		ret = NuHouMiss(con);
+		step = JIN_DUAN_ZHI_LI;
 	}
-	while(STEP_DONE != step)
-	{
-		switch(step)
-		{
-		case STEP_INIT:
-			step = NU_HOU;
-			break;
-		case NU_HOU:
-				// 怒吼响应
-			ret = NuHouMiss(con);
-			step = JIN_DUAN_ZHI_LI;
-			break;
-
-		case JIN_DUAN_ZHI_LI:
-				
-			ret = JinDuanZhiLiMiss(con);
-			if(toNextStep(ret) || ret == GE_URGENT){
-				step = STEP_DONE;
-			}
-			break;
-
-		default:
-			return GE_INVALID_STEP;
+	if(step == JIN_DUAN_ZHI_LI){
+		ret = JinDuanZhiLiMiss(con);
+		if(toNextStep(ret) || ret == GE_URGENT){
+			step = STEP_DONE;
 		}
 	}
 
@@ -528,9 +466,6 @@ int YongZhe::SiDou(CONTEXT_TIMELINE_6_DRAWN *con){
 
 	//消耗1个宝石
 	if(gem <= 0){
-		if(gem <0){
-			return GE_FATAL_ERROR;
-		}
 		return GE_SUCCESS;
 	}
 	int ret = GE_SUCCESS;
@@ -572,8 +507,10 @@ int YongZhe::p_timeline_6_drawn(int &step, CONTEXT_TIMELINE_6_DRAWN *con){
 		if(con->harm.point > 0 && con->harm.type == HARM_MAGIC){
 			if(gem<=0){return GE_SUCCESS;}
 			step = SI_DOU;
-			int ret =SiDou(con);
-			step = STEP_DONE;
+			int ret = SiDou(con);
+			if(toNextStep(ret)){
+				step = STEP_DONE;
+			}
 			return ret;
 		}
 	}
