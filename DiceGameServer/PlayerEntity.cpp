@@ -370,11 +370,13 @@ int PlayerEntity::v_allow_action(Action* action, int allow, bool canGiveUp)
 //FIXME: Ç±ĞĞ ÌôĞÆ ¶àÖØ
 int PlayerEntity::v_attack(int cardID, int dstID, bool realCard)
 {
-	PlayerEntity* dst = engine->getPlayerEntity(dstID);
-
 	int ret;
-	if (GE_SUCCESS != (ret = dst->v_attacked()))
-	{
+	PlayerEntity* dst = engine->getPlayerEntity(dstID);
+	
+	if( GE_SUCCESS == checkExclusiveEffect(EX_TIAO_XIN) && dst->getRoleID() != 21){
+		return GE_INVALID_PLAYERID;
+	}
+	if (GE_SUCCESS != (ret = dst->v_attacked())){
 		return ret;
 	}
 	if(realCard){

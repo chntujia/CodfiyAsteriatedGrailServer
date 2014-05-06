@@ -3,7 +3,7 @@
 #include <Windows.h>
 #include <algorithm>
 #include <cstdlib> 
-#include "role\YongZhe.h"
+
 int StateWaitForEnter::handle(GameGrail* engine)
 {
 	//ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateWaitForEnter", engine->getGameId());
@@ -311,7 +311,6 @@ int StateWeaken::handle(GameGrail* engine)
 				return GE_URGENT;
 			}
 			else{
-				YongZhe::weakenFlag = true;//[YongZhe]
 				engine->popGameState();
 				engine->pushGameState(new StateTurnEnd);
 				engine->pushGameState(new StateBetweenWeakAndAction);
@@ -398,9 +397,10 @@ int StateActionPhase::handle(GameGrail* engine)
 
 	int m_currentPlayerID = engine->getCurrentPlayerID();
 
-	PlayerEntity* pe = engine->getPlayerEntity(m_currentPlayerID);
-	if( GE_SUCCESS == pe->checkExclusiveEffect(EX_TIAO_XIN)){//[Yongzhe]挑衅
+	PlayerEntity *src = engine->getPlayerEntity(m_currentPlayerID);
+	if( GE_SUCCESS == src->checkExclusiveEffect(EX_TIAO_XIN)){//[Yongzhe]挑衅
 		allowAction = ACTION_ATTACK;
+		canGiveUp = true;
 	}
 
 	CommandRequest cmd_req;
@@ -411,12 +411,11 @@ int StateActionPhase::handle(GameGrail* engine)
 		int ret;
 		if(GE_SUCCESS == (ret = engine->getReply(m_currentPlayerID, temp))){
 			Action *action = (Action*) temp;
-			PlayerEntity *src;
-			src = engine->getPlayerEntity(m_currentPlayerID);
+			
 
-			if(GE_SUCCESS != (ret = YongZhe::TiaoXinEffect(engine, action, allowAction, canGiveUp))){
+			if(GE_SUCCESS != (ret = src->v_allow_action(action, allowAction, canGiveUp))){
 				return ret;
-			}//[YongZhe] TiaoXinEffect()：存在挑衅时处理挑衅，不存在时 调用PlayerEntity 的 v_allow_action
+			}
 
 			switch(action->action_type())
 			{
@@ -592,7 +591,7 @@ int StateActionPhase::basicSpecial(Action *action, GameGrail* engine)
 			morale->dstID = dst->getID();
 			morale->harm = grail;
 			morale->howMany = 1;
-			engine->pushGameState(new StateTrueLoseMorale(morale));
+			engine->pushGameState(new StateBeforeLoseMorale(morale));
 			vector<int> cards;
 			HARM synthesize;
 			synthesize.cause = CAUSE_SYNTHESIZE;
@@ -1046,8 +1045,6 @@ int StateTurnEnd::handle(GameGrail* engine)
 	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateTurnEnd", engine->getGameId());
 	int ret = GE_FATAL_ERROR;
 	int m_currentPlayerID = engine->getCurrentPlayerID();
-
-	YongZhe::RemoveTiaoXinEffect(engine);//[YongZhe]
 
 	while(iterator < engine->getGameMaxPlayers()){	    
 		ret = engine->getPlayerEntity(iterator)->p_turn_end(step, m_currentPlayerID);
