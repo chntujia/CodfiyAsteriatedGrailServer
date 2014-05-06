@@ -226,6 +226,7 @@ int WuNv::XueZhiAiShang(int &step, int currentPlayerID)
 					harm.type = HARM_MAGIC;
 					harm.cause = XUE_ZHI_AI_SHANG;
 					engine->setStateTimeline3(id, harm);
+
 					return GE_URGENT;
 				}
 			}
@@ -390,6 +391,7 @@ int WuNv::XueZhiZuZhou(int &step, Action* action)
 			qipai.type = HARM_NONE;
 			qipai.cause = XUE_ZHI_ZU_ZHOU;
 			engine->pushGameState(new StateRequestHand(id, qipai, -1, DECK_DISCARD, false, false));
+			step = STEP_DONE;
 			return GE_URGENT;
 		}
 	}
