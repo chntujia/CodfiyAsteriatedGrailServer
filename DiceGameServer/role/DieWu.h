@@ -25,10 +25,10 @@ private:
 	int WuDong(Action *action);
 	int YongHua(Action *action);
 	int DaoNiZhiDie(Action *action);
+	int DaoNiZhiDie_Yong();
 	int Diao_Ling(vector<int> cards);
 	int ChaoSheng(CONTEXT_TIMELINE_6 *con);
 	int JingHuaShuiYue(CONTEXT_TIMELINE_5 *con);
 	int DiaoLing_Effect(CONTEXT_LOSE_MORALE *con);
 	int DaoNiCross(CONTEXT_TIMELINE_4 *con);
-
 };

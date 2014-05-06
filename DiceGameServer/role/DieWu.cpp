@@ -12,16 +12,19 @@ bool DieWu::cmdMsgParse(UserTask* session, uint16_t type, ::google::protobuf::Me
 		{
 		case DU_FEN:
 			//tryNotify负责向游戏主线程传消息，只有id等于当前等待id，声明state等于当前state，声明step等于当前step，游戏主线程才会接受
-			session->tryNotify(id,STATE_TIMELINE_5,DU_FEN, respond);
+			session->tryNotify(id, STATE_TIMELINE_5, DU_FEN, respond);
 			return true;
 		case CHAO_SHENG:
-			session->tryNotify(id,STATE_TIMELINE_6,CHAO_SHENG, respond);
+			session->tryNotify(id, STATE_TIMELINE_6, CHAO_SHENG, respond);
 			return true;
 		case JING_HUA_SHUI_YUE:
-			session->tryNotify(id,STATE_TIMELINE_5,JING_HUA_SHUI_YUE, respond);
+			session->tryNotify(id, STATE_TIMELINE_5, JING_HUA_SHUI_YUE, respond);
 			return true;
 		case DIAO_LING:
-			session->tryNotify(id,STATE_COVER_CHANGE,DIAO_LING,respond);
+			if(engine->topGameState()->state == STATE_COVER_CHANGE)
+				session->tryNotify(id, STATE_COVER_CHANGE, DIAO_LING, respond);
+			else
+				session->tryNotify(id, STATE_TIMELINE_3, STEP_INIT, respond);
 			return true;
 		}
 	}
@@ -37,6 +40,7 @@ int DieWu::p_before_turn_begin(int &step, int currentPlayerID)
 	GameInfo game_info;
 	Coder::tapNotice(id, tap, game_info);
 	engine->sendMessage(-1, MSG_GAME, game_info);
+	step = STEP_DONE;
 	return GE_SUCCESS; 
 }
 
@@ -90,9 +94,20 @@ int DieWu::p_magic_skill(int &step, Action* action)
 		}
 		break;
 	case DAO_NI_ZHI_DIE:
-		ret = DaoNiZhiDie(action);
-		if(GE_URGENT == ret){
-			step = STEP_DONE;
+		if(step == STEP_INIT){
+			ret = DaoNiZhiDie(action);
+			if(GE_URGENT == ret && action->args(0) == 1){
+				step = STEP_DONE;
+			}
+			else if(GE_URGENT == ret && action->args(0) != 1){
+				step = DAO_NI_ZHI_DIE;
+			}
+		}
+		else if(step == DAO_NI_ZHI_DIE){
+			ret = DaoNiZhiDie_Yong();
+			if(GE_URGENT == ret){
+				step = STEP_DONE;
+			}
 		}
 		break;
 	default:
@@ -103,41 +118,49 @@ int DieWu::p_magic_skill(int &step, Action* action)
 
 int DieWu::p_timeline_4(int &step, CONTEXT_TIMELINE_4 *con)
 {
-	int ret = GE_INVALID_STEP;
-	step = DAO_NI_ZHI_DIE;
-	if (con->harm.cause == DAO_NI_ZHI_DIE && con->crossAvailable > 0)
-	{
-		ret = DaoNiCross(con);
+	int ret = GE_INVALID_STEP;	
+	if (con->harm.cause != DAO_NI_ZHI_DIE || con->crossAvailable <= 0)	{
+		return GE_SUCCESS;
 	}
-	step = STEP_DONE;
+	if(step == STEP_INIT || step == DAO_NI_ZHI_DIE){
+		step = DAO_NI_ZHI_DIE;
+		ret = DaoNiCross(con);
+		if(ret == GE_SUCCESS){
+			step = STEP_DONE;
+		}
+	}
 	return ret;
 }
 
 int DieWu::p_timeline_5(int &step, CONTEXT_TIMELINE_5 *con)
 {
-	int ret = GE_INVALID_STEP;;
+	int ret = GE_INVALID_STEP;
 	if(con->harm.type != HARM_MAGIC) {
 		return GE_SUCCESS;
 	}
-	switch(step)
-	{
-	case STEP_INIT:
-	case DU_FEN:
-		step = DU_FEN;
-		ret = DuFen(con);
-		if(toNextStep(ret) || ret == GE_URGENT) {
-			step = JING_HUA_SHUI_YUE;
+	do{
+		switch(step)
+		{
+		case STEP_INIT:
+			step = DU_FEN;
+			ret = GE_SUCCESS;
+			break;
+		case DU_FEN:
+		    ret = DuFen(con);
+			if(toNextStep(ret) || ret == GE_URGENT) {			
+				step = JING_HUA_SHUI_YUE;
+			}
+			break;
+		case JING_HUA_SHUI_YUE:
+			ret = JingHuaShuiYue(con);
+			if(toNextStep(ret) || ret == GE_URGENT) {
+				step = STEP_DONE;
+			}
+			break;
+		default:
+			ret = GE_INVALID_STEP;
 		}
-		break;
-	case JING_HUA_SHUI_YUE:
-		ret = JingHuaShuiYue(con);
-		if(toNextStep(ret) || ret == GE_URGENT) {
-			step = STEP_DONE;
-		}
-		break;
-	default:
-		return GE_INVALID_STEP;
-	}
+	}while(toNextStep(ret) && step != STEP_DONE);
 	return ret;
 }
 
@@ -145,18 +168,12 @@ int DieWu::p_timeline_6(int &step, CONTEXT_TIMELINE_6 *con)
 {   
 	int ret = GE_INVALID_STEP;
 	bool flag=false;
-	switch(step)
-	{
-	case STEP_INIT:
-	case CHAO_SHENG:
+	if(step == STEP_INIT || step == CHAO_SHENG){
 	   	step = CHAO_SHENG;
-		ret =ChaoSheng(con);
+		ret = ChaoSheng(con);
 	    if(toNextStep(ret) || ret == GE_URGENT){
 		    step = STEP_DONE;
 	    }
-	   	break;
-	default:
-		return GE_INVALID_STEP;
 	}
 	return ret;
 }
@@ -168,13 +185,13 @@ int DieWu::p_cover_change(int &step, int dstID, int direction, int howMany, vect
 		return GE_SUCCESS;
 	}
 
-	step=DIAO_LING;
+	step = DIAO_LING;
 	ret = Diao_Ling(cards);
 	if(toNextStep(ret)||ret == GE_URGENT) {
 		step = STEP_DONE;
 	}
 	
-    return GE_SUCCESS; 
+    return ret; 
 }
 
 int DieWu::p_fix_morale(int &step, CONTEXT_LOSE_MORALE *con)
@@ -182,7 +199,10 @@ int DieWu::p_fix_morale(int &step, CONTEXT_LOSE_MORALE *con)
 	int ret = GE_SUCCESS;
 	if(tap)
 	{
-		ret=DiaoLing_Effect(con);
+		ret = DiaoLing_Effect(con);
+		if(ret == GE_SUCCESS){
+			step = STEP_DONE;
+		}
 	}
 	return ret;
 }
@@ -226,8 +246,7 @@ int DieWu::WuDong(Action *action)
 //【毒粉】
 int DieWu::DuFen(CONTEXT_TIMELINE_5 *con)
 {
-	PlayerEntity *self = engine->getPlayerEntity(id);
-	if(con->harm.point != 1 || con->harm.type != HARM_MAGIC || self->getCoverCardNum() < 1) {
+	if(con->harm.point != 1 || con->harm.type != HARM_MAGIC || getCoverCardNum() < 1) {
 		return GE_SUCCESS;
 	}
     CommandRequest cmd_req;
@@ -256,7 +275,6 @@ int DieWu::DuFen(CONTEXT_TIMELINE_5 *con)
 				con->harm.point=con->harm.point+1;  //伤害加1
 				return GE_URGENT;
 		   }
-		   return GE_SUCCESS;
 		}
 		return ret;
 	}
@@ -268,8 +286,7 @@ int DieWu::DuFen(CONTEXT_TIMELINE_5 *con)
 //【朝圣】   考虑【灵魂链接】
 int DieWu::ChaoSheng(CONTEXT_TIMELINE_6 *con)
 {
-	PlayerEntity *self = engine->getPlayerEntity(id);
-	if(con->dstID != id || self->getCoverCardNum() < 1 || con->harm.point < 1) {
+	if(con->dstID != id || getCoverCardNum() < 1 || con->harm.point < 1) {
 		return GE_SUCCESS;
 	}
 	CommandRequest cmd_req;
@@ -297,7 +314,6 @@ int DieWu::ChaoSheng(CONTEXT_TIMELINE_6 *con)
 				con->harm.point=con->harm.point-1;  //抵御一点伤害来源
 				return GE_URGENT;
 		   }
-		   return GE_SUCCESS;
 		}
 		return ret;
 	}
@@ -310,8 +326,7 @@ int DieWu::ChaoSheng(CONTEXT_TIMELINE_6 *con)
 //【镜花水月】
 int DieWu::JingHuaShuiYue(CONTEXT_TIMELINE_5 *con)
 {
-	PlayerEntity *self = engine->getPlayerEntity(id);
-	if(con->harm.point != 2 || con->harm.type != HARM_MAGIC || self->getCoverCardNum() < 2) {
+	if(con->harm.point != 2 || con->harm.type != HARM_MAGIC || getCoverCardNum() < 2) {
 		return GE_SUCCESS;
 	}
     CommandRequest cmd_req;
@@ -359,7 +374,6 @@ int DieWu::JingHuaShuiYue(CONTEXT_TIMELINE_5 *con)
 				engine->setStateMoveCardsNotToHand(id, DECK_COVER, -1, DECK_DISCARD, 2, cards, id, JING_HUA_SHUI_YUE, true);
 				return GE_URGENT;
 		   }
-		   return GE_SUCCESS;
 		}
 		return ret;
 	}
@@ -416,8 +430,7 @@ int DieWu::DaoNiZhiDie(Action *action)
 	{   
 		if(token[0] < 1) {
 			return GE_INVALID_ARGUMENT;
-		}
-		setToken(0,token[0]-1);
+		}		
 		if(action->args(0)==2)
 		{
 			for (int j = 0; j <2; ++j)
@@ -433,14 +446,12 @@ int DieWu::DaoNiZhiDie(Action *action)
 		else
 		{
 		    HARM harm;
-	        harm.srcID =id;
-	        harm.point =4;
+	        harm.srcID = id;
+	        harm.point = 4;
 	        harm.type = HARM_MAGIC;
-	        harm.cause =DAO_NI_ZHI_DIE;
+	        harm.cause = DAO_NI_ZHI_DIE;
 	        engine->setStateTimeline3(id, harm);
-		}
-		engine->setStateChangeMaxHand(id, false, false, 6, 1);
-
+		}		
 	}  
        //弃两张牌
     for (int i = 0; i < action->card_ids_size(); ++i)
@@ -462,11 +473,21 @@ int DieWu::DaoNiZhiDie(Action *action)
 		gem--;
 
     GameInfo game_info;
-    Coder::tokenNotice(id, 0, token[0], game_info);
     Coder::energyNotice(id, gem, crystal, game_info);
     engine->sendMessage(-1, MSG_GAME, game_info);
     return GE_URGENT;
 }
+
+int DieWu::DaoNiZhiDie_Yong()
+{
+	setToken(0, token[0]-1);
+	GameInfo game_info;
+    Coder::tokenNotice(id, 0, token[0], game_info);
+	engine->sendMessage(-1, MSG_GAME, game_info);
+	engine->setStateChangeMaxHand(id, false, false, 6, 1);
+	return GE_URGENT;
+}
+
 //【凋零】
 int DieWu::Diao_Ling(vector<int> cards)
 {
