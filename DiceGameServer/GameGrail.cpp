@@ -453,6 +453,13 @@ int GameGrail::setStateMoveCards(int srcOwner, int srcArea, int dstOwner, int ds
 			throw ret;
 		}
 		break;
+	case DECK_DISCARD:
+		if(discard->deleteOne(cards[0]))
+		{
+			update_info.set_discard(discard->get_size());
+			updated = true;
+		}
+		break;
 	default:
 		return GE_NOT_SUPPORTED;
 	}
@@ -491,6 +498,8 @@ int GameGrail::setStateMoveCards(int srcOwner, int srcArea, int dstOwner, int ds
 		break;
 	case DECK_COVER:
 		pushGameState(new StateCoverChange(srcOwner, CHANGE_REMOVE, howMany, cards, harm));	
+		break;
+	case DECK_DISCARD:
 		break;
 	default:
 		return GE_NOT_SUPPORTED;

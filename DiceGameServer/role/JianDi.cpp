@@ -126,6 +126,9 @@ int JianDi::p_timeline_2_hit(int &step, CONTEXT_TIMELINE_2_HIT *con)
 	{
 		if(used_E_MO_ZHI_HUN)
 		{
+			network::SkillMsg skill;
+			Coder::skillNotice(id, id,E_MO_ZHI_HUN, skill);
+			engine->sendMessage(-1, MSG_SKILL, skill);
 			//若命中，伤害+1
 			con->harm.point+=1;
 			used_E_MO_ZHI_HUN=false;
@@ -258,7 +261,7 @@ int JianDi::JianHunShouHu(CONTEXT_TIMELINE_2_MISS* con)
 	network::SkillMsg skill;
 	Coder::skillNotice(id, id,JIAN_HUN_SHOU_HU, skill);
 	engine->sendMessage(-1, MSG_SKILL, skill);
-
+/*
 	cardID=con->cardID;
 	vector<int> cards;
 	cards.push_back(cardID);
@@ -267,7 +270,8 @@ int JianDi::JianHunShouHu(CONTEXT_TIMELINE_2_MISS* con)
 	GameInfo game_info;
 	Coder::coverNotice(id,getCoverCards(), game_info);
 	engine->sendMessage(-1, MSG_GAME, game_info);
-	return GE_SUCCESS;
+	*/
+	return engine->setStateMoveOneCardNotToHand(-1,DECK_DISCARD,id,DECK_COVER,con->cardID,id,JIAN_HUN_SHOU_HU,false);
 }
 //【不屈意志】
 int JianDi::BuQuYiZhi()
@@ -405,8 +409,7 @@ int JianDi::TianShiZhiHun()
 
            //移除一个【天使之魂】
 				card_id = respond->card_ids(0);
-				engine->setStateMoveOneCardNotToHand(id,DECK_COVER,-1,DECK_DISCARD,card_id,id,TIAN_SHI_ZHI_HUN,false);
-				return GE_URGENT;
+				return engine->setStateMoveOneCardNotToHand(id,DECK_COVER,-1,DECK_DISCARD,card_id,id,TIAN_SHI_ZHI_HUN,false);
 			}
 		
 			return GE_SUCCESS ;
@@ -422,7 +425,10 @@ int JianDi::TianShiZhiHun()
 }
 
 int JianDi::TianShiZhiHun_EffectHit()
-{    
+{
+	network::SkillMsg skill;
+	Coder::skillNotice(id, id,TIAN_SHI_ZHI_HUN, skill);
+	engine->sendMessage(-1, MSG_SKILL, skill);
 	//+2【治疗】
 	addCrossNum(2);
 	GameInfo update_info;
@@ -439,6 +445,10 @@ int JianDi::TianShiZhiHun_EffectMiss()
 	int morale = m_teamArea->getMorale(color);
 	if(morale<15) 
 	{
+		network::SkillMsg skill;
+		Coder::skillNotice(id, id,TIAN_SHI_ZHI_HUN, skill);
+		engine->sendMessage(-1, MSG_SKILL, skill);
+
 	    m_teamArea->setMorale(color, morale+1);
 	}
 	morale = m_teamArea->getMorale(color);
@@ -498,6 +508,9 @@ int JianDi::EMoZhiHun()
 
 int JianDi::EMoZhiHun_EffectMiss()
 {
+	network::SkillMsg skill;
+	Coder::skillNotice(id, id,E_MO_ZHI_HUN, skill);
+	engine->sendMessage(-1, MSG_SKILL, skill);
 	//+2 【剑气】
 	setToken(0,token[0]+2);
 	network::GameInfo update_info;

@@ -72,6 +72,28 @@ public:
 	int get_size() {
 		return iterator+1;
 	}
+	bool deleteOne(int id){
+		int pos = -1;
+		for(int i = iterator;i >=0;i--)
+		{
+			if (items[i]==id)
+			{
+				pos = i;
+				break;
+			}
+		}
+		if(pos != -1)
+		{
+			for(int i=pos;i < iterator;i++)
+			{
+				items[i] = items[i+1];
+			}
+			iterator--;
+			return true;
+		}
+		else
+			return false;
+	}
 private:
 	boost::random::rand48 rng;
 	int *items;
