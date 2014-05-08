@@ -422,21 +422,22 @@ int WuNv::XueZhiBeiMing(int &step, Action *action)
 
 int WuNv::XueZhiAiShangJudge(CONTEXT_TIMELINE_4 *con)
 {
-	if (con->dstID == id && con->crossAvailable>1)
+	if (con->dstID == id && con->crossAvailable>1 && con->harm.cause == XUE_ZHI_AI_SHANG)
 	{
-		PlayerEntity *self = engine->getPlayerEntity(id);
-		if(self->getHandCardNum()==0 && getGem()<1)
+		if(this->getHandCardNum()==0 && getGem()<1)
 		{
 			con->crossAvailable = 1;
 		}
 		else
 		{
 			bool allLight = true;
-			list<int>::iterator card = self->getHandCards().begin();
-			for(;card != self->getHandCards().end(); card ++)
-			{
-				if(getCardByID(*card)->getElement() != ELEMENT_LIGHT){
+			list<int> handcards = this->getHandCards();
+			list<int>::iterator it = handcards.begin();
+			for(; it != handcards.end(); ++it){
+				if(getCardByID(*it)->getElement() != ELEMENT_LIGHT)
+				{
 					allLight = false;
+					break;
 				}
 			}
 			if(allLight){

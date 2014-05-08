@@ -18,7 +18,7 @@ private:
 	int XueZhiAiShang(int &step, int srcID);
 	int XueZhiAiShangJudge(CONTEXT_TIMELINE_4 *con);
 	int NiLiu(int &step, Action* action);
-	int XueZhiBeiMing(int &step, Action* action);
+	int XueZhiBeiMing(Action* action);
 	int XueZhiZuZhou(int &step, Action* action);
 	int ToLiuXueXingTai(CONTEXT_LOSE_MORALE *context);
 	int ToPuTongXingTai(int playerID);

@@ -42,7 +42,6 @@ int ShenGuan::p_timeline_4(int &step, CONTEXT_TIMELINE_4 *con)
 {
 	int ret = GE_INVALID_STEP;
 	step = SHENG_SHI_SHOU_HU;
-	int srcID = con->dstID;
 	ret = ShengShiShouHu(con);
 	if(toNextStep(ret))	{
 		step = STEP_DONE;
