@@ -133,7 +133,7 @@ int WuNv::p_magic_skill(int &step, Action* action)
 		ret = NiLiu(step, action);
 		break;
 	case XUE_ZHI_BEI_MING:
-		ret = XueZhiBeiMing(step, action);
+		ret = XueZhiBeiMing(action);
 		if(toNextStep(ret) || GE_URGENT == ret){
 			step = STEP_DONE;
 		}
