@@ -397,7 +397,7 @@ int WuNv::XueZhiZuZhou(int &step, Action* action)
 	}
 }
 
-int WuNv::XueZhiBeiMing(int &step, Action *action)
+int WuNv::XueZhiBeiMing(Action *action)
 {
 	int dstID = action->dst_ids(0);
 	int cardID = action->card_ids(0);
@@ -438,7 +438,7 @@ int WuNv::XueZhiAiShangJudge(CONTEXT_TIMELINE_4 *con)
 				{
 					allLight = false;
 					break;
-				}
+					}
 			}
 			if(allLight){
 				con->crossAvailable = 1;
