@@ -85,7 +85,7 @@ int XianZhe::p_magic_skill(int &step, Action *action)
 	{
 	case MO_DAO_FA_DIAN:
 		ret = MoDaoFaDian(action);
-		if(GE_SUCCESS == ret){
+		if(GE_URGENT == ret){
 			step = STEP_DONE;
 		}
 		break;
@@ -93,13 +93,13 @@ int XianZhe::p_magic_skill(int &step, Action *action)
 		if(step == STEP_INIT){
 			ret = ShengJieFaDian_show(action);
 			if(ret == GE_URGENT){
-				step == SHENG_JIE_FA_DIAN;
+				step = SHENG_JIE_FA_DIAN;
 			}
 		}			// 加治疗没有State因此需要两个step
 		else if(step == SHENG_JIE_FA_DIAN){
 			ret = ShengJieFaDian_effect(action);
 			if(ret == GE_URGENT){
-				step == STEP_DONE;
+				step = STEP_DONE;
 			}
 		}	
 		break;

@@ -69,7 +69,7 @@ int YuanSu::p_magic_skill(int &step, Action *action)
 	{
 	case FENG_REN:
 		ret = FengRen(action);
-		if(GE_SUCCESS == ret){
+		if(GE_URGENT == ret){
 			step = STEP_DONE;
 		}
 		break;
@@ -85,13 +85,13 @@ int YuanSu::p_magic_skill(int &step, Action *action)
 		break;
 	case HUO_QIU:
 		ret = HuoQiu(action);
-		if(GE_SUCCESS == ret){
+		if(GE_URGENT == ret){
 			step = STEP_DONE;
 		}
 		break;
 	case YUN_SHI:
 		ret = YunShi(action);
-		if(GE_SUCCESS == ret){
+		if(GE_URGENT == ret){
 			step = STEP_DONE;
 		}
 		break;
@@ -146,36 +146,26 @@ int YuanSu::YunShi(Action *action)
 {
 	// 加一魔法行动，放在伤害前和后都一样，为了方便，所以放在伤害前了
 	addAction(ACTION_MAGIC, YUN_SHI);
-
-	YuanSuDamage(action);
-
-	return GE_SUCCESS;
+	return YuanSuDamage(action);
 }
 
 int YuanSu::FengRen(Action *action)
 {
 	// 加一攻击行动，放在伤害前和后都一样，为了方便，所以放在伤害前了
 	addAction(ACTION_ATTACK, FENG_REN);
-
-	YuanSuDamage(action);
-
-	return GE_SUCCESS;
+	return YuanSuDamage(action);
 }
 
 int YuanSu::HuoQiu(Action *action)
 {
-	YuanSuDamage(action);
-
-	return GE_SUCCESS;
+	return YuanSuDamage(action);
 }
 
 int YuanSu::LeiJi(int step, Action *action)
 {
 	if (step != LEI_JI)
 	{
-		YuanSuDamage(action);
-
-		return GE_URGENT;
+		return YuanSuDamage(action);
 	}
 	else
 	{
@@ -197,9 +187,7 @@ int YuanSu::BingDong(int step, Action *action)
 {
 	if (step != BING_DONG)
 	{
-		YuanSuDamage(action);
-
-		return GE_URGENT;
+		return YuanSuDamage(action);
 	}
 	else
 	{
