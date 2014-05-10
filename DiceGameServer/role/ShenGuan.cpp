@@ -241,7 +241,13 @@ int ShenGuan::ShuiZhiShenLi(int &step, Action* action)
 	{
 		if(this->getHandCardNum() == 0)
 		{
-			step = SHUI_ZHI_SHEN_LI_CROSS;
+			addCrossNum(1);
+			dstPlayer->addCrossNum(1);
+			GameInfo update_info;
+			Coder::crossNotice(id, getCrossNum(), update_info);
+			Coder::crossNotice(dstID, dstPlayer->getCrossNum(), update_info);
+			engine->sendMessage(-1, MSG_GAME, update_info);
+			step = STEP_DONE;
 			return GE_SUCCESS;
 		}
 		else
@@ -301,8 +307,32 @@ int ShenGuan::ShenShengLingYu(int &step, Action *action)
 		}
 		else
 		{
-			step = SHEN_SHENG_LING_YU;
-			return GE_SUCCESS;
+			if(action->args(0) == 1)
+			{
+				subCrossNum(1);
+				GameInfo update_info;
+				Coder::crossNotice(id, getCrossNum(), update_info);
+				engine->sendMessage(-1, MSG_GAME, update_info);
+				HARM harm;
+				harm.point = 2;
+				harm.srcID = id;
+				harm.type = HARM_MAGIC;
+				harm.cause = SHEN_SHENG_LING_YU;
+				engine->setStateTimeline3(dstID, harm);
+				step = STEP_DONE;
+				return GE_URGENT;
+			}
+			else
+			{
+				addCrossNum(2);
+				dstPlayer->addCrossNum(1);
+				GameInfo update_info;
+				Coder::crossNotice(id, getCrossNum(), update_info);
+				Coder::crossNotice(dstID, dstPlayer->getCrossNum(), update_info);
+				engine->sendMessage(-1, MSG_GAME, update_info);
+				step = STEP_DONE;
+				return GE_SUCCESS;
+			}
 		}
 	}
 	else
