@@ -13,7 +13,8 @@ public:
 private:
 	int ZhiHuiFaDian();
 	int MoDaoFaDian(Action *action);
-	int ShengJieFaDian(int &step, Action *action);
+	int ShengJieFaDian_show(Action *action);
+	int ShengJieFaDian_effect(Action *action);
 	int FaShuFanTan();
 	int elementCheck(vector<int> cards);
 };

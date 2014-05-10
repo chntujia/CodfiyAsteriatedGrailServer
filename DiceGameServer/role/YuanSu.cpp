@@ -107,13 +107,13 @@ int YuanSu::p_magic_skill(int &step, Action *action)
 		break;
 	case YUAN_SU_DIAN_RAN:
 		ret = YuanSuDianRan(action);
-		if(GE_SUCCESS == ret){
+		if(GE_URGENT == ret){
 			step = STEP_DONE;
 		}
 		break;
 	case YUE_GUANG:
 		ret = YueGuang(action);
-		if(GE_SUCCESS == ret){
+		if(GE_URGENT == ret){
 			step = STEP_DONE;
 		}
 		break;

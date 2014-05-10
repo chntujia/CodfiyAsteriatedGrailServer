@@ -90,14 +90,18 @@ int XianZhe::p_magic_skill(int &step, Action *action)
 		}
 		break;
 	case SHENG_JIE_FA_DIAN:
-		ret = ShengJieFaDian(step, action);
-		// 加治疗没有State因此需要两个step
-		if (GE_URGENT == ret) {
-			step = SHENG_JIE_FA_DIAN;
-		}
-		else if (GE_SUCCESS == ret){
-			step = STEP_DONE;
-		}
+		if(step == STEP_INIT){
+			ret = ShengJieFaDian_show(action);
+			if(ret == GE_URGENT){
+				step == SHENG_JIE_FA_DIAN;
+			}
+		}			// 加治疗没有State因此需要两个step
+		else if(step == SHENG_JIE_FA_DIAN){
+			ret = ShengJieFaDian_effect(action);
+			if(ret == GE_URGENT){
+				step == STEP_DONE;
+			}
+		}	
 		break;
 	default:
 		return GE_INVALID_ACTION;
@@ -175,55 +179,53 @@ int XianZhe::MoDaoFaDian(Action *action)
 	return GE_URGENT;
 }
 
-int XianZhe::ShengJieFaDian(int &step, Action *action)
+int XianZhe::ShengJieFaDian_show(Action *action)
 {
-	if (step != SHENG_JIE_FA_DIAN)
+	vector<int> cards;
+	int i;
+
+	for (i = 0; i < action->card_ids_size(); ++i)
+		cards.push_back(action->card_ids(i));
+
+	SkillMsg skill_msg;
+	Coder::skillNotice(id, action->dst_ids(0), SHENG_JIE_FA_DIAN, skill_msg);
+	engine->sendMessage(-1, MSG_SKILL, skill_msg);
+
+	CardMsg show_card;
+	Coder::showCardNotice(id, cards.size(), cards, show_card);
+	engine->sendMessage(-1, MSG_CARD, show_card);
+
+	setGem(gem-1);
+	GameInfo game_info;
+	Coder::energyNotice(id, gem, crystal, game_info);
+	engine->sendMessage(-1, MSG_GAME, game_info);
+	// 先丢牌
+	engine->setStateMoveCardsNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cards.size(), cards, id, SHENG_JIE_FA_DIAN, true);
+
+	return GE_URGENT;		
+}
+
+int XianZhe::ShengJieFaDian_effect(Action *action)
+{
+	HARM ShengJie;
+	ShengJie.cause = SHENG_JIE_FA_DIAN;
+	ShengJie.point = action->card_ids_size()-1;
+	ShengJie.srcID = id;
+	ShengJie.type = HARM_MAGIC;
+	// 最后对自己造成伤害
+	engine->setStateTimeline3(id, ShengJie);
+
+	PlayerEntity* dst;
+	GameInfo game_info;
+	for (int i = 0; i < action->dst_ids_size(); ++i)
 	{
-		vector<int> cards;
-		int i;
-
-		for (i = 0; i < action->card_ids_size(); ++i)
-			cards.push_back(action->card_ids(i));
-	
-		SkillMsg skill_msg;
-		Coder::skillNotice(id, action->dst_ids(0), SHENG_JIE_FA_DIAN, skill_msg);
-		engine->sendMessage(-1, MSG_SKILL, skill_msg);
-
-		CardMsg show_card;
-		Coder::showCardNotice(id, cards.size(), cards, show_card);
-		engine->sendMessage(-1, MSG_CARD, show_card);
-
-		setGem(gem-1);
-		GameInfo game_info;
-		Coder::energyNotice(id, gem, crystal, game_info);
-		engine->sendMessage(-1, MSG_GAME, game_info);
-		// 先丢牌
-		engine->setStateMoveCardsNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cards.size(), cards, id, SHENG_JIE_FA_DIAN, true);
-
-		return GE_URGENT;
+		dst = engine->getPlayerEntity(action->dst_ids(i));
+		dst->addCrossNum(2);
+		Coder::crossNotice(dst->getID(), dst->getCrossNum(), game_info);
 	}
-	else
-	{
-		HARM ShengJie;
-		ShengJie.cause = SHENG_JIE_FA_DIAN;
-		ShengJie.point = action->card_ids_size()-1;
-		ShengJie.srcID = id;
-		ShengJie.type = HARM_MAGIC;
-		// 最后对自己造成伤害
-		engine->setStateTimeline3(id, ShengJie);
+	engine->sendMessage(-1, MSG_GAME, game_info);
 
-		PlayerEntity* dst;
-		GameInfo game_info;
-		for (int i = 0; i < action->dst_ids_size(); ++i)
-		{
-			dst = engine->getPlayerEntity(action->dst_ids(i));
-			dst->addCrossNum(2);
-			Coder::crossNotice(dst->getID(), dst->getCrossNum(), game_info);
-		}
-		engine->sendMessage(-1, MSG_GAME, game_info);
-
-		return GE_URGENT;
-	}
+	return GE_URGENT;
 }
 
 int XianZhe::FaShuFanTan()
