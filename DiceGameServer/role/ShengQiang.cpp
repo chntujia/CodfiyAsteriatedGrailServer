@@ -334,7 +334,7 @@ int ShengQiang::DiQiang(CONTEXT_TIMELINE_2_HIT *con)
 				Coder::crossNotice(srcID, srcPlayer->getCrossNum(), update_info);
 				engine->sendMessage(-1, MSG_GAME, update_info);
 				network::SkillMsg skill;
-				Coder::skillNotice(id, dstID, TIAN_QIANG, skill);
+				Coder::skillNotice(id, dstID, DI_QIANG, skill);
 				engine->sendMessage(-1, MSG_SKILL, skill);
 				con->harm.point += crossUsed;
 				used_DiQiang = true;
