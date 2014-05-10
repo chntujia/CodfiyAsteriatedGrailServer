@@ -125,7 +125,7 @@ int AnSha::FanShi(CONTEXT_TIMELINE_6_DRAWN *con)
 	Coder::skillNotice(id, con->harm.srcID, FAN_SHI, skill_msg);
 	engine->sendMessage(-1, MSG_SKILL, skill_msg);
 
-	return ret;
+	return GE_URGENT;
 }
 
 int AnSha::ShuiYing(CONTEXT_TIMELINE_3 *con)
@@ -155,12 +155,12 @@ int AnSha::ShuiYing(CONTEXT_TIMELINE_3 *con)
 				CardMsg show_card;
 				Coder::showCardNotice(id, cards.size(), cards, show_card);
 				engine->sendMessage(-1, MSG_CARD, show_card);
-				ret = engine->setStateMoveCardsNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cards.size(), cards, id, SHUI_YING, true);
+				engine->setStateMoveCardsNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cards.size(), cards, id, SHUI_YING, true);
 				
 				SkillMsg skill_msg;
 				Coder::skillNotice(id, id, SHUI_YING, skill_msg);
 				engine->sendMessage(-1, MSG_SKILL, skill_msg);
-				return ret;
+				return GE_URGENT;
 			}
 			else
 			{
@@ -238,6 +238,5 @@ int AnSha::QianXingReset()
 	Coder::tapNotice(id, false, game_info);
 	engine->sendMessage(-1, MSG_GAME, game_info);
 
-	engine->setStateChangeMaxHand(id, false, false, 6, 1);
-	return GE_SUCCESS;
+	return engine->setStateChangeMaxHand(id, false, false, 6, 1);	
 }

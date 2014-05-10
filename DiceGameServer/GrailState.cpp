@@ -219,9 +219,9 @@ int StateRoleStrategyAny::handle(GameGrail* engine)
 }
 
 int StateGameStart::handle(GameGrail* engine)
-{
-	ztLoggerWrite(ZONE, e_Information, "[Table %d] Enter StateGameStart. GameInfo: %s", engine->getGameId(), engine->room_info.DebugString().c_str());
+{	
 	if(!isSet){
+		ztLoggerWrite(ZONE, e_Information, "[Table %d] Enter StateGameStart.", engine->getGameId(), engine->room_info.DebugString().c_str());
 		isSet=true;
 		engine->initDecks();
 		Sleep(1000);
@@ -308,7 +308,7 @@ int StateWeaken::handle(GameGrail* engine)
 				harm.cause = CAUSE_WEAKEN;
 				vector< int > cards;
 				engine->setStateMoveCardsToHand(-1, DECK_PILE, m_currentPlayerID, DECK_HAND, howMany_t, cards, harm, false);
-				return GE_URGENT;
+				return GE_SUCCESS;
 			}
 			else{
 				engine->popGameState();

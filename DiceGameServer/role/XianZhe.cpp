@@ -172,7 +172,7 @@ int XianZhe::MoDaoFaDian(Action *action)
 	// 先丢牌
 	engine->setStateMoveCardsNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cards.size(), cards, id, MO_DAO_FA_DIAN, true);
 
-	return GE_SUCCESS;
+	return GE_URGENT;
 }
 
 int XianZhe::ShengJieFaDian(int &step, Action *action)
@@ -222,7 +222,7 @@ int XianZhe::ShengJieFaDian(int &step, Action *action)
 		}
 		engine->sendMessage(-1, MSG_GAME, game_info);
 
-		return GE_SUCCESS;
+		return GE_URGENT;
 	}
 }
 
@@ -272,6 +272,7 @@ int XianZhe::FaShuFanTan()
 
 			// 先丢牌
 			engine->setStateMoveCardsNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cards.size(), cards, id, FA_SHU_FAN_TAN, true);
+			return GE_URGENT;
 		}
 		return ret;
 	}
@@ -279,7 +280,6 @@ int XianZhe::FaShuFanTan()
 		//超时啥都不用做
 		return GE_TIMEOUT;
 	}
-	return GE_SUCCESS;
 }
 
 // 检测卡牌为均为不同系或同系

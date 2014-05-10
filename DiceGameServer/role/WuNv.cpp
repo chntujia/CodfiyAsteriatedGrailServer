@@ -516,5 +516,5 @@ int WuNv::LiuXue(int playerID)
 	harm.type = HARM_MAGIC;
 	harm.cause = LIU_XUE;
 	engine->setStateTimeline3(id, harm);
-	return GE_SUCCESS;
+	return GE_URGENT;
 }

@@ -236,7 +236,7 @@ int YuanSu::YuanSuDianRan(Action *action)
 	dianran.type = HARM_MAGIC;
 	engine->setStateTimeline3(dstID, dianran);
 
-	return GE_SUCCESS;
+	return GE_URGENT;
 }
 
 int YuanSu::YueGuang(Action *action)
@@ -258,7 +258,7 @@ int YuanSu::YueGuang(Action *action)
 	yueguang.type = HARM_MAGIC;
 	engine->setStateTimeline3(dstID, yueguang);
 
-	return GE_SUCCESS;
+	return GE_URGENT;
 }
 
 int YuanSu::YuanSuDamage(Action *action)
@@ -288,5 +288,5 @@ int YuanSu::YuanSuDamage(Action *action)
 	// ¶ªÆúÊÖÅÆ
 	engine->setStateMoveCardsNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cards.size(), cards, id, magic_id, true);
 
-	return GE_SUCCESS;
+	return GE_URGENT;
 }
