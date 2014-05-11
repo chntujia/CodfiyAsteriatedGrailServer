@@ -108,7 +108,7 @@ int HongLian::p_after_magic(int &step, int playerID)
 	step = JIE_JIAO_JIE_ZAO;
 	ret = JieJiaoJieZao(playerID);
 	if(toNextStep(ret)|| ret == GE_URGENT){
-		step = STEP_DONE;;
+		step = STEP_DONE;
 	}			
 	return ret;
 }

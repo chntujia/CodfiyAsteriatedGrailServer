@@ -142,9 +142,9 @@ int GeDou::p_after_magic(int &step, int currentPlayerID)
 	step = NIAN_DAN;
 	ret = NianDan(step, currentPlayerID);
 	if(toNextStep(ret) || ret == GE_URGENT){
-		step = NIAN_DAN_SELF;
+		step = STEP_DONE;
 	}
-	return GE_SUCCESS; 
+	return ret; 
 }
 
 int GeDou::p_before_special(int &step, int currentPlayerID)
