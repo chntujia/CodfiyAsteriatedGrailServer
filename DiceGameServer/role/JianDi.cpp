@@ -80,6 +80,7 @@ int JianDi::p_timeline_1(int &step, CONTEXT_TIMELINE_1 *con)
 	else 
 	{
 		step =STEP_DONE;
+		ret = GE_SUCCESS;
 	}
 	}
   
