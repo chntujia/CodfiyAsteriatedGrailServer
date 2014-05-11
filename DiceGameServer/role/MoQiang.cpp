@@ -234,7 +234,7 @@ int MoQiang::p_magic_skill(int &step, Action* action)
 	switch(actionID)
 	{
 	case CHONG_YING:
-		ret =ChongYing(action);
+		ret = ChongYing(action);
 		step = STEP_DONE;
 		break;
 	default:

@@ -882,8 +882,8 @@ void GameGrail::GameRun()
 			if(ret != GE_SUCCESS && ret != GE_TIMEOUT && ret != GE_URGENT){
 				//currentState是出错的那个state，可能已经被pop掉
 				GrailState* topState = topGameState();
-				ztLoggerWrite(ZONE, e_Error, "[Table %d] Handle returns error: %d. Current state: %d, Top state: %d, Top iterator: %d, Top step: %d", 
-					m_gameId, ret, stateCode, topState->state, topState->iterator, topState->step);
+				ztLoggerWrite(ZONE, e_Error, "[Table %d] Handle returns error: %d. Current state: %d, Top state: %d, Top iterator: %d, roleId: %d, Top step: %d", 
+					m_gameId, ret, stateCode, topState->state, topState->iterator, getPlayerEntity(topState->iterator)->getRoleID(), topState->step);
 				topState->increaseErrorCount();
 			}
 		}

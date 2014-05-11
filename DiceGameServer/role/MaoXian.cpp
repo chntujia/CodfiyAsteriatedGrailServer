@@ -129,7 +129,7 @@ int MaoXian::v_magic_skill(Action *action)
 
 int MaoXian::p_magic_skill(int &step, Action* action)
 {
-	int ret;
+	int ret = GE_INVALID_ACTION;
 	switch(action->action_id())
 	{
 	case TOU_TIAN_HUAN_RI:

@@ -74,7 +74,7 @@ int LingFu::v_magic_skill(Action *action)
 int LingFu::p_magic_skill(int &step, Action* action)
 {
 	//p_magic_skill不同于别的触发点，有且只有一个匹配，因此每一个技能完成时，务必把step设为STEP_DONE
-	int ret;
+	int ret = GE_INVALID_ACTION;
 	switch(action->action_id())
 	{
 	case FENG_XING:

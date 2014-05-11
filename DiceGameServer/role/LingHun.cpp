@@ -210,20 +210,20 @@ int LingHun::p_magic_skill(int &step, Action* action)
 		}
 		break;
 	case LING_HUN_ZHEN_BAO:
-		ret=LingHunZhenBao(action);
+		ret = LingHunZhenBao(action);
 		if(GE_URGENT == ret){
 			step = STEP_DONE;
 		}	
 		break;
 	case LING_HUN_JING_XIANG:
-		ret=LingHunJingXiang(action);
+		ret = LingHunJingXiang(action);
 		if(GE_URGENT == ret){
 			step = STEP_DONE;
 		}	
 		break;
 	case LING_HUN_ZHAO_HUAN:
 		//¡ÈªÍ’ŸªΩ
-		ret=LingHunZhaoHuan(action);
+		ret = LingHunZhaoHuan(action);
 		if(GE_URGENT == ret){
 			step = STEP_DONE;
 		}	

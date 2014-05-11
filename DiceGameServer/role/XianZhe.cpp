@@ -80,7 +80,7 @@ int XianZhe::v_magic_skill(Action* action)
 
 int XianZhe::p_magic_skill(int &step, Action *action)
 {
-	int ret;
+	int ret = GE_INVALID_ACTION;
 	switch(action->action_id())
 	{
 	case MO_DAO_FA_DIAN:

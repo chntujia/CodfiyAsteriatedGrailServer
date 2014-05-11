@@ -211,11 +211,12 @@ int JianDi::p_after_attack(int &step, int playerID)
 	{
 		if(getEnergy()>0)
 		{
-			step =BU_QU_YI_ZHI;
+			step = BU_QU_YI_ZHI;
 		}
 		else
 		{
-			step=STEP_DONE;
+			step = STEP_DONE;
+			ret = GE_SUCCESS;
 		}
 	}			
 	if(step ==BU_QU_YI_ZHI)
