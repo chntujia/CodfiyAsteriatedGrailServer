@@ -39,6 +39,7 @@ int ZhongCai::p_turn_begin(int &step, int currentPlayerID)
 	{
 		ZhongCaiYiShiAddToken();
 	}
+	step = STEP_DONE;
 	return GE_SUCCESS;
 }
 
@@ -74,7 +75,9 @@ int ZhongCai::p_timeline_6_drawn(int &step, CONTEXT_TIMELINE_6_DRAWN *con)
 {
 	if (con->dstID != id || con->harm.type == HARM_NONE)
 		return GE_SUCCESS;
-	return ShenPanLangChao();
+	int ret = ShenPanLangChao();
+	step = STEP_DONE;
+	return ret;
 }
 
 int ZhongCai::v_allow_action(Action* action, int allow, bool canGiveUp)
@@ -173,7 +176,8 @@ int ZhongCai::YiShiZhongDuan()
 				Coder::tapNotice(id, tap, game_info);
 				engine->sendMessage(-1, MSG_GAME, game_info);
 				
-				return engine->setStateChangeMaxHand(id, true, false, 6, 0);
+				engine->setStateChangeMaxHand(id, true, false, 6, 0);
+				return GE_URGENT;
 			}
 		}
 	}
@@ -210,7 +214,8 @@ int ZhongCai::ZhongCaiYiShi()
 				Coder::energyNotice(id, gem, crystal, game_info);
 				engine->sendMessage(-1, MSG_GAME, game_info);
 
-				return engine->setStateChangeMaxHand(id, true, true, 5, 0);
+				engine->setStateChangeMaxHand(id, true, true, 5, 0);
+				return GE_URGENT;
 			}
 		}
 	}

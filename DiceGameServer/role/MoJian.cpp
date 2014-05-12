@@ -163,7 +163,10 @@ int MoJian::p_timeline_2_hit(int &step, CONTEXT_TIMELINE_2_HIT * con)
 	if(step == HEI_AN_ZHEN_CHAN_BU_PAI){
 
 		ret =HeiAnZhenChanBuPai(con);  //命中则补手牌
-		step =STEP_DONE;	
+		if(toNextStep(ret) || ret == GE_URGENT){
+			//全部走完后，请把step设成STEP_DONE	
+			step = STEP_DONE;
+		}
 	}
 	return ret;
 }

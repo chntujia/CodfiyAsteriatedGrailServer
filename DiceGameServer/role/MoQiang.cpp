@@ -46,6 +46,8 @@ int  MoQiang::p_before_turn_begin(int &step, int currentPlayerID)
 	availabel_ChongYing=true;
 	used_ChongYing=false;
 	hurtID=-1;
+	HuanYingXingChenEffectFlag = false;
+	used_AnZhiJieFang = false;
 	return GE_SUCCESS; 
 }
 
@@ -56,27 +58,37 @@ int MoQiang::p_boot(int &step, int currentPlayerID)
 		return GE_SUCCESS;
 	}
 
-	  while(STEP_DONE != step)
+	 if(STEP_INIT == step)
+	 {
+		if(!tap)
+	      step = AN_ZHI_JIE_FANG;     
+	     else
+		  step = HUAN_YING_XING_CHEN;
+	 }
+	 if(AN_ZHI_JIE_FANG == step || HUAN_YING_XING_CHEN == step)
+	 {
+	      ret = AnZhiHuanYing();
+	      if(toNextStep(ret) || ret == GE_URGENT){
+			  if(using_HuanYingXingCeng)
+			  {
+			       step = HUAN_YING_XING_CHEN_EFFECT;
+				   return ret;
+			  }
+			  else
+			  {
+				  step = STEP_DONE;
+			  }
+	       }
+	}
+	if(HUAN_YING_XING_CHEN_EFFECT == step)
 	{
-		switch(step)
-		{
-		case STEP_INIT:
-			if(tap==false)
-	           step=AN_ZHI_JIE_FANG;
-	              
-	      else
-		      step=HUAN_YING_XING_CHEN;
-	          break;	
-		case AN_ZHI_JIE_FANG:
-		case HUAN_YING_XING_CHEN:
-	        ret = AnZhiHuanYing();
-	      if(toNextStep(ret) || ret == GE_SUCCESS){
+		if(using_HuanYingXingCeng && !HuanYingXingChenEffectFlag)
+			ret = HuanYingXingChen_Effect();
+
+		if(toNextStep(ret) || ret == GE_URGENT){
 			       step = STEP_DONE;
 	       }
-			break;	
-		default:
-			return GE_INVALID_STEP;
-		}
+		
 	}
 	
 	return ret;
@@ -87,77 +99,59 @@ int MoQiang::p_timeline_2_hit(int &step, CONTEXT_TIMELINE_2_HIT * con)
 {
 
 	int ret = GE_INVALID_STEP;
-	if(con->attack.srcID != id||!tap){
+	if(con->attack.srcID != id){
 		return GE_SUCCESS;
 	}
 
-	while(STEP_DONE!= step)
-	{
-	  switch(step)
-		{
-		case STEP_INIT:
-			//初始化step
-			   step = AN_ZHI_JIE_FANG;
-			break;
 
-		case AN_ZHI_JIE_FANG:
-			if(using_AnZhiJieFang)
+	if(STEP_INIT == step ||AN_ZHI_JIE_FANG == step)
+	{		//AN_ZHI_JIE_FANG:
+			if(using_AnZhiJieFang && !used_AnZhiJieFang)
 			{
 			  ret =AnZhiJieFang_Effect(con);
-			  if(toNextStep(ret)){
+			  if(toNextStep(ret) || ret == GE_URGENT){
 				   step=QI_HEI_ZHI_QIANG;
 			   }			
 			}
 			else
 				step=CHONG_YING;
-			break;
+	}
 
-		case CHONG_YING:
-			if(used_ChongYing)
+	else if(CHONG_YING == step)
+	{
+			if(used_ChongYing && con->harm.srcID == id)
 			{
-			  con->harm.point+= cardCount;
-			  if(toNextStep(ret)){
-				   step=QI_HEI_ZHI_QIANG;
-			   }			
+			  con->harm.point += cardCount;
+			  cardCount = 0;
+			  ret = GE_SUCCESS;
 			}
-			else
-				step=QI_HEI_ZHI_QIANG;
-			break;
+			step=QI_HEI_ZHI_QIANG;
+	}
 
-        case QI_HEI_ZHI_QIANG:
-			//初始化step
-		{	
+	else if(QI_HEI_ZHI_QIANG == step)
+	{
 			int dstID=con->attack.dstID;
-			PlayerEntity* dst=engine->getPlayerEntity(dstID);
+			PlayerEntity* dst = engine->getPlayerEntity(dstID);
 
-			//【能量】         手牌为1&2
+			//【能量】         手牌为1或2
  			if(getEnergy()>0&&(dst->getHandCardNum()==1||dst->getHandCardNum()==2))
 			{
-			   ret =QiHeiZhiQiang(con);
-			  if(toNextStep(ret)){
-				   step=STEP_DONE;
-			   }	
+			   ret =QiHeiZhiQiang(con);	
 			}
 			else
-				step=STEP_DONE;
-		}
-			break;
-    
-		default:
-			return GE_INVALID_STEP;
-		}
+			{
+				ret = GE_SUCCESS;
+			}
+			step = STEP_DONE;
 	}
-	     return ret;
+	step = STEP_DONE;
+	return ret;
 }
 
 //【暗之障壁】
 int MoQiang::p_timeline_3(int &step, CONTEXT_TIMELINE_3 *con)
 {
-	/*if(con->harm.srcID == id)
-	{
-	   if(used_ChongYing)
-		   con->harm.point+= cardCount;
-	}*/
+	
 	if (con->dstID == id)
 	{
 		// 【暗之障壁】
@@ -192,7 +186,7 @@ int MoQiang::p_lose_morale(int &step, CONTEXT_LOSE_MORALE *con)
 	int ret = GE_SUCCESS;
 	if(using_HuanYingXingCeng)
 	{
-		ret=HuanYingXingChen_Effect(con);
+		HuanYingXingChenEffectFlag = true;
 	}
 	return ret;
 }
@@ -243,21 +237,22 @@ int MoQiang::p_magic_skill(int &step, Action* action)
 	return ret;
 }
 
-
-//FIXME: 如果以后有人能转换法牌，会无法通过这里
-int MoQiang::v_request_hand(int cardSrc, int howMany, vector<int> cards, HARM harm)
+int MoQiang::p_show_hand(int &step, int playerID, int howMany, vector<int> cards, HARM harm)
 {
-	if(harm.cause ==CHONG_YING){
-		int cardID = cards[0];
-		PlayerEntity* dst =engine->getPlayerEntity(cardSrc);
-		CardEntity* card = getCardByID(cardID);
-		
-		if((card->getType() == TYPE_MAGIC||dst->getCardElement(cardID) ==ELEMENT_THUNDER) && color != dst->getColor()){
-			cardCount++;
+	int ret = GE_INVALID_STEP;
+	if(CHONG_YING == harm.cause||CHONG_YING_DISCARD == harm.cause)
+	{
+		ret = ChongYing_Effect(playerID, howMany, cards, harm);
+		if(toNextStep(ret) || ret == GE_URGENT)
+		{
+		//全部走完后，请把step设成STEP_DONE
+			step = STEP_DONE;
 		}
+		return ret;
 	}
 	return GE_SUCCESS;
 }
+
 
 
 //【黑暗束缚】 法术牌 不能使用
@@ -316,12 +311,12 @@ int MoQiang::AnZhiHuanYing()
     int ret;
     int skillID;
 
-	if(tap==false){
-		skillID =AN_ZHI_JIE_FANG;
+	if(!tap){
+		skillID = AN_ZHI_JIE_FANG;
 	}
 	else
 	   {
-		skillID =HUAN_YING_XING_CHEN;
+		skillID = HUAN_YING_XING_CHEN;
 	}
 
     CommandRequest cmd_req;
@@ -350,7 +345,7 @@ int MoQiang::AnZhiHuanYing()
 				engine->sendMessage(-1, MSG_GAME, game_info);
 	            //手牌上限设定为5
 				 engine->setStateChangeMaxHand(id, true, true, 5);
-				return GE_SUCCESS;
+				return GE_URGENT;
 			}
 
 			if(respond->args(0)==2)
@@ -359,14 +354,13 @@ int MoQiang::AnZhiHuanYing()
 				Coder::skillNotice(id, id,HUAN_YING_XING_CHEN, skill);
 				engine->sendMessage(-1, MSG_SKILL, skill);
 				
-			   hurtID=respond->dst_ids(0);
+			   hurtID = respond->dst_ids(0);
 			//对自己造成2点法术伤害
 			   HARM harm;
 			   harm.type = HARM_MAGIC;
 			   harm.point =2;
 			   harm.srcID =id;
 			   harm.cause =HUAN_YING_XING_CHEN;
-			   engine->setStateTimeline3(id, harm);
 			   using_HuanYingXingCeng=true;
 				//【幻影形态】
 				tap = false;
@@ -375,8 +369,9 @@ int MoQiang::AnZhiHuanYing()
 				engine->sendMessage(-1, MSG_GAME, game_info);
 
 				 //手牌上限设定为6
-				 engine->setStateChangeMaxHand(id, true, true,6);
-				 return GE_SUCCESS;
+				 engine->setStateChangeMaxHand(id, true, false, 6, 0);
+				 engine->setStateTimeline3(id, harm);
+				 return GE_URGENT;
 			}
 			//没发动技能
 			return GE_SUCCESS;
@@ -402,7 +397,10 @@ int MoQiang::ChongYing(Action* action)
 		}
 		cardCount=0;
 		used_ChongYing=true;
+		SkillMsg skill_msg;
 	   //丢弃魔法牌&&雷系牌
+		Coder::skillNotice(id, id, CHONG_YING, skill_msg);
+		engine->sendMessage(-1, MSG_SKILL, skill_msg);
 		CardMsg show_card;
 		Coder::showCardNotice(id, 1, cardID, show_card);
 		engine->sendMessage(-1, MSG_CARD, show_card);
@@ -442,16 +440,17 @@ int MoQiang::ChongYing(Action* action)
 //【暗之解放】攻击效果
 int MoQiang::AnZhiJieFang_Effect(CONTEXT_TIMELINE_2_HIT *con)
 {
-   //在【暗影形态】下 发动的所有攻击伤害+1
+   //在【暗影形态】下 第一次攻击伤害+2
 
 	SkillMsg skill;
 	Coder::skillNotice(id, con->attack.dstID, AN_ZHI_JIE_FANG, skill);
 	engine->sendMessage(-1, MSG_SKILL, skill);
 	con->harm.point+= 2;
+	used_AnZhiJieFang = true;
 	return GE_SUCCESS;
 }
 
-int MoQiang::HuanYingXingChen_Effect(CONTEXT_LOSE_MORALE *con)
+int MoQiang::HuanYingXingChen_Effect()
 {
     HARM harm;
 	harm.type = HARM_MAGIC;
@@ -459,9 +458,7 @@ int MoQiang::HuanYingXingChen_Effect(CONTEXT_LOSE_MORALE *con)
     harm.srcID =id;
     harm.cause =HUAN_YING_XING_CHEN;
     engine->setStateTimeline3(hurtID,harm);
-
-	using_HuanYingXingCeng=false;
-	 return GE_SUCCESS;
+	return GE_URGENT;
 }
 
 int MoQiang::AnZhiZhangBi(CONTEXT_TIMELINE_3 *con)
@@ -495,7 +492,8 @@ int MoQiang::AnZhiZhangBi(CONTEXT_TIMELINE_3 *con)
 				}
 			if(cardNum>0)
 			{
-		        ret=engine->setStateMoveCardsNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardNum, cardIDs, id,AN_ZHI_ZHANG_BI, false);
+		        engine->setStateMoveCardsNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardNum, cardIDs, id,AN_ZHI_ZHANG_BI, false);
+				return GE_URGENT;
 			}
 			else
 			{
@@ -521,7 +519,7 @@ int MoQiang::QiHeiZhiQiang(CONTEXT_TIMELINE_2_HIT *con)
 	int dstHandCardNum = engine->getPlayerEntity(con->attack.dstID)->getHandCardNum();
 	if(dstHandCardNum < 1|| dstHandCardNum >2 ||  con->attack.srcID != id || using_AnZhiJieFang || !tap || 0 == getEnergy()){
 		return GE_SUCCESS;
-	}
+}
    int ret;
     CommandRequest cmd_req;
 	Coder::askForSkill(id,QI_HEI_ZHI_QIANG, cmd_req);
@@ -562,4 +560,20 @@ int MoQiang::QiHeiZhiQiang(CONTEXT_TIMELINE_2_HIT *con)
 		//超时啥都不用做
 		return GE_TIMEOUT;
 	}
+}
+
+int MoQiang::ChongYing_Effect(int playerID, int howMany, vector<int> cards, HARM & harm)
+{
+	if(0 != howMany)
+	{
+		int cardID = cards[0];
+		PlayerEntity* player =engine->getPlayerEntity(playerID);
+		CardEntity* card = getCardByID(cardID);
+		if((TYPE_MAGIC == card->getType() || ELEMENT_THUNDER == player->getCardElement(cardID)) && playerID != id)
+		{
+			//harm.point++;
+			cardCount++;
+		}
+	}
+	return GE_SUCCESS;
 }
