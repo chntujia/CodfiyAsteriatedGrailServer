@@ -273,7 +273,8 @@ int JianDi::JianHunShouHu(CONTEXT_TIMELINE_2_MISS* con)
 	Coder::coverNotice(id,getCoverCards(), game_info);
 	engine->sendMessage(-1, MSG_GAME, game_info);
 	*/
-	return engine->setStateMoveOneCardNotToHand(-1,DECK_DISCARD,id,DECK_COVER,con->cardID,id,JIAN_HUN_SHOU_HU,false);
+	engine->setStateMoveOneCardNotToHand(-1,DECK_DISCARD,id,DECK_COVER,con->cardID,id,JIAN_HUN_SHOU_HU,false);
+	return GE_URGENT;
 }
 //【不屈意志】
 int JianDi::BuQuYiZhi()
@@ -316,12 +317,11 @@ int JianDi::BuQuYiZhi()
 	            harm.type = HARM_NONE;
 	            harm.point =1;  //摸牌数量
 	            harm.cause =BU_QU_YI_ZHI;
-	            ret=engine->setStateMoveCardsToHand(-1, DECK_PILE, id, DECK_HAND,1,cards, harm, false);
+	            engine->setStateMoveCardsToHand(-1, DECK_PILE, id, DECK_HAND,1,cards, harm, false);
 
                 addAction(ACTION_ATTACK, BU_QU_YI_ZHI);
-			    return ret;
+			    return GE_URGENT;
 			}
-			return GE_SUCCESS;
 		}
 		return ret;
 	}
@@ -411,7 +411,8 @@ int JianDi::TianShiZhiHun()
 
            //移除一个【天使之魂】
 				card_id = respond->card_ids(0);
-				return engine->setStateMoveOneCardNotToHand(id,DECK_COVER,-1,DECK_DISCARD,card_id,id,TIAN_SHI_ZHI_HUN,false);
+				engine->setStateMoveOneCardNotToHand(id,DECK_COVER,-1,DECK_DISCARD,card_id,id,TIAN_SHI_ZHI_HUN,false);
+				return GE_URGENT;
 			}
 		
 			return GE_SUCCESS ;
