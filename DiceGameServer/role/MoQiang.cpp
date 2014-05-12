@@ -103,48 +103,31 @@ int MoQiang::p_timeline_2_hit(int &step, CONTEXT_TIMELINE_2_HIT * con)
 		return GE_SUCCESS;
 	}
 
-
-	if(STEP_INIT == step ||AN_ZHI_JIE_FANG == step)
+	if(STEP_INIT == step){
+		step = AN_ZHI_JIE_FANG;
+	}
+	if(AN_ZHI_JIE_FANG == step)
 	{		//AN_ZHI_JIE_FANG:
-			if(using_AnZhiJieFang && !used_AnZhiJieFang)
-			{
-			  ret =AnZhiJieFang_Effect(con);
-			  if(toNextStep(ret) || ret == GE_URGENT){
-				   step=QI_HEI_ZHI_QIANG;
-			   }			
-			}
-			else
-				step=CHONG_YING;
+		ret =AnZhiJieFang_Effect(con);
+		if(toNextStep(ret) || ret == GE_URGENT){
+			step=CHONG_YING;
+		 }			
 	}
 
-	else if(CHONG_YING == step)
+	if(CHONG_YING == step)
 	{
-			if(used_ChongYing && con->harm.srcID == id)
-			{
-			  con->harm.point += cardCount;
-			  cardCount = 0;
-			  ret = GE_SUCCESS;
-			}
-			step=QI_HEI_ZHI_QIANG;
+		ret = ChongYingAddHarm(con);
+		step=QI_HEI_ZHI_QIANG;	
 	}
 
-	else if(QI_HEI_ZHI_QIANG == step)
+	if(QI_HEI_ZHI_QIANG == step)
 	{
-			int dstID=con->attack.dstID;
-			PlayerEntity* dst = engine->getPlayerEntity(dstID);
-
-			//【能量】         手牌为1或2
- 			if(getEnergy()>0&&(dst->getHandCardNum()==1||dst->getHandCardNum()==2))
-			{
-			   ret =QiHeiZhiQiang(con);	
-			}
-			else
-			{
-				ret = GE_SUCCESS;
-			}
+	    ret =QiHeiZhiQiang(con);	
+		if(toNextStep(ret) || ret == GE_URGENT){
 			step = STEP_DONE;
+	    }
 	}
-	step = STEP_DONE;
+	
 	return ret;
 }
 
@@ -441,7 +424,10 @@ int MoQiang::ChongYing(Action* action)
 int MoQiang::AnZhiJieFang_Effect(CONTEXT_TIMELINE_2_HIT *con)
 {
    //在【暗影形态】下 第一次攻击伤害+2
-
+	if(!using_AnZhiJieFang || used_AnZhiJieFang)
+	{
+		return GE_SUCCESS;
+	}
 	SkillMsg skill;
 	Coder::skillNotice(id, con->attack.dstID, AN_ZHI_JIE_FANG, skill);
 	engine->sendMessage(-1, MSG_SKILL, skill);
@@ -575,5 +561,16 @@ int MoQiang::ChongYing_Effect(int playerID, int howMany, vector<int> cards, HARM
 			cardCount++;
 		}
 	}
+	return GE_SUCCESS;
+}
+
+int MoQiang::ChongYingAddHarm(CONTEXT_TIMELINE_2_HIT * con)
+{
+	if(!used_ChongYing || con->attack.srcID != id || using_AnZhiJieFang)
+	{
+		return GE_SUCCESS;
+	}
+	con->harm.point += cardCount;
+	cardCount = 0;
 	return GE_SUCCESS;
 }

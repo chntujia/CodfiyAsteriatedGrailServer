@@ -23,6 +23,7 @@ public:
 	 int AnZhiHuanYing();
 	 //int AnZhiHuanYing();
 	 int ChongYing_Effect(int playerID, int howMany, vector<int> cards, HARM &harm);
+	 int ChongYingAddHarm(CONTEXT_TIMELINE_2_HIT * con);
 	 int ChongYing(Action* action);
 	 int AnZhiJieFang_Effect(CONTEXT_TIMELINE_2_HIT *con);
 	 int AnZhiZhangBi(CONTEXT_TIMELINE_3 *con);
