@@ -69,6 +69,12 @@ int QiDao::p_boot(int &step, int currentPlayerID)
 //启动：祈祷
 int QiDao::QiDong()
 {
+	//零手牌不用询问启动，因为启动以后无法行动
+	int cardNum = this->getHandCardNum();
+	if(cardNum == 0){
+		return GE_SUCCESS;
+	}
+
 	CommandRequest cmd_req;
 	Coder::askForSkill(id, QI_DAO, cmd_req);
 	//有限等待，由UserTask调用tryNotify唤醒
@@ -323,18 +329,18 @@ int QiDao::GuangHuiXinYang(Action* action){//[法术]光辉信仰：祈祷形态
 	int dstID = action->dst_ids(0);
 	//宣告技能
 	SkillMsg skill_msg;
-	Coder::skillNotice(dstID, id,GUANG_HUI_XIN_YANG, skill_msg);
+	Coder::skillNotice(id, dstID,GUANG_HUI_XIN_YANG, skill_msg);
 	engine->sendMessage(-1, MSG_SKILL, skill_msg);
 	//移除符文
 	token[0] -= 1;
 	GameInfo update_info;
 	Coder::tokenNotice(id, 0, token[0], update_info);
-	engine->sendMessage(-1, MSG_GAME, update_info);
+	//engine->sendMessage(-1, MSG_GAME, update_info);
 	//团队+1宝石
 	TeamArea* team = engine->getTeamArea();
 	team->setGem(color, team->getGem(color)+1);
 	Coder::stoneNotice(color, team->getGem(color), team->getCrystal(color), update_info);
-	engine->sendMessage(-1, MSG_GAME, update_info);
+	//engine->sendMessage(-1, MSG_GAME, update_info);
 	vector<int> cards;
 	int card_id;
 
@@ -354,9 +360,7 @@ int QiDao::GuangHuiXinYang(Action* action){//[法术]光辉信仰：祈祷形态
 	{
 		int ret = engine->setStateMoveCardsNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cards.size(), cards, id, GUANG_HUI_XIN_YANG, true);
 				
-		SkillMsg skill_msg;
-		Coder::skillNotice(id, id, GUANG_HUI_XIN_YANG, skill_msg);
-		engine->sendMessage(-1, MSG_SKILL, skill_msg);
+		
 		return GE_URGENT;
 	}
 
