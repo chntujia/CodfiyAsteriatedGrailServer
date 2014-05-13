@@ -514,7 +514,7 @@ int MoQiang::AnZhiZhangBi(CONTEXT_TIMELINE_3 *con)
 int MoQiang::QiHeiZhiQiang(CONTEXT_TIMELINE_2_HIT *con)
 {
 	int dstHandCardNum = engine->getPlayerEntity(con->attack.dstID)->getHandCardNum();
-	if(dstHandCardNum < 1|| dstHandCardNum >2 ||  con->attack.srcID != id || using_AnZhiJieFang || !tap || 0 == getEnergy()){
+	if(dstHandCardNum < 1|| dstHandCardNum >2 ||  con->attack.srcID != id || !con->attack.isActive || using_AnZhiJieFang || !tap || 0 == getEnergy()){
 		return GE_SUCCESS;
 }
    int ret;
