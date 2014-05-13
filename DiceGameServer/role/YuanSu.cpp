@@ -274,6 +274,9 @@ int YuanSu::YuanSuDamage(Action *action)
 	engine->setStateTimeline3(dstID, harm);
 
 	// ¶ªÆúÊÖÅÆ
+	CardMsg show_card;
+	Coder::showCardNotice(id, cards.size(), cards, show_card);
+	engine->sendMessage(-1, MSG_CARD, show_card);
 	engine->setStateMoveCardsNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cards.size(), cards, id, magic_id, true);
 
 	return GE_URGENT;
