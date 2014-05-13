@@ -17,6 +17,7 @@ public:
 	int p_timeline_2_hit(int &step, CONTEXT_TIMELINE_2_HIT * con);
 	int p_timeline_2_miss(int &step, CONTEXT_TIMELINE_2_MISS *con);
 	int p_after_attack(int &step, int playerID);
+	int p_additional_action(int chosen);
 
  
 
@@ -31,6 +32,7 @@ private:
 	int TianShiZhiHun_EffectMiss();
 	int EMoZhiHun();
 	int EMoZhiHun_EffectMiss();
+
 
 	bool used_TIAN_SHI_ZHI_HUN;
 	bool used_E_MO_ZHI_HUN;

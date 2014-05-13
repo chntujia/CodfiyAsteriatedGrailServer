@@ -228,7 +228,7 @@ int YongZhe::p_before_action(int &step, int currentPlayerID) {
 			Coder::tapNotice(id, false, game_info);
 			engine->sendMessage(-1, MSG_GAME, game_info);
 
-			engine->getPlayerEntity(id)->setHandCardsMaxFixed(false);
+			this->setHandCardsMaxFixed(false);
 			engine->setStateChangeMaxHand(id, false, false,6 ,0);
 
 			return GE_URGENT;
@@ -432,7 +432,7 @@ int YongZhe::JinDuanZhiLiMiss(CONTEXT_TIMELINE_2_MISS *con)//[响应]A 【禁断
 					CardMsg show_card;
 					Coder::showCardNotice(id, cards.size(), cards, show_card);
 					engine->sendMessage(-1, MSG_CARD, show_card);
-					int ret = engine->setStateMoveCardsNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cards.size(), cards, id, JIN_DUAN_ZHI_LI, true);					
+					engine->setStateMoveCardsNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cards.size(), cards, id, JIN_DUAN_ZHI_LI, true);					
 				}
 				return GE_URGENT;
 			}

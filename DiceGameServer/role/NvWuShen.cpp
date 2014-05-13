@@ -227,9 +227,8 @@ int NvWuShen::JunShenWeiGuang()
 			int choice = respond->args(0);
 			if(choice != 1)
 			{
-				PlayerEntity *self = engine->getPlayerEntity(id);
 				TeamArea *team = engine->getTeamArea();
-				int color = self->getColor();
+				int color = this->getColor();
 				int gem = respond->args(1);
 				int crystal = respond->args(2);
 				team->setGem(color, team->getGem(color)-gem);

@@ -264,7 +264,7 @@ int HongLian::XingHongShengYue(CONTEXT_TIMELINE_1 *con)
 	int dstID = con->attack.dstID;
 	PlayerEntity * srcPlayer = engine->getPlayerEntity(srcID);
 	//非红莲攻击||非主动攻击||满治疗||回合限定发动过
-	if(srcID != id || !con->attack.isActive || engine->getPlayerEntity(id)->getCrossNum() >=4 || used_XingHongShengYue)
+	if(srcID != id || !con->attack.isActive || this->getCrossNum() >=4 || used_XingHongShengYue)
 	{
 		return GE_SUCCESS;
 	}
@@ -280,7 +280,7 @@ int HongLian::XingHongShengYue(CONTEXT_TIMELINE_1 *con)
 			Respond* respond = (Respond*) reply;
 			//发动
 			if(respond->args(0) == 1){
-				engine->getPlayerEntity(id)->addCrossNum(1);
+				this->addCrossNum(1);
 				GameInfo update_info;
 				Coder::crossNotice(srcID, srcPlayer->getCrossNum(), update_info);
 				engine->sendMessage(-1, MSG_GAME, update_info);
@@ -345,8 +345,8 @@ int HongLian::XueXingDaoYan()
 			if(crossNum > 0 && crossSumToSend > 0)
 			{
 				//heal minus
-				engine->getPlayerEntity(id)->subCrossNum(crossSumToSend);
-				Coder::crossNotice(id, engine->getPlayerEntity(id)->getCrossNum(), update_info);
+				this->subCrossNum(crossSumToSend);
+				Coder::crossNotice(id, this->getCrossNum(), update_info);
 				//engine->sendMessage(-1, MSG_GAME, update_info);
 				//heal plus
 				for(int i = 0; i < respond->dst_ids_size(); i++)

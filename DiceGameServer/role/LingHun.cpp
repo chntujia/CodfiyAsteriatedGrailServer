@@ -138,7 +138,7 @@ int LingHun::p_true_lose_morale(int &step, CONTEXT_LOSE_MORALE *con)
 	int current_color;
 	int harmPoint=con->howMany;
 	dst_color=engine->getPlayerEntity(con->dstID)->getColor();
-	current_color=engine->getPlayerEntity(id)->getColor();
+	current_color=this->getColor();
 
 	if(dst_color==current_color)
 	{
@@ -375,7 +375,6 @@ int LingHun::LingHunJingXiang(Action* action)
 	engine->sendMessage(-1, MSG_GAME, update);
 
 	if(cardNum>3)      cardNum=3;
-	PlayerEntity *self = engine->getPlayerEntity(id);
 
 	for(int i = 0; i < cardNum;i ++)
 	{
@@ -510,7 +509,7 @@ int LingHun::LingHunLianJie(){
 
 				network::GameInfo update;
 				Coder::exclusiveNotice(dstID, dst->getExclusiveEffect(), update);
-				Coder::exclusiveNotice(id, dst->getExclusiveEffect(), update);
+				Coder::exclusiveNotice(id, this->getExclusiveEffect(), update);
 				Coder::tokenNotice(id,0,token[0], update);
 				Coder::tokenNotice(id,1,token[1], update);
 				engine->sendMessage(-1, MSG_GAME, update);

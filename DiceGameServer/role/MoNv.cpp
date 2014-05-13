@@ -74,8 +74,7 @@ bool MoNv::IsFired(int cardID)
 
 int MoNv::p_boot(int &step, int currentPlayerID)
 {
-	PlayerEntity *self = engine->getPlayerEntity(id);
-	if (currentPlayerID != id || self->getHandCardNum() > 3)
+	if (currentPlayerID != id || this->getHandCardNum() > 3)
 		return GE_SUCCESS;
 	step = MO_NV_ZHI_NU;
 	int ret = MoNvZhiNu();
@@ -179,7 +178,7 @@ int MoNv::v_magic_skill(Action *action)
 			if(getEnergy() < 1)
 				return GE_INVALID_ACTION;
 			int dstID = action->dst_ids(0);
-			if(engine->getPlayerEntity(id)->getColor()==engine->getPlayerEntity(dstID)->getColor())
+			if(this->getColor()==engine->getPlayerEntity(dstID)->getColor())
 				return GE_INVALID_ACTION;
 			return  GE_SUCCESS;
 	}
@@ -274,7 +273,7 @@ int MoNv::TianHuoDuanKong(Action *action)
 	}
 	int harmPoint = 3;
 	int dstColor = engine->getPlayerEntity(dstID)->getColor();
-	int selfColor = engine->getPlayerEntity(id)->getColor();
+	int selfColor = this->getColor();
 	TeamArea *teamArea = engine->getTeamArea();
 	if(teamArea->getMorale(dstColor) > teamArea->getMorale(selfColor))
 		harmPoint = 4;
@@ -514,9 +513,8 @@ int MoNv::TiShenWanOu(CONTEXT_TIMELINE_3 *con)
 					return GE_INVALID_ARGUMENT;
 				}
 
-				PlayerEntity* self = engine->getPlayerEntity(id);
 				PlayerEntity* mate = engine->getPlayerEntity(mateID);
-				if(self->getColor()!=mate->getColor())
+				if(this->getColor()!=mate->getColor())
 					return GE_INVALID_ARGUMENT;
 
 				SkillMsg skill;
@@ -529,7 +527,7 @@ int MoNv::TiShenWanOu(CONTEXT_TIMELINE_3 *con)
 				harm.type = HARM_NONE;
 				harm.point = 1;
 				harm.cause = TI_SHEN_WAN_OU;
-				int ret = engine->setStateMoveCardsToHand(-1, DECK_PILE, mateID, DECK_HAND, 1, cards, harm, false);
+				engine->setStateMoveCardsToHand(-1, DECK_PILE, mateID, DECK_HAND, 1, cards, harm, false);
 				
 				CardMsg show_card;
 				Coder::showCardNotice(id, 1, cardID, show_card);
@@ -584,9 +582,8 @@ int MoNv::MoNengFanZhuan(CONTEXT_TIMELINE_3 *con)
 				int enermyID = respond->dst_ids(0);
 
 
-				PlayerEntity* self = engine->getPlayerEntity(id);
 				PlayerEntity* mate = engine->getPlayerEntity(enermyID);
-				if(self->getColor()==mate->getColor())
+				if(this->getColor()==mate->getColor())
 					return GE_INVALID_ARGUMENT;
 
 				SkillMsg skill;

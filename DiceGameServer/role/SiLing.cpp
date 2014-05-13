@@ -230,7 +230,7 @@ int SiLing::SiWangZhiChu(Action* action)
 	int dstID = action->dst_ids(0);
 	int crossUsed = action->args(0);
 	PlayerEntity *dstPlayer = engine->getPlayerEntity(dstID);
-	PlayerEntity *self = engine->getPlayerEntity(id);
+
 	for(int i = 0; i < cardNum;i ++)
 	{
 		cardIDs.push_back(action->card_ids(i));
@@ -239,9 +239,9 @@ int SiLing::SiWangZhiChu(Action* action)
 	SkillMsg skill_msg;
 	Coder::skillNotice(id, dstID, SI_WANG_ZHI_CHU, skill_msg);
 	engine->sendMessage(-1, MSG_SKILL, skill_msg);
-	self->subCrossNum(crossUsed);
+	this->subCrossNum(crossUsed);
 	GameInfo update_info;
-	Coder::crossNotice(id, self->getCrossNum(), update_info);
+	Coder::crossNotice(id, this->getCrossNum(), update_info);
 	engine->sendMessage(-1, MSG_GAME, update_info);
 	CardMsg show_card;
 	Coder::showCardNotice(id, cardNum, cardIDs, show_card);
@@ -291,10 +291,9 @@ int SiLing::MuBeiYunLuo(int &step, Action *action)
 	}
 	else
 	{
-		PlayerEntity *self = engine->getPlayerEntity(id);
-		self->addCrossNum(1);
+		this->addCrossNum(1);
 		GameInfo cross_info;
-		Coder::crossNotice(id, self->getCrossNum(), cross_info);
+		Coder::crossNotice(id, this->getCrossNum(), cross_info);
 		engine->sendMessage(-1, MSG_GAME, cross_info);
 		return GE_SUCCESS;
 	}

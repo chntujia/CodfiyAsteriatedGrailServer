@@ -164,7 +164,7 @@ int JianDi::p_timeline_2_miss(int &step, CONTEXT_TIMELINE_2_MISS *con) {
 	}
 	if(step == YANG_GONG)
 	{
-		YangGon();
+		ret = YangGon();
 		step = JIAN_HUN_SHOU_HU;
 	}
 	if(step == JIAN_HUN_SHOU_HU)
@@ -205,29 +205,18 @@ int JianDi::p_after_attack(int &step, int playerID)
 	{
 		return GE_SUCCESS;
 	}
-	 
-	//若成功则继续往下走，失败则返回，step会保留，下次再进来就不会重走
-	//一般超时也会继续下一步
-	if(step == STEP_INIT)
-	{
-		if(getEnergy()>0)
-		{
-			step = BU_QU_YI_ZHI;
-		}
-		else
-		{
-			step = STEP_DONE;
-			ret = GE_SUCCESS;
-		}
-	}			
-	if(step ==BU_QU_YI_ZHI)
+	if(getEnergy()>0)
+		addAction(ACTION_ATTACK, BU_QU_YI_ZHI);
+	return GE_SUCCESS;
+}
+
+int JianDi::p_additional_action(int chosen)
+{
+	int ret;
+	PlayerEntity::p_additional_action(chosen);
+	if(chosen == BU_QU_YI_ZHI)
 	{
 		ret = BuQuYiZhi();
-		if(toNextStep(ret) || GE_URGENT == ret)
-		{
-			//全部走完后，请把step设成STEP_DONE
-			   step = STEP_DONE;
-		}
 	}
 	return ret;
 }
@@ -274,61 +263,37 @@ int JianDi::JianHunShouHu(CONTEXT_TIMELINE_2_MISS* con)
 	engine->sendMessage(-1, MSG_GAME, game_info);
 	*/
 	engine->setStateMoveOneCardNotToHand(-1,DECK_DISCARD,id,DECK_COVER,con->cardID,id,JIAN_HUN_SHOU_HU,false);
-	return GE_URGENT;
+	return GE_SUCCESS;
 }
 //【不屈意志】
 int JianDi::BuQuYiZhi()
 {   
 	int ret;
 	vector<int> cards;
-	CommandRequest cmd_req;
-	Coder::askForSkill(id,BU_QU_YI_ZHI, cmd_req);
-	//有限等待，由UserTask调用tryNotify唤醒
-	if(engine->waitForOne(id, network::MSG_CMD_REQ, cmd_req))
-	{
-		void* reply;
-		if (GE_SUCCESS == (ret = engine->getReply(id, reply)))
-		{
-			Respond* respond = (Respond*) reply;
-			//发动
-			if(respond->args(0)==1)         //启动
-			{
-			    network::SkillMsg skill;
-				Coder::skillNotice(id, id,BU_QU_YI_ZHI, skill);
-				engine->sendMessage(-1, MSG_SKILL, skill);
 
-				//更新能量
-				if(crystal > 0)
-					setCrystal(--crystal);
-				else if (gem > 0)
-					setGem(--gem);
+	//更新能量
+	if(crystal > 0)
+		setCrystal(--crystal);
+	else if (gem > 0)
+		setGem(--gem);
 
-				GameInfo game_info;
-				Coder::energyNotice(id, gem, crystal,game_info);
+	GameInfo game_info;
+	Coder::energyNotice(id, gem, crystal,game_info);
 
-				//添加一【剑气】
-				setToken(0,token[0]+1);
-				Coder::tokenNotice(id,0,token[0], game_info);
-				engine->sendMessage(-1, MSG_GAME, game_info);
+	//添加一【剑气】
+	setToken(0,token[0]+1);
+	Coder::tokenNotice(id,0,token[0], game_info);
+	engine->sendMessage(-1, MSG_GAME, game_info);
 	           
-				//摸一张手牌
-				HARM  harm;
-	            harm.srcID = id;
-	            harm.type = HARM_NONE;
-	            harm.point =1;  //摸牌数量
-	            harm.cause =BU_QU_YI_ZHI;
-	            engine->setStateMoveCardsToHand(-1, DECK_PILE, id, DECK_HAND,1,cards, harm, false);
+	//摸一张手牌
+	HARM  harm;
+	harm.srcID = id;
+	harm.type = HARM_NONE;
+	harm.point =1;  //摸牌数量
+	harm.cause =BU_QU_YI_ZHI;
+	engine->setStateMoveCardsToHand(-1, DECK_PILE, id, DECK_HAND,1,cards, harm, false);
 
-                addAction(ACTION_ATTACK, BU_QU_YI_ZHI);
-			    return GE_URGENT;
-			}
-		}
-		return ret;
-	}
-	else{
-		//超时啥都不用做
-		return GE_TIMEOUT;
-	}
+	return GE_URGENT;
 }
 //【剑气斩】
 int JianDi::JianQiZhan(CONTEXT_TIMELINE_2_HIT *con)
@@ -412,7 +377,7 @@ int JianDi::TianShiZhiHun()
            //移除一个【天使之魂】
 				card_id = respond->card_ids(0);
 				engine->setStateMoveOneCardNotToHand(id,DECK_COVER,-1,DECK_DISCARD,card_id,id,TIAN_SHI_ZHI_HUN,false);
-				return GE_URGENT;
+				return GE_SUCCESS;
 			}
 		
 			return GE_SUCCESS ;
@@ -496,7 +461,7 @@ int JianDi::EMoZhiHun()
 				GameInfo game_info;
 				Coder::coverNotice(id,getCoverCards(), game_info);
 				engine->sendMessage(-1, MSG_GAME, game_info);
-				return GE_URGENT;
+				return GE_SUCCESS;
 			}
 			return GE_SUCCESS;
 		}

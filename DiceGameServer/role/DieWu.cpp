@@ -559,7 +559,7 @@ int DieWu::DiaoLing_Effect(CONTEXT_LOSE_MORALE *con)
 	if(!tap)
 		return GE_SUCCESS;
 	int	dst_color=engine->getPlayerEntity(con->dstID)->getColor();
-	int	current_color=engine->getPlayerEntity(id)->getColor();
+	int	current_color=this->getColor();
      //对方士气强制最少为1
  	if(dst_color!=current_color)
 	{   

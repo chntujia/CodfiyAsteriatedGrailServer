@@ -219,7 +219,7 @@ int GongNv::JuJi(Action *action)
 	if(move.point>0){
 		move.srcID = id;
 		move.type = HARM_NONE;
-		int ret = engine->setStateMoveCardsToHand(-1, DECK_PILE, dstID, DECK_HAND, move.point, vector< int >(), move,false);
+		engine->setStateMoveCardsToHand(-1, DECK_PILE, dstID, DECK_HAND, move.point, vector< int >(), move,false);
 	//插入了新状态，返回URGENT，终止目前状态，执行状态栈顶状态
 		return GE_URGENT;
 	}

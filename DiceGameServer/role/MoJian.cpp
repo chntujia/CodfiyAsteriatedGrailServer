@@ -434,7 +434,6 @@ int MoJian::AnYingLiuXing(Action* action)
 	int  dstID = action->dst_ids(0);
 
 	PlayerEntity *dstPlayer = engine->getPlayerEntity(dstID);
-	PlayerEntity *self = engine->getPlayerEntity(id);
 
 	for(int i = 0; i < cardNum;i ++)
 	{

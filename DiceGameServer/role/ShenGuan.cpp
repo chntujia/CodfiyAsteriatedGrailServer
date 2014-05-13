@@ -148,6 +148,10 @@ int ShenGuan::p_magic_skill(int &step, Action* action)
 }
 int ShenGuan::ShenShengQiYue()
 {
+	if(this->getHandCardNum() == 0 && this->getEnergy() == 1)
+		return GE_SUCCESS;
+	if(this->getEnergy() == 1 && this->getHandCardNum() == 1 && getCardByID(*this->getHandCards().begin())->getElement() == ELEMENT_LIGHT)
+		return GE_SUCCESS;
 	CommandRequest cmd_req;
 	Coder::askForSkill(id, SHEN_SHENG_QI_YUE, cmd_req);
 	//有限等待，由UserTask调用tryNotify唤醒

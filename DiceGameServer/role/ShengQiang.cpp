@@ -211,7 +211,6 @@ int ShengQiang::ChengJie(int &step, Action* action)
 {
 	int dstID = action->dst_ids(0);
 	int cardID = action->card_ids(0);
-	PlayerEntity * srcPlayer = engine->getPlayerEntity(id);
 	PlayerEntity * dstPlayer = engine->getPlayerEntity(dstID);
 	if(step != CHENG_JIE)
 	{
@@ -230,8 +229,8 @@ int ShengQiang::ChengJie(int &step, Action* action)
 		dstPlayer->subCrossNum(1);
 		GameInfo update_info;
 		Coder::crossNotice(dstID, dstPlayer->getCrossNum(), update_info);
-		srcPlayer->addCrossNum(1);
-		Coder::crossNotice(id, srcPlayer->getCrossNum(), update_info);
+		this->addCrossNum(1);
+		Coder::crossNotice(id, this->getCrossNum(), update_info);
 		engine->sendMessage(-1, MSG_GAME, update_info);
 		addAction(ACTION_ATTACK, CHENG_JIE);
 		return GE_SUCCESS;
@@ -240,7 +239,6 @@ int ShengQiang::ChengJie(int &step, Action* action)
 int ShengQiang::ShengGuangQiYu(Action* action)
 {
 	SkillMsg skill_msg;
-	PlayerEntity * srcPlayer = engine->getPlayerEntity(id);
 	Coder::skillNotice(id, id, SHENG_GUANG_QI_YU, skill_msg);
 	
 	//更新能量
@@ -248,8 +246,8 @@ int ShengQiang::ShengGuangQiYu(Action* action)
 	setGem(--gem);
 	Coder::energyNotice(id, gem, crystal, update_info);
 	engine->sendMessage(-1, MSG_GAME, update_info);
-	srcPlayer->addCrossNum(2,5);
-	Coder::crossNotice(id, srcPlayer->getCrossNum(), update_info);
+	this->addCrossNum(2,5);
+	Coder::crossNotice(id, this->getCrossNum(), update_info);
 	engine->sendMessage(-1, MSG_GAME, update_info);
 
 	addAction(ACTION_ATTACK, SHENG_GUANG_QI_YU);
@@ -267,7 +265,7 @@ int ShengQiang::TianQiang(CONTEXT_TIMELINE_1 *con)
 	if(srcID != id || !con->attack.isActive){
 		return GE_SUCCESS;
 	}
-	if(engine->getPlayerEntity(id)->getCrossNum() < 2|| used_ShengGuangQiYu){
+	if(this->getCrossNum() < 2|| used_ShengGuangQiYu){
 		return GE_SUCCESS;
 	}
 	//满足发动条件，询问客户端是否发动
@@ -312,7 +310,7 @@ int ShengQiang::DiQiang(CONTEXT_TIMELINE_2_HIT *con)
 	if(srcID != id || !con->attack.isActive){
 		return GE_SUCCESS;
 	}
-	if(engine->getPlayerEntity(id)->getCrossNum() < 1){
+	if(this->getCrossNum() < 1){
 		return GE_SUCCESS;
 	}
 	//满足发动条件，询问客户端是否发动
@@ -359,7 +357,7 @@ int ShengQiang::ShengJi(CONTEXT_TIMELINE_2_HIT *con)
 	if(srcID != id){
 		return GE_SUCCESS;
 	}
-	if(engine->getPlayerEntity(id)->getCrossNum() >= 3|| used_TianQiang || used_DiQiang){
+	if(this->getCrossNum() >= 3|| used_TianQiang || used_DiQiang){
 		return GE_SUCCESS;
 	}
 	//满足发动条件，询问客户端是否发动

@@ -188,7 +188,7 @@ int WuNv::TongShengGongSi(int &step, Action *action)
 	harm.type = HARM_NONE;
 	harm.point = 2;
 	harm.cause = TONG_SHENG_GONG_SI;
-	int ret = engine->setStateMoveCardsToHand(-1, DECK_PILE, id, DECK_HAND, 2, cards, harm, false);
+	engine->setStateMoveCardsToHand(-1, DECK_PILE, id, DECK_HAND, 2, cards, harm, false);
 	tongShengID = dstID;
 	return GE_URGENT;
 }
@@ -480,8 +480,7 @@ int WuNv::ToPuTongXingTai(int playerID)
 {
 	if(id == playerID && tap)
 	{
-		PlayerEntity *self = engine->getPlayerEntity(id);
-		if(self->getHandCardNum()<3)
+		if(this->getHandCardNum()<3)
 		{
 			tap = false;
 			GameInfo game_info;
