@@ -10,6 +10,7 @@ public:
 	 int  p_boot(int &step, int currentPlayerID);
 	 int p_timeline_2_hit(int &step, CONTEXT_TIMELINE_2_HIT * con);
 	 int p_timeline_3(int &step, CONTEXT_TIMELINE_3 *con);
+	 int p_timeline_4(int &step, CONTEXT_TIMELINE_4 *con);
 	 int p_lose_morale(int &step, CONTEXT_LOSE_MORALE *con);
 	 int v_magic_skill(Action *action);
 	 int p_magic_skill(int &step, Action* action);
@@ -29,6 +30,7 @@ public:
 	 int AnZhiZhangBi(CONTEXT_TIMELINE_3 *con);
 	 int QiHeiZhiQiang(CONTEXT_TIMELINE_2_HIT *con);
 	 int HuanYingXingChen_Effect();
+	 int HuanYingXingChenJudge(CONTEXT_TIMELINE_4 *con);
  private:
 	//具体技能
 int      cardCount;

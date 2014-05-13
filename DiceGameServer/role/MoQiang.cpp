@@ -162,6 +162,17 @@ int MoQiang::p_timeline_3(int &step, CONTEXT_TIMELINE_3 *con)
 	return GE_SUCCESS;
 }
 
+int MoQiang::p_timeline_4(int &step, CONTEXT_TIMELINE_4 *con)
+{
+	int ret = GE_INVALID_STEP;
+	step = HUAN_YING_XING_CHEN;
+	ret = HuanYingXingChenJudge(con);
+	if(toNextStep(ret))
+	{
+		step = STEP_DONE;
+	}
+	return ret;
+}
 
 //»ÃÓ°ÐÇ³½
 int MoQiang::p_lose_morale(int &step, CONTEXT_LOSE_MORALE *con)
@@ -572,5 +583,17 @@ int MoQiang::ChongYingAddHarm(CONTEXT_TIMELINE_2_HIT * con)
 	}
 	con->harm.point += cardCount;
 	cardCount = 0;
+	return GE_SUCCESS;
+}
+
+int MoQiang::HuanYingXingChenJudge(CONTEXT_TIMELINE_4 *con)
+{
+	if (con->dstID == id && con->crossAvailable>1 && con->harm.cause == HUAN_YING_XING_CHEN)
+	{
+		if(this->getHandCardNum()== 0)
+		{
+			con->crossAvailable = 1;
+		}
+	}
 	return GE_SUCCESS;
 }
