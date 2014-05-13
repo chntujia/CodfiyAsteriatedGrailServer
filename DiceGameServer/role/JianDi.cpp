@@ -263,7 +263,7 @@ int JianDi::JianHunShouHu(CONTEXT_TIMELINE_2_MISS* con)
 	engine->sendMessage(-1, MSG_GAME, game_info);
 	*/
 	engine->setStateMoveOneCardNotToHand(-1,DECK_DISCARD,id,DECK_COVER,con->cardID,id,JIAN_HUN_SHOU_HU,false);
-	return GE_SUCCESS;
+	return GE_URGENT;
 }
 //【不屈意志】
 int JianDi::BuQuYiZhi()
@@ -377,7 +377,7 @@ int JianDi::TianShiZhiHun()
            //移除一个【天使之魂】
 				card_id = respond->card_ids(0);
 				engine->setStateMoveOneCardNotToHand(id,DECK_COVER,-1,DECK_DISCARD,card_id,id,TIAN_SHI_ZHI_HUN,false);
-				return GE_SUCCESS;
+				return GE_URGENT;
 			}
 		
 			return GE_SUCCESS ;
