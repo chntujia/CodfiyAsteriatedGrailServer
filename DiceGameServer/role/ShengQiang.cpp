@@ -230,7 +230,6 @@ int ShengQiang::ChengJie(int &step, Action* action)
 		dstPlayer->subCrossNum(1);
 		GameInfo update_info;
 		Coder::crossNotice(dstID, dstPlayer->getCrossNum(), update_info);
-		engine->sendMessage(-1, MSG_GAME, update_info);
 		srcPlayer->addCrossNum(1);
 		Coder::crossNotice(id, srcPlayer->getCrossNum(), update_info);
 		engine->sendMessage(-1, MSG_GAME, update_info);
