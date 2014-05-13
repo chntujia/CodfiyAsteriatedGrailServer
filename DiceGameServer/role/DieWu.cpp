@@ -68,6 +68,8 @@ int DieWu::v_magic_skill(Action *action)
 	case DAO_NI_ZHI_DIE:
 		if(getEnergy()==0)
 			return GE_INVALID_ACTION;
+		if(action->args(0)!=1 && getToken(0) < 1)
+			return GE_INVALID_ACTION;
         break;
 	default:
 		return GE_INVALID_ACTION;
@@ -356,7 +358,7 @@ int DieWu::JingHuaShuiYue(CONTEXT_TIMELINE_5 *con)
 					return  GE_INVALID_CARDID;
 				}
 			    network::SkillMsg skill;
-				Coder::skillNotice(id, id,JING_HUA_SHUI_YUE, skill);
+				Coder::skillNotice(id, con->dstID,JING_HUA_SHUI_YUE, skill);
 				engine->sendMessage(-1, MSG_SKILL, skill);
         		//展示
 				CardMsg show_card;
@@ -416,8 +418,13 @@ int DieWu::DaoNiZhiDie(Action *action)
 	int dstID;
 
 	if(action->args(0)==1 )
-	{  
-	    dstID=action->dst_ids(0);
+	{
+		dstID = action->dst_ids(0);
+
+		network::SkillMsg skill;
+		Coder::skillNotice(id, dstID,DAO_NI_ZHI_DIE, skill);
+		engine->sendMessage(-1, MSG_SKILL, skill);
+
 	    HARM harm;
 	    harm.srcID =id;
 	    harm.point = 1;
@@ -427,10 +434,14 @@ int DieWu::DaoNiZhiDie(Action *action)
  
 	}
 	else 
-	{   
+	{
 		if(token[0] < 1) {
 			return GE_INVALID_ARGUMENT;
-		}		
+		}
+		network::SkillMsg skill;
+		Coder::skillNotice(id, id,DAO_NI_ZHI_DIE, skill);
+		engine->sendMessage(-1, MSG_SKILL, skill);
+
 		if(action->args(0)==2)
 		{
 			for (int j = 0; j <2; ++j)
@@ -510,10 +521,10 @@ int DieWu::Diao_Ling(vector<int> cards)
 				//发动
 				if (respond->args(0) == 1)  //自己定义
 				{
-					network::SkillMsg skill;
-					Coder::skillNotice(id, id,DIAO_LING, skill);
-					engine->sendMessage(-1, MSG_SKILL, skill);
 					dstID=respond->dst_ids(0);
+					network::SkillMsg skill;
+					Coder::skillNotice(id, dstID,DIAO_LING, skill);
+					engine->sendMessage(-1, MSG_SKILL, skill);
 
 			        HARM harm;
 				    harm.srcID =id;
