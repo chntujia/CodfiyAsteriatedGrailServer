@@ -82,7 +82,6 @@ int MoQiang::p_boot(int &step, int currentPlayerID)
 	}
 	if(HUAN_YING_XING_CHEN_EFFECT == step)
 	{
-		if(using_HuanYingXingCeng && !HuanYingXingChenEffectFlag)
 			ret = HuanYingXingChen_Effect();
 
 		if(toNextStep(ret) || ret == GE_URGENT){
@@ -449,6 +448,10 @@ int MoQiang::AnZhiJieFang_Effect(CONTEXT_TIMELINE_2_HIT *con)
 
 int MoQiang::HuanYingXingChen_Effect()
 {
+	if(using_HuanYingXingCeng && !HuanYingXingChenEffectFlag)
+	{
+		return GE_SUCCESS;
+	}
     HARM harm;
 	harm.type = HARM_MAGIC;
     harm.point =2;
