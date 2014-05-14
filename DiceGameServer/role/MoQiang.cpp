@@ -133,29 +133,15 @@ int MoQiang::p_timeline_2_hit(int &step, CONTEXT_TIMELINE_2_HIT * con)
 //【暗之障壁】
 int MoQiang::p_timeline_3(int &step, CONTEXT_TIMELINE_3 *con)
 {
-	
-	if (con->dstID == id)
-	{
-		// 【暗之障壁】
-		//如果有雷系或法术牌，则发动 
-		int validCard=0;
-		  list<int>::iterator it;
-		for (it = handCards.begin(); it != handCards.end(); ++it)
-		{
-			if(getCardByID((*it))->getElement()==ELEMENT_THUNDER||getCardByID((*it))->getType()==TYPE_MAGIC)
-                          validCard++;
-		}
-
-		if(validCard>0)
-		{
-		step =AN_ZHI_ZHANG_BI;
-		int ret =AnZhiZhangBi(con);
-		if(toNextStep(ret) || ret == GE_URGENT){
-			//全部走完后，请把step设成STEP_DONE
-			step = STEP_DONE;
-		   }
-		  return ret;
-	    }
+	int ret = GE_INVALID_STEP;
+	if(con->dstID != id){
+		return GE_SUCCESS;
+	}
+	step = AN_ZHI_ZHANG_BI;
+	ret = AnZhiZhangBi(con);
+	if(toNextStep(ret) || ret == GE_URGENT){
+		//全部走完后，请把step设成STEP_DONE
+		step = STEP_DONE;
 	}
 
 	return GE_SUCCESS;
