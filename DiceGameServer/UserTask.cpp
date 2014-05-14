@@ -221,7 +221,7 @@ bool UserTask::cmdMsgParse(const char *pstrMsg, const uint32_t nCmdLen)
 		ztLoggerWrite(ZONE, e_Error, "[%s]UserTask throws error: %d, Received Message: %s", m_userId.c_str(), e, pstrMsg);
 		return false;
 	}catch(std::exception const& e) {
-		ztLoggerWrite(ZONE, e_Error, "[%s]UserTask throws error: %d, Received Message: %s",	m_userId.c_str(), e.what(), pstrMsg);
+		ztLoggerWrite(ZONE, e_Error, "[%s]UserTask throws error: %s, Received Message: %s",	m_userId.c_str(), e.what(), pstrMsg);
 	}
 }
 

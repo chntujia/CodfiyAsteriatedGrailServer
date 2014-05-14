@@ -168,18 +168,13 @@ int GameManager::setPlayerReady(int gameType, int roomId, int playerId, void* re
 	{
 		GameGrail *game = (GameGrail*)(iter->second);
 		if(game->topGameState()->state == STATE_WAIT_FOR_ENTER){
-			GameInfo update;
-			SinglePlayerInfo *player = update.add_player_infos();
-			player->set_id(playerId);
-			
+
 			if(request->type() == ReadyForGameRequest_Type_START_READY){
 				game->setStartReady(playerId, true);
-				player->set_ready(true);
 			}
-			else if(request->type() == ReadyForGameRequest_Type_CANCEL_START_REDAY)
+			else if(request->type() == ReadyForGameRequest_Type_CANCEL_START_REDAY){
 				game->setStartReady(playerId, false);
-			
-
+			}
 			return 0;
 		}
 	}

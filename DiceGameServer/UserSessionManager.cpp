@@ -32,7 +32,7 @@ void UserSessionManager::AddUserById(uint32_t userTempId, UserSession_Ptr sessio
 
 void UserSessionManager::AddUser(const string userId, UserSession_Ptr session)
 {
-	// zMutex_scope_lock lock_guide(m_lock);
+	zMutex_scope_lock lock_guide(m_lock);
 	UserMap_Iter iter = m_userMap.find(userId);
 	if (iter != m_userMap.end())
 	{
@@ -68,7 +68,7 @@ void UserSessionManager::RemoveUser(const string userId, uint32_t userTempId)
 
 UserSession_Ptr UserSessionManager::getUser(const string userId)
 {
-	// zMutex_scope_lock lock_guide(m_lock);
+	zMutex_scope_lock lock_guide(m_lock);
 	if(userId.length() == 0)
 	{
 		UserMap_Iter iter = m_userMap.begin();
