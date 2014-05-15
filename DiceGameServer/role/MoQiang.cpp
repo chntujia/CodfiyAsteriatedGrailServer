@@ -93,6 +93,12 @@ int MoQiang::p_boot(int &step, int currentPlayerID)
 	return ret;
 }
 
+int MoQiang::p_timeline_2_miss(int &step, CONTEXT_TIMELINE_2_MISS *con)
+{
+	int ret = GE_SUCCESS;
+	used_AnZhiJieFang = true;
+	return ret;
+}
 
 int MoQiang::p_timeline_2_hit(int &step, CONTEXT_TIMELINE_2_HIT * con)
 {
@@ -420,7 +426,7 @@ int MoQiang::ChongYing(Action* action)
 int MoQiang::AnZhiJieFang_Effect(CONTEXT_TIMELINE_2_HIT *con)
 {
    //在【暗影形态】下 第一次攻击伤害+2
-	if(!using_AnZhiJieFang || used_AnZhiJieFang)
+	if(!using_AnZhiJieFang || used_AnZhiJieFang || con->attack.srcID != id || !con->attack.isActive)
 	{
 		return GE_SUCCESS;
 	}

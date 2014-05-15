@@ -9,6 +9,7 @@ public:
 	 int  p_before_turn_begin(int &step, int currentPlayerID);
 	 int  p_boot(int &step, int currentPlayerID);
 	 int p_timeline_2_hit(int &step, CONTEXT_TIMELINE_2_HIT * con);
+	 int p_timeline_2_miss(int &step, CONTEXT_TIMELINE_2_MISS *con);
 	 int p_timeline_3(int &step, CONTEXT_TIMELINE_3 *con);
 	 int p_timeline_4(int &step, CONTEXT_TIMELINE_4 *con);
 	 int p_lose_morale(int &step, CONTEXT_LOSE_MORALE *con);
