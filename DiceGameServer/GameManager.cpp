@@ -111,7 +111,7 @@ int GameManager::enterRoom(int gameType, string userId, void* req)
 
 int GameManager::getGame(int gameType, int tableId, Game** game)
 {
-	if(tableId == -1)
+	if(tableId < 0)
 		return -1;
 	GameMapType::iterator iter;
 	switch(gameType)

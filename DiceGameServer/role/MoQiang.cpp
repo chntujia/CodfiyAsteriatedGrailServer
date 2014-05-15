@@ -58,38 +58,38 @@ int MoQiang::p_boot(int &step, int currentPlayerID)
 		return GE_SUCCESS;
 	}
 
-	 if(STEP_INIT == step)
-	 {
+	if(STEP_INIT == step)
+	{
 		if(!tap)
-	      step = AN_ZHI_JIE_FANG;     
-	     else
-		  step = HUAN_YING_XING_CHEN;
-	 }
-	 if(AN_ZHI_JIE_FANG == step || HUAN_YING_XING_CHEN == step)
-	 {
-	      ret = AnZhiHuanYing();
-	      if(toNextStep(ret) || ret == GE_URGENT){
-			  if(using_HuanYingXingCeng)
-			  {
-			       step = HUAN_YING_XING_CHEN_EFFECT;
-				   return ret;
-			  }
-			  else
-			  {
-				  step = STEP_DONE;
-			  }
-	       }
+			step = AN_ZHI_JIE_FANG;     
+		else
+			step = HUAN_YING_XING_CHEN;
+	}
+	if(AN_ZHI_JIE_FANG == step || HUAN_YING_XING_CHEN == step)
+	{
+		ret = AnZhiHuanYing();
+		if(toNextStep(ret) || ret == GE_URGENT){
+			if(using_HuanYingXingCeng)
+			{
+				step = HUAN_YING_XING_CHEN_EFFECT;
+				return ret;
+			}
+			else
+			{
+				step = STEP_DONE;
+			}
+		}
 	}
 	if(HUAN_YING_XING_CHEN_EFFECT == step)
 	{
-			ret = HuanYingXingChen_Effect();
+		ret = HuanYingXingChen_Effect();
 
 		if(toNextStep(ret) || ret == GE_URGENT){
-			       step = STEP_DONE;
-	       }
-		
+			step = STEP_DONE;
+		}
+
 	}
-	
+
 	return ret;
 }
 

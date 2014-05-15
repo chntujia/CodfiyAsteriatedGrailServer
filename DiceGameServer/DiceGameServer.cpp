@@ -28,7 +28,9 @@ bool DiceGameServer::serverInit()
 	//设置日志级别
 	ELogLevel level = getDebugLevel(ServerConfig::getInstance().m_strDebugLevel.c_str());
 	//ztLoggerInit("ChatServer.log",level);
-	ztLoggerInit("log",level);
+	char buffer[100];
+	sprintf(buffer, "%d.txt", time(NULL));
+	ztLoggerInit(buffer,level);
 
 	std::string strIP = ServerConfig::getInstance().m_strIP;
 	uint16_t usPort = ServerConfig::getInstance().m_sPort;

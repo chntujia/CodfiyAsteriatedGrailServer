@@ -461,7 +461,7 @@ int JianDi::EMoZhiHun()
 				GameInfo game_info;
 				Coder::coverNotice(id,getCoverCards(), game_info);
 				engine->sendMessage(-1, MSG_GAME, game_info);
-				return GE_SUCCESS;
+				return GE_URGENT;
 			}
 			return GE_SUCCESS;
 		}

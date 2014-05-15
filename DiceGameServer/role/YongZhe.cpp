@@ -40,7 +40,7 @@ bool YongZhe::cmdMsgParse(UserTask *session, uint16_t type, ::google::protobuf::
 			case  JIN_DUAN_ZHI_LI:
 				//tryNotify负责向游戏主线程传消息，只有id等于当前等待id，声明state等于当前state，声明step等于当前step，游戏主线程才会接受
 				//禁断之力的两种情形共用id
-				if(session->getGame()->topGameState()->state == STATE_TIMELINE_2_HIT){
+				if(engine->topGameState()->state == STATE_TIMELINE_2_HIT){
 					session->tryNotify(engine->getCurrentPlayerID(), STATE_TIMELINE_2_HIT,  JIN_DUAN_ZHI_LI, respond);
 				}else{
 					session->tryNotify(engine->getCurrentPlayerID(), STATE_TIMELINE_2_MISS, JIN_DUAN_ZHI_LI, respond);

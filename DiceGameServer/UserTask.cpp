@@ -151,11 +151,15 @@ bool UserTask::cmdMsgParse(const char *pstrMsg, const uint32_t nCmdLen)
 		case MSG_PICK_BAN:
 			{
 				PickBan* pick = (PickBan*)proto;
-				int strategy = getGame()->m_roleStrategy;
-				if(strategy == ROLE_STRATEGY_31 && pick->is_pick()){
+				GameGrail* game = getGame();
+				if(!game){
+					delete proto;
+					break;
+				}
+				if(game->m_roleStrategy == ROLE_STRATEGY_31 && pick->is_pick()){
 					tryNotify(m_playerId, STATE_ROLE_STRATEGY_31, 0, pick);
 				}
-				else if(strategy == ROLE_STRATEGY_ANY && pick->is_pick()){
+				else if(game->m_roleStrategy == ROLE_STRATEGY_ANY && pick->is_pick()){
 					tryNotify(m_playerId, STATE_ROLE_STRATEGY_ANY, 0, pick);
 				}
 				break;
@@ -198,7 +202,8 @@ bool UserTask::cmdMsgParse(const char *pstrMsg, const uint32_t nCmdLen)
 					break;
 				default:
 					//尝试从角色的cmdMsgParse里找匹配
-					if(getGame()->getPlayerEntity(m_playerId)->cmdMsgParse(this, type, proto) == false){
+					GameGrail* game = getGame();
+					if(!game || getGame()->getPlayerEntity(m_playerId)->cmdMsgParse(this, type, proto) == false){
 						ztLoggerWrite(ZONE, e_Error, "[%s]Received undefine MSG_RESPOND: %s,\n size:%d, type:%d,\n To proto: %s", m_userId.c_str(), pstrMsg, *size, type, proto->DebugString().c_str());
 						delete proto;
 					}

@@ -1779,8 +1779,11 @@ int StateShowHand::handle(GameGrail* engine)
 
 int StateGameOver::handle(GameGrail* engine)
 {
-	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateGameOver", engine->getGameId());
-	engine->terminate();
-
+	if(!isSet){
+		ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateGameOver", engine->getGameId());
+		isSet = true;
+	}
+	//engine->terminate();
+	Sleep(5000);
 	return GE_SUCCESS;
 }

@@ -208,18 +208,23 @@ GameGrail::~GameGrail()
 	while(!m_states.empty()){
 		popGameState();
 	}
+	ztLoggerWrite(ZONE, e_Information, "GameGrail::~GameGrail() GameGrail [%d] states deleted", m_gameId);
 	for(int i=0; i<m_maxPlayers; i++){
 		SAFE_DELETE(m_playerContexts[i]);
 	}
 	m_playerContexts.clear();
+	ztLoggerWrite(ZONE, e_Information, "GameGrail::~GameGrail() GameGrail [%d] playerContexts deleted", m_gameId);
 	for(int i=0; i<m_maxPlayers; i++){
 		SAFE_DELETE(m_playerEntities[i]);
 	}
 	m_playerEntities.clear();
+	ztLoggerWrite(ZONE, e_Information, "GameGrail::~GameGrail() GameGrail [%d] playerEntities deleted", m_gameId);
 	m_guestList.clear();
 	SAFE_DELETE(m_teamArea);
+	ztLoggerWrite(ZONE, e_Information, "GameGrail::~GameGrail() GameGrail [%d] teamArea deleted", m_gameId);
 	SAFE_DELETE(pile);
 	SAFE_DELETE(discard);
+	ztLoggerWrite(ZONE, e_Information, "GameGrail::~GameGrail() GameGrail [%d] piles deleted", m_gameId);
 }
 
 int GameGrail::popGameState_if(int state)

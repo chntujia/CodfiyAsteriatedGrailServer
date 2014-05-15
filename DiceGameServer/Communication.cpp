@@ -2,6 +2,8 @@
 
 void player_talk(GameGrail* engine, int m_playerId, Talk* talk)
 {
+	if(!engine)
+		return;
 	if (talk->txt().at(0) == '!' && talk->txt().at(1) == '`')
 	{
 		PlayerEntity* player = engine->getPlayerEntity(m_playerId);

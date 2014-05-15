@@ -4,7 +4,7 @@
 
 void UserSessionManager::AddUserById(uint32_t userTempId, UserSession_Ptr session)
 {
-	zMutex_scope_lock lock_guide(m_lock);
+	zMutex_scope_lock lock_guide(m_userIdMap_lock);
 	UserIdMap_Iter iter = m_userIdMap.find(userTempId);
 	if (iter != m_userIdMap.end())
 	{
@@ -32,7 +32,7 @@ void UserSessionManager::AddUserById(uint32_t userTempId, UserSession_Ptr sessio
 
 void UserSessionManager::AddUser(const string userId, UserSession_Ptr session)
 {
-	//zMutex_scope_lock lock_guide(m_lock);
+	zMutex_scope_lock lock_guide(m_userMap_lock);
 	UserMap_Iter iter = m_userMap.find(userId);
 	if (iter != m_userMap.end())
 	{
@@ -60,7 +60,9 @@ void UserSessionManager::AddUser(const string userId, UserSession_Ptr session)
 
 void UserSessionManager::RemoveUser(const string userId, uint32_t userTempId)
 {
-	zMutex_scope_lock lock_guide(m_lock);
+	zMutex_scope_lock lock_guide1(m_userIdMap_lock);
+	zMutex_scope_lock lock_guide2(m_userMap_lock);
+	
 	ztLoggerWrite(ZONE,e_Information, "RemoveSession::[%s] OK!!!", userId.c_str());
 	m_userMap.erase(userId);
 	m_userIdMap.erase(userTempId);
@@ -68,7 +70,7 @@ void UserSessionManager::RemoveUser(const string userId, uint32_t userTempId)
 
 UserSession_Ptr UserSessionManager::getUser(const string userId)
 {
-	//zMutex_scope_lock lock_guide(m_lock);
+	zMutex_scope_lock lock_guide(m_userMap_lock);
 	if(userId.length() == 0)
 	{
 		UserMap_Iter iter = m_userMap.begin();
@@ -88,7 +90,7 @@ UserSession_Ptr UserSessionManager::getUser(const string userId)
 
 void UserSessionManager::doCmd()
 {
-	zMutex_scope_lock lock_guide(m_lock);
+	zMutex_scope_lock lock_guide(m_userIdMap_lock);
 	for (UserIdMap_Iter iter = m_userIdMap.begin(); iter != m_userIdMap.end(); ++iter)
 	{
 		UserSession_Ptr sess =  iter->second;
