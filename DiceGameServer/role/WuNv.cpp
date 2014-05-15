@@ -125,9 +125,6 @@ int WuNv::p_magic_skill(int &step, Action* action)
 	{
 	case TONG_SHENG_GONG_SI:
 		ret = TongShengGongSi(step, action);
-		if(toNextStep(ret) || GE_URGENT == ret){
-			step = STEP_DONE;
-		}
 		break;
 	case NI_LIU:
 		ret = NiLiu(step, action);
@@ -149,48 +146,58 @@ int WuNv::p_magic_skill(int &step, Action* action)
 
 int WuNv::TongShengGongSi(int &step, Action *action)
 {
-	int dstID = action->dst_ids(0);
-	network::SkillMsg skill_msg;
-	Coder::skillNotice(id, dstID, TONG_SHENG_GONG_SI, skill_msg);
-	engine->sendMessage(-1, MSG_SKILL, skill_msg);
-	GameInfo update_info;
-	PlayerEntity* dst = engine->getPlayerEntity(dstID);
-	dst->addExclusiveEffect(EX_TONG_SHENG_GONG_SI);
-	Coder::exclusiveNotice(dstID, dst->getExclusiveEffect(), update_info);
-	engine->sendMessage(-1, MSG_GAME, update_info);
-	if(dstID ==id)
+	if(step == STEP_INIT)
 	{
-		if(tap)
+		int dstID = action->dst_ids(0);
+		network::SkillMsg skill_msg;
+		Coder::skillNotice(id, dstID, TONG_SHENG_GONG_SI, skill_msg);
+		engine->sendMessage(-1, MSG_SKILL, skill_msg);
+		vector<int> cards;
+		HARM harm;
+		harm.srcID = id;
+		harm.type = HARM_NONE;
+		harm.point = 2;
+		harm.cause = TONG_SHENG_GONG_SI;
+		engine->setStateMoveCardsToHand(-1, DECK_PILE, id, DECK_HAND, 2, cards, harm, false);
+		tongShengID = dstID;
+		step = TONG_SHENG_GONG_SI;
+		return GE_URGENT;
+	}
+	else if(step == TONG_SHENG_GONG_SI)
+	{
+		int dstID = action->dst_ids(0);
+		GameInfo update_info;
+		PlayerEntity* dst = engine->getPlayerEntity(dstID);
+		dst->addExclusiveEffect(EX_TONG_SHENG_GONG_SI);
+		Coder::exclusiveNotice(dstID, dst->getExclusiveEffect(), update_info);
+		engine->sendMessage(-1, MSG_GAME, update_info);
+		if(dstID ==id)
 		{
-			engine->setStateChangeMaxHand(id, false, false, 6,1);
+			if(tap)
+			{
+				engine->setStateChangeMaxHand(id, false, false, 6,1);
+			}
+			else
+			{
+				engine->setStateChangeMaxHand(id, false, false, 6,-2);
+			}
 		}
 		else
 		{
-			engine->setStateChangeMaxHand(id, false, false, 6,-2);
+			if(tap)
+			{
+				engine->setStateChangeMaxHand(dstID, false, false, 6,1);
+				engine->setStateChangeMaxHand(id, false, false, 6,1);
+			}
+			else
+			{
+				engine->setStateChangeMaxHand(dstID, false, false, 6,-2);
+				engine->setStateChangeMaxHand(id, false, false, 6,-2);
+			}
 		}
+		step = STEP_DONE;
+		return GE_URGENT;
 	}
-	else
-	{
-		if(tap)
-		{
-			engine->setStateChangeMaxHand(dstID, false, false, 6,1);
-			engine->setStateChangeMaxHand(id, false, false, 6,1);
-		}
-		else
-		{
-			engine->setStateChangeMaxHand(dstID, false, false, 6,-2);
-			engine->setStateChangeMaxHand(id, false, false, 6,-2);
-		}
-	}
-	vector<int> cards;
-	HARM harm;
-	harm.srcID = id;
-	harm.type = HARM_NONE;
-	harm.point = 2;
-	harm.cause = TONG_SHENG_GONG_SI;
-	engine->setStateMoveCardsToHand(-1, DECK_PILE, id, DECK_HAND, 2, cards, harm, false);
-	tongShengID = dstID;
-	return GE_URGENT;
 }
 
 int WuNv::XueZhiAiShang(int &step, int currentPlayerID)
