@@ -150,7 +150,7 @@ int MoQiang::p_timeline_3(int &step, CONTEXT_TIMELINE_3 *con)
 		step = STEP_DONE;
 	}
 
-	return GE_SUCCESS;
+	return ret;
 }
 
 int MoQiang::p_timeline_4(int &step, CONTEXT_TIMELINE_4 *con)
@@ -169,8 +169,9 @@ int MoQiang::p_timeline_4(int &step, CONTEXT_TIMELINE_4 *con)
 int MoQiang::p_lose_morale(int &step, CONTEXT_LOSE_MORALE *con)
 {
 	int ret = GE_SUCCESS;
-	if(using_HuanYingXingCeng)
+	if(using_HuanYingXingCeng && HUAN_YING_XING_CHEN == con->harm.cause)
 	{
+		//flag为true则不造成2法伤
 		HuanYingXingChenEffectFlag = true;
 	}
 	return ret;
@@ -347,14 +348,7 @@ int MoQiang::AnZhiHuanYing()
 			   harm.srcID =id;
 			   harm.cause =HUAN_YING_XING_CHEN;
 			   using_HuanYingXingCeng=true;
-				//【幻影形态】
-				tap = false;
-				GameInfo game_info;
-				Coder::tapNotice(id, tap, game_info);
-				engine->sendMessage(-1, MSG_GAME, game_info);
-
-				 //手牌上限设定为6
-				 engine->setStateChangeMaxHand(id, true, false, 6, 0);
+			//出形态在HuanYingXingChen_Effect
 				 engine->setStateTimeline3(id, harm);
 				 return GE_URGENT;
 			}
@@ -440,16 +434,25 @@ int MoQiang::AnZhiJieFang_Effect(CONTEXT_TIMELINE_2_HIT *con)
 
 int MoQiang::HuanYingXingChen_Effect()
 {
-	if(using_HuanYingXingCeng && !HuanYingXingChenEffectFlag)
+	tap = false;
+	GameInfo game_info;
+	Coder::tapNotice(id, tap, game_info);
+	engine->sendMessage(-1, MSG_GAME, game_info);
+	//flag为true则不造成2法伤
+	if(using_HuanYingXingCeng && HuanYingXingChenEffectFlag)
 	{
-		return GE_SUCCESS;
+		using_HuanYingXingCeng = false;
+		engine->setStateChangeMaxHand(id, true, false, 6, 0);
+		return GE_URGENT;
 	}
+	using_HuanYingXingCeng = false;
     HARM harm;
 	harm.type = HARM_MAGIC;
     harm.point =2;
     harm.srcID =id;
     harm.cause =HUAN_YING_XING_CHEN;
     engine->setStateTimeline3(hurtID,harm);
+	engine->setStateChangeMaxHand(id, true, false, 6, 0);
 	return GE_URGENT;
 }
 
