@@ -336,7 +336,7 @@ int MoNv::TongKuLianJieCard(Action *action)
 		 return GE_SUCCESS;
 	 int cardNum = this->getHandCardNum() - 3;
 	 HARM lianjie;
-	 lianjie.cause = 30061;
+	 lianjie.cause = TONG_KU_LIAN_JIE;
 	 lianjie.point = cardNum;
 	 lianjie.srcID = id;
 	 lianjie.type = HARM_NONE;
@@ -636,6 +636,8 @@ int MoNv::YongShengYinShiJi(CONTEXT_LOSE_MORALE *con)
 	SkillMsg skill;
 	Coder::skillNotice(id, id, YONG_SHENG_YIN_SHI_JI, skill);
 	engine->sendMessage(-1, MSG_SKILL, skill);
+	if(token[0]==tokenMax[0])
+		return GE_SUCCESS;
 	setToken(0, token[0]+1);
 	GameInfo game_info;
 	Coder::tokenNotice(id, 0, token[0], game_info);
