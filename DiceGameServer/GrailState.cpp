@@ -275,6 +275,24 @@ int StateTurnBegin::handle(GameGrail* engine)
 		}		
 	}
 	if(GE_SUCCESS == (ret = engine->popGameState_if(STATE_TURN_BEGIN))){
+		engine->pushGameState(new StateTurnBeginShiRen);
+	}
+	return ret;
+}
+
+int StateTurnBeginShiRen::handle(GameGrail* engine)
+{
+	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateTurnBeginShiRen", engine->getGameId());
+	int ret = GE_FATAL_ERROR;
+	int m_currentPlayerID= engine->getCurrentPlayerID();
+	while(iterator < engine->getGameMaxPlayers()){	    
+		ret = engine->getPlayerEntity(iterator)->p_turn_begin_shiren(step, m_currentPlayerID);
+		moveIterator(ret);
+		if(GE_SUCCESS != ret){
+			return ret;
+		}		
+	}
+	if(GE_SUCCESS == (ret = engine->popGameState_if(STATE_TURN_BEGIN_SHIREN))){
 		return engine->setStateCheckBasicEffect();
 	}
 	return ret;
@@ -1124,6 +1142,22 @@ int StateTimeline2Miss::handle(GameGrail* engine)
 	return engine->popGameState_if(STATE_TIMELINE_2_MISS);
 }
 
+int StateHarmEnd::handle(GameGrail* engine)
+{
+	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateHarmEnd", engine->getGameId());
+	int ret = GE_FATAL_ERROR;
+	int m_currentPlayerID = engine->getCurrentPlayerID();
+
+	while(iterator < engine->getGameMaxPlayers()){	    
+		ret = engine->getPlayerEntity(iterator)->p_harm_end(step, context);
+		moveIterator(ret);
+		if(GE_SUCCESS != ret){
+			return ret;
+		}		
+	}
+	return engine->popGameState_if(STATE_HARM_END);
+}
+
 int StateTimeline3::handle(GameGrail* engine)
 {
 	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateTimeline3", engine->getGameId());
@@ -1144,6 +1178,10 @@ int StateTimeline3::handle(GameGrail* engine)
 		}		
 	}
 
+	CONTEXT_HARM_END* endCon = new CONTEXT_HARM_END;
+	endCon->harm = context->harm;
+	endCon->dstID = context->dstID;
+
 	PlayerEntity* player = engine->getPlayerEntity(context->dstID);
 	int cross = player->getCrossNum();
 	if(cross > 0){
@@ -1152,9 +1190,11 @@ int StateTimeline3::handle(GameGrail* engine)
 		newCon->dstID = context->dstID;
 		newCon->crossAvailable = cross;
 		if(GE_SUCCESS == (ret = engine->popGameState_if(STATE_TIMELINE_3))){
+			engine->pushGameState(new StateHarmEnd(endCon));
 			engine->pushGameState(new StateTimeline4(newCon));
 		}
 		else{
+			SAFE_DELETE(endCon);
 			SAFE_DELETE(newCon);
 		}
 	}
@@ -1163,9 +1203,11 @@ int StateTimeline3::handle(GameGrail* engine)
 		newCon->dstID = context->dstID;
 		newCon->harm = context->harm;
 		if(GE_SUCCESS == (ret = engine->popGameState_if(STATE_TIMELINE_3))){
+			engine->pushGameState(new StateHarmEnd(endCon));
 			engine->pushGameState(new StateTimeline5(newCon));
 		}
 		else{
+			SAFE_DELETE(endCon);
 			SAFE_DELETE(newCon);
 		}
 	}

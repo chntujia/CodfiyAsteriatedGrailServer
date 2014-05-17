@@ -40,6 +40,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <LibraryPath>..\lib;$(LibraryPath)</LibraryPath>
+    <EmbedManifest>false</EmbedManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -119,6 +120,7 @@
     <ClInclude Include="role\ShengNv.h" />
     <ClInclude Include="role\ShengQiang.h" />
     <ClInclude Include="role\ShenGuan.h" />
+    <ClInclude Include="role\ShiRen.h" />
     <ClInclude Include="role\SiLing.h" />
     <ClInclude Include="role\TianShi.h" />
     <ClInclude Include="role\WuNv.h" />
@@ -169,6 +171,7 @@
     <ClCompile Include="role\ShengNv.cpp" />
     <ClCompile Include="role\ShengQiang.cpp" />
     <ClCompile Include="role\ShenGuan.cpp" />
+    <ClCompile Include="role\ShiRen.cpp" />
     <ClCompile Include="role\SiLing.cpp" />
     <ClCompile Include="role\TianShi.cpp" />
     <ClCompile Include="role\WuNv.cpp" />

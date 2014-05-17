@@ -38,6 +38,7 @@
 #include "role\NvWuShen.h"
 #include "role\YingLingRenXing.h"
 #include "role\MoNv.h"
+#include "role\ShiRen.h"
 
 using namespace boost;
 
@@ -135,6 +136,9 @@ PlayerEntity* GameGrail::createRole(int id, int roleID, int color)
 		break;
 	case 30:
 		return new MoNv(this,id,color);
+		break;
+	case 31:
+		return new ShiRen(this, id, color);
 		break;
 	}
 	throw GE_INVALID_ROLEID;

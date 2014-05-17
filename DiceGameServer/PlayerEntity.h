@@ -109,6 +109,7 @@ public:
 	//回合限定等统一在这里初始化
 	virtual int p_before_turn_begin(int &step, int currentPlayerID) { return GE_SUCCESS; }
 	virtual int p_turn_begin(int &step, int currentPlayerID) { return GE_SUCCESS; }
+	virtual int p_turn_begin_shiren(int &step, int currentPlayerID) { return GE_SUCCESS; }
 	virtual int p_between_weak_and_action(int &step, int currentPlayerID) { return GE_SUCCESS; }
 	virtual int p_before_action(int &step, int currentPlayerID) { return GE_SUCCESS; }
 	virtual int p_boot(int &step, int currentPlayerID) { return GE_SUCCESS; }
@@ -122,6 +123,7 @@ public:
 	virtual int p_timeline_1(int &step, CONTEXT_TIMELINE_1 *con) { return GE_SUCCESS; }
 	virtual int p_timeline_2_hit(int &step, CONTEXT_TIMELINE_2_HIT *con) { return GE_SUCCESS; }
 	virtual int p_timeline_2_miss(int &step, CONTEXT_TIMELINE_2_MISS *con) { return GE_SUCCESS; }
+	virtual int p_harm_end(int &step, CONTEXT_HARM_END *con) { return GE_SUCCESS; }
 	virtual int p_timeline_3(int &step, CONTEXT_TIMELINE_3 *con) { return GE_SUCCESS; }
 	virtual int p_timeline_4(int &step, CONTEXT_TIMELINE_4 *con) { return GE_SUCCESS; }
 	virtual int p_timeline_5(int &step, CONTEXT_TIMELINE_5 *con) { return GE_SUCCESS; }

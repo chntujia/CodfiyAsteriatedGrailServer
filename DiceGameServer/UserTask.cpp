@@ -4,6 +4,7 @@
 #include "GameManager.h"
 #include "Communication.h"
 #include "role\QiDao.h"
+#include "role\ShiRen.h"
 #include <boost/algorithm/string.hpp>
 
 uint32_t UserTask::m_sIDSeq = 10000;
@@ -203,6 +204,12 @@ bool UserTask::cmdMsgParse(const char *pstrMsg, const uint32_t nCmdLen)
 					break;			
 				case WEI_LI_CI_FU:
 					QiDao::WeiLiCiFuParse(this, m_playerId, proto);
+					break;
+				case JI_ANG_KUANG_XIANG_QU:
+				case JI_ANG_KUANG_XIANG_QU_2:
+				case SHENG_LI_JIAO_XIANG_SHI:
+				case SHENG_LI_JIAO_XIANG_SHI_2:
+					ShiRen::ShiRenParse(this, m_playerId, proto);
 					break;
 				default:
 					//尝试从角色的cmdMsgParse里找匹配

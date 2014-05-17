@@ -165,6 +165,12 @@
     <ClInclude Include="role\MoNv.h">
       <Filter>role</Filter>
     </ClInclude>
+    <ClInclude Include="role\YingLingRenXing.h">
+      <Filter>role</Filter>
+    </ClInclude>
+    <ClInclude Include="role\ShiRen.h">
+      <Filter>role</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -306,6 +312,12 @@
       <Filter>role</Filter>
     </ClCompile>
     <ClCompile Include="role\MoNv.cpp">
+      <Filter>role</Filter>
+    </ClCompile>
+    <ClCompile Include="role\YingLingRenXing.cpp">
+      <Filter>role</Filter>
+    </ClCompile>
+    <ClCompile Include="role\ShiRen.cpp">
       <Filter>role</Filter>
     </ClCompile>
   </ItemGroup>

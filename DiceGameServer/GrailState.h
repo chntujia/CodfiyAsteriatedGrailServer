@@ -13,6 +13,7 @@ enum STATE{
 	STATE_GAME_START,
 	STATE_BEFORE_TURN_BEGIN,
 	STATE_TURN_BEGIN,
+	STATE_TURN_BEGIN_SHIREN,
 	STATE_WEAKEN,
 	STATE_BETWEEN_WEAK_AND_ACTION,
 	STATE_BEFORE_ACTION,
@@ -34,6 +35,7 @@ enum STATE{
 	STATE_TIMELINE_1,
 	STATE_TIMELINE_2_MISS,
 	STATE_TIMELINE_2_HIT,
+	STATE_HARM_END,
 	STATE_TIMELINE_3,
 	STATE_TIMELINE_4,
 	STATE_TIMELINE_5,
@@ -80,6 +82,11 @@ typedef struct{
 	CONTEXT_ATTACK_ACTION attack;
 	HARM harm;
 }CONTEXT_TIMELINE_2_HIT;
+
+typedef struct{
+	HARM harm;
+	int dstID;
+}CONTEXT_HARM_END;
 
 typedef struct{
 	HARM harm;
@@ -227,6 +234,13 @@ class StateTurnBegin : public GrailState
 {
 public:
 	StateTurnBegin(): GrailState(STATE_TURN_BEGIN){}
+	int handle(GameGrail* engine);
+};
+
+class StateTurnBeginShiRen : public GrailState
+{
+public:
+	StateTurnBeginShiRen(): GrailState(STATE_TURN_BEGIN_SHIREN){}
 	int handle(GameGrail* engine);
 };
 
@@ -443,6 +457,16 @@ public:
 	~StateTimeline2Miss(){ SAFE_DELETE(context); }
 	int handle(GameGrail* engine);
 	CONTEXT_TIMELINE_2_MISS *context;
+};
+
+class StateHarmEnd : public GrailState
+{
+	public:
+	StateHarmEnd(CONTEXT_HARM_END *con): GrailState(STATE_HARM_END), context(con), isSet(false){}
+	~StateHarmEnd(){ SAFE_DELETE(context); }
+	int handle(GameGrail* engine);
+	CONTEXT_HARM_END *context;
+	bool isSet;
 };
 
 class StateTimeline3 : public GrailState
