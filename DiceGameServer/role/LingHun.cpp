@@ -239,6 +239,7 @@ int LingHun::LingHunZengFu()
 {
 	if(getGem() <=0)
 		return GE_SUCCESS;
+
 	CommandRequest cmd_req;
 	Coder::askForSkill(id, LING_HUN_ZENG_FU, cmd_req);
 	//有限等待，由UserTask调用tryNotify唤醒
@@ -268,8 +269,9 @@ int LingHun::LingHunZengFu()
 					engine->sendMessage(-1, MSG_GAME, game_info);
 					return GE_SUCCESS;
 				}
-				else
+				else{
 					return GE_INVALID_ACTION;
+				}
 			}
 			return GE_SUCCESS;
 		}
@@ -373,7 +375,7 @@ int LingHun::LingHunJingXiang(Action* action)
 	Coder::tokenNotice(id,0,token[0],update);
 
 	engine->sendMessage(-1, MSG_GAME, update);
-
+	
 	if(cardNum>3)      cardNum=3;
 
 	for(int i = 0; i < cardNum;i ++)
@@ -386,6 +388,11 @@ int LingHun::LingHunJingXiang(Action* action)
 	engine->sendMessage(-1, MSG_SKILL, skill_msg);
 
     int drawNum = (currentHandCards+3)<max?3:(max-currentHandCards);
+
+	//如果灵魂镜像是对自己用的话，是先暗弃后摸牌，摸牌数应根据弃牌后的牌数计算
+	if(dstID == this->id){
+		 drawNum = (currentHandCards-cardNum+3)<max?3:(max-(currentHandCards-cardNum));
+	}
 	if(drawNum>0){
 		HARM  jingXiang;
 		jingXiang.type = HARM_NONE;
@@ -486,6 +493,13 @@ int LingHun::LingHunLianJie(){
 
 	int ret;
 	int dstID;
+
+	//零手牌、黄色灵魂小于3点时，禁止启动，因为启动后无法行动
+	int cardNum = this->getHandCardNum();
+	if(cardNum == 0 && token[0] < 3){
+		return GE_SUCCESS;
+	}
+
 	//满足发动条件，询问客户端是否发动
 	CommandRequest cmd_req;
 	Coder::askForSkill(id, LING_HUN_LIAN_JIE, cmd_req);
