@@ -458,9 +458,9 @@ int JianDi::EMoZhiHun()
 				//ÒÆ³ýÒ»¸ö¡¾¶ñÄ§Ö®»ê¡¿
 				card_id = respond->card_ids(0);
 				engine->setStateMoveOneCardNotToHand(id, DECK_COVER,-1,DECK_DISCARD,card_id,id,E_MO_ZHI_HUN,false);
-				GameInfo game_info;
-				Coder::coverNotice(id,getCoverCards(), game_info);
-				engine->sendMessage(-1, MSG_GAME, game_info);
+				//GameInfo game_info;
+				//Coder::coverNotice(id,getCoverCards(), game_info);
+				//engine->sendMessage(-1, MSG_GAME, game_info);
 				return GE_URGENT;
 			}
 			return GE_SUCCESS;
