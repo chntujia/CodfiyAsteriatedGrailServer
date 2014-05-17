@@ -48,6 +48,10 @@ void UserTask::OnCheck()
 	if (tmNow - m_activeTime > ServerConfig::getInstance().m_iCheckTime)
 	{
 		ztLoggerWrite(ZONE,e_Debug, "OnCheck[%s]: heartbeat timeout,be kicked off ", m_userId.c_str());
+		GameGrail* game = getGame();
+		if(game){
+			game->onUserLeave(m_userId);
+		}
 		UserSessionManager::getInstance().RemoveUser(m_userId, m_iTmpId);
 		SetQuit();
 		return;
