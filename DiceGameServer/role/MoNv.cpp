@@ -336,7 +336,7 @@ int MoNv::TongKuLianJieCard(Action *action)
 		 return GE_SUCCESS;
 	 int cardNum = this->getHandCardNum() - 3;
 	 HARM lianjie;
-	 lianjie.cause = NIAN_ZHOU;
+	 lianjie.cause = 30061;
 	 lianjie.point = cardNum;
 	 lianjie.srcID = id;
 	 lianjie.type = HARM_NONE;
