@@ -112,8 +112,8 @@ int QiDao::QiDong()
 }
 
 int QiDao::p_after_attack(int &step, int playerID){
-	XunJieCiFuEffect(playerID);
-	return GE_SUCCESS;
+	int ret = XunJieCiFuEffect(playerID);
+	return ret;
 }
 int QiDao::p_after_magic(int &step, int playerID){
 	XunJieCiFuEffect(playerID);

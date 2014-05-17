@@ -48,7 +48,7 @@ int MoNv::GetAwayFromFire()
 	engine->sendMessage(-1, MSG_GAME, game_info);
 
 	int ret  = engine->setStateChangeMaxHand(id, false, false, 6, 2-token[0]);
-	return ret;
+	return GE_URGENT;
 }
 
 int MoNv::getCardElement(int cardID)
@@ -113,7 +113,8 @@ int MoNv::MoNvZhiNu()
 				Coder::tapNotice(id, tap, game_info);
 				engine->sendMessage(-1, MSG_GAME, game_info);
 
-				int ret  = engine->setStateChangeMaxHand(id, false, false, 6, token[0]-2);
+				int ret;
+				engine->setStateChangeMaxHand(id, false, false, 6, token[0]-2);
 				if(drawNum > 0)
 				{
 					HARM harm;
@@ -123,9 +124,8 @@ int MoNv::MoNvZhiNu()
 					harm.cause = MO_NV_ZHI_NU;
 					vector<int> cards;
 					engine->setStateMoveCardsToHand(-1, DECK_PILE, id, DECK_HAND, drawNum, cards, harm, false);
-					ret =  GE_URGENT;
 				}
-				return ret;
+				return GE_URGENT;
 			}
 			return GE_SUCCESS;
 		}
@@ -134,7 +134,6 @@ int MoNv::MoNvZhiNu()
 	else{
 		return GE_TIMEOUT;
 	}
-	return GE_SUCCESS;
 }
 
 int MoNv::v_magic_skill(Action *action)
@@ -452,13 +451,9 @@ int MoNv::p_reattack(int &step, int &cardID, int doerID, int targetID, bool &rea
 int MoNv::ToFire(int &cardID, int doerID, int targetID, bool &realCard)
 {
 	int virtualCardID = 87;
-	//宣告技能
-
-	//所有移牌操作都要用setStateMoveXXXX，ToHand的话要填好HARM，就算不是伤害
 	cardID = virtualCardID;
 	realCard = false;
-	//插入了新状态，请return GE_URGENT
-	return GE_URGENT;
+	return GE_SUCCESS;
 }
 
 int MoNv::p_timeline_3(int &step, CONTEXT_TIMELINE_3 *con)
@@ -468,9 +463,6 @@ int MoNv::p_timeline_3(int &step, CONTEXT_TIMELINE_3 *con)
 		return GE_SUCCESS;
 	}
 
-	if(step == STEP_INIT){
-		step = TI_SHEN_WAN_OU;
-	}
 	if(con->harm.type == TYPE_ATTACK)
 	{
 		step = TI_SHEN_WAN_OU;
@@ -650,7 +642,8 @@ int MoNv::YongShengYinShiJi(CONTEXT_LOSE_MORALE *con)
 	engine->sendMessage(-1, MSG_GAME, game_info);
 	if(tap)
 	{
-		return engine->setStateChangeMaxHand(id, false, false, 6, 1);
+		engine->setStateChangeMaxHand(id, false, false, 6, 1);
+		return GE_URGENT;
 	}
 	return GE_SUCCESS;
 }

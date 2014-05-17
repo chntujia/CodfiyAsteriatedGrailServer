@@ -117,7 +117,7 @@ int XianZhe::p_timeline_6_drawn(int &step, CONTEXT_TIMELINE_6_DRAWN *con)
 	int ret = GE_SUCCESS;
 	if (con->harm.point > 3)
 		// 伤害大于等于4,
-		ZhiHuiFaDian();
+		ret = ZhiHuiFaDian();
 	else if (con->harm.point == 1)
 	{
 		// 伤害为1

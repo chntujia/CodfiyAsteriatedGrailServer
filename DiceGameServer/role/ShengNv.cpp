@@ -157,8 +157,8 @@ int ShengNv::LianMin()
 				Coder::tapNotice(id, true, game_info);
 				Coder::energyNotice(id, gem, crystal, game_info);
 				engine->sendMessage(-1, MSG_GAME, game_info);
-
-				return engine->setStateChangeMaxHand(id, true, true, 7);
+				engine->setStateChangeMaxHand(id, true, true, 7);
+				return GE_URGENT;
 			}
 		}
 		return ret;

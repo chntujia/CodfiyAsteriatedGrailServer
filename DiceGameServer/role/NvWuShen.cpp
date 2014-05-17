@@ -73,7 +73,7 @@ int NvWuShen::v_magic_skill(Action *action)
 {
 	int actionID = action->action_id();
 	int playerID = action->src_id();
-	
+
 
 	if(playerID != id){
 		return GE_INVALID_PLAYERID;
@@ -113,7 +113,7 @@ int NvWuShen::p_timeline_1(int &step, CONTEXT_TIMELINE_1 *con)
 {
 	int ret = GE_INVALID_STEP;
 	step = HE_PING_XING_ZHE;
-	
+
 	ret = HePingXingZhe(con);
 	if(toNextStep(ret))
 	{
@@ -126,7 +126,7 @@ int NvWuShen::p_timeline_2_hit(int &step, CONTEXT_TIMELINE_2_HIT *con)
 {
 	int ret = GE_INVALID_STEP;
 	step = YING_LING_ZHAO_HUAN;
-	
+
 	ret = YingLingZhaoHuan(con);
 	if(toNextStep(ret) || ret == GE_URGENT)
 	{
@@ -161,7 +161,7 @@ int NvWuShen::ShenShengZhuiJi(int playerID)
 int NvWuShen::ZhiXuZhiYin(int &step, Action* action)
 {
 	GameInfo game_info;
-	
+
 	if(step != ZHI_XU_ZHI_YIN)
 	{
 		SkillMsg skill_msg;
@@ -210,7 +210,7 @@ int NvWuShen::JunShenWeiGuang()
 {
 	CommandRequest cmd_req;
 	Coder::askForSkill(id, JUN_SHEN_WEI_GUANG, cmd_req);
-	
+
 	if(engine->waitForOne(id, network::MSG_CMD_REQ, cmd_req))
 	{
 		void* reply;
@@ -218,7 +218,7 @@ int NvWuShen::JunShenWeiGuang()
 		if (GE_SUCCESS == (ret = engine->getReply(id, reply)))
 		{
 			Respond* respond = (Respond*) reply;
-		
+
 			SkillMsg skill_msg;
 			Coder::skillNotice(id, id, JUN_SHEN_WEI_GUANG, skill_msg);
 			engine->sendMessage(-1, MSG_SKILL, skill_msg);
@@ -303,14 +303,14 @@ int NvWuShen::YingLingZhaoHuan(CONTEXT_TIMELINE_2_HIT *con)
 					int cardID = respond->card_ids(0);
 					CardEntity* card = getCardByID(cardID);
 					if( card->getType() == TYPE_MAGIC ){
-					con->harm.point += 1;
-					CardMsg show_card;
-					Coder::showCardNotice(id, 1, cardID, show_card);
-					engine->sendMessage(-1, MSG_CARD, show_card);
-					engine->setStateMoveOneCardNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardID, id, YING_LING_ZHAO_HUAN, true);
+						con->harm.point += 1;
+						CardMsg show_card;
+						Coder::showCardNotice(id, 1, cardID, show_card);
+						engine->sendMessage(-1, MSG_CARD, show_card);
+						engine->setStateMoveOneCardNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardID, id, YING_LING_ZHAO_HUAN, true);
 					}
 					else {
-					return GE_INVALID_CARDID;
+						return GE_INVALID_CARDID;
 					}
 				}
 				skill.Clear();

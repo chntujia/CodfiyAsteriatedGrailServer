@@ -35,12 +35,13 @@ bool ZhongCai::cmdMsgParse(UserTask *session, uint16_t type, ::google::protobuf:
 
 int ZhongCai::p_turn_begin(int &step, int currentPlayerID)
 {
+	int ret = GE_SUCCESS;
 	if (currentPlayerID == id && tap)
 	{
-		ZhongCaiYiShiAddToken();
+		ret = ZhongCaiYiShiAddToken();
 	}
 	step = STEP_DONE;
-	return GE_SUCCESS;
+	return ret;
 }
 
 int ZhongCai::p_boot(int &step, int currentPlayerID)

@@ -95,9 +95,8 @@ int MoQiang::p_boot(int &step, int currentPlayerID)
 
 int MoQiang::p_timeline_2_miss(int &step, CONTEXT_TIMELINE_2_MISS *con)
 {
-	int ret = GE_SUCCESS;
 	used_AnZhiJieFang = true;
-	return ret;
+	return GE_SUCCESS;
 }
 
 int MoQiang::p_timeline_2_hit(int &step, CONTEXT_TIMELINE_2_HIT * con)
@@ -168,13 +167,12 @@ int MoQiang::p_timeline_4(int &step, CONTEXT_TIMELINE_4 *con)
 //幻影星辰
 int MoQiang::p_lose_morale(int &step, CONTEXT_LOSE_MORALE *con)
 {
-	int ret = GE_SUCCESS;
 	if(using_HuanYingXingCeng && HUAN_YING_XING_CHEN == con->harm.cause)
 	{
 		//flag为true则不造成2法伤
 		HuanYingXingChenEffectFlag = true;
 	}
-	return ret;
+	return GE_SUCCESS;
 }
 
 
@@ -412,9 +410,7 @@ int MoQiang::ChongYing(Action* action)
 	engine->setStateMoveOneCardNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardID, id, CHONG_YING, true);
 
 	addAction(ACTION_ATTACK,CHONG_YING);
-		return GE_URGENT;
-
-
+	return GE_URGENT;
 }
 //【暗之解放】攻击效果
 int MoQiang::AnZhiJieFang_Effect(CONTEXT_TIMELINE_2_HIT *con)

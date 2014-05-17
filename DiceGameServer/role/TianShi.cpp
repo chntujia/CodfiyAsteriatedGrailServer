@@ -181,7 +181,7 @@ int TianShi::TianShiZhiQiang(Action *action)
 	engine->sendMessage(-1, MSG_CARD, show_card);
 	
 	engine->setStateMoveOneCardNotToHand(id, DECK_HAND, action->dst_ids(0), DECK_BASIC_EFFECT, action->card_ids(0), id, CAUSE_USE, true);
-	return GE_SUCCESS;
+	return GE_URGENT;
 }
 
 int TianShi::TianShiZhuFu(int step, Action *action)

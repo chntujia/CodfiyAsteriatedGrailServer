@@ -130,7 +130,7 @@ int GeDou::p_before_magic(int &step, int currentPlayerID)
 	if(toNextStep(ret)){
 		step = STEP_DONE;
 	}
-	return GE_SUCCESS; 
+	return ret; 
 }
 
 int GeDou::p_after_magic(int &step, int currentPlayerID) 
@@ -158,7 +158,7 @@ int GeDou::p_before_special(int &step, int currentPlayerID)
 	if(toNextStep(ret)){
 		step = STEP_DONE;
 	}
-	return GE_SUCCESS; 
+	return ret; 
 }
 
 int GeDou::NianQiLiChang(CONTEXT_TIMELINE_3 *con)

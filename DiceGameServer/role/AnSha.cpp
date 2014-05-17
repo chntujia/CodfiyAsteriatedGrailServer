@@ -200,8 +200,8 @@ int AnSha::QianXingBoot()
 				Coder::tapNotice(id, true, game_info);
 				Coder::energyNotice(id, gem, crystal, game_info);
 				engine->sendMessage(-1, MSG_GAME, game_info);
-
-				return engine->setStateChangeMaxHand(id, false, false, 6, -1);
+				engine->setStateChangeMaxHand(id, false, false, 6, -1);
+				return GE_URGENT;
 			}
 		}
 		return ret;
@@ -237,6 +237,6 @@ int AnSha::QianXingReset()
 	GameInfo game_info;
 	Coder::tapNotice(id, false, game_info);
 	engine->sendMessage(-1, MSG_GAME, game_info);
-
-	return engine->setStateChangeMaxHand(id, false, false, 6, 1);	
+	engine->setStateChangeMaxHand(id, false, false, 6, 1);	
+	return GE_URGENT;
 }
