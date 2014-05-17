@@ -270,6 +270,7 @@ int MoNv::TianHuoDuanKong(Action *action)
 		setToken(0, token[0]-1);
 		GameInfo game_info;
 		Coder::tokenNotice(id, 0, token[0], game_info);
+		engine->sendMessage(-1, MSG_GAME, game_info);
 	}
 	int harmPoint = 3;
 	int dstColor = engine->getPlayerEntity(dstID)->getColor();
