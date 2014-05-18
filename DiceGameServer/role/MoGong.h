@@ -31,26 +31,24 @@ public:
 	 int MoYan();
 	 int ChongNeng();
 	 int ChongNengGaiPai();
-//	 int MoYanGaiPai();
+	 int MoYanGaiPai();
 
 	 int MoGuanChongJi(CONTEXT_TIMELINE_1 *con);
 	 int MoGuanChongJi_Hit(CONTEXT_TIMELINE_2_HIT *con);
-	 int DuoChongSheJi_Effect(CONTEXT_TIMELINE_1 *con);
 	 int DuoChongSheJi(int playerID);
 	 int LeiGuangSanShe(Action *action);
 	 int DuoChongSheJi_QiPai(Action *action);
 private:
 	int ChongNengNum;
 	int lastTarget;   //为【多重射击】记录上次攻击目标
-	int bootCount;   //计算回合启动数
 	//【充能】及【魔眼】
-	bool used_CHONG_NENG;
-	bool used_MO_YAN;
-	//用于回合【魔贯冲击】与【多重射击】互斥
-	bool used_MO_GUAN_CHONG_JI; 
-	bool used_DUO_CHONG_SHE_JI;  
+	bool using_CHONG_NENG;
+	bool using_MO_YAN;
+	//用于【魔贯冲击】与【多重射击】
+	bool using_MO_GUAN_CHONG_JI;  
 	bool using_DUO_CHONG_SHE_JI;
 	//用于判别本回合【魔贯冲击】及【雷光闪射】是否可用
 	bool available_MO_GUAN_CHONG_JI;
-	bool avilable_LEI_GUANG_SAN_SHE;
+	bool available_LEI_GUANG_SAN_SHE;
+	bool available_DUO_CHONG_SHE_JI;
 };
