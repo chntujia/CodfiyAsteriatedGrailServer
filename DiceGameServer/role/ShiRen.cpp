@@ -694,7 +694,7 @@ int ShiRen::ChenLunXieZouQu(CONTEXT_HARM_END *con)
 				HARM harm;
 				harm.type = HARM_MAGIC;
 				harm.point = 1;
-				harm.srcID = YueZhangDst;
+				harm.srcID = id;
 				harm.cause = CHEN_LUN_XIE_ZOU_QU;
 				engine->setStateTimeline3(dstID, harm);
 				engine->setStateMoveCardsNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardNum, cardIDs, id, CHEN_LUN_XIE_ZOU_QU, true);
