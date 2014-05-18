@@ -471,12 +471,11 @@ int ShiRen::ShengLiJiaoXiangShiStone(int &step, int currentPlayerID)
 		return GE_SUCCESS;
 	if(YueZhangDst == id && !BaoFengUsed)
 		return GE_SUCCESS;
-	int choice = 0;
+	int choice = 2;
 	PlayerEntity *owner = engine->getPlayerEntity(currentPlayerID);
 	TeamArea *team = engine->getTeamArea();
 	if(team->getEnergy(owner->getColor()) > 0)
 		choice+=1;
-		choice+=2;
 	CommandRequest cmd_req;
 	Coder::askForSkill(currentPlayerID, SHENG_LI_JIAO_XIANG_SHI_2, cmd_req);
 	Command *cmd = (Command*)(&cmd_req.commands(cmd_req.commands_size()-1));
@@ -501,9 +500,13 @@ int ShiRen::ShengLiJiaoXiangShiStone(int &step, int currentPlayerID)
 					self->setCrystal(self->getCrystal()+1);
 					team->setCrystal(color, team->getCrystal(color) - 1);
 				}
-				else{
+				else if(respond->args(1)==2){
 					self->setGem(self->getGem()+1);
 					team->setGem(color, team->getGem(color) - 1);
+				}
+				else
+				{
+					choice = 2;
 				}
 
 				Coder::energyNotice(currentPlayerID, self->getGem(),self->getCrystal(), update_info);
@@ -511,7 +514,7 @@ int ShiRen::ShengLiJiaoXiangShiStone(int &step, int currentPlayerID)
 				Coder::stoneNotice(color, team->getGem(color), team->getCrystal(color), update_info);
 				engine->sendMessage(-1, MSG_GAME, update_info);
 			}
-			else if(choice == 2)
+			if(choice == 2)
 			{
 				GameInfo update_info;
 				PlayerEntity *self = engine->getPlayerEntity(currentPlayerID);
@@ -612,8 +615,8 @@ int ShiRen::BuXieZhiXian(Action* action)
 		harm.type = HARM_NONE;
 		harm.point = num -1;
 		harm.cause = BU_XIE_HE_XIAN;
-		engine->setStateMoveCardsToHand(-1, DECK_PILE, dstID, DECK_HAND, 1, cards, harm, false);
-		engine->setStateMoveCardsToHand(-1, DECK_PILE, id, DECK_HAND, 1, cards, harm, false);
+		engine->setStateMoveCardsToHand(-1, DECK_PILE, dstID, DECK_HAND, num -1, cards, harm, false);
+		engine->setStateMoveCardsToHand(-1, DECK_PILE, id, DECK_HAND, num -1, cards, harm, false);
 	}
 	else if(choice == 2)
 	{
