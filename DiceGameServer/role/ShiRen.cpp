@@ -498,15 +498,16 @@ int ShiRen::ShengLiJiaoXiangShiStone(int &step, int currentPlayerID)
 
 				GameInfo update_info;
 				if(respond->args(1)==1){
-					self->setCrystal(self->getCrystal() + crystal);
+					self->setCrystal(self->getCrystal()+1);
+					team->setCrystal(color, team->getCrystal(color) - 1);
 				}
 				else{
-					self->setGem(self->getGem() + gem);
+					self->setGem(self->getGem()+1);
+					team->setGem(color, team->getGem(color) - 1);
 				}
-				Coder::energyNotice(YueZhangDst, self->getGem(), self->getCrystal(), update_info);
 
-				team->setGem(color, team->getGem(color) - gem);
-				team->setCrystal(color, team->getCrystal(color) - crystal);
+				Coder::energyNotice(currentPlayerID, self->getGem(),self->getCrystal(), update_info);
+				
 				Coder::stoneNotice(color, team->getGem(color), team->getCrystal(color), update_info);
 				engine->sendMessage(-1, MSG_GAME, update_info);
 			}
