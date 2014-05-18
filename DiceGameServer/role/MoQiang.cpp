@@ -487,7 +487,7 @@ int MoQiang::AnZhiZhangBi(CONTEXT_TIMELINE_3 *con)
 				Coder::showCardNotice(id, cardIDs.size(), cardIDs, show_card);
 				engine->sendMessage(-1, MSG_CARD, show_card);
 
-		        engine->setStateMoveCardsNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardNum, cardIDs, id,AN_ZHI_ZHANG_BI, false);
+		        engine->setStateMoveCardsNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardNum, cardIDs, id,AN_ZHI_ZHANG_BI, true);
 				return GE_URGENT;
 			}
 			else
