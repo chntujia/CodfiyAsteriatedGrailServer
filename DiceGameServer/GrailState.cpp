@@ -1570,14 +1570,19 @@ int StateRequestHand::handle(GameGrail* engine)
 	{
 		//Timeout auto discard
 		if(!canGiveUp)
-		{
-			engine->popGameState();
-			list<int> handcards = engine->getPlayerEntity(targetID_t)->getHandCards();
+		{			
+			list<int> handcards = engine->getPlayerEntity(targetID)->getHandCards();
 			list<int>::iterator it = handcards.begin();
-			for(int i = 0; i < harm_t.point && it != handcards.end(); i++){
+			for(int i = 0; i < harm.point && it != handcards.end(); i++){
 				toDiscard[i] = *it;
 				it++;
 			}
+			if(isShown){
+				CardMsg show_card;
+				Coder::showCardNotice(targetID, harm.point, toDiscard, show_card);
+				engine->sendMessage(-1, MSG_CARD, show_card);
+			}
+			engine->popGameState();
 			if(dstArea != DECK_HAND){
 				engine->setStateMoveCardsNotToHand(targetID_t, DECK_HAND, dstOwner_t, dstArea_t, harm_t.point, toDiscard, harm_t.srcID, harm_t.cause, isShown_t);
 			}
@@ -1663,14 +1668,19 @@ int StateRequestCover::handle(GameGrail* engine)
 	{
 		//Timeout auto discard
 		if(!canGiveUp)
-		{
-			engine->popGameState();
-			list<int> covercards = engine->getPlayerEntity(targetID_t)->getCoverCards();
+		{			
+			list<int> covercards = engine->getPlayerEntity(targetID)->getCoverCards();
 			list<int>::iterator it = covercards.begin();
-			for(int i = 0; i < harm_t.point && it != covercards.end(); i++){
+			for(int i = 0; i < harm.point && it != covercards.end(); i++){
 				toDiscard[i] = *it;
 				it++;
 			}
+			if(isShown){
+				CardMsg show_card;
+				Coder::showCardNotice(targetID, harm.point, toDiscard, show_card);
+				engine->sendMessage(-1, MSG_CARD, show_card);
+			}
+			engine->popGameState();
 			if(dstArea != DECK_HAND){
 				engine->setStateMoveCardsNotToHand(targetID_t, DECK_COVER, dstOwner_t, dstArea_t, harm_t.point, toDiscard, harm_t.srcID, harm_t.cause, isShown_t);
 			}

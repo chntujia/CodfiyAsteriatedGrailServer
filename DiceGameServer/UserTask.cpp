@@ -214,7 +214,7 @@ bool UserTask::cmdMsgParse(const char *pstrMsg, const uint32_t nCmdLen)
 				default:
 					//尝试从角色的cmdMsgParse里找匹配
 					GameGrail* game = getGame();
-					if(!game || getGame()->getPlayerEntity(m_playerId)->cmdMsgParse(this, type, proto) == false){
+					if(!game || game->getPlayerEntity(m_playerId)->cmdMsgParse(this, type, proto) == false){
 						ztLoggerWrite(ZONE, e_Error, "[%s]Received undefine MSG_RESPOND: %s,\n size:%d, type:%d,\n To proto: %s", m_userId.c_str(), pstrMsg, *size, type, proto->DebugString().c_str());
 						delete proto;
 					}
