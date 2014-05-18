@@ -114,6 +114,7 @@ int WuNv::v_magic_skill(Action *action)
 	default:
 		return GE_INVALID_ACTION;
 	}
+	return GE_SUCCESS;
 }
 
 int WuNv::p_magic_skill(int &step, Action* action)
