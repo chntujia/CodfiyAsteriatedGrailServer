@@ -449,6 +449,8 @@ int StateActionPhase::handle(GameGrail* engine)
 				return attackSkill(action, engine);
 			case ACTION_SPECIAL_SKILL:
 				return specialSkill(action, engine);
+			case ACTION_UNACTIONAL:
+				return unactional(action, engine);
 			case ACTION_NONE:
 				engine->popGameState_if(STATE_ACTION_PHASE);
 			    return engine->setStateCheckTurnEnd();
@@ -464,6 +466,46 @@ int StateActionPhase::handle(GameGrail* engine)
 			engine->setStateCheckTurnEnd();
 		}
 		return GE_TIMEOUT;
+	}
+}
+
+int StateActionPhase::unactional(Action *action, GameGrail* engine)
+{
+	int currentPlayerId = action->src_id();
+	PlayerEntity* player = engine->getPlayerEntity(currentPlayerId);
+	list< int > cardList = player->getHandCards();
+	vector< int > cards(cardList.begin(), cardList.end());
+	int howMany = cards.size();
+	if(howMany > 0){
+		HARM unactional;
+		unactional.cause = CAUSE_UNACTIONAL;
+		unactional.point = howMany;
+		unactional.srcID = currentPlayerId;
+		unactional.type = HARM_NONE;
+
+		engine->sendMessage(-1, MSG_ACTION, *action);
+		CardMsg show_card;
+		Coder::showCardNotice(currentPlayerId, howMany, cards, show_card);
+		engine->sendMessage(-1, MSG_CARD, show_card);
+
+		engine->setStateMoveCardsToHand(-1, DECK_PILE, currentPlayerId, DECK_HAND, howMany, vector< int >(), unactional, false);
+		engine->setStateMoveCardsNotToHand(currentPlayerId, DECK_HAND, -1, DECK_DISCARD, howMany, cards, currentPlayerId, CAUSE_UNACTIONAL, true);
+		return GE_SUCCESS;
+	}
+	else{
+		int color = player->getColor();
+		engine->sendMessage(-1, MSG_ACTION, *action);
+		engine->popGameState_if(STATE_ACTION_PHASE);
+		engine->getTeamArea()->setMorale(color, 0);
+		// 更新士气
+		GameInfo update_info;
+		if (color == RED)
+			update_info.set_red_morale(0);
+		else
+			update_info.set_blue_morale(0);
+		engine->sendMessage(-1, MSG_GAME, update_info);
+		engine->pushGameState(new StateGameOver(1 - color));
+		return GE_SUCCESS;
 	}
 }
 

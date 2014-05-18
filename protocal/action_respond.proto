@@ -57,6 +57,7 @@ enum BasicActionType {
 	ACTION_SPECIAL_SKILL = 6; //用于c->s，特殊技能
 	ACTION_ANY = 7;   // 用于s->c，标识可以使用任何行动
 	ACTION_ATTACK_MAGIC = 8; // 用于s->c，标识可以使用斩或法术行动
+	ACTION_UNACTIONAL = 9; //用于c->s，宣告无法行动
 	ACTION_NONE = 100000; // 用于c->s，放弃行动 / 用于s->c，无法行动
 }
 

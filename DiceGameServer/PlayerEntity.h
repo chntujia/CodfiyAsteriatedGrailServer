@@ -146,6 +146,7 @@ public:
 	virtual int p_reattack(int &step, int &cardID, int doerID, int targetID, bool &realCard) { return GE_SUCCESS; }
 
 	virtual int v_allow_action(Action* action, int allow, bool canGiveUp);
+	virtual int v_unactional() { return GE_SUCCESS; }
 	virtual int v_attack(int cardID, int dstID, bool realCard = true);
 	virtual int v_attacked() { return GE_SUCCESS; }
 	virtual int v_reattack(int cardID, int orignCardID, int dstID, int orignID, int rate, bool realCard = true);

@@ -288,6 +288,7 @@ private:
 	int magicSkill(Action *action, GameGrail* engine);
 	int attackSkill(Action *action, GameGrail* engine);
 	int specialSkill(Action *action, GameGrail* engine);
+	int unactional(Action *action, GameGrail* engine);
 };
 
 class StateBeforeAttack: public GrailState

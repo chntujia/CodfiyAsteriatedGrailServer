@@ -346,6 +346,10 @@ int PlayerEntity::v_allow_action(Action* action, int allow, bool canGiveUp)
 		if(claim == ACTION_ATTACK || claim == ACTION_MAGIC || claim == ACTION_SPECIAL){
 			return GE_SUCCESS;
 		}
+		//只有正常行动能宣告无法行动
+		if(claim == ACTION_UNACTIONAL){
+			return v_unactional();
+		}
 		break;
 	case ACTION_ATTACK_MAGIC:
 		if(claim == ACTION_ATTACK || claim == ACTION_MAGIC){
