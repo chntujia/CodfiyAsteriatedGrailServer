@@ -275,7 +275,8 @@ int ShiRen::JiAngKuangXiangQu2(int &step, int currentPlayerID)
 			}
 			else if(choice == 2)
 			{
-				int cardNum = (getHandCardNum()>2)? 2:getHandCardNum();
+				PlayerEntity* self = engine->getPlayerEntity(currentPlayerID);
+				int cardNum = (self->getHandCardNum()>2)? 2:self->getHandCardNum();
 				HARM qipai;
 				qipai.point = cardNum;
 				qipai.srcID = YueZhangDst;
