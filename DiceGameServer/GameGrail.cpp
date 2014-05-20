@@ -997,7 +997,7 @@ int GameGrail::setStateCurrentPlayer(int playerID)
 Deck* GameGrail::initRoles()
 {
 	Deck *roles;
-	roles = new Deck(30);
+	roles = new Deck(sizeof(SUMMON)/sizeof(int));
 	roles->push(sizeof(SUMMON)/sizeof(int), SUMMON);
 	//FIXME: disable random for debug
 	roles->randomize();

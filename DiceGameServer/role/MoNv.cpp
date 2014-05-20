@@ -113,7 +113,6 @@ int MoNv::MoNvZhiNu()
 				Coder::tapNotice(id, tap, game_info);
 				engine->sendMessage(-1, MSG_GAME, game_info);
 
-				int ret;
 				engine->setStateChangeMaxHand(id, false, false, 6, token[0]-2);
 				if(drawNum > 0)
 				{
