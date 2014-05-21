@@ -358,7 +358,7 @@ int QiDao::GuangHuiXinYang(Action* action){//[法术]光辉信仰：祈祷形态
 	}
 	if (cards.size() > 0)
 	{
-		engine->setStateMoveCardsNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cards.size(), cards, id, GUANG_HUI_XIN_YANG, true);
+		engine->setStateMoveCardsNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cards.size(), cards, id, GUANG_HUI_XIN_YANG, false);
 				
 		
 		return GE_URGENT;
