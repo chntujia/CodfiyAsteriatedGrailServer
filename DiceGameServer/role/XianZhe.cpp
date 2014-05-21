@@ -61,7 +61,7 @@ int XianZhe::v_magic_skill(Action* action)
 			return GE_INVALID_CARDID;
 		if (elementCheck(cards) != ELEMENT_ALL_DIFFERENT || gem == 0 || cards.size()-2 < action->dst_ids_size() || cards.size() < 3)
 			return GE_INVALID_ACTION;
-		
+
 		for (i = 0; i < action->dst_ids_size(); ++i)
 		{
 			dst = engine->getPlayerEntity(action->dst_ids(i));
@@ -186,11 +186,16 @@ int XianZhe::ShengJieFaDian_show(Action *action)
 
 	for (i = 0; i < action->card_ids_size(); ++i)
 		cards.push_back(action->card_ids(i));
-
 	SkillMsg skill_msg;
-	Coder::skillNotice(id, action->dst_ids(0), SHENG_JIE_FA_DIAN, skill_msg);
+	if(0 != action->dst_ids_size())
+	{
+		Coder::skillNotice(id, action->dst_ids(0), SHENG_JIE_FA_DIAN, skill_msg);
+	}
+	else
+	{
+		Coder::skillNotice(id, id, SHENG_JIE_FA_DIAN, skill_msg);
+	}
 	engine->sendMessage(-1, MSG_SKILL, skill_msg);
-
 	CardMsg show_card;
 	Coder::showCardNotice(id, cards.size(), cards, show_card);
 	engine->sendMessage(-1, MSG_CARD, show_card);
