@@ -655,6 +655,9 @@ int MoGong::MoGuanChongJi(CONTEXT_TIMELINE_1 *con)
 				int cardID;
 				cardID=respond->card_ids(0);
 				//移除盖牌
+				CardMsg show_card;
+				Coder::showCardNotice(id,1,cardID, show_card);
+				engine->sendMessage(-1, MSG_CARD, show_card);
 				engine->setStateMoveOneCardNotToHand(id, DECK_COVER, -1, DECK_DISCARD, cardID, id, MO_GUAN_CHONG_JI, true);
 				con->harm.point = con->harm.point+1;  //伤害加1
 				using_MO_GUAN_CHONG_JI = true;        //使用【魔贯冲击标记】
@@ -732,7 +735,7 @@ int MoGong::DuoChongSheJi(int playerID)
 		return GE_SUCCESS;
 	}
 	// 盖牌至少一个风系
-	bool has_wind = false;
+	/*bool has_wind = false;
 	for (list<int>::iterator it = coverCards.begin(); it != coverCards.end(); ++it)
 	{
 		CardEntity* card = getCardByID(*it);
@@ -743,7 +746,8 @@ int MoGong::DuoChongSheJi(int playerID)
 	}
 	if (has_wind) {
 		addAction(ACTION_ATTACK, DUO_CHONG_SHE_JI);
-	}
+	}*/
+	addAction(ACTION_ATTACK, DUO_CHONG_SHE_JI);
 	return GE_SUCCESS;
 }
 
