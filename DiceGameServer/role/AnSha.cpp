@@ -164,7 +164,7 @@ int AnSha::ShuiYing(CONTEXT_TIMELINE_3 *con)
 			}
 			else
 			{
-				return GE_SUCCESS;
+				return GE_INVALID_CARDID;
 			}
 		}
 		return ret;
