@@ -1879,5 +1879,8 @@ int StateGameOver::handle(GameGrail* engine)
 	}
 	//engine->terminate();
 	Sleep(5000);
+	if(++count > 10){
+		engine->terminate();
+	}
 	return GE_SUCCESS;
 }
