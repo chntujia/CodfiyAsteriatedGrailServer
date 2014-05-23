@@ -561,7 +561,7 @@ int PlayerEntity::p_additional_action(int chosen)
 			engine->popGameState();
 			engine->pushGameState(new StateActionPhase(it->allowAction, true));
 			additionalActions.erase(it);		
-			if(chosen == XUN_JIE_CI_FU){engine->setStateMoveOneCardNotToHand(id, DECK_BASIC_EFFECT, -1, DECK_DISCARD, XunJieCardID, id, XUN_JIE_CI_FU, true);}//[QiDao]ÒÆ³ýÑ¸½Ý´Í¸£
+			if(chosen == XUN_JIE_CI_FU){engine->setStateMoveOneCardNotToHand(id, DECK_BASIC_EFFECT, -1, DECK_DISCARD, XunJieCardID, id, XUN_JIE_CI_FU, true);return GE_URGENT;}//[QiDao]ÒÆ³ýÑ¸½Ý´Í¸£
 			return GE_SUCCESS;
 		}
 	}

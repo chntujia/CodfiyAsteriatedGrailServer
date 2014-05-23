@@ -136,6 +136,8 @@ int NvWuShen::p_timeline_2_hit(int &step, CONTEXT_TIMELINE_2_HIT *con)
 }
 int NvWuShen::p_additional_action(int chosen)
 {
+	int ret = GE_INVALID_STEP;
+	ret = PlayerEntity::p_additional_action(chosen);
 	if(chosen == SHEN_SHENG_ZHUI_JI)
 	{
 		network::SkillMsg skill;
@@ -146,7 +148,7 @@ int NvWuShen::p_additional_action(int chosen)
 		Coder::crossNotice(id, getCrossNum(), update_info);
 		engine->sendMessage(-1, MSG_GAME, update_info);
 	}
-	return PlayerEntity::p_additional_action(chosen);
+	return ret;
 }
 
 int NvWuShen::ShenShengZhuiJi(int playerID)
