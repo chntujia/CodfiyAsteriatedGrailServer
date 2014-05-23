@@ -276,14 +276,14 @@ int MoGong::p_timeline_2_hit(int &step, CONTEXT_TIMELINE_2_HIT *con)
 	if(con->attack.srcID != id){
 		return GE_SUCCESS;
 	}
-	int fireCount=0;
+	/*int fireCount=0;
 	list<int>::iterator it;
 	for (it = coverCards.begin(); it != coverCards.end(); ++it)
 	{
 		if(getCardByID((*it))->getElement() == ELEMENT_FIRE)
 		    fireCount++;
-	}
-	if(using_MO_GUAN_CHONG_JI && fireCount>0)
+	}*/
+	if(using_MO_GUAN_CHONG_JI)
 	{
 		if(step == STEP_INIT) {
 			step =MO_GUAN_CHONG_JI_HIT;
@@ -662,6 +662,9 @@ int MoGong::MoGuanChongJi(CONTEXT_TIMELINE_1 *con)
 				con->harm.point = con->harm.point+1;  //伤害加1
 				using_MO_GUAN_CHONG_JI = true;        //使用【魔贯冲击标记】
 				available_DUO_CHONG_SHE_JI = false;
+				network::SkillMsg skill;
+				Coder::skillNotice(id, con->attack.dstID , MO_GUAN_CHONG_JI, skill);
+				engine->sendMessage(-1, MSG_SKILL, skill);
 				return GE_URGENT;
 		   }
 		}

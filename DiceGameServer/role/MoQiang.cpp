@@ -575,7 +575,7 @@ int MoQiang::ChongYing_Effect(int playerID, int howMany, vector<int> cards, HARM
 
 int MoQiang::ChongYingAddHarm(CONTEXT_TIMELINE_2_HIT * con)
 {
-	if(!used_ChongYing || con->attack.srcID != id || using_AnZhiJieFang)
+	if(!used_ChongYing || con->attack.srcID != id || using_AnZhiJieFang || !con->attack.isActive)
 	{
 		return GE_SUCCESS;
 	}
