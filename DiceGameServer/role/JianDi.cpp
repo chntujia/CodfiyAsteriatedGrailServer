@@ -212,7 +212,7 @@ int JianDi::p_after_attack(int &step, int playerID)
 
 int JianDi::p_additional_action(int chosen)
 {
-	int ret;
+	int ret = GE_INVALID_STEP;
 	PlayerEntity::p_additional_action(chosen);
 	if(chosen == BU_QU_YI_ZHI)
 	{
