@@ -142,6 +142,8 @@ int AnSha::ShuiYing(CONTEXT_TIMELINE_3 *con)
 			Respond* respond = (Respond*) reply;
 			vector<int> cards;
 			int card_id;
+			if(respond->card_ids_size() == 0)
+				return GE_SUCCESS;
 			for (int i = 0; i < respond->card_ids_size(); ++i)
 			{
 				card_id = respond->card_ids(i);

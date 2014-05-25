@@ -207,7 +207,7 @@ public:
 		}
 	}	
 	void setStartReady(int id, bool ready){	
-		if(id<-1 || id>m_maxPlayers){
+		if(id<0 || id>=m_maxPlayers){
 			return;
 		}
 		boost::mutex::scoped_lock lock(m_mutex_for_pregame);

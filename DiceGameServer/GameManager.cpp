@@ -161,6 +161,8 @@ int GameManager::getGameList(int gameType, void* req, void* res)
 
 int GameManager::setPlayerReady(int gameType, int roomId, int playerId, void* req)
 {
+	if(playerId == GUEST)
+		return 0;
 	ReadyForGameRequest* request = (ReadyForGameRequest*)req;
 	GameMapType::iterator iter;	
 	iter = m_gameGrailMap.find(roomId);
