@@ -6,6 +6,7 @@ class MoNv: public PlayerEntity
 public:
 	MoNv(GameGrail *engine, int id, int color): PlayerEntity(engine, id, color){
 		tokenMax[0]=4;
+		cardNum = 0;
 	}
 	int	p_between_weak_and_action(int &step, int currentPlayerID);
 	bool cmdMsgParse(UserTask *session, uint16_t type, ::google::protobuf::Message *proto);
@@ -23,6 +24,7 @@ private:
 	int CangYanFaDian(Action *action);
 	int TianHuoDuanKong(Action *action);
 	int MoNvZhiNu();
+	int MoNvZhiNuDraw();
 	int GetAwayFromFire();
 	int TiShenWanOu(CONTEXT_TIMELINE_3 *con);
 	int YongShengYinShiJi(CONTEXT_LOSE_MORALE *con);
@@ -33,4 +35,6 @@ private:
 	int ToFire(int &cardID, int doerID, int targetID, bool &realCard);
 	int ToFire(int howMany, vector<int> &cards);
 	bool IsFired(int cardID);
+
+	int cardNum;
 };

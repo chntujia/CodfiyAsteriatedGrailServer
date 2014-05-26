@@ -327,8 +327,23 @@ int ShiRen::p_boot(int &step, int currentPlayerID)
 
 int ShiRen::XiWangFuGeQu()
 {
-	if(YueZhangDst != id || getGem() < 1)
+	if(getGem() < 1)
 		return GE_SUCCESS;
+	if(getHandCardNum() == 0)
+		return GE_SUCCESS;
+	bool allLight = true;
+	list<int> handcards = this->getHandCards();
+	list<int>::iterator it = handcards.begin();
+	for(; it != handcards.end(); ++it){
+		if(getCardByID(*it)->getElement() != ELEMENT_LIGHT)
+		{
+			allLight = false;
+			break;
+		}
+	}
+	if(allLight && getHandCardNum() < 4)
+		return GE_SUCCESS;
+
 	CommandRequest cmd_req;
 	Coder::askForSkill(id, XI_WANG_FU_GE_QU, cmd_req);
 	if(engine->waitForOne(id, network::MSG_CMD_REQ, cmd_req))
@@ -354,7 +369,7 @@ int ShiRen::XiWangFuGeQu()
 				setGem(gem-1);
 				Coder::energyNotice(id, gem, crystal, update_info);
 				this->removeExclusiveEffect(EX_YONG_HENG_YUE_ZHANG);
-				Coder::exclusiveNotice(id, this->getExclusiveEffect(), update_info);
+				Coder::exclusiveNotice(YueZhangDst, this->getExclusiveEffect(), update_info);
 				YueZhangDst = dstID;
 				PlayerEntity* dst = engine->getPlayerEntity(dstID);
 				dst->addExclusiveEffect(EX_YONG_HENG_YUE_ZHANG);

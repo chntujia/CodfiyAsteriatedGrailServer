@@ -76,11 +76,28 @@ int MoNv::p_boot(int &step, int currentPlayerID)
 {
 	if (currentPlayerID != id || this->getHandCardNum() > 3)
 		return GE_SUCCESS;
-	step = MO_NV_ZHI_NU;
-	int ret = MoNvZhiNu();
-	if(toNextStep(ret) || ret == GE_URGENT){
-		//全部走完后，请把step设成STEP_DONE
-		step = STEP_DONE;
+	int ret = GE_INVALID_STEP;
+	if(step == STEP_INIT)
+	{
+		step = MO_NV_ZHI_NU;
+	}
+	if(step == MO_NV_ZHI_NU)
+	{
+		ret = MoNvZhiNu();
+		if(toNextStep(ret) || ret == GE_URGENT){
+			//全部走完后，请把step设成STEP_DONE
+			step = MO_NV_ZHI_NU_DRAW;
+		}
+		if(ret!= GE_SUCCESS)
+			return ret;
+	}
+	if(step == MO_NV_ZHI_NU_DRAW)
+	{
+		ret = MoNvZhiNuDraw();
+		if(toNextStep(ret) || ret == GE_URGENT){
+			//全部走完后，请把step设成STEP_DONE
+			step = STEP_DONE;
+		}
 	}
 	return ret;
 }
@@ -100,8 +117,8 @@ int MoNv::MoNvZhiNu()
 			//发动
 			if (respond->args(0) == 1)
 			{
-				int drawNum = respond->args(1);
-				if(drawNum > 3)
+				this->cardNum = respond->args(1);
+				if(cardNum > 3)
 					return GE_INVALID_ARGUMENT;
 				network::SkillMsg skill;
 				Coder::skillNotice(id, id, MO_NV_ZHI_NU, skill);
@@ -114,16 +131,7 @@ int MoNv::MoNvZhiNu()
 				engine->sendMessage(-1, MSG_GAME, game_info);
 
 				engine->setStateChangeMaxHand(id, false, false, 6, token[0]-2);
-				if(drawNum > 0)
-				{
-					HARM harm;
-					harm.srcID = id;
-					harm.type = HARM_NONE;
-					harm.point = drawNum;
-					harm.cause = MO_NV_ZHI_NU;
-					vector<int> cards;
-					engine->setStateMoveCardsToHand(-1, DECK_PILE, id, DECK_HAND, drawNum, cards, harm, false);
-				}
+
 				return GE_URGENT;
 			}
 			return GE_SUCCESS;
@@ -133,6 +141,21 @@ int MoNv::MoNvZhiNu()
 	else{
 		return GE_TIMEOUT;
 	}
+}
+
+int MoNv::MoNvZhiNuDraw()
+{
+	if(cardNum == 0)
+		return GE_SUCCESS;
+	HARM harm;
+	harm.srcID = id;
+	harm.type = HARM_NONE;
+	harm.point = cardNum;
+	harm.cause = MO_NV_ZHI_NU;
+	vector<int> cards;
+	engine->setStateMoveCardsToHand(-1, DECK_PILE, id, DECK_HAND, cardNum, cards, harm, false);
+	cardNum = 0;
+	return GE_URGENT;
 }
 
 int MoNv::v_magic_skill(Action *action)

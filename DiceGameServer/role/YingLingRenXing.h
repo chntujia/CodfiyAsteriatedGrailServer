@@ -18,6 +18,7 @@ private:
 	int NuHuoMoWen(CONTEXT_TIMELINE_2_MISS *con);
 	int ZhanWenSuiJi(CONTEXT_TIMELINE_2_HIT *con);
 	int FuWenGaiZao();
+	int FuWenGaiZaoToken();
 	int FuWenTurnEnd();
 	int ShuangChongHuiXiang(CONTEXT_TIMELINE_3 *con);
 	int ShuangChongHuiXiangMorale(CONTEXT_LOSE_MORALE *con);
