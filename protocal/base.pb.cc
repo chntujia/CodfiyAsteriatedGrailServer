@@ -216,12 +216,14 @@ void protobuf_AssignDesc_base_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(RoomListResponse));
   RoomListResponse_RoomInfo_descriptor_ = RoomListResponse_descriptor_->nested_type(0);
-  static const int RoomListResponse_RoomInfo_offsets_[5] = {
+  static const int RoomListResponse_RoomInfo_offsets_[7] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RoomListResponse_RoomInfo, room_id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RoomListResponse_RoomInfo, room_name_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RoomListResponse_RoomInfo, max_player_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RoomListResponse_RoomInfo, now_player_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RoomListResponse_RoomInfo, role_strategy_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RoomListResponse_RoomInfo, seat_mode_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RoomListResponse_RoomInfo, role_range_),
   };
   RoomListResponse_RoomInfo_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -235,9 +237,12 @@ void protobuf_AssignDesc_base_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(RoomListResponse_RoomInfo));
   CreateRoomRequest_descriptor_ = file->message_type(8);
-  static const int CreateRoomRequest_offsets_[2] = {
+  static const int CreateRoomRequest_offsets_[5] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CreateRoomRequest, role_strategy_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CreateRoomRequest, max_player_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CreateRoomRequest, seat_mode_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CreateRoomRequest, role_range_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CreateRoomRequest, room_name_),
   };
   CreateRoomRequest_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -536,55 +541,57 @@ void protobuf_AddDesc_base_2eproto() {
     "(\t\"!\n\rLoginResponse\022\020\n\010nickname\030\001 \001(\t\"\017\n"
     "\rLogoutRequest\"\036\n\016LogoutResponse\022\014\n\004args"
     "\030\001 \003(\r\"@\n\017RoomListRequest\022-\n\rrole_strate"
-    "gy\030\001 \002(\0162\026.network.ROLE_STRATEGY\"\315\001\n\020Roo"
+    "gy\030\001 \002(\0162\026.network.ROLE_STRATEGY\"\364\001\n\020Roo"
     "mListResponse\0221\n\005rooms\030\001 \003(\0132\".network.R"
-    "oomListResponse.RoomInfo\032\205\001\n\010RoomInfo\022\017\n"
+    "oomListResponse.RoomInfo\032\254\001\n\010RoomInfo\022\017\n"
     "\007room_id\030\001 \001(\005\022\021\n\troom_name\030\002 \001(\t\022\022\n\nmax"
     "_player\030\003 \001(\005\022\022\n\nnow_player\030\004 \001(\005\022-\n\rrol"
     "e_strategy\030\005 \001(\0162\026.network.ROLE_STRATEGY"
-    "\"V\n\021CreateRoomRequest\022-\n\rrole_strategy\030\001"
+    "\022\021\n\tseat_mode\030\006 \001(\005\022\022\n\nrole_range\030\007 \001(\005\""
+    "\220\001\n\021CreateRoomRequest\022-\n\rrole_strategy\030\001"
     " \002(\0162\026.network.ROLE_STRATEGY\022\022\n\nmax_play"
-    "er\030\002 \002(\005\"5\n\020EnterRoomRequest\022\017\n\007room_id\030"
-    "\001 \002(\005\022\020\n\010password\030\002 \001(\t\"\022\n\020LeaveRoomRequ"
-    "est\"o\n\017JoinTeamRequest\022+\n\004team\030\001 \002(\0162\035.n"
-    "etwork.JoinTeamRequest.Team\"/\n\004Team\022\n\n\006T"
-    "EAM_A\020\001\022\n\n\006TEAM_B\020\000\022\017\n\013TEAM_RANDOM\020\002\"\207\001\n"
-    "\023ReadyForGameRequest\022/\n\004type\030\001 \002(\0162!.net"
-    "work.ReadyForGameRequest.Type\"\?\n\004Type\022\017\n"
-    "\013START_READY\020\001\022\026\n\022CANCEL_START_REDAY\020\002\022\016"
-    "\n\nSEAT_READY\020\003\"\356\002\n\020SinglePlayerInfo\022\n\n\002i"
-    "d\030\001 \001(\r\022\014\n\004team\030\002 \001(\r\022\017\n\007role_id\030\003 \001(\r\022\022"
-    "\n\nhand_count\030\004 \001(\r\022\022\n\nheal_count\030\005 \001(\r\022\020"
-    "\n\010ex_cards\030\006 \003(\r\022\023\n\013basic_cards\030\007 \003(\r\022\013\n"
-    "\003gem\030\010 \001(\r\022\017\n\007crystal\030\t \001(\r\022\024\n\014yellow_to"
-    "ken\030\n \001(\r\022\022\n\nblue_token\030\013 \001(\r\022\025\n\rcovered"
-    "_count\030\014 \001(\r\022\020\n\010is_knelt\030\r \001(\010\022\r\n\005hands\030"
-    "\016 \003(\r\022\020\n\010covereds\030\017 \003(\r\022\020\n\010max_hand\030\020 \001("
-    "\r\022\020\n\010nickname\030\021 \001(\t\022\024\n\005ready\030\022 \001(\010:\005fals"
-    "e\022\024\n\014delete_field\030\023 \003(\t\"\267\002\n\010GameInfo\022\017\n\007"
-    "room_id\030\001 \001(\005\022\021\n\tplayer_id\030\002 \001(\005\022\022\n\nred_"
-    "morale\030\003 \001(\r\022\023\n\013blue_morale\030\004 \001(\r\022\017\n\007red"
-    "_gem\030\005 \001(\r\022\020\n\010blue_gem\030\006 \001(\r\022\023\n\013red_crys"
-    "tal\030\007 \001(\r\022\024\n\014blue_crystal\030\010 \001(\r\022\021\n\tred_g"
-    "rail\030\t \001(\r\022\022\n\nblue_grail\030\n \001(\r\022\014\n\004pile\030\013"
-    " \001(\r\022\017\n\007discard\030\014 \001(\r\022\031\n\nis_started\030\r \001("
-    "\010:\005false\022/\n\014player_infos\030\016 \003(\0132\031.network"
-    ".SinglePlayerInfo\"\023\n\004Talk\022\013\n\003txt\030\001 \001(\t\"1"
-    "\n\005Error\022\n\n\002id\030\001 \002(\005\022\016\n\006dst_id\030\002 \002(\005\022\014\n\004a"
-    "rgs\030\003 \003(\005\"D\n\006Gossip\022!\n\004type\030\001 \001(\0162\023.netw"
-    "ork.GossipType\022\013\n\003txt\030\002 \001(\t\022\n\n\002id\030\003 \001(\r*"
-    "\225\003\n\013MessageType\022\024\n\020MSG_REGISTER_REQ\020\001\022\024\n"
-    "\020MSG_REGISTER_REP\020\002\022\021\n\rMSG_LOGIN_REQ\020\003\022\021"
-    "\n\rMSG_LOGIN_REP\020\004\022\022\n\016MSG_LOGOUT_REQ\020\005\022\022\n"
-    "\016MSG_LOGOUT_REP\020\006\022\024\n\020MSG_ROOMLIST_REQ\020\007\022"
-    "\024\n\020MSG_ROOMLIST_REP\020\010\022\027\n\023MSG_CREATE_ROOM"
-    "_REQ\020\t\022\026\n\022MSG_ENTER_ROOM_REQ\020\n\022\026\n\022MSG_EN"
-    "TER_ROOM_REP\020\013\022\026\n\022MSG_LEAVE_ROOM_REQ\020\014\022\025"
-    "\n\021MSG_JOIN_TEAM_REQ\020\r\022\026\n\022MSG_READY_GAME_"
-    "REQ\020\016\022\025\n\021MSG_SINGLE_PLAYER\020\017\022\014\n\010MSG_GAME"
-    "\020\020\022\014\n\010MSG_TALK\020\021\022\016\n\nMSG_GOSSIP\020\022\022\r\n\tMSG_"
-    "ERROR\020\023*0\n\nGossipType\022\017\n\013GOSSIP_TALK\020\001\022\021"
-    "\n\rGOSSIP_NOTICE\020\002", 2297);
+    "er\030\002 \002(\005\022\021\n\tseat_mode\030\003 \002(\005\022\022\n\nrole_rang"
+    "e\030\004 \002(\005\022\021\n\troom_name\030\005 \001(\t\"5\n\020EnterRoomR"
+    "equest\022\017\n\007room_id\030\001 \002(\005\022\020\n\010password\030\002 \001("
+    "\t\"\022\n\020LeaveRoomRequest\"o\n\017JoinTeamRequest"
+    "\022+\n\004team\030\001 \002(\0162\035.network.JoinTeamRequest"
+    ".Team\"/\n\004Team\022\n\n\006TEAM_A\020\001\022\n\n\006TEAM_B\020\000\022\017\n"
+    "\013TEAM_RANDOM\020\002\"\207\001\n\023ReadyForGameRequest\022/"
+    "\n\004type\030\001 \002(\0162!.network.ReadyForGameReque"
+    "st.Type\"\?\n\004Type\022\017\n\013START_READY\020\001\022\026\n\022CANC"
+    "EL_START_REDAY\020\002\022\016\n\nSEAT_READY\020\003\"\356\002\n\020Sin"
+    "glePlayerInfo\022\n\n\002id\030\001 \001(\r\022\014\n\004team\030\002 \001(\r\022"
+    "\017\n\007role_id\030\003 \001(\r\022\022\n\nhand_count\030\004 \001(\r\022\022\n\n"
+    "heal_count\030\005 \001(\r\022\020\n\010ex_cards\030\006 \003(\r\022\023\n\013ba"
+    "sic_cards\030\007 \003(\r\022\013\n\003gem\030\010 \001(\r\022\017\n\007crystal\030"
+    "\t \001(\r\022\024\n\014yellow_token\030\n \001(\r\022\022\n\nblue_toke"
+    "n\030\013 \001(\r\022\025\n\rcovered_count\030\014 \001(\r\022\020\n\010is_kne"
+    "lt\030\r \001(\010\022\r\n\005hands\030\016 \003(\r\022\020\n\010covereds\030\017 \003("
+    "\r\022\020\n\010max_hand\030\020 \001(\r\022\020\n\010nickname\030\021 \001(\t\022\024\n"
+    "\005ready\030\022 \001(\010:\005false\022\024\n\014delete_field\030\023 \003("
+    "\t\"\267\002\n\010GameInfo\022\017\n\007room_id\030\001 \001(\005\022\021\n\tplaye"
+    "r_id\030\002 \001(\005\022\022\n\nred_morale\030\003 \001(\r\022\023\n\013blue_m"
+    "orale\030\004 \001(\r\022\017\n\007red_gem\030\005 \001(\r\022\020\n\010blue_gem"
+    "\030\006 \001(\r\022\023\n\013red_crystal\030\007 \001(\r\022\024\n\014blue_crys"
+    "tal\030\010 \001(\r\022\021\n\tred_grail\030\t \001(\r\022\022\n\nblue_gra"
+    "il\030\n \001(\r\022\014\n\004pile\030\013 \001(\r\022\017\n\007discard\030\014 \001(\r\022"
+    "\031\n\nis_started\030\r \001(\010:\005false\022/\n\014player_inf"
+    "os\030\016 \003(\0132\031.network.SinglePlayerInfo\"\023\n\004T"
+    "alk\022\013\n\003txt\030\001 \001(\t\"1\n\005Error\022\n\n\002id\030\001 \002(\005\022\016\n"
+    "\006dst_id\030\002 \002(\005\022\014\n\004args\030\003 \003(\005\"D\n\006Gossip\022!\n"
+    "\004type\030\001 \001(\0162\023.network.GossipType\022\013\n\003txt\030"
+    "\002 \001(\t\022\n\n\002id\030\003 \001(\r*\225\003\n\013MessageType\022\024\n\020MSG"
+    "_REGISTER_REQ\020\001\022\024\n\020MSG_REGISTER_REP\020\002\022\021\n"
+    "\rMSG_LOGIN_REQ\020\003\022\021\n\rMSG_LOGIN_REP\020\004\022\022\n\016M"
+    "SG_LOGOUT_REQ\020\005\022\022\n\016MSG_LOGOUT_REP\020\006\022\024\n\020M"
+    "SG_ROOMLIST_REQ\020\007\022\024\n\020MSG_ROOMLIST_REP\020\010\022"
+    "\027\n\023MSG_CREATE_ROOM_REQ\020\t\022\026\n\022MSG_ENTER_RO"
+    "OM_REQ\020\n\022\026\n\022MSG_ENTER_ROOM_REP\020\013\022\026\n\022MSG_"
+    "LEAVE_ROOM_REQ\020\014\022\025\n\021MSG_JOIN_TEAM_REQ\020\r\022"
+    "\026\n\022MSG_READY_GAME_REQ\020\016\022\025\n\021MSG_SINGLE_PL"
+    "AYER\020\017\022\014\n\010MSG_GAME\020\020\022\014\n\010MSG_TALK\020\021\022\016\n\nMS"
+    "G_GOSSIP\020\022\022\r\n\tMSG_ERROR\020\023*0\n\nGossipType\022"
+    "\017\n\013GOSSIP_TALK\020\001\022\021\n\rGOSSIP_NOTICE\020\002", 2395);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "base.proto", &protobuf_RegisterTypes);
   RegisterRequest::default_instance_ = new RegisterRequest();
@@ -2438,6 +2445,8 @@ const int RoomListResponse_RoomInfo::kRoomNameFieldNumber;
 const int RoomListResponse_RoomInfo::kMaxPlayerFieldNumber;
 const int RoomListResponse_RoomInfo::kNowPlayerFieldNumber;
 const int RoomListResponse_RoomInfo::kRoleStrategyFieldNumber;
+const int RoomListResponse_RoomInfo::kSeatModeFieldNumber;
+const int RoomListResponse_RoomInfo::kRoleRangeFieldNumber;
 #endif  // !_MSC_VER
 
 RoomListResponse_RoomInfo::RoomListResponse_RoomInfo()
@@ -2461,6 +2470,8 @@ void RoomListResponse_RoomInfo::SharedCtor() {
   max_player_ = 0;
   now_player_ = 0;
   role_strategy_ = 1;
+  seat_mode_ = 0;
+  role_range_ = 0;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -2508,6 +2519,8 @@ void RoomListResponse_RoomInfo::Clear() {
     max_player_ = 0;
     now_player_ = 0;
     role_strategy_ = 1;
+    seat_mode_ = 0;
+    role_range_ = 0;
   }
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
   mutable_unknown_fields()->Clear();
@@ -2600,6 +2613,38 @@ bool RoomListResponse_RoomInfo::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
+        if (input->ExpectTag(48)) goto parse_seat_mode;
+        break;
+      }
+
+      // optional int32 seat_mode = 6;
+      case 6: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+         parse_seat_mode:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &seat_mode_)));
+          set_has_seat_mode();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(56)) goto parse_role_range;
+        break;
+      }
+
+      // optional int32 role_range = 7;
+      case 7: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+         parse_role_range:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &role_range_)));
+          set_has_role_range();
+        } else {
+          goto handle_uninterpreted;
+        }
         if (input->ExpectAtEnd()) return true;
         break;
       }
@@ -2652,6 +2697,16 @@ void RoomListResponse_RoomInfo::SerializeWithCachedSizes(
       5, this->role_strategy(), output);
   }
 
+  // optional int32 seat_mode = 6;
+  if (has_seat_mode()) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(6, this->seat_mode(), output);
+  }
+
+  // optional int32 role_range = 7;
+  if (has_role_range()) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(7, this->role_range(), output);
+  }
+
   if (!unknown_fields().empty()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -2689,6 +2744,16 @@ void RoomListResponse_RoomInfo::SerializeWithCachedSizes(
   if (has_role_strategy()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
       5, this->role_strategy(), target);
+  }
+
+  // optional int32 seat_mode = 6;
+  if (has_seat_mode()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(6, this->seat_mode(), target);
+  }
+
+  // optional int32 role_range = 7;
+  if (has_role_range()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(7, this->role_range(), target);
   }
 
   if (!unknown_fields().empty()) {
@@ -2736,6 +2801,20 @@ int RoomListResponse_RoomInfo::ByteSize() const {
         ::google::protobuf::internal::WireFormatLite::EnumSize(this->role_strategy());
     }
 
+    // optional int32 seat_mode = 6;
+    if (has_seat_mode()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::Int32Size(
+          this->seat_mode());
+    }
+
+    // optional int32 role_range = 7;
+    if (has_role_range()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::Int32Size(
+          this->role_range());
+    }
+
   }
   if (!unknown_fields().empty()) {
     total_size +=
@@ -2778,6 +2857,12 @@ void RoomListResponse_RoomInfo::MergeFrom(const RoomListResponse_RoomInfo& from)
     if (from.has_role_strategy()) {
       set_role_strategy(from.role_strategy());
     }
+    if (from.has_seat_mode()) {
+      set_seat_mode(from.seat_mode());
+    }
+    if (from.has_role_range()) {
+      set_role_range(from.role_range());
+    }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
 }
@@ -2806,6 +2891,8 @@ void RoomListResponse_RoomInfo::Swap(RoomListResponse_RoomInfo* other) {
     std::swap(max_player_, other->max_player_);
     std::swap(now_player_, other->now_player_);
     std::swap(role_strategy_, other->role_strategy_);
+    std::swap(seat_mode_, other->seat_mode_);
+    std::swap(role_range_, other->role_range_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);
@@ -3029,6 +3116,9 @@ void RoomListResponse::Swap(RoomListResponse* other) {
 #ifndef _MSC_VER
 const int CreateRoomRequest::kRoleStrategyFieldNumber;
 const int CreateRoomRequest::kMaxPlayerFieldNumber;
+const int CreateRoomRequest::kSeatModeFieldNumber;
+const int CreateRoomRequest::kRoleRangeFieldNumber;
+const int CreateRoomRequest::kRoomNameFieldNumber;
 #endif  // !_MSC_VER
 
 CreateRoomRequest::CreateRoomRequest()
@@ -3049,6 +3139,9 @@ void CreateRoomRequest::SharedCtor() {
   _cached_size_ = 0;
   role_strategy_ = 1;
   max_player_ = 0;
+  seat_mode_ = 0;
+  role_range_ = 0;
+  room_name_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -3057,6 +3150,9 @@ CreateRoomRequest::~CreateRoomRequest() {
 }
 
 void CreateRoomRequest::SharedDtor() {
+  if (room_name_ != &::google::protobuf::internal::kEmptyString) {
+    delete room_name_;
+  }
   if (this != default_instance_) {
   }
 }
@@ -3086,6 +3182,13 @@ void CreateRoomRequest::Clear() {
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
     role_strategy_ = 1;
     max_player_ = 0;
+    seat_mode_ = 0;
+    role_range_ = 0;
+    if (has_room_name()) {
+      if (room_name_ != &::google::protobuf::internal::kEmptyString) {
+        room_name_->clear();
+      }
+    }
   }
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
   mutable_unknown_fields()->Clear();
@@ -3129,6 +3232,55 @@ bool CreateRoomRequest::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
+        if (input->ExpectTag(24)) goto parse_seat_mode;
+        break;
+      }
+
+      // required int32 seat_mode = 3;
+      case 3: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+         parse_seat_mode:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &seat_mode_)));
+          set_has_seat_mode();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(32)) goto parse_role_range;
+        break;
+      }
+
+      // required int32 role_range = 4;
+      case 4: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+         parse_role_range:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &role_range_)));
+          set_has_role_range();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(42)) goto parse_room_name;
+        break;
+      }
+
+      // optional string room_name = 5;
+      case 5: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+         parse_room_name:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_room_name()));
+          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+            this->room_name().data(), this->room_name().length(),
+            ::google::protobuf::internal::WireFormat::PARSE);
+        } else {
+          goto handle_uninterpreted;
+        }
         if (input->ExpectAtEnd()) return true;
         break;
       }
@@ -3162,6 +3314,25 @@ void CreateRoomRequest::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteInt32(2, this->max_player(), output);
   }
 
+  // required int32 seat_mode = 3;
+  if (has_seat_mode()) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(3, this->seat_mode(), output);
+  }
+
+  // required int32 role_range = 4;
+  if (has_role_range()) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(4, this->role_range(), output);
+  }
+
+  // optional string room_name = 5;
+  if (has_room_name()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->room_name().data(), this->room_name().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    ::google::protobuf::internal::WireFormatLite::WriteString(
+      5, this->room_name(), output);
+  }
+
   if (!unknown_fields().empty()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -3179,6 +3350,26 @@ void CreateRoomRequest::SerializeWithCachedSizes(
   // required int32 max_player = 2;
   if (has_max_player()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(2, this->max_player(), target);
+  }
+
+  // required int32 seat_mode = 3;
+  if (has_seat_mode()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(3, this->seat_mode(), target);
+  }
+
+  // required int32 role_range = 4;
+  if (has_role_range()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(4, this->role_range(), target);
+  }
+
+  // optional string room_name = 5;
+  if (has_room_name()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->room_name().data(), this->room_name().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        5, this->room_name(), target);
   }
 
   if (!unknown_fields().empty()) {
@@ -3203,6 +3394,27 @@ int CreateRoomRequest::ByteSize() const {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::Int32Size(
           this->max_player());
+    }
+
+    // required int32 seat_mode = 3;
+    if (has_seat_mode()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::Int32Size(
+          this->seat_mode());
+    }
+
+    // required int32 role_range = 4;
+    if (has_role_range()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::Int32Size(
+          this->role_range());
+    }
+
+    // optional string room_name = 5;
+    if (has_room_name()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::StringSize(
+          this->room_name());
     }
 
   }
@@ -3238,6 +3450,15 @@ void CreateRoomRequest::MergeFrom(const CreateRoomRequest& from) {
     if (from.has_max_player()) {
       set_max_player(from.max_player());
     }
+    if (from.has_seat_mode()) {
+      set_seat_mode(from.seat_mode());
+    }
+    if (from.has_role_range()) {
+      set_role_range(from.role_range());
+    }
+    if (from.has_room_name()) {
+      set_room_name(from.room_name());
+    }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
 }
@@ -3255,7 +3476,7 @@ void CreateRoomRequest::CopyFrom(const CreateRoomRequest& from) {
 }
 
 bool CreateRoomRequest::IsInitialized() const {
-  if ((_has_bits_[0] & 0x00000003) != 0x00000003) return false;
+  if ((_has_bits_[0] & 0x0000000f) != 0x0000000f) return false;
 
   return true;
 }
@@ -3264,6 +3485,9 @@ void CreateRoomRequest::Swap(CreateRoomRequest* other) {
   if (other != this) {
     std::swap(role_strategy_, other->role_strategy_);
     std::swap(max_player_, other->max_player_);
+    std::swap(seat_mode_, other->seat_mode_);
+    std::swap(role_range_, other->role_range_);
+    std::swap(room_name_, other->room_name_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);

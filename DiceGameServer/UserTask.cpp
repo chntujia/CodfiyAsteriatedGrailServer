@@ -245,6 +245,7 @@ void UserTask::handleCreateRoom(int game_type, void* req)
 {
 	CreateRoomRequest* create_room = (CreateRoomRequest*)req;
 	GameConfig *config = new GameGrailConfig(create_room->max_player(), create_room->role_strategy());
+	config->setTableName(create_room->room_name());
 	GameManager::getInstance().createGame(GAME_TYPE_GRAIL, config);
 	EnterRoomRequest enter_room;
 	enter_room.set_room_id(config->getTableId());

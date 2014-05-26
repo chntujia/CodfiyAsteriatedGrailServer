@@ -150,6 +150,7 @@ int GameManager::getGameList(int gameType, void* req, void* res)
 				room->set_max_player(game->getGameMaxPlayers());
 				room->set_now_player(game->getGameNowPlayers());
 				room->set_role_strategy((ROLE_STRATEGY)game->m_roleStrategy);
+				//TODO 座次，可选角色范围
 			}
 			break;
 			

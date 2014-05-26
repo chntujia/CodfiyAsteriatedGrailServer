@@ -903,6 +903,20 @@ class RoomListResponse_RoomInfo : public ::google::protobuf::Message {
   inline ::network::ROLE_STRATEGY role_strategy() const;
   inline void set_role_strategy(::network::ROLE_STRATEGY value);
 
+  // optional int32 seat_mode = 6;
+  inline bool has_seat_mode() const;
+  inline void clear_seat_mode();
+  static const int kSeatModeFieldNumber = 6;
+  inline ::google::protobuf::int32 seat_mode() const;
+  inline void set_seat_mode(::google::protobuf::int32 value);
+
+  // optional int32 role_range = 7;
+  inline bool has_role_range() const;
+  inline void clear_role_range();
+  static const int kRoleRangeFieldNumber = 7;
+  inline ::google::protobuf::int32 role_range() const;
+  inline void set_role_range(::google::protobuf::int32 value);
+
   // @@protoc_insertion_point(class_scope:network.RoomListResponse.RoomInfo)
  private:
   inline void set_has_room_id();
@@ -915,6 +929,10 @@ class RoomListResponse_RoomInfo : public ::google::protobuf::Message {
   inline void clear_has_now_player();
   inline void set_has_role_strategy();
   inline void clear_has_role_strategy();
+  inline void set_has_seat_mode();
+  inline void clear_has_seat_mode();
+  inline void set_has_role_range();
+  inline void clear_has_role_range();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -923,9 +941,11 @@ class RoomListResponse_RoomInfo : public ::google::protobuf::Message {
   ::google::protobuf::int32 max_player_;
   ::google::protobuf::int32 now_player_;
   int role_strategy_;
+  ::google::protobuf::int32 seat_mode_;
+  ::google::protobuf::int32 role_range_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(5 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(7 + 31) / 32];
 
   friend void  protobuf_AddDesc_base_2eproto();
   friend void protobuf_AssignDesc_base_2eproto();
@@ -1091,20 +1111,55 @@ class CreateRoomRequest : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 max_player() const;
   inline void set_max_player(::google::protobuf::int32 value);
 
+  // required int32 seat_mode = 3;
+  inline bool has_seat_mode() const;
+  inline void clear_seat_mode();
+  static const int kSeatModeFieldNumber = 3;
+  inline ::google::protobuf::int32 seat_mode() const;
+  inline void set_seat_mode(::google::protobuf::int32 value);
+
+  // required int32 role_range = 4;
+  inline bool has_role_range() const;
+  inline void clear_role_range();
+  static const int kRoleRangeFieldNumber = 4;
+  inline ::google::protobuf::int32 role_range() const;
+  inline void set_role_range(::google::protobuf::int32 value);
+
+  // optional string room_name = 5;
+  inline bool has_room_name() const;
+  inline void clear_room_name();
+  static const int kRoomNameFieldNumber = 5;
+  inline const ::std::string& room_name() const;
+  inline void set_room_name(const ::std::string& value);
+  inline void set_room_name(const char* value);
+  inline void set_room_name(const char* value, size_t size);
+  inline ::std::string* mutable_room_name();
+  inline ::std::string* release_room_name();
+  inline void set_allocated_room_name(::std::string* room_name);
+
   // @@protoc_insertion_point(class_scope:network.CreateRoomRequest)
  private:
   inline void set_has_role_strategy();
   inline void clear_has_role_strategy();
   inline void set_has_max_player();
   inline void clear_has_max_player();
+  inline void set_has_seat_mode();
+  inline void clear_has_seat_mode();
+  inline void set_has_role_range();
+  inline void clear_has_role_range();
+  inline void set_has_room_name();
+  inline void clear_has_room_name();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
   int role_strategy_;
   ::google::protobuf::int32 max_player_;
+  ::google::protobuf::int32 seat_mode_;
+  ::google::protobuf::int32 role_range_;
+  ::std::string* room_name_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(5 + 31) / 32];
 
   friend void  protobuf_AddDesc_base_2eproto();
   friend void protobuf_AssignDesc_base_2eproto();
@@ -3120,6 +3175,50 @@ inline void RoomListResponse_RoomInfo::set_role_strategy(::network::ROLE_STRATEG
   role_strategy_ = value;
 }
 
+// optional int32 seat_mode = 6;
+inline bool RoomListResponse_RoomInfo::has_seat_mode() const {
+  return (_has_bits_[0] & 0x00000020u) != 0;
+}
+inline void RoomListResponse_RoomInfo::set_has_seat_mode() {
+  _has_bits_[0] |= 0x00000020u;
+}
+inline void RoomListResponse_RoomInfo::clear_has_seat_mode() {
+  _has_bits_[0] &= ~0x00000020u;
+}
+inline void RoomListResponse_RoomInfo::clear_seat_mode() {
+  seat_mode_ = 0;
+  clear_has_seat_mode();
+}
+inline ::google::protobuf::int32 RoomListResponse_RoomInfo::seat_mode() const {
+  return seat_mode_;
+}
+inline void RoomListResponse_RoomInfo::set_seat_mode(::google::protobuf::int32 value) {
+  set_has_seat_mode();
+  seat_mode_ = value;
+}
+
+// optional int32 role_range = 7;
+inline bool RoomListResponse_RoomInfo::has_role_range() const {
+  return (_has_bits_[0] & 0x00000040u) != 0;
+}
+inline void RoomListResponse_RoomInfo::set_has_role_range() {
+  _has_bits_[0] |= 0x00000040u;
+}
+inline void RoomListResponse_RoomInfo::clear_has_role_range() {
+  _has_bits_[0] &= ~0x00000040u;
+}
+inline void RoomListResponse_RoomInfo::clear_role_range() {
+  role_range_ = 0;
+  clear_has_role_range();
+}
+inline ::google::protobuf::int32 RoomListResponse_RoomInfo::role_range() const {
+  return role_range_;
+}
+inline void RoomListResponse_RoomInfo::set_role_range(::google::protobuf::int32 value) {
+  set_has_role_range();
+  role_range_ = value;
+}
+
 // -------------------------------------------------------------------
 
 // RoomListResponse
@@ -3196,6 +3295,120 @@ inline ::google::protobuf::int32 CreateRoomRequest::max_player() const {
 inline void CreateRoomRequest::set_max_player(::google::protobuf::int32 value) {
   set_has_max_player();
   max_player_ = value;
+}
+
+// required int32 seat_mode = 3;
+inline bool CreateRoomRequest::has_seat_mode() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void CreateRoomRequest::set_has_seat_mode() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void CreateRoomRequest::clear_has_seat_mode() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void CreateRoomRequest::clear_seat_mode() {
+  seat_mode_ = 0;
+  clear_has_seat_mode();
+}
+inline ::google::protobuf::int32 CreateRoomRequest::seat_mode() const {
+  return seat_mode_;
+}
+inline void CreateRoomRequest::set_seat_mode(::google::protobuf::int32 value) {
+  set_has_seat_mode();
+  seat_mode_ = value;
+}
+
+// required int32 role_range = 4;
+inline bool CreateRoomRequest::has_role_range() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void CreateRoomRequest::set_has_role_range() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void CreateRoomRequest::clear_has_role_range() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void CreateRoomRequest::clear_role_range() {
+  role_range_ = 0;
+  clear_has_role_range();
+}
+inline ::google::protobuf::int32 CreateRoomRequest::role_range() const {
+  return role_range_;
+}
+inline void CreateRoomRequest::set_role_range(::google::protobuf::int32 value) {
+  set_has_role_range();
+  role_range_ = value;
+}
+
+// optional string room_name = 5;
+inline bool CreateRoomRequest::has_room_name() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void CreateRoomRequest::set_has_room_name() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void CreateRoomRequest::clear_has_room_name() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void CreateRoomRequest::clear_room_name() {
+  if (room_name_ != &::google::protobuf::internal::kEmptyString) {
+    room_name_->clear();
+  }
+  clear_has_room_name();
+}
+inline const ::std::string& CreateRoomRequest::room_name() const {
+  return *room_name_;
+}
+inline void CreateRoomRequest::set_room_name(const ::std::string& value) {
+  set_has_room_name();
+  if (room_name_ == &::google::protobuf::internal::kEmptyString) {
+    room_name_ = new ::std::string;
+  }
+  room_name_->assign(value);
+}
+inline void CreateRoomRequest::set_room_name(const char* value) {
+  set_has_room_name();
+  if (room_name_ == &::google::protobuf::internal::kEmptyString) {
+    room_name_ = new ::std::string;
+  }
+  room_name_->assign(value);
+}
+inline void CreateRoomRequest::set_room_name(const char* value, size_t size) {
+  set_has_room_name();
+  if (room_name_ == &::google::protobuf::internal::kEmptyString) {
+    room_name_ = new ::std::string;
+  }
+  room_name_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* CreateRoomRequest::mutable_room_name() {
+  set_has_room_name();
+  if (room_name_ == &::google::protobuf::internal::kEmptyString) {
+    room_name_ = new ::std::string;
+  }
+  return room_name_;
+}
+inline ::std::string* CreateRoomRequest::release_room_name() {
+  clear_has_room_name();
+  if (room_name_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = room_name_;
+    room_name_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void CreateRoomRequest::set_allocated_room_name(::std::string* room_name) {
+  if (room_name_ != &::google::protobuf::internal::kEmptyString) {
+    delete room_name_;
+  }
+  if (room_name) {
+    set_has_room_name();
+    room_name_ = room_name;
+  } else {
+    clear_has_room_name();
+    room_name_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
 }
 
 // -------------------------------------------------------------------

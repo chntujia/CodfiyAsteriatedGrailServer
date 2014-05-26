@@ -71,6 +71,8 @@ message RoomListResponse {
 		optional int32 max_player = 3;
 		optional int32 now_player = 4;
 		optional ROLE_STRATEGY role_strategy = 5;
+		optional int32 seat_mode = 6;
+		optional int32 role_range = 7;
 	}
 	repeated RoomInfo rooms = 1;
 }
@@ -79,6 +81,9 @@ message RoomListResponse {
 message CreateRoomRequest {
 	required ROLE_STRATEGY role_strategy = 1;
 	required int32 max_player = 2;
+	required int32 seat_mode = 3;
+	required int32 role_range = 4;
+	optional string room_name = 5;
 }
 
 // c -> s 加入房间

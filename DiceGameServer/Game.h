@@ -11,6 +11,7 @@ private:
 	string m_tableName;
 
 public:
+	
 	GameConfig(int tableId=0)
 	{
 		m_tableId = tableId;
@@ -18,6 +19,7 @@ public:
 	}
 	~GameConfig(){}
 	void setTableId(int id) { m_tableId = id;} 
+	void setTableName(string name){m_tableName = name;}
 	int getTableId() const { return m_tableId; }
 	string getTableName() const { return m_tableName; }
 };
