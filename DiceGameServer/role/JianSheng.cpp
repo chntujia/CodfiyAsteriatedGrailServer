@@ -166,7 +166,7 @@ int JianSheng::LieFengJi(CONTEXT_TIMELINE_1 *con)
 	}
 	PlayerEntity* dst = engine->getPlayerEntity(dstID);
 	//目标有没盾
-	if(GE_SUCCESS != dst->checkBasicEffectByName(NAME_SHIELD) && GE_SUCCESS != checkBasicEffectBySpeciality(TIAN_SHI_ZHI_QIANG)){
+	if(GE_SUCCESS != dst->checkBasicEffectByName(NAME_SHIELD) && GE_SUCCESS != dst->checkBasicEffectBySpeciality(TIAN_SHI_ZHI_QIANG)){
 		return GE_SUCCESS;
 	}
 	//满足发动条件，询问客户端是否发动
