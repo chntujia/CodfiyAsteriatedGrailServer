@@ -263,6 +263,10 @@ int TianShi::FengZhiJieJing(Action *action)
 	Coder::skillNotice(id, action->dst_ids(0), FENG_ZHI_JIE_JING, skill_msg);
 	engine->sendMessage(-1, MSG_SKILL, skill_msg);
 
+	CardMsg show_card;
+	Coder::showCardNotice(id, 1, card_id, show_card);
+	engine->sendMessage(-1, MSG_CARD, show_card);
+
 	engine->pushGameState(new StateBasicEffectChange(dstID, CHANGE_REMOVE, effect_card_id, id, FENG_ZHI_JIE_JING));
 
 	engine->setStateMoveOneCardNotToHand(id, DECK_HAND, -1, DECK_DISCARD, card_id, id, FENG_ZHI_JIE_JING, true);
