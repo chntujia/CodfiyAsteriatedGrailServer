@@ -171,6 +171,12 @@ int MoJian::p_timeline_2_hit(int &step, CONTEXT_TIMELINE_2_HIT * con)
 	return ret;
 }
 
+int MoJian::p_timeline_2_miss(int &step, CONTEXT_TIMELINE_2_MISS *con)
+{
+	using_HeiAnZhenChan = false;
+	return GE_SUCCESS;
+}
+
 //所有额外行动，都是集中到一个地方询问，而不是每个都问一遍
 int MoJian::p_after_attack(int &step, int playerID)
 {

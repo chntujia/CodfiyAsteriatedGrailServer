@@ -13,6 +13,7 @@ public:
 	 int p_magic_skill(int &step, Action* action);
 	 int p_timeline_1(int &step, CONTEXT_TIMELINE_1 *con);
 	 int p_timeline_2_hit(int &step, CONTEXT_TIMELINE_2_HIT * con);
+	 int p_timeline_2_miss(int &step, CONTEXT_TIMELINE_2_MISS *con);
 	 int p_after_attack(int &step, int playerID);
 	 int v_attack(int cardID, int dstID, bool realCard);
 	 int v_additional_action(int chosen);
