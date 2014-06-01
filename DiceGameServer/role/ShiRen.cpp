@@ -69,10 +69,7 @@ bool ShiRen::cmdMsgParse(UserTask* session, uint16_t type, ::google::protobuf::M
 int ShiRen::p_before_turn_begin(int &step, int currentPlayerID)
 {
 	for(int i=0; i<6; i++)
-		for(int j=0; j<6; j++)
-		{
-			ChenLunNum[i][j] = false;
-		}
+		ChenLunNum[i] = false;
 	ChenLunUsed = false;
 	BaoFengUsed = false;
 	YueZhangReturn = false;
