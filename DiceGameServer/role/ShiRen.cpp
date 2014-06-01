@@ -257,7 +257,8 @@ int ShiRen::JiAngKuangXiangQu2(int &step, int currentPlayerID)
 				harm.srcID = YueZhangDst;
 				harm.type = HARM_MAGIC;
 				//先进后出，所以逆出牌顺序压
-				PlayerEntity* start = this->getPre();
+				PlayerEntity* self = engine->getPlayerEntity(YueZhangDst);
+				PlayerEntity* start = self->getPre();
 				PlayerEntity* it = start;
 				do{
 					if(it->getID() == dst1ID || it->getID() == dst2ID){
