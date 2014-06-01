@@ -346,6 +346,8 @@ int ShiRen::XiWangFuGeQu()
 
 	CommandRequest cmd_req;
 	Coder::askForSkill(id, XI_WANG_FU_GE_QU, cmd_req);
+	Command *cmd = (Command*)(&cmd_req.commands(cmd_req.commands_size()-1));
+	cmd->add_args(YueZhangDst);
 	if(engine->waitForOne(id, network::MSG_CMD_REQ, cmd_req))
 	{
 		void* reply;
@@ -671,10 +673,10 @@ int ShiRen::ChenLunXieZouQu(CONTEXT_HARM_END *con)
 		return GE_SUCCESS;
 	if(ChenLunUsed)
 		return GE_SUCCESS;
-	ChenLunNum[srcID][dstID] = true;
+	ChenLunNum[dstID] = true;
 	int ChenLunFlag = 0;
 	for(int i=0; i<6; i++)
-		if(ChenLunNum[srcID][i])
+		if(ChenLunNum[i])
 			ChenLunFlag ++;
 	if(ChenLunFlag<2)
 		return GE_SUCCESS;

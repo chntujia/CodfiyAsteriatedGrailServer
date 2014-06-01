@@ -29,6 +29,6 @@ private:
 	int YueZhangDst;
 	bool YueZhangReturn;
 	bool BaoFengUsed;
-	bool ChenLunNum[6][6];
+	bool ChenLunNum[6];
 	bool ChenLunUsed;
 };
