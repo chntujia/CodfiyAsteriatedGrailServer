@@ -269,7 +269,7 @@ int DieWu::DuFen(CONTEXT_TIMELINE_5 *con)
 					return GE_INVALID_CARDID;
 				}
 				network::SkillMsg skill;
-				Coder::skillNotice(id, id,DU_FEN, skill);
+				Coder::skillNotice(id, con->dstID,DU_FEN, skill);
 				engine->sendMessage(-1, MSG_SKILL, skill);
 				//ÒÆ³ý¸ÇÅÆ
 				engine->setStateMoveOneCardNotToHand(id,DECK_COVER, -1, DECK_DISCARD, cardID, id, DU_FEN, false);
