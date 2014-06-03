@@ -327,21 +327,27 @@ int ShiRen::XiWangFuGeQu()
 {
 	if(getGem() < 1)
 		return GE_SUCCESS;
-	if(getHandCardNum() == 0)
-		return GE_SUCCESS;
-	bool allLight = true;
-	list<int> handcards = this->getHandCards();
-	list<int>::iterator it = handcards.begin();
-	for(; it != handcards.end(); ++it){
-		if(getCardByID(*it)->getElement() != ELEMENT_LIGHT)
-		{
-			allLight = false;
+	do 
+	{
+		if(getToken(0)>1)
 			break;
+		if(getHandCardNum() == 0)
+			return GE_SUCCESS;
+		bool allLight = true;
+		list<int> handcards = this->getHandCards();
+		list<int>::iterator it = handcards.begin();
+		for(; it != handcards.end(); ++it){
+			if(getCardByID(*it)->getElement() != ELEMENT_LIGHT)
+			{
+				allLight = false;
+				break;
+			}
 		}
-	}
-	if(allLight && getHandCardNum() < 4)
-		return GE_SUCCESS;
+		if(allLight && getHandCardNum() < 4)
+			return GE_SUCCESS;
 
+	} while (false);
+	
 	CommandRequest cmd_req;
 	Coder::askForSkill(id, XI_WANG_FU_GE_QU, cmd_req);
 	Command *cmd = (Command*)(&cmd_req.commands(cmd_req.commands_size()-1));
