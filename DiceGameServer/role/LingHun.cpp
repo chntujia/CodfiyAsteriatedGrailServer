@@ -496,7 +496,7 @@ int LingHun::LingHunLianJie(){
 
 	//零手牌、黄色灵魂小于3点时，禁止启动，因为启动后无法行动
 	int cardNum = this->getHandCardNum();
-	if(cardNum == 0 && token[0] < 3){
+	if(cardNum == 0 && token[0] < 3 || engine->getGameMaxPlayers() == 4){
 		return GE_SUCCESS;
 	}
 
