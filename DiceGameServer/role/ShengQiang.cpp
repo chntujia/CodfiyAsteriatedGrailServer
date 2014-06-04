@@ -79,6 +79,8 @@ int ShengQiang::p_timeline_2_hit(int &step, CONTEXT_TIMELINE_2_HIT *con)
 			step = STEP_DONE;
 		}
 	}
+	used_TianQiang = false;
+	used_DiQiang = false;
 	return ret;
 }
 int ShengQiang::v_magic_skill(Action *action)
