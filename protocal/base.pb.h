@@ -537,10 +537,17 @@ class LoginResponse : public ::google::protobuf::Message {
 
   // accessors -------------------------------------------------------
 
-  // optional string nickname = 1;
+  // required int32 state = 1;
+  inline bool has_state() const;
+  inline void clear_state();
+  static const int kStateFieldNumber = 1;
+  inline ::google::protobuf::int32 state() const;
+  inline void set_state(::google::protobuf::int32 value);
+
+  // optional string nickname = 2;
   inline bool has_nickname() const;
   inline void clear_nickname();
-  static const int kNicknameFieldNumber = 1;
+  static const int kNicknameFieldNumber = 2;
   inline const ::std::string& nickname() const;
   inline void set_nickname(const ::std::string& value);
   inline void set_nickname(const char* value);
@@ -551,15 +558,18 @@ class LoginResponse : public ::google::protobuf::Message {
 
   // @@protoc_insertion_point(class_scope:network.LoginResponse)
  private:
+  inline void set_has_state();
+  inline void clear_has_state();
   inline void set_has_nickname();
   inline void clear_has_nickname();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
   ::std::string* nickname_;
+  ::google::protobuf::int32 state_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(1 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
 
   friend void  protobuf_AddDesc_base_2eproto();
   friend void protobuf_AssignDesc_base_2eproto();
@@ -2882,15 +2892,37 @@ inline void LoginRequest::set_allocated_user_password(::std::string* user_passwo
 
 // LoginResponse
 
-// optional string nickname = 1;
-inline bool LoginResponse::has_nickname() const {
+// required int32 state = 1;
+inline bool LoginResponse::has_state() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
-inline void LoginResponse::set_has_nickname() {
+inline void LoginResponse::set_has_state() {
   _has_bits_[0] |= 0x00000001u;
 }
-inline void LoginResponse::clear_has_nickname() {
+inline void LoginResponse::clear_has_state() {
   _has_bits_[0] &= ~0x00000001u;
+}
+inline void LoginResponse::clear_state() {
+  state_ = 0;
+  clear_has_state();
+}
+inline ::google::protobuf::int32 LoginResponse::state() const {
+  return state_;
+}
+inline void LoginResponse::set_state(::google::protobuf::int32 value) {
+  set_has_state();
+  state_ = value;
+}
+
+// optional string nickname = 2;
+inline bool LoginResponse::has_nickname() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void LoginResponse::set_has_nickname() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void LoginResponse::clear_has_nickname() {
+  _has_bits_[0] &= ~0x00000002u;
 }
 inline void LoginResponse::clear_nickname() {
   if (nickname_ != &::google::protobuf::internal::kEmptyString) {

@@ -46,7 +46,8 @@ message LoginRequest {
 
 // s -> c µÇÂ½ÏìÓ¦
 message LoginResponse {
-	optional string nickname = 1;
+    required int32 state = 1;
+	optional string nickname = 2;
 }
 
 // c -> s µÇ³öÇëÇó
