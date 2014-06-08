@@ -475,7 +475,7 @@ int DieWu::DaoNiZhiDie(Action *action)
 	}
 	if (cards.size() > 0)
 	{
-		engine->setStateMoveCardsNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cards.size(),cards, id,DAO_NI_ZHI_DIE,true);
+		engine->setStateMoveCardsNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cards.size(),cards, id,DAO_NI_ZHI_DIE,false);
 	}
 
 	if(getCrystal()>0)
