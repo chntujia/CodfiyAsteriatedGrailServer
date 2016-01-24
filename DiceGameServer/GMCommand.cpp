@@ -64,6 +64,33 @@ void setCross(GameGrail* engine, PlayerEntity* player, vector<string>& ss)
 	engine->sendMessage(-1, MSG_GAME, game_info);
 }
 
+void setTeamArea(GameGrail* engine, PlayerEntity* player, vector<string>& ss)
+{
+	if(ss.size()<5) 
+		return;
+	int color = atoi(ss[1].c_str());
+	int grail = atoi(ss[2].c_str());
+	int gem = atoi(ss[3].c_str());
+	int crystal = atoi(ss[4].c_str());
+	TeamArea* m_teamArea = engine->getTeamArea();
+	m_teamArea->setGem(color, gem);
+	m_teamArea->setCrystal(color, crystal);
+	m_teamArea->setCup(color, grail);
+
+	GameInfo update_info;
+	if (color == RED){
+		update_info.set_red_gem(m_teamArea->getGem(color));
+		update_info.set_red_crystal(m_teamArea->getCrystal(color));
+		update_info.set_red_grail(m_teamArea->getCup(color));
+	}
+	else{
+		update_info.set_blue_gem(m_teamArea->getGem(color));
+		update_info.set_blue_crystal(m_teamArea->getCrystal(color));
+		update_info.set_blue_grail(m_teamArea->getCup(color));
+	}
+	engine->sendMessage(-1, MSG_GAME, update_info);
+}
+
 /*
 录入gm指令，将gm指令放入cmd_mapping中，key为gm指令格式的字符串，value是处理函数的指针
 */
@@ -73,6 +100,7 @@ void initialize_gm_command()
 	cmd_mapping["!`card"] = addCard;                // 添加手牌
 	cmd_mapping["!`cross"] = setCross;              // 添加治疗
 	cmd_mapping["!`covercard"] = addCoverCard;      // 添加盖牌
+	cmd_mapping["!`team"] = setTeamArea;            // 改变战绩区
 }
 
 /*
