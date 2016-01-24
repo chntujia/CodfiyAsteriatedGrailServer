@@ -54,6 +54,7 @@ public:
 	void OnCheck();
 	void sendProto(uint16_t proto_type, google::protobuf::Message& proto);
 private:
+	void handleLogIn(int game_type, void* request);
 	void handleCreateRoom(int game_type, void* request);
 	void handleEnterRoom(int game_type, void* request);
 	void handleLeaveRoom(int game_type, void* request);

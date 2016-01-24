@@ -6,6 +6,7 @@
 #include "role\QiDao.h"
 #include "role\ShiRen.h"
 #include <boost/algorithm/string.hpp>
+#include "DBServices.h"
 
 uint32_t UserTask::m_sIDSeq = 10000;
 using namespace network;
@@ -16,12 +17,6 @@ void UserTask::Start()
 	m_iTmpId = ++m_sIDSeq;
 
 	UserSessionManager::getInstance().AddUserById(m_iTmpId, this);
-	//FIXME temporarily disable login
-	m_bAuthen = true;
-	// TODO : check username & password here
-	m_userId = TOQSTR(m_iTmpId);
-	m_nickname = m_userId;
-	UserSessionManager::getInstance().AddUser(m_userId, this);
 }
 
 void UserTask::OnQuit()
@@ -37,17 +32,15 @@ void UserTask::OnQuit()
 
 void UserTask::OnCheck()
 {
-	/*if (!m_bAuthen) 
-	{
-		ztLoggerWrite(ZONE,e_Debug, "OnCheck[%s]: don't authen, kicked off ", m_userId.c_str());
-		SetQuit();
-		return;
-	}*/
-
 	time_t tmNow  = time(NULL);
-	int temp = ServerConfig::getInstance().m_iCheckTime;
-	if (tmNow - m_activeTime > ServerConfig::getInstance().m_iCheckTime)
+	if (tmNow - m_activeTime > m_iCheckTime)
 	{
+		if (!m_bAuthen) 
+		{
+			ztLoggerWrite(ZONE,e_Debug, "OnCheck[%s]: don't authen, kicked off ", m_userId.c_str());
+			SetQuit();
+			return;
+		}
 		ztLoggerWrite(ZONE,e_Debug, "OnCheck[%s]: heartbeat timeout,be kicked off ", m_userId.c_str());
 		GameGrail* game = getGame();
 		if(game){
@@ -99,19 +92,13 @@ bool UserTask::cmdMsgParse(const char *pstrMsg, const uint32_t nCmdLen)
 		ztLoggerWrite(ZONE, e_Debug, "[%s]Receive: %s,\n size:%d, type:%d,\n To proto: %s", m_userId.c_str(), pstrMsg, *size, type, proto->DebugString().c_str());
 #endif
 
-		int ret;
-		int tableID;
 		m_activeTime = time(NULL);
 		
 		switch(type)
 		{
 		case MSG_LOGIN_REQ:
 			{
-				//FIXME temporarily disable login
-				m_bAuthen = true;
-				// TODO : check username & password here
-				m_userId = TOQSTR(m_iTmpId);
-				UserSessionManager::getInstance().AddUser(m_userId, this);
+				handleLogIn(GAME_TYPE_GRAIL, proto);				
 				delete proto;
 				break;
 			}
@@ -238,6 +225,31 @@ bool UserTask::cmdMsgParse(const char *pstrMsg, const uint32_t nCmdLen)
 		return false;
 	}catch(std::exception const& e) {
 		ztLoggerWrite(ZONE, e_Error, "[%s]UserTask throws error: %s, Received Message: %s",	m_userId.c_str(), e.what(), pstrMsg);
+	}
+}
+
+void UserTask::handleLogIn(int game_type, void* req)
+{
+	LoginRequest* login = (LoginRequest*)req;
+	LoginResponse response;
+	if(login->asguest()){
+		m_bAuthen = true;
+		m_userId = TOQSTR(m_iTmpId);
+		m_nickname = m_userId;
+		UserSessionManager::getInstance().AddUser(m_userId, this);
+		Coder::logInResponse(STATUS_NORMAL, m_nickname, response);
+		sendProto(MSG_LOGIN_REP, response);
+	}
+	else{
+		struct UserAccount account = DBInstance.userAccountDAO->query(login->user_id(), login->user_password());
+		if(account.status == STATUS_NORMAL){
+			m_bAuthen = true;
+			m_userId = account.username;
+			m_nickname = account.nickname;
+			UserSessionManager::getInstance().AddUser(m_userId, this);
+		}
+		Coder::logInResponse(account.status, account.nickname, response);
+		sendProto(MSG_LOGIN_REP, response);
 	}
 }
 

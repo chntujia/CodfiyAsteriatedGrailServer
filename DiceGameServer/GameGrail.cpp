@@ -925,6 +925,7 @@ int GameGrail::playerEnterIntoTable(string userId, int &playerId)
 		if(it->second->getUserId() == userId)
 		{
 			playerId = it->first;
+			it->second->setConnect(true);
 			return SIT_TABLE_SUCCESS;
 		}
 	}
@@ -1049,24 +1050,23 @@ void GameGrail::initPlayerEntities()
 	roleInited = true;
 }
 
-void GameGrail::onPlayerEnter(int playerID)
+void GameGrail::onPlayerEnter(int playerId)
 {
 	if(!roleInited)
 	{
 		GameInfo room_info;
 		Coder::roomInfo(m_playerContexts, teamA, teamB, room_info);
-		sendMessageExcept(playerID, MSG_GAME, room_info);
+		sendMessageExcept(playerId, MSG_GAME, room_info);
 
 		room_info.set_room_id(m_gameId);
-		room_info.set_player_id(playerID);
-		sendMessage(playerID, MSG_GAME, room_info);
+		room_info.set_player_id(playerId);
+		sendMessage(playerId, MSG_GAME, room_info);
 	}
 	else{
 		//FIXME: reconnect notice?
 		GameInfo game_info;
-		toProto(game_info);
-		game_info.set_player_id(playerID);
-		sendMessage(playerID, MSG_GAME, game_info);
+		toProtoAs(playerId, game_info);
+		sendMessage(playerId, MSG_GAME, game_info);
 	}
 }
 
@@ -1085,8 +1085,7 @@ void GameGrail::onGuestEnter(string userID)
 	}
 	else{
 		GameInfo game_info;
-		toProto(game_info);
-		game_info.set_player_id(GUEST);
+		toProtoAs(GUEST, game_info);
 		session->sendProto(MSG_GAME, game_info);
 	}
 }
@@ -1131,7 +1130,7 @@ void GameGrail::onUserLeave(string userID)
 	terminate();
 }
 
-void GameGrail::toProto(GameInfo& game_info)
+void GameGrail::toProtoAs(int playerId, GameInfo& game_info)
 {
 	game_info.set_room_id(m_gameId);
 	game_info.set_blue_crystal(m_teamArea->getCrystal(0));
@@ -1148,14 +1147,26 @@ void GameGrail::toProto(GameInfo& game_info)
 	game_info.set_discard(discard->get_size());
 	game_info.set_is_started(true);
 
+	game_info.set_player_id(playerId);
+
 	for(int i = 0; i < m_maxPlayers; i++)
 	{
 		SinglePlayerInfo* player_info = game_info.add_player_infos();
 		//°´×ù´ÎË³Ðò
-		int playerId = room_info.player_infos(i).id();
-		PlayerEntity* player = getPlayerEntity(playerId);
+		int id = room_info.player_infos(i).id();
+		PlayerEntity* player = getPlayerEntity(id);
 		player->toProto(player_info);
-		player_info->set_nickname(m_playerContexts[playerId]->getName());
+		player_info->set_nickname(m_playerContexts[id]->getName());
+		if(id == playerId){
+			list <int> hands = player->getHandCards();
+			for(list<int>::iterator it = hands.begin(); it != hands.end(); it++){
+				player_info->add_hands(*it);
+			}
+			list <int> covers = player->getCoverCards();
+			for(list<int>::iterator it = covers.begin(); it != covers.end(); it++){
+				player_info->add_covereds(*it);
+			}
+		}
 	}
 
 }

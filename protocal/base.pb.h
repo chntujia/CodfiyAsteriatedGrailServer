@@ -435,10 +435,17 @@ class LoginRequest : public ::google::protobuf::Message {
 
   // accessors -------------------------------------------------------
 
-  // optional string user_id = 1;
+  // required bool asGuest = 1;
+  inline bool has_asguest() const;
+  inline void clear_asguest();
+  static const int kAsGuestFieldNumber = 1;
+  inline bool asguest() const;
+  inline void set_asguest(bool value);
+
+  // optional string user_id = 2;
   inline bool has_user_id() const;
   inline void clear_user_id();
-  static const int kUserIdFieldNumber = 1;
+  static const int kUserIdFieldNumber = 2;
   inline const ::std::string& user_id() const;
   inline void set_user_id(const ::std::string& value);
   inline void set_user_id(const char* value);
@@ -447,10 +454,10 @@ class LoginRequest : public ::google::protobuf::Message {
   inline ::std::string* release_user_id();
   inline void set_allocated_user_id(::std::string* user_id);
 
-  // optional string user_password = 2;
+  // optional string user_password = 3;
   inline bool has_user_password() const;
   inline void clear_user_password();
-  static const int kUserPasswordFieldNumber = 2;
+  static const int kUserPasswordFieldNumber = 3;
   inline const ::std::string& user_password() const;
   inline void set_user_password(const ::std::string& value);
   inline void set_user_password(const char* value);
@@ -461,6 +468,8 @@ class LoginRequest : public ::google::protobuf::Message {
 
   // @@protoc_insertion_point(class_scope:network.LoginRequest)
  private:
+  inline void set_has_asguest();
+  inline void clear_has_asguest();
   inline void set_has_user_id();
   inline void clear_has_user_id();
   inline void set_has_user_password();
@@ -470,9 +479,10 @@ class LoginRequest : public ::google::protobuf::Message {
 
   ::std::string* user_id_;
   ::std::string* user_password_;
+  bool asguest_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(3 + 31) / 32];
 
   friend void  protobuf_AddDesc_base_2eproto();
   friend void protobuf_AssignDesc_base_2eproto();
@@ -2748,15 +2758,37 @@ inline void RegisterResponse::set_state(::google::protobuf::uint32 value) {
 
 // LoginRequest
 
-// optional string user_id = 1;
-inline bool LoginRequest::has_user_id() const {
+// required bool asGuest = 1;
+inline bool LoginRequest::has_asguest() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
-inline void LoginRequest::set_has_user_id() {
+inline void LoginRequest::set_has_asguest() {
   _has_bits_[0] |= 0x00000001u;
 }
-inline void LoginRequest::clear_has_user_id() {
+inline void LoginRequest::clear_has_asguest() {
   _has_bits_[0] &= ~0x00000001u;
+}
+inline void LoginRequest::clear_asguest() {
+  asguest_ = false;
+  clear_has_asguest();
+}
+inline bool LoginRequest::asguest() const {
+  return asguest_;
+}
+inline void LoginRequest::set_asguest(bool value) {
+  set_has_asguest();
+  asguest_ = value;
+}
+
+// optional string user_id = 2;
+inline bool LoginRequest::has_user_id() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void LoginRequest::set_has_user_id() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void LoginRequest::clear_has_user_id() {
+  _has_bits_[0] &= ~0x00000002u;
 }
 inline void LoginRequest::clear_user_id() {
   if (user_id_ != &::google::protobuf::internal::kEmptyString) {
@@ -2818,15 +2850,15 @@ inline void LoginRequest::set_allocated_user_id(::std::string* user_id) {
   }
 }
 
-// optional string user_password = 2;
+// optional string user_password = 3;
 inline bool LoginRequest::has_user_password() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
+  return (_has_bits_[0] & 0x00000004u) != 0;
 }
 inline void LoginRequest::set_has_user_password() {
-  _has_bits_[0] |= 0x00000002u;
+  _has_bits_[0] |= 0x00000004u;
 }
 inline void LoginRequest::clear_has_user_password() {
-  _has_bits_[0] &= ~0x00000002u;
+  _has_bits_[0] &= ~0x00000004u;
 }
 inline void LoginRequest::clear_user_password() {
   if (user_password_ != &::google::protobuf::internal::kEmptyString) {

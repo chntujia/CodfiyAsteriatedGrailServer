@@ -40,8 +40,9 @@ message RegisterResponse {
 
 // c -> s µÇÂ½ÇëÇó
 message LoginRequest {
-    optional string user_id = 1;
-    optional string user_password = 2;
+    required bool asGuest = 1;
+    optional string user_id = 2;
+    optional string user_password = 3;
 }
 
 // s -> c µÇÂ½ÏìÓ¦

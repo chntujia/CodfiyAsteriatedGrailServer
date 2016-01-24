@@ -126,7 +126,8 @@ void protobuf_AssignDesc_base_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(RegisterResponse));
   LoginRequest_descriptor_ = file->message_type(2);
-  static const int LoginRequest_offsets_[2] = {
+  static const int LoginRequest_offsets_[3] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(LoginRequest, asguest_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(LoginRequest, user_id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(LoginRequest, user_password_),
   };
@@ -537,63 +538,63 @@ void protobuf_AddDesc_base_2eproto() {
     "oto\"j\n\017RegisterRequest\022\017\n\007user_id\030\001 \001(\t\022"
     "\025\n\ruser_password\030\002 \001(\t\022\020\n\010nickname\030\003 \001(\t"
     "\022\016\n\006mobile\030\004 \001(\t\022\r\n\005email\030\005 \001(\t\"!\n\020Regis"
-    "terResponse\022\r\n\005state\030\001 \001(\r\"6\n\014LoginReque"
-    "st\022\017\n\007user_id\030\001 \001(\t\022\025\n\ruser_password\030\002 \001"
-    "(\t\"0\n\rLoginResponse\022\r\n\005state\030\001 \002(\005\022\020\n\010ni"
-    "ckname\030\002 \001(\t\"\017\n\rLogoutRequest\"\036\n\016LogoutR"
-    "esponse\022\014\n\004args\030\001 \003(\r\"@\n\017RoomListRequest"
-    "\022-\n\rrole_strategy\030\001 \002(\0162\026.network.ROLE_S"
-    "TRATEGY\"\364\001\n\020RoomListResponse\0221\n\005rooms\030\001 "
-    "\003(\0132\".network.RoomListResponse.RoomInfo\032"
-    "\254\001\n\010RoomInfo\022\017\n\007room_id\030\001 \001(\005\022\021\n\troom_na"
-    "me\030\002 \001(\t\022\022\n\nmax_player\030\003 \001(\005\022\022\n\nnow_play"
-    "er\030\004 \001(\005\022-\n\rrole_strategy\030\005 \001(\0162\026.networ"
-    "k.ROLE_STRATEGY\022\021\n\tseat_mode\030\006 \001(\005\022\022\n\nro"
-    "le_range\030\007 \001(\005\"\220\001\n\021CreateRoomRequest\022-\n\r"
-    "role_strategy\030\001 \002(\0162\026.network.ROLE_STRAT"
-    "EGY\022\022\n\nmax_player\030\002 \002(\005\022\021\n\tseat_mode\030\003 \002"
-    "(\005\022\022\n\nrole_range\030\004 \002(\005\022\021\n\troom_name\030\005 \001("
-    "\t\"5\n\020EnterRoomRequest\022\017\n\007room_id\030\001 \002(\005\022\020"
-    "\n\010password\030\002 \001(\t\"\022\n\020LeaveRoomRequest\"o\n\017"
-    "JoinTeamRequest\022+\n\004team\030\001 \002(\0162\035.network."
-    "JoinTeamRequest.Team\"/\n\004Team\022\n\n\006TEAM_A\020\001"
-    "\022\n\n\006TEAM_B\020\000\022\017\n\013TEAM_RANDOM\020\002\"\207\001\n\023ReadyF"
-    "orGameRequest\022/\n\004type\030\001 \002(\0162!.network.Re"
-    "adyForGameRequest.Type\"\?\n\004Type\022\017\n\013START_"
-    "READY\020\001\022\026\n\022CANCEL_START_REDAY\020\002\022\016\n\nSEAT_"
-    "READY\020\003\"\356\002\n\020SinglePlayerInfo\022\n\n\002id\030\001 \001(\r"
-    "\022\014\n\004team\030\002 \001(\r\022\017\n\007role_id\030\003 \001(\r\022\022\n\nhand_"
-    "count\030\004 \001(\r\022\022\n\nheal_count\030\005 \001(\r\022\020\n\010ex_ca"
-    "rds\030\006 \003(\r\022\023\n\013basic_cards\030\007 \003(\r\022\013\n\003gem\030\010 "
-    "\001(\r\022\017\n\007crystal\030\t \001(\r\022\024\n\014yellow_token\030\n \001"
-    "(\r\022\022\n\nblue_token\030\013 \001(\r\022\025\n\rcovered_count\030"
-    "\014 \001(\r\022\020\n\010is_knelt\030\r \001(\010\022\r\n\005hands\030\016 \003(\r\022\020"
-    "\n\010covereds\030\017 \003(\r\022\020\n\010max_hand\030\020 \001(\r\022\020\n\010ni"
-    "ckname\030\021 \001(\t\022\024\n\005ready\030\022 \001(\010:\005false\022\024\n\014de"
-    "lete_field\030\023 \003(\t\"\267\002\n\010GameInfo\022\017\n\007room_id"
-    "\030\001 \001(\005\022\021\n\tplayer_id\030\002 \001(\005\022\022\n\nred_morale\030"
-    "\003 \001(\r\022\023\n\013blue_morale\030\004 \001(\r\022\017\n\007red_gem\030\005 "
-    "\001(\r\022\020\n\010blue_gem\030\006 \001(\r\022\023\n\013red_crystal\030\007 \001"
-    "(\r\022\024\n\014blue_crystal\030\010 \001(\r\022\021\n\tred_grail\030\t "
-    "\001(\r\022\022\n\nblue_grail\030\n \001(\r\022\014\n\004pile\030\013 \001(\r\022\017\n"
-    "\007discard\030\014 \001(\r\022\031\n\nis_started\030\r \001(\010:\005fals"
-    "e\022/\n\014player_infos\030\016 \003(\0132\031.network.Single"
-    "PlayerInfo\"\023\n\004Talk\022\013\n\003txt\030\001 \001(\t\"1\n\005Error"
-    "\022\n\n\002id\030\001 \002(\005\022\016\n\006dst_id\030\002 \002(\005\022\014\n\004args\030\003 \003"
-    "(\005\"D\n\006Gossip\022!\n\004type\030\001 \001(\0162\023.network.Gos"
-    "sipType\022\013\n\003txt\030\002 \001(\t\022\n\n\002id\030\003 \001(\r*\225\003\n\013Mes"
-    "sageType\022\024\n\020MSG_REGISTER_REQ\020\001\022\024\n\020MSG_RE"
-    "GISTER_REP\020\002\022\021\n\rMSG_LOGIN_REQ\020\003\022\021\n\rMSG_L"
-    "OGIN_REP\020\004\022\022\n\016MSG_LOGOUT_REQ\020\005\022\022\n\016MSG_LO"
-    "GOUT_REP\020\006\022\024\n\020MSG_ROOMLIST_REQ\020\007\022\024\n\020MSG_"
-    "ROOMLIST_REP\020\010\022\027\n\023MSG_CREATE_ROOM_REQ\020\t\022"
-    "\026\n\022MSG_ENTER_ROOM_REQ\020\n\022\026\n\022MSG_ENTER_ROO"
-    "M_REP\020\013\022\026\n\022MSG_LEAVE_ROOM_REQ\020\014\022\025\n\021MSG_J"
-    "OIN_TEAM_REQ\020\r\022\026\n\022MSG_READY_GAME_REQ\020\016\022\025"
-    "\n\021MSG_SINGLE_PLAYER\020\017\022\014\n\010MSG_GAME\020\020\022\014\n\010M"
-    "SG_TALK\020\021\022\016\n\nMSG_GOSSIP\020\022\022\r\n\tMSG_ERROR\020\023"
-    "*0\n\nGossipType\022\017\n\013GOSSIP_TALK\020\001\022\021\n\rGOSSI"
-    "P_NOTICE\020\002", 2410);
+    "terResponse\022\r\n\005state\030\001 \001(\r\"G\n\014LoginReque"
+    "st\022\017\n\007asGuest\030\001 \002(\010\022\017\n\007user_id\030\002 \001(\t\022\025\n\r"
+    "user_password\030\003 \001(\t\"0\n\rLoginResponse\022\r\n\005"
+    "state\030\001 \002(\005\022\020\n\010nickname\030\002 \001(\t\"\017\n\rLogoutR"
+    "equest\"\036\n\016LogoutResponse\022\014\n\004args\030\001 \003(\r\"@"
+    "\n\017RoomListRequest\022-\n\rrole_strategy\030\001 \002(\016"
+    "2\026.network.ROLE_STRATEGY\"\364\001\n\020RoomListRes"
+    "ponse\0221\n\005rooms\030\001 \003(\0132\".network.RoomListR"
+    "esponse.RoomInfo\032\254\001\n\010RoomInfo\022\017\n\007room_id"
+    "\030\001 \001(\005\022\021\n\troom_name\030\002 \001(\t\022\022\n\nmax_player\030"
+    "\003 \001(\005\022\022\n\nnow_player\030\004 \001(\005\022-\n\rrole_strate"
+    "gy\030\005 \001(\0162\026.network.ROLE_STRATEGY\022\021\n\tseat"
+    "_mode\030\006 \001(\005\022\022\n\nrole_range\030\007 \001(\005\"\220\001\n\021Crea"
+    "teRoomRequest\022-\n\rrole_strategy\030\001 \002(\0162\026.n"
+    "etwork.ROLE_STRATEGY\022\022\n\nmax_player\030\002 \002(\005"
+    "\022\021\n\tseat_mode\030\003 \002(\005\022\022\n\nrole_range\030\004 \002(\005\022"
+    "\021\n\troom_name\030\005 \001(\t\"5\n\020EnterRoomRequest\022\017"
+    "\n\007room_id\030\001 \002(\005\022\020\n\010password\030\002 \001(\t\"\022\n\020Lea"
+    "veRoomRequest\"o\n\017JoinTeamRequest\022+\n\004team"
+    "\030\001 \002(\0162\035.network.JoinTeamRequest.Team\"/\n"
+    "\004Team\022\n\n\006TEAM_A\020\001\022\n\n\006TEAM_B\020\000\022\017\n\013TEAM_RA"
+    "NDOM\020\002\"\207\001\n\023ReadyForGameRequest\022/\n\004type\030\001"
+    " \002(\0162!.network.ReadyForGameRequest.Type\""
+    "\?\n\004Type\022\017\n\013START_READY\020\001\022\026\n\022CANCEL_START"
+    "_REDAY\020\002\022\016\n\nSEAT_READY\020\003\"\356\002\n\020SinglePlaye"
+    "rInfo\022\n\n\002id\030\001 \001(\r\022\014\n\004team\030\002 \001(\r\022\017\n\007role_"
+    "id\030\003 \001(\r\022\022\n\nhand_count\030\004 \001(\r\022\022\n\nheal_cou"
+    "nt\030\005 \001(\r\022\020\n\010ex_cards\030\006 \003(\r\022\023\n\013basic_card"
+    "s\030\007 \003(\r\022\013\n\003gem\030\010 \001(\r\022\017\n\007crystal\030\t \001(\r\022\024\n"
+    "\014yellow_token\030\n \001(\r\022\022\n\nblue_token\030\013 \001(\r\022"
+    "\025\n\rcovered_count\030\014 \001(\r\022\020\n\010is_knelt\030\r \001(\010"
+    "\022\r\n\005hands\030\016 \003(\r\022\020\n\010covereds\030\017 \003(\r\022\020\n\010max"
+    "_hand\030\020 \001(\r\022\020\n\010nickname\030\021 \001(\t\022\024\n\005ready\030\022"
+    " \001(\010:\005false\022\024\n\014delete_field\030\023 \003(\t\"\267\002\n\010Ga"
+    "meInfo\022\017\n\007room_id\030\001 \001(\005\022\021\n\tplayer_id\030\002 \001"
+    "(\005\022\022\n\nred_morale\030\003 \001(\r\022\023\n\013blue_morale\030\004 "
+    "\001(\r\022\017\n\007red_gem\030\005 \001(\r\022\020\n\010blue_gem\030\006 \001(\r\022\023"
+    "\n\013red_crystal\030\007 \001(\r\022\024\n\014blue_crystal\030\010 \001("
+    "\r\022\021\n\tred_grail\030\t \001(\r\022\022\n\nblue_grail\030\n \001(\r"
+    "\022\014\n\004pile\030\013 \001(\r\022\017\n\007discard\030\014 \001(\r\022\031\n\nis_st"
+    "arted\030\r \001(\010:\005false\022/\n\014player_infos\030\016 \003(\013"
+    "2\031.network.SinglePlayerInfo\"\023\n\004Talk\022\013\n\003t"
+    "xt\030\001 \001(\t\"1\n\005Error\022\n\n\002id\030\001 \002(\005\022\016\n\006dst_id\030"
+    "\002 \002(\005\022\014\n\004args\030\003 \003(\005\"D\n\006Gossip\022!\n\004type\030\001 "
+    "\001(\0162\023.network.GossipType\022\013\n\003txt\030\002 \001(\t\022\n\n"
+    "\002id\030\003 \001(\r*\225\003\n\013MessageType\022\024\n\020MSG_REGISTE"
+    "R_REQ\020\001\022\024\n\020MSG_REGISTER_REP\020\002\022\021\n\rMSG_LOG"
+    "IN_REQ\020\003\022\021\n\rMSG_LOGIN_REP\020\004\022\022\n\016MSG_LOGOU"
+    "T_REQ\020\005\022\022\n\016MSG_LOGOUT_REP\020\006\022\024\n\020MSG_ROOML"
+    "IST_REQ\020\007\022\024\n\020MSG_ROOMLIST_REP\020\010\022\027\n\023MSG_C"
+    "REATE_ROOM_REQ\020\t\022\026\n\022MSG_ENTER_ROOM_REQ\020\n"
+    "\022\026\n\022MSG_ENTER_ROOM_REP\020\013\022\026\n\022MSG_LEAVE_RO"
+    "OM_REQ\020\014\022\025\n\021MSG_JOIN_TEAM_REQ\020\r\022\026\n\022MSG_R"
+    "EADY_GAME_REQ\020\016\022\025\n\021MSG_SINGLE_PLAYER\020\017\022\014"
+    "\n\010MSG_GAME\020\020\022\014\n\010MSG_TALK\020\021\022\016\n\nMSG_GOSSIP"
+    "\020\022\022\r\n\tMSG_ERROR\020\023*0\n\nGossipType\022\017\n\013GOSSI"
+    "P_TALK\020\001\022\021\n\rGOSSIP_NOTICE\020\002", 2427);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "base.proto", &protobuf_RegisterTypes);
   RegisterRequest::default_instance_ = new RegisterRequest();
@@ -1353,6 +1354,7 @@ void RegisterResponse::Swap(RegisterResponse* other) {
 // ===================================================================
 
 #ifndef _MSC_VER
+const int LoginRequest::kAsGuestFieldNumber;
 const int LoginRequest::kUserIdFieldNumber;
 const int LoginRequest::kUserPasswordFieldNumber;
 #endif  // !_MSC_VER
@@ -1373,6 +1375,7 @@ LoginRequest::LoginRequest(const LoginRequest& from)
 
 void LoginRequest::SharedCtor() {
   _cached_size_ = 0;
+  asguest_ = false;
   user_id_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   user_password_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
@@ -1416,6 +1419,7 @@ LoginRequest* LoginRequest::New() const {
 
 void LoginRequest::Clear() {
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    asguest_ = false;
     if (has_user_id()) {
       if (user_id_ != &::google::protobuf::internal::kEmptyString) {
         user_id_->clear();
@@ -1437,10 +1441,26 @@ bool LoginRequest::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   while ((tag = input->ReadTag()) != 0) {
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional string user_id = 1;
+      // required bool asGuest = 1;
       case 1: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
+                 input, &asguest_)));
+          set_has_asguest();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(18)) goto parse_user_id;
+        break;
+      }
+
+      // optional string user_id = 2;
+      case 2: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+         parse_user_id:
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
                 input, this->mutable_user_id()));
           ::google::protobuf::internal::WireFormat::VerifyUTF8String(
@@ -1449,12 +1469,12 @@ bool LoginRequest::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(18)) goto parse_user_password;
+        if (input->ExpectTag(26)) goto parse_user_password;
         break;
       }
 
-      // optional string user_password = 2;
-      case 2: {
+      // optional string user_password = 3;
+      case 3: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
          parse_user_password:
@@ -1488,22 +1508,27 @@ bool LoginRequest::MergePartialFromCodedStream(
 
 void LoginRequest::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // optional string user_id = 1;
+  // required bool asGuest = 1;
+  if (has_asguest()) {
+    ::google::protobuf::internal::WireFormatLite::WriteBool(1, this->asguest(), output);
+  }
+
+  // optional string user_id = 2;
   if (has_user_id()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->user_id().data(), this->user_id().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
     ::google::protobuf::internal::WireFormatLite::WriteString(
-      1, this->user_id(), output);
+      2, this->user_id(), output);
   }
 
-  // optional string user_password = 2;
+  // optional string user_password = 3;
   if (has_user_password()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->user_password().data(), this->user_password().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
     ::google::protobuf::internal::WireFormatLite::WriteString(
-      2, this->user_password(), output);
+      3, this->user_password(), output);
   }
 
   if (!unknown_fields().empty()) {
@@ -1514,24 +1539,29 @@ void LoginRequest::SerializeWithCachedSizes(
 
 ::google::protobuf::uint8* LoginRequest::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
-  // optional string user_id = 1;
+  // required bool asGuest = 1;
+  if (has_asguest()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(1, this->asguest(), target);
+  }
+
+  // optional string user_id = 2;
   if (has_user_id()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->user_id().data(), this->user_id().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        1, this->user_id(), target);
+        2, this->user_id(), target);
   }
 
-  // optional string user_password = 2;
+  // optional string user_password = 3;
   if (has_user_password()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->user_password().data(), this->user_password().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        2, this->user_password(), target);
+        3, this->user_password(), target);
   }
 
   if (!unknown_fields().empty()) {
@@ -1545,14 +1575,19 @@ int LoginRequest::ByteSize() const {
   int total_size = 0;
 
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    // optional string user_id = 1;
+    // required bool asGuest = 1;
+    if (has_asguest()) {
+      total_size += 1 + 1;
+    }
+
+    // optional string user_id = 2;
     if (has_user_id()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::StringSize(
           this->user_id());
     }
 
-    // optional string user_password = 2;
+    // optional string user_password = 3;
     if (has_user_password()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::StringSize(
@@ -1586,6 +1621,9 @@ void LoginRequest::MergeFrom(const ::google::protobuf::Message& from) {
 void LoginRequest::MergeFrom(const LoginRequest& from) {
   GOOGLE_CHECK_NE(&from, this);
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (from.has_asguest()) {
+      set_asguest(from.asguest());
+    }
     if (from.has_user_id()) {
       set_user_id(from.user_id());
     }
@@ -1609,12 +1647,14 @@ void LoginRequest::CopyFrom(const LoginRequest& from) {
 }
 
 bool LoginRequest::IsInitialized() const {
+  if ((_has_bits_[0] & 0x00000001) != 0x00000001) return false;
 
   return true;
 }
 
 void LoginRequest::Swap(LoginRequest* other) {
   if (other != this) {
+    std::swap(asguest_, other->asguest_);
     std::swap(user_id_, other->user_id_);
     std::swap(user_password_, other->user_password_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);

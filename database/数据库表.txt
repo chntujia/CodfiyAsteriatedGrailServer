@@ -1,0 +1,1 @@
+mysql> create table new_user(Id int PRIMARY KEY NOT NULL,UserName Varchar(20),Password Varchar(20),NickName Varchar(20),Status  int);

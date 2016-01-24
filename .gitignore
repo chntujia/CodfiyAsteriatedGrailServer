@@ -1,7 +1,8 @@
 boost/
 lib/
 ipch/
-*.cache
+Debug/
+Release/
 
 DiceGameServer/Debug/
 DiceGameServer/Release/
@@ -20,4 +21,6 @@ base/Debug
 base/Release/
 
 *.user
-Release/
+*.cache
+*.opensdf
+*.sdf

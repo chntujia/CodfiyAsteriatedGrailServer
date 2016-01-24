@@ -28,6 +28,9 @@ public:
 	int32_t m_iThreadNum;
 	int32_t m_iCheckTime;
 	std::string m_strDebugLevel;
+	std::string m_db_hostname;
+	std::string m_db_username;
+	std::string m_db_password;
 };
 
 

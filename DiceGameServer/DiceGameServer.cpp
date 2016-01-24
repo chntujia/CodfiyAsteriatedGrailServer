@@ -1,6 +1,6 @@
 // DiceGameServer.cpp : 定义控制台应用程序的入口点。
 //
-
+#include <fstream>
 #include "stdafx.h"
 #include "DiceGameServer.h"
 #include "zLogger.h"
@@ -9,17 +9,19 @@
 #include "zTCPServer.h"
 #include "GameManager.h"
 #include "GameGrailCommon.h"
-#include <fstream>
+#include "DBServices.h"
 DiceGameServer::~DiceGameServer()
 {
 	ztLoggerWrite(ZONE, e_Information, "DiceGameServer is stopped!");
 	UserSessionManager::delInstance();
 	ServerConfig::delInstance();
+	DBServices::delInstance();
 }
 
 bool DiceGameServer::serverInit()
 {
 	ServerConfig::newInstance();
+	DBServices::newInstance();
 	if (ServerConfig::getInstance().Load() != 0)
 	{
 		return false;
@@ -30,11 +32,14 @@ bool DiceGameServer::serverInit()
 	//ztLoggerInit("ChatServer.log",level);
 	char buffer[100];
 	sprintf(buffer, "%d.txt", time(NULL));
-	ztLoggerInit(buffer,level);
-
-	std::string strIP = ServerConfig::getInstance().m_strIP;
+	CZTLoger::Instance().SetFile(buffer,level);
+	
 	uint16_t usPort = ServerConfig::getInstance().m_sPort;
+	std::string dbHostname = ServerConfig::getInstance().m_db_hostname;
+	std::string dbUsername = ServerConfig::getInstance().m_db_username;
+	std::string dbPassword = ServerConfig::getInstance().m_db_password;
 
+	DBInstance.init(dbHostname, dbUsername, dbPassword);
 	zNetService::init(usPort);
 
 	UserSessionManager::newInstance();
@@ -65,4 +70,5 @@ bool DiceGameServer::grailInit()
 		getline(cardDB,line);
 		cardList[i++] = new CardEntity(line);
 	}
+	cardDB.close();
 }

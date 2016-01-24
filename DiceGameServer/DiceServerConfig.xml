@@ -2,9 +2,13 @@
 <config>
   <server
     ip ="127.0.0.1"
-    port ="11228"
+    port ="11111"
 	  thread_num = "4"
-    check_intertime = "600"
+    check_intertime = "60"
     log_level = "debug"/>
+  <mysql
+    hostname = "tcp://127.0.0.1:3306"
+	username = "root"
+	password = "wtf123" />
 </config>
  

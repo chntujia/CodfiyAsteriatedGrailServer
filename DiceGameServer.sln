@@ -2,12 +2,23 @@
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DiceGameServer", "DiceGameServer\DiceGameServer.vcxproj", "{D3F9352C-7D59-41D7-9BB0-1CB6F5DEF19C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{78BCA13B-0C1C-4C0F-8521-3D0251E645AE} = {78BCA13B-0C1C-4C0F-8521-3D0251E645AE}
+		{94105F7B-96B3-4AB8-B02D-9BE98DF6C74A} = {94105F7B-96B3-4AB8-B02D-9BE98DF6C74A}
+		{87B8F785-5A80-4E6F-8651-3C500F12DAF0} = {87B8F785-5A80-4E6F-8651-3C500F12DAF0}
+		{3BB7649A-0BBF-416B-90E9-5FB7B7B05B1D} = {3BB7649A-0BBF-416B-90E9-5FB7B7B05B1D}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "protocal", "protocal\protocal.vcxproj", "{78BCA13B-0C1C-4C0F-8521-3D0251E645AE}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tinyxml", "tinyxml\tinyxml.vcxproj", "{3BB7649A-0BBF-416B-90E9-5FB7B7B05B1D}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "base", "base\base.vcxproj", "{87B8F785-5A80-4E6F-8651-3C500F12DAF0}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3BB7649A-0BBF-416B-90E9-5FB7B7B05B1D} = {3BB7649A-0BBF-416B-90E9-5FB7B7B05B1D}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "database", "database\database.vcxproj", "{94105F7B-96B3-4AB8-B02D-9BE98DF6C74A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,6 +42,10 @@ Global
 		{87B8F785-5A80-4E6F-8651-3C500F12DAF0}.Debug|Win32.Build.0 = Debug|Win32
 		{87B8F785-5A80-4E6F-8651-3C500F12DAF0}.Release|Win32.ActiveCfg = Release|Win32
 		{87B8F785-5A80-4E6F-8651-3C500F12DAF0}.Release|Win32.Build.0 = Release|Win32
+		{94105F7B-96B3-4AB8-B02D-9BE98DF6C74A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{94105F7B-96B3-4AB8-B02D-9BE98DF6C74A}.Debug|Win32.Build.0 = Debug|Win32
+		{94105F7B-96B3-4AB8-B02D-9BE98DF6C74A}.Release|Win32.ActiveCfg = Release|Win32
+		{94105F7B-96B3-4AB8-B02D-9BE98DF6C74A}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

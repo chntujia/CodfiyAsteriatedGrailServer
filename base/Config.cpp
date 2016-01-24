@@ -78,6 +78,38 @@ int32_t ServerConfig::Load (void)
 	}
 	m_strDebugLevel = pszValue;
 
+	pkElement = kHandle.FirstChild("config").FirstChild("mysql").ToElement();
+	if (NULL == pkElement)
+	{
+		return -1;
+	}
+
+	// db hostname
+	pszValue = pkElement->Attribute("hostname", &iValue);
+	if (NULL == pszValue)
+	{
+		return -1;
+
+	}
+	m_db_hostname = pszValue;
+
+    // db username
+	pszValue = pkElement->Attribute("username", &iValue);
+	if (NULL == pszValue)
+	{
+		return -1;
+
+	}
+	m_db_username = pszValue;
+
+	// db password
+	pszValue = pkElement->Attribute("password", &iValue);
+	if (NULL == pszValue)
+	{
+		return -1;
+
+	}
+	m_db_password = pszValue;
 	return 0;
 }
 

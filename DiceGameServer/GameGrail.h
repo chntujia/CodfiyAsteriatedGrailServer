@@ -306,7 +306,7 @@ public:
 	void onPlayerEnter(int playerID);
 	void onGuestEnter(string userID);
 	void onUserLeave(string userID);
-	void toProto(GameInfo& game_info);
+	void toProtoAs(int playerId, GameInfo& game_info);
 	bool isTableFull() { return m_playerContexts.size() >= m_maxPlayers; }	
 protected:	
 	void GameRun();

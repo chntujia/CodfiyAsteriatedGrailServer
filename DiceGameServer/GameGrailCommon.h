@@ -405,8 +405,11 @@ string combMessage(string item1,string item2 = "",string item3 = "",string item4
 class Coder
 {
 public:
-    static string beginNotice(string seatCode){return "2;" + seatCode + ";";}
-    static string turnBegineNotice(int ID){return "3;" + TOQSTR(ID) + ";";}
+	static void logInResponse(int state, string nickname, LoginResponse& rep)
+	{
+		rep.set_state(state);
+		rep.set_nickname(nickname);
+	}
     static void askForReBat(int type,int cardID,int dstID,int srcID, CommandRequest& cmd_req)
 	{
 		cmd_req.set_cmd_type(CMD_RESPOND);
@@ -498,10 +501,6 @@ public:
 		if (!hasEx)
 			player_info->add_delete_field("ex_cards");
 	}
-    static string askForDiscover(int ID, int sum,string show){return combMessage("49",TOQSTR(ID),TOQSTR(sum),show);}
-    static string reshuffleNotice(int howManyNew){return combMessage("10",TOQSTR(howManyNew));}
-    static string endNotice(int winColor){return "12;" + TOQSTR(winColor) + ";";}
-    static string discardNotice(int ID,int sum,string show,vector < int > cards);
     static void hitNotice(int result,int isActiveAttack,int dstID,int srcID, HitMsg& hit_msg)
 	{
 		hit_msg.set_cmd_id(isActiveAttack);
@@ -520,7 +519,6 @@ public:
 			update_info.set_blue_crystal(crystal);
 		}
 	}
-    static string cupNotice(int color,int cup){return combMessage("17",TOQSTR(color),TOQSTR(cup));}
     static void energyNotice(int ID, int gem, int crystal, GameInfo& update_info)
 	{
 		SinglePlayerInfo* player_info = update_info.add_player_infos();
@@ -534,7 +532,6 @@ public:
 		player_info->set_id(ID);
 		player_info->set_heal_count(cross);
 	}
-    static string getCardNotice(int sum,vector < int > cards,int dstID,bool show);
     static void hurtNotice(int dstID, int srcID, int type, int point, int cause, HurtMsg& hurt_msg)
 	{
 		hurt_msg.set_dst_id(dstID);
@@ -553,8 +550,6 @@ public:
 		cmd->add_args(ID);
 		cmd->add_args(howMany);
 	}
-    //static string weakNotice(int ID,int act,int howMany=3){return combMessage("24",TOQSTR(ID),TOQSTR(act),TOQSTR(howMany));}
-    static string shieldNotic(int ID){return "25;" + TOQSTR(ID) + ";";}
     static void askForMissile(int dstID,int srcID,int hurtSum,int nextID, CommandRequest& cmd_req)
 	{
 		cmd_req.set_cmd_type(CMD_RESPOND);
@@ -669,11 +664,6 @@ public:
 			}
 		}
 	}
-    static string unactionalNotice(int playerID){return combMessage(TOQSTR(UNACTIONALNOTICE),TOQSTR(playerID));}
-    static string notice(string content){return combMessage(TOQSTR(NOTICE),content);}
-    static string askForDiscardMagic(int ID){return combMessage("850",TOQSTR(ID));}
-    static string askToGiveCard(int ID,int n){return combMessage("750",TOQSTR(ID),TOQSTR(n));}
-    static string askForChongYing(int ID,int color){return combMessage("2950",TOQSTR(ID),TOQSTR(color));}
     static void handcardMaxNotice(int ID,int howMany, GameInfo& game_info)
 	{
 		SinglePlayerInfo* player_info = game_info.add_player_infos();
@@ -686,7 +676,6 @@ public:
 		player_info->set_id(ID);
 		player_info->set_is_knelt(flag);
 	}
-    static string specialNotice(int ID,int type,int flag){return combMessage("43",TOQSTR(ID),TOQSTR(type),TOQSTR(flag));}
     static void tokenNotice(int ID,int tokenID,int howMany, GameInfo& game_info)
 	{
 		SinglePlayerInfo* player_info = game_info.add_player_infos();
@@ -703,13 +692,6 @@ public:
 			cmd_req.add_role_ids(roles[i]);
 		}
 	}
-    static string coverCardNotice(int playerID,int howMany,vector < int > cards,bool remove,bool show);
-    static string askForSkillNumber(int playerID,int skillNum){return combMessage(TOQSTR(skillNum));}
-    static string optionalRoleNotice(int num, int *roles);
-    static string askForBan(int ID);
-    static string banNotice(int ID, int role);
-    static string askForPick(int ID);
-    static string pickNotice(int ID, int role);
 	static void roomInfo(PlayerContextList players, list< int > teamA, list< int > teamB, GameInfo& room_info)
 	{
 		SinglePlayerInfo *player_info;
@@ -718,8 +700,7 @@ public:
 		{
 			player_info = room_info.add_player_infos();
 			player_info->set_id(it->first);
-			//FIXME: nickname
-			player_info->set_nickname(it->second->getUserId());
+			player_info->set_nickname(it->second->getName());
 			player_info->set_ready(it->second->isReady());
 			if(teamA.end() != std::find(teamA.begin(), teamA.end(), it->first))
 				player_info->set_team(1);

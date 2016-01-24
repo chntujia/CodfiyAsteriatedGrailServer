@@ -1,0 +1,14 @@
+(1)创建了两个类：
+类Database：用于数据库连接及底层的数据库操作
+类User：用于对数据库表User进行操作（查询、插入等）
+(2)创建数据库Coidfy，并建表new_user,数据库操作语句：
+Create Database Codify;
+create table new_user(Id int PRIMARY KEY NOT NULL,UserName Varchar(20),Password Varchar(20),NickName Varchar(20),Status  int);
+
+(3)采纳三层架构
+
+表现层：用于用户接口的展示，接收用户的输入，如用户登录窗口
+
+业务层：用于访问数据层，从数据层取数据、修改数据以及删除数据，并将结果返回给表现层。（User类）
+
+数据层：数据库或者数据源，对数据库的连接等基本操作（Database类）
