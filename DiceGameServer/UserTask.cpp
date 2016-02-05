@@ -1,33 +1,32 @@
 #include "stdafx.h"
 #include "UserTask.h"
-#include "UserSessionManager.h"
 #include "GameManager.h"
 #include "Communication.h"
 #include "role\QiDao.h"
 #include "role\ShiRen.h"
 #include <boost/algorithm/string.hpp>
+#include <boost/interprocess/detail/atomic.hpp>
 #include "DBServices.h"
 
-uint32_t UserTask::m_sIDSeq = 10000;
+boost::uint32_t UserTask::m_sIDSeq = 10000;
 using namespace network;
 
-void UserTask::Start()
+UserTask::~UserTask()
 {
-	zTCPTask::Start();
-	m_iTmpId = ++m_sIDSeq;
-
-	UserSessionManager::getInstance().AddUserById(m_iTmpId, this);
-}
-
-void UserTask::OnQuit()
-{
-	zTCPTask::OnQuit();
-	ztLoggerWrite(ZONE, e_Debug, "UserTask::OnQuit [%s] ",m_userId.c_str());
+	ztLoggerWrite(ZONE, e_Debug, "~UserTask[%s] deleted", m_userId.c_str() );
+	UserSessionManager::getInstance().RemoveUserById(m_iTmpId);
 	GameGrail* game = getGame();
 	if(game){
 		game->onUserLeave(m_userId);
 	}
-	UserSessionManager::getInstance().RemoveUser(m_userId, m_iTmpId);
+}
+
+void UserTask::Start()
+{
+	zTCPTask::Start();	
+	m_iTmpId = boost::interprocess::ipcdetail::atomic_inc32(&m_sIDSeq);
+
+	UserSessionManager::getInstance().AddUserById(m_iTmpId, this);
 }
 
 void UserTask::OnCheck()
@@ -42,27 +41,28 @@ void UserTask::OnCheck()
 			return;
 		}
 		ztLoggerWrite(ZONE,e_Debug, "OnCheck[%s]: heartbeat timeout,be kicked off ", m_userId.c_str());
-		GameGrail* game = getGame();
-		if(game){
-			game->onUserLeave(m_userId);
-		}
-		UserSessionManager::getInstance().RemoveUser(m_userId, m_iTmpId);
 		SetQuit();
 		return;
 	}
 }
 
+void UserTask::OnQuit()
+{
+	UserSessionManager::getInstance().RemoveUser(m_userId);
+	zTCPTask::OnQuit();
+}
+
 GameGrail* UserTask::getGame()
 {
-	Game *game;
+	GameGrail *game = NULL;
 	if(m_tableId < 0){
 		return NULL;
 	}
-	if(0 != GameManager::getInstance().getGame(GAME_TYPE_GRAIL, m_tableId, &game)){
+	if(0 != GameManager::getInstance().getGame(m_tableId, &game)){
 		ztLoggerWrite(ZONE,e_Warning, "UserTask::getGame() failed. TableId: %d", m_tableId);
 		return NULL;
 	}
-	return (GameGrail*)game;
+	return game;
 }
 
 bool UserTask::tryNotify(int id, int state, int step, void* reply)
@@ -87,56 +87,60 @@ bool UserTask::cmdMsgParse(const char *pstrMsg, const uint32_t nCmdLen)
 	{
 		uint16_t type;
 		::google::protobuf::Message *proto = (::google::protobuf::Message*) proto_decoder(pstrMsg, type);
-		uint16_t* size = (uint16_t*)pstrMsg;
-#ifdef Debug
-		ztLoggerWrite(ZONE, e_Debug, "[%s]Receive: %s,\n size:%d, type:%d,\n To proto: %s", m_userId.c_str(), pstrMsg, *size, type, proto->DebugString().c_str());
-#endif
-
+		if(!proto){
+			ztLoggerWrite(ZONE, e_Error, "[%s]Receive: Unkown type: %d", m_userId.c_str(), type);
+			return false;
+		}
+		
 		m_activeTime = time(NULL);
+
+#ifdef Debug
+		ztLoggerWrite(ZONE, e_Debug, "[%s]Receive: type: %d,\n%s", m_userId.c_str(), type, proto->DebugString().c_str());
+#endif		
 		
 		switch(type)
 		{
 		case MSG_LOGIN_REQ:
 			{
-				handleLogIn(GAME_TYPE_GRAIL, proto);				
+				handleLogIn((LoginRequest*)proto);				
 				delete proto;
 				break;
 			}
 		//创建房间
 		case MSG_CREATE_ROOM_REQ:
 			{
-				handleCreateRoom(GAME_TYPE_GRAIL, proto);
+				handleCreateRoom((CreateRoomRequest*)proto);
 				delete proto;
 				break;
 			}
 		//进入房间
 		case MSG_ENTER_ROOM_REQ:
 			{					
-				handleEnterRoom(GAME_TYPE_GRAIL, proto);
+				handleEnterRoom((EnterRoomRequest*)proto, false);
 				delete proto;    // 如果不需要tryNotify或者tryNotify不带reply的话，释放message对象，这一步相当重要
 				break;	
 			}
 		case MSG_LEAVE_ROOM_REQ:
 			{
-				handleLeaveRoom(GAME_TYPE_GRAIL, proto);
+				handleLeaveRoom((LeaveRoomRequest*)proto);
 				delete proto;
 				break;
 			}
 		case MSG_ROOMLIST_REQ:
 			{
-				handleRoomList(GAME_TYPE_GRAIL, proto);					
+				handleRoomList((RoomListRequest*)proto);					
 				delete proto;    // 如果不需要tryNotify或者tryNotify不带reply的话，释放message对象，这一步相当重要
 				break;	
 			}
 		case MSG_JOIN_TEAM_REQ:
 			{
-				handleJoinTeam(GAME_TYPE_GRAIL, proto);		
+				handleJoinTeam((JoinTeamRequest*)proto);		
 				delete proto;
 				break;
 			}
 		case MSG_READY_GAME_REQ:
 			{
-				handleReadyGame(GAME_TYPE_GRAIL, proto);					
+				handleReadyGame((ReadyForGameRequest*)proto);					
 				delete proto;    // 如果不需要tryNotify或者tryNotify不带reply的话，释放message对象，这一步相当重要
 				break;	
 			}
@@ -202,7 +206,7 @@ bool UserTask::cmdMsgParse(const char *pstrMsg, const uint32_t nCmdLen)
 					//尝试从角色的cmdMsgParse里找匹配
 					GameGrail* game = getGame();
 					if(!game || game->getPlayerEntity(m_playerId)->cmdMsgParse(this, type, proto) == false){
-						ztLoggerWrite(ZONE, e_Error, "[%s]Received undefine MSG_RESPOND: %s,\n size:%d, type:%d,\n To proto: %s", m_userId.c_str(), pstrMsg, *size, type, proto->DebugString().c_str());
+						ztLoggerWrite(ZONE, e_Error, "[%s]Received undefine MSG_RESPOND:\n%s", m_userId.c_str(), proto->DebugString().c_str());
 						delete proto;
 					}
 				}		
@@ -216,7 +220,7 @@ bool UserTask::cmdMsgParse(const char *pstrMsg, const uint32_t nCmdLen)
 				break;
 			}
 		default:
-			ztLoggerWrite(ZONE, e_Error, "[%s]Received undefine MSG_TYPE: %s,\n size:%d, type:%d,\n To proto: %s", m_userId.c_str(), pstrMsg, *size, type, proto->DebugString().c_str());
+			ztLoggerWrite(ZONE, e_Error, "[%s]Received undefine MSG_TYPE: type:%d,\n To proto: %s", m_userId.c_str(), type, proto->DebugString().c_str());
 			delete proto;
 		}
 		return true;
@@ -228,11 +232,16 @@ bool UserTask::cmdMsgParse(const char *pstrMsg, const uint32_t nCmdLen)
 	}
 }
 
-void UserTask::handleLogIn(int game_type, void* req)
+void UserTask::handleLogIn(LoginRequest* req)
 {
-	LoginRequest* login = (LoginRequest*)req;
 	LoginResponse response;
-	if(login->asguest()){
+	if(req->version() < ServerConfig::getInstance().m_version){
+		ztLoggerWrite(ZONE, e_Error, "%d < %d", req->version() < ServerConfig::getInstance().m_version);
+		Coder::logInResponse(STATUS_OUTDATE, "", response);
+		sendProto(MSG_LOGIN_REP, response);
+	}
+	else if(req->asguest()){
+		m_userType = UT_GUEST;
 		m_bAuthen = true;
 		m_userId = TOQSTR(m_iTmpId);
 		m_nickname = m_userId;
@@ -241,8 +250,9 @@ void UserTask::handleLogIn(int game_type, void* req)
 		sendProto(MSG_LOGIN_REP, response);
 	}
 	else{
-		struct UserAccount account = DBInstance.userAccountDAO->query(login->user_id(), login->user_password());
+		struct UserAccount account = DBInstance.userAccountDAO->query(req->user_id(), req->user_password());
 		if(account.status == STATUS_NORMAL){
+			m_userType = UT_NORMAL;
 			m_bAuthen = true;
 			m_userId = account.username;
 			m_nickname = account.nickname;
@@ -253,24 +263,44 @@ void UserTask::handleLogIn(int game_type, void* req)
 	}
 }
 
-void UserTask::handleCreateRoom(int game_type, void* req)
+void UserTask::handleCreateRoom(CreateRoomRequest* req)
 {
-	CreateRoomRequest* create_room = (CreateRoomRequest*)req;
-	GameConfig *config = new GameGrailConfig(create_room->max_player(), create_room->role_strategy());
-	config->setTableName(create_room->room_name());
-	GameManager::getInstance().createGame(GAME_TYPE_GRAIL, config);
+	int tableId = GameManager::getInstance().createGame(req);
 	EnterRoomRequest enter_room;
-	enter_room.set_room_id(config->getTableId());
-	handleEnterRoom(GAME_TYPE_GRAIL, &enter_room);
-	delete config;
+	enter_room.set_room_id(tableId);
+	handleEnterRoom(&enter_room, true);
 }
 
-void UserTask::handleEnterRoom(int game_type, void* req)
+void UserTask::handleEnterRoom(EnterRoomRequest* req, bool bypassed)
 {
-	GameManager::getInstance().enterRoom(GAME_TYPE_GRAIL, m_userId, req);
+	ztLoggerWrite(ZONE, e_Information, "UserTask::handleEnterRoom() userId [%s] enter Table %d.", 
+			m_userId.c_str(), m_tableId);
+	int playerId = GUEST;
+	int ret;
+	if(m_tableId != req->room_id()){
+		GameGrail* game = getGame();
+		if(game){
+			game->onUserLeave(m_userId);
+		}
+	}
+	if(bypassed){
+		ret = GameManager::getInstance().enterRoom(m_userId, m_nickname, req, playerId);
+	}
+	else{
+		ret = GameManager::getInstance().tryEnterRoom(m_userId, m_nickname, req, playerId, m_userType);
+	}
+	if(ret == GE_SUCCESS){
+		m_tableId = req->room_id();
+		m_playerId = playerId;
+	}
+	else{	
+		Error error;
+		Coder::errorMsg(ret, playerId, error);
+		sendProto(MSG_ERROR, error);
+	}
 }
 
-void UserTask::handleLeaveRoom(int game_type, void* request)
+void UserTask::handleLeaveRoom(LeaveRoomRequest* request)
 {
 	GameGrail* game = getGame();
 	if(game){
@@ -282,11 +312,10 @@ void UserTask::handleLeaveRoom(int game_type, void* request)
 	}
 }
 
-void UserTask::handleRoomList(int game_type, void* req)
+void UserTask::handleRoomList(RoomListRequest* req)
 {
-	RoomListRequest* request = (RoomListRequest*)req;
 	RoomListResponse response;
-	int ret = GameManager::getInstance().getGameList(GAME_TYPE_GRAIL, req, &response);
+	int ret = GameManager::getInstance().getGameList(req, &response);
 	if (ret == GE_SUCCESS){
 		sendProto(MSG_ROOMLIST_REP, response);
 	}
@@ -296,15 +325,14 @@ void UserTask::handleRoomList(int game_type, void* req)
 	}
 }
 
-void UserTask::handleReadyGame(int game_type, void* req)
+void UserTask::handleReadyGame(ReadyForGameRequest* req)
 {
-	ReadyForGameRequest* request = (ReadyForGameRequest*)req;
-	switch(request->type())
+	switch(req->type())
 	{
 	case ReadyForGameRequest_Type_START_READY:
 	case ReadyForGameRequest_Type_CANCEL_START_REDAY:
 		{
-			int ret = GameManager::getInstance().setPlayerReady(GAME_TYPE_GRAIL, m_tableId, m_playerId, req);
+			int ret = GameManager::getInstance().setPlayerReady(m_tableId, m_playerId, req);
 			if (ret != GE_SUCCESS){
 				ztLoggerWrite(ZONE, e_Error, "UserTask::cmdMsgParse() userId [%s] cannot get ready. Table %d. Ret: %d", 
 					m_userId.c_str(), m_tableId, ret);
@@ -317,12 +345,11 @@ void UserTask::handleReadyGame(int game_type, void* req)
 	}
 }
 
-void UserTask::handleJoinTeam(int game_type, void* req)
+void UserTask::handleJoinTeam(JoinTeamRequest* req)
 {
-	JoinTeamRequest* request = (JoinTeamRequest*)req;
 	GameGrail* game = getGame();
 	if(game){
-		game->setTeam(m_playerId, request->team());
+		game->setTeam(m_playerId, req->team());
 	}
 	else
 		ztLoggerWrite(ZONE, e_Warning, "UserTask::cmdMsgParse() userId [%s] cannot join team. Table %d.", 

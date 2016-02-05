@@ -191,13 +191,7 @@
     <ClCompile Include="UserTask.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Game.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="GameManager.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayerContext.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="CardEntity.cpp">

@@ -28,8 +28,6 @@ int MaoXian::v_attack_skill(Action *action)
 	int playerID = action->src_id();
 	int cardNum = action->card_ids_size();
 	int ret;
-	CardEntity* card;
-	PlayerEntity* dst;
 
 	if(playerID != id){
 		return GE_INVALID_PLAYERID;

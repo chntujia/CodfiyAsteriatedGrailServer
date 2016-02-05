@@ -628,7 +628,6 @@ int ShiRen::BuXieZhiXian(Action* action)
 	Coder::tokenNotice(id,0,token[0],game_info);
 	engine->sendMessage(-1, MSG_GAME, game_info);
 
-	int ret;
 	if(choice == 1)
 	{
 		vector<int> cards;

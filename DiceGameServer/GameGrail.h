@@ -24,7 +24,7 @@ public:
 		size = s;
 		items = new int[size];
 		iterator = -1;
-		rng.seed(time(0));
+		rng.seed((const boost::random::rand48::result_type)time(0));
 	}
 	~Deck(){
 		delete[] items;
@@ -126,11 +126,16 @@ private:
 class GameGrailConfig : public GameConfig
 {
 public:
-	GameGrailConfig(int maxPlayers, int roleStrategy=1): maxPlayers(maxPlayers), roleStrategy(roleStrategy)
+	GameGrailConfig(int maxPlayers, int roleStrategy, bool firstExtension, bool secondExtension, int seatMode, bool silence): 
+	  maxPlayers(maxPlayers), roleStrategy(roleStrategy), firstExtension(firstExtension), secondExtension(secondExtension), seatMode(seatMode), silence(silence)
 	{}
 	~GameGrailConfig() {}
 	int maxPlayers;
 	int roleStrategy;
+	bool firstExtension;
+	bool secondExtension;
+	int seatMode;
+	bool silence;
 };
 
 class GameGrail : public Game
@@ -138,25 +143,27 @@ class GameGrail : public Game
 public:
 	bool playing;
 	bool processing;
+	bool dead;
 	bool roleInited;
-	int m_roleStrategy;
+
+	int m_roleStrategy;	
 	int m_seatMode;
+	bool m_silence;
 	int m_maxAttempts;
 	int m_firstPlayerID;
+	bool m_firstExtension;
+	bool m_secondExtension;
 	GameInfo room_info;
 	list< int > teamA, teamB;
+
 protected:
 	int m_roundId;
 	int m_maxPlayers;
 	int m_token;
 	int m_responseTime;
-	int m_actionTime;
 	int m_currentPlayerID;
-	
-	time_t m_roundEndTime;
+
 	boost::mutex m_mutex_for_wait;
-	boost::mutex m_mutex_for_pregame;
-	boost::mutex m_mutex_for_notify;
 	boost::condition_variable m_condition_for_wait;	
 	PlayerContextList m_playerContexts;
 	
@@ -168,18 +175,20 @@ protected:
 	TeamArea* m_teamArea;
 	Deck *pile, *discard;
 	bool m_ready[MAXPLAYER];
+	
 public:
 	GameGrail(GameGrailConfig *config);
 	~GameGrail();
-	void terminate(){
+	void setDying(){
 		processing = false;
 		m_maxAttempts = 0;
 	}
 	void sendMessage(int id, uint16_t proto_type, google::protobuf::Message& proto);
 	void sendMessageExcept(int id, uint16_t proto_type, google::protobuf::Message& proto);
-	int playerEnterIntoTable(string userId, int& playerId);
+	int playerEnterIntoTable(string userId, string nickname, int& playerId);
+	int guestEnterIntoTable(string userId);
 
-	GrailState* topGameState() { return m_states.empty()? NULL: m_states.top(); }
+	GrailState* topGameState() { return m_states.empty()? throw GE_NO_STATE : m_states.top(); }
 	void pushGameState(GrailState* state) { m_states.push(state); }
 	void popGameState() { 
 		 SAFE_DELETE(m_states.top()); 
@@ -188,7 +197,14 @@ public:
 	int popGameState_if(int state);	
 
 	int getGameMaxPlayers() const { return m_maxPlayers; }
-	int getGameNowPlayers() const { return m_playerContexts.size();}
+	int getGameNowPlayers() { 
+		int count = 0;
+		for(PlayerContextList::iterator it = m_playerContexts.begin(); it != m_playerContexts.end(); it++){
+			if(it->second->isConnected())
+				count++;
+		}
+		return count;
+	}
 	int getCurrentPlayerID() const { return m_currentPlayerID; }
 	PlayerEntity* getPlayerEntity(int id);
 	TeamArea* getTeamArea() { return m_teamArea; }
@@ -197,7 +213,6 @@ public:
 		if(id<-1 || id>m_maxPlayers){
 			return;
 		}
-		boost::mutex::scoped_lock lock(m_mutex_for_pregame);
 		if(id == -1){
 			memset(m_ready, 0, sizeof(m_ready));
 		}
@@ -210,19 +225,20 @@ public:
 		if(id<0 || id>=m_maxPlayers){
 			return;
 		}
-		boost::mutex::scoped_lock lock(m_mutex_for_pregame);
-		m_playerContexts[id]->setReady(ready);
-		GameInfo update;
-		SinglePlayerInfo *player = update.add_player_infos();
-		player->set_id(id);
-		player->set_ready(ready);
-		sendMessage(-1, MSG_GAME, update);
+		PlayerContextList::iterator it = m_playerContexts.find(id);
+		if(it != m_playerContexts.end()){
+			it->second->setReady(ready);
+			GameInfo update;
+			SinglePlayerInfo *player = update.add_player_infos();
+			player->set_id(id);
+			player->set_ready(ready);
+			sendMessage(-1, MSG_GAME, update);
+		}
 	}
 	void setTeam(int id, int team){
 		if(id<-1 || id>m_maxPlayers){
 			return;
 		}
-		boost::mutex::scoped_lock lock(m_mutex_for_pregame);
 		teamA.remove(id);
 		teamB.remove(id);
 		GameInfo update;
@@ -244,11 +260,9 @@ public:
 		}		
 	}
 	bool isAllStartReady(){
-		if(m_playerContexts.size() < m_maxPlayers){
-			return false;
-		}
-		for(int i = 0; i < m_maxPlayers; i++){
-			if(!m_playerContexts[i]->isReady())
+		for(PlayerContextList::iterator it = m_playerContexts.begin(); it != m_playerContexts.end(); it++)
+		{
+			if(!it->second->isReady())
 				return false;
 		}
 		return true;
@@ -307,7 +321,7 @@ public:
 	void onGuestEnter(string userID);
 	void onUserLeave(string userID);
 	void toProtoAs(int playerId, GameInfo& game_info);
-	bool isTableFull() { return m_playerContexts.size() >= m_maxPlayers; }	
+	bool isTableFull() { return getGameNowPlayers() >= m_maxPlayers; }	
 protected:	
 	void GameRun();
 	void kickOffNotConnectedPlayers();

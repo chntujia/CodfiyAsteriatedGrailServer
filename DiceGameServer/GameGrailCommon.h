@@ -26,16 +26,21 @@ const int SUMMON[] = {1, 2, 3, 4, 5, 6, 7, 8, 9,10,
 	                 11,12,13,14,15,16,17,18,19,20,
 			         21,22,23,24,25,26,27,28,29,30,
 					 31};
+const int BASIC_ROLE[] = {1, 2, 3, 4, 5, 6, 7, 8, 9,10,
+	                 11,12,13,14,15,16,17,18,19,20,
+					 21,22,23,24};
+const int FIRST_EXT[] = {26, 28, 29};
+const int SECOND_EXT[] = {25, 27, 30, 31};
 bool isValidRoleID(int roleID);
 
 enum GrailError{
 	GE_SUCCESS,
 	GE_TIMEOUT,
 	GE_URGENT,
-	GE_EMPTY_HANDLE,
-	GE_NO_STATE,
+	GE_EMPTY_HANDLE,	
 	GE_DECK_OVERFLOW,
 	GE_CARD_NOT_ENOUGH,
+	GE_USERID_NOT_FOUND,
 	GE_HANDCARD_NOT_FOUND,
 	GE_BASIC_EFFECT_NOT_FOUND,
 	GE_BASIC_EFFECT_ALREADY_EXISTS,
@@ -44,17 +49,23 @@ enum GrailError{
 	GE_MOVECARD_FAILED,
     GE_INCONSISTENT_STATE,
 	GE_FATAL_ERROR,
+	GE_INVALID_TABLEID,
 	GE_INVALID_PLAYERID,
 	GE_INVALID_CARDID,
 	GE_INVALID_ROLEID,
 	GE_INVALID_ACTION,
 	GE_INVALID_STEP,
 	GE_INVALID_EXCLUSIVE_EFFECT,
-	GE_NOT_SUPPORTED,
 	GE_INVALID_ARGUMENT,
+	GE_NO_STATE,
 	GE_NO_CONTEXT,
 	GE_NO_REPLY,
-	GE_DISCONNECTED
+	GE_NOT_SUPPORTED,
+	GE_PLAYER_FULL,
+	GE_GUEST_FULL,
+	GE_DISCONNECTED,
+	GE_NOT_WELCOME,
+	GE_WRONG_PASSWORD
 };
 
 enum CAUSE{
@@ -698,14 +709,18 @@ public:
 
 		for(PlayerContextList::iterator it = players.begin(); it != players.end(); it++)
 		{
-			player_info = room_info.add_player_infos();
-			player_info->set_id(it->first);
-			player_info->set_nickname(it->second->getName());
-			player_info->set_ready(it->second->isReady());
-			if(teamA.end() != std::find(teamA.begin(), teamA.end(), it->first))
-				player_info->set_team(1);
-			else if(teamB.end() != std::find(teamB.begin(), teamB.end(), it->first))
-				player_info->set_team(0);			
+			int id = it->first;
+			GameGrailPlayerContext* context = it->second;
+			if(context->isConnected()){	
+				player_info = room_info.add_player_infos();
+				player_info->set_id(id);						
+				player_info->set_nickname(context->getName());
+				player_info->set_ready(context->isReady());
+				if(teamA.end() != std::find(teamA.begin(), teamA.end(), id))
+					player_info->set_team(1);
+				else if(teamB.end() != std::find(teamB.begin(), teamB.end(), id))
+					player_info->set_team(0);
+			}
 		}
 	}
 	static void errorMsg(int id, int dstId, Error& error)

@@ -180,10 +180,10 @@ private:
 	void assignTeam(GameGrail* engine);
 	vector< int > assignColor(int mode, int playerNum);
 
+	bool isSet;
 	vector< int > red;
 	vector< int > blue;
 	GameInfo* messages[MAXPLAYER];
-	bool isSet;
 };
 
 class StateRoleStrategyRandom : public GrailState
@@ -646,10 +646,8 @@ public:
 class StateGameOver: public GrailState
 {
 public:
-	StateGameOver(int winner): GrailState(STATE_GAME_OVER), color(winner), isSet(false), count(0){}
+	StateGameOver(int winner): GrailState(STATE_GAME_OVER), color(winner){}
 	int handle(GameGrail* engine);
 private:
 	int color;
-	int count;
-	bool isSet;
 };

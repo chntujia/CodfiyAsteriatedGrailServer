@@ -115,6 +115,27 @@ inline bool ROLE_STRATEGY_Parse(
   return ::google::protobuf::internal::ParseNamedEnum<ROLE_STRATEGY>(
     ROLE_STRATEGY_descriptor(), name, value);
 }
+enum SEAT_MODE {
+  SEAT_MODE_RANDOM = 1,
+  SEAT_MODE_2COMBO = 2,
+  SEAT_MODE_3COMBO = 3,
+  SEAT_MODE_INTERLACE = 4
+};
+bool SEAT_MODE_IsValid(int value);
+const SEAT_MODE SEAT_MODE_MIN = SEAT_MODE_RANDOM;
+const SEAT_MODE SEAT_MODE_MAX = SEAT_MODE_INTERLACE;
+const int SEAT_MODE_ARRAYSIZE = SEAT_MODE_MAX + 1;
+
+const ::google::protobuf::EnumDescriptor* SEAT_MODE_descriptor();
+inline const ::std::string& SEAT_MODE_Name(SEAT_MODE value) {
+  return ::google::protobuf::internal::NameOfEnum(
+    SEAT_MODE_descriptor(), value);
+}
+inline bool SEAT_MODE_Parse(
+    const ::std::string& name, SEAT_MODE* value) {
+  return ::google::protobuf::internal::ParseNamedEnum<SEAT_MODE>(
+    SEAT_MODE_descriptor(), name, value);
+}
 enum BasicActionType {
   ACTION_ATTACK = 1,
   ACTION_MAGIC = 2,
@@ -2679,6 +2700,10 @@ inline const EnumDescriptor* GetEnumDescriptor< ::network::PlayerIdConst>() {
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::network::ROLE_STRATEGY>() {
   return ::network::ROLE_STRATEGY_descriptor();
+}
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::network::SEAT_MODE>() {
+  return ::network::SEAT_MODE_descriptor();
 }
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::network::BasicActionType>() {

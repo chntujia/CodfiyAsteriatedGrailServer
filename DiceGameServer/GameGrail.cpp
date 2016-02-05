@@ -1,12 +1,12 @@
 #include "stdafx.h"
 
-#include <boost/random.hpp>
 #include <boost/bind.hpp>
 #include "GameGrail.h"
 #include "GrailState.h"
 #include "zLogger.h"
 #include "zCommonDefine.h"
 #include "UserSessionManager.h"
+#include "GameManager.h"
 #include "role\JianSheng.h"
 #include "role\AnSha.h"
 #include "role\KuangZhan.h"
@@ -190,17 +190,23 @@ void TeamArea::setMorale(int color, int value)
         this->moraleBLUE = value;
 }
 
-GameGrail::GameGrail(GameGrailConfig *config) : playing(false), processing(true), roleInited(false)
+GameGrail::GameGrail(GameGrailConfig *config) : playing(false), processing(true), dead(false), roleInited(false)
 {
 	m_gameId = config->getTableId();
 	m_gameName = config->getTableName();
-	m_gameType = GAME_TYPE_GRAIL;
 	m_roundId = 0;
 	m_maxPlayers = config->maxPlayers;
+	for(int i = 0; i < m_maxPlayers; i++){
+		m_playerContexts[i] = new GameGrailPlayerContext;
+	}
 	m_roleStrategy = config->roleStrategy;
-	m_seatMode = 0;
+	m_firstExtension = config->firstExtension;
+	m_secondExtension = config->secondExtension;
+	m_seatMode = config->seatMode;
+	m_silence = config->silence;
+
 	m_responseTime = 60;
-	m_maxAttempts = 2;
+	m_maxAttempts = 1;
 	m_teamArea = NULL;
 	pile = discard = NULL;
 	pushGameState(new StateWaitForEnter);
@@ -208,7 +214,6 @@ GameGrail::GameGrail(GameGrailConfig *config) : playing(false), processing(true)
 
 GameGrail::~GameGrail()
 {
-	processing = false;
 	while(!m_states.empty()){
 		popGameState();
 	}
@@ -240,7 +245,7 @@ int GameGrail::popGameState_if(int state)
 	}
 	ztLoggerWrite(ZONE, e_Warning, "[Table %d] Attempt to pop state: %d, but current state: %d"
 		, m_gameId, state, topGameState()->state);
-	return GE_INVALID_PLAYERID;
+	return GE_INCONSISTENT_STATE;
 }
 
 void GameGrail::sendMessage(int id, uint16_t proto_type, google::protobuf::Message& proto)
@@ -248,29 +253,15 @@ void GameGrail::sendMessage(int id, uint16_t proto_type, google::protobuf::Messa
 #ifdef Debug
 	ztLoggerWrite(ZONE, e_Debug, "[Table %d] send to %d, type:%d, string:\n%s \nsize: %d", m_gameId, id, proto_type, proto.DebugString().c_str(), proto.ByteSize());
 #endif
-	UserTask *ref;
-
 	if(id == -1){
 		for(PlayerContextList::iterator it = m_playerContexts.begin(); it != m_playerContexts.end(); it++){
 			if(!it->second->isConnected()){
 				continue;
 			}
-			ref = UserSessionManager::getInstance().getUser(it->second->getUserId());
-			if(ref){
-				ref->sendProto(proto_type, proto);
-			}
-			else{
-				ztLoggerWrite(ZONE, e_Debug, "[Table %d] Cannot find UserSession, PlayerID: %d, UserID: %s", m_gameId, id, it->second->getUserId().c_str());
-			}
+			UserSessionManager::getInstance().trySendMessage(it->second->getUserId(), proto_type, proto);
 		}
 		for(list<string>::iterator it = m_guestList.begin(); it != m_guestList.end(); it++){
-			ref = UserSessionManager::getInstance().getUser(*it);
-			if(ref){
-				ref->sendProto(proto_type, proto);
-			}
-			else{
-				ztLoggerWrite(ZONE, e_Debug, "[Table %d] Cannot find UserSession, GuestID: %d, UserID: %s", m_gameId, id, *it);
-			}
+			UserSessionManager::getInstance().trySendMessage(*it, proto_type, proto);
 		}
 	}
 	else{
@@ -279,13 +270,7 @@ void GameGrail::sendMessage(int id, uint16_t proto_type, google::protobuf::Messa
 			if(!it->second->isConnected()){
 				return;
 			}
-			ref = UserSessionManager::getInstance().getUser(it->second->getUserId());
-			if(ref){
-				ref->sendProto(proto_type, proto);
-			}
-			else{
-				ztLoggerWrite(ZONE, e_Debug, "[Table %d] Cannot find UserSession, PlayerID: %d, UserID: %s", m_gameId, id, it->second->getUserId().c_str());
-			}
+			UserSessionManager::getInstance().trySendMessage(it->second->getUserId(), proto_type, proto);
 		}
 	}
 }
@@ -295,27 +280,13 @@ void GameGrail::sendMessageExcept(int id, uint16_t proto_type, google::protobuf:
 #ifdef Debug
 	ztLoggerWrite(ZONE, e_Debug, "[Table %d] send to all except %d, type:%d, string:\n%s \nsize: %d", m_gameId, id, proto_type, proto.DebugString().c_str(), proto.ByteSize());
 #endif
-	UserTask *ref;
-
 	for(PlayerContextList::iterator it = m_playerContexts.begin(); it != m_playerContexts.end(); it++){
 		if(it->first != id){
-			ref = UserSessionManager::getInstance().getUser(it->second->getUserId());
-			if(ref){
-				ref->sendProto(proto_type, proto);
-			}
-			else{
-				ztLoggerWrite(ZONE, e_Debug, "[Table %d] Cannot find UserSession, PlayerID: %d, UserID: %s", m_gameId, id, it->second->getUserId().c_str());
-			}
+			UserSessionManager::getInstance().trySendMessage(it->second->getUserId(), proto_type, proto);
 		}
 	}
 	for(list<string>::iterator it = m_guestList.begin(); it != m_guestList.end(); it++){
-		ref = UserSessionManager::getInstance().getUser(*it);
-		if(ref){
-			ref->sendProto(proto_type, proto);
-		}
-		else{
-			ztLoggerWrite(ZONE, e_Debug, "[Table %d] Cannot find UserSession, GuestID: %d, UserID: %s", m_gameId, id, *it);
-		}
+		UserSessionManager::getInstance().trySendMessage(*it, proto_type, proto);
 	}
 
 }
@@ -350,11 +321,11 @@ bool GameGrail::waitForOne(int id, uint16_t proto_type, google::protobuf::Messag
 	
 	int attempts = 0;
 	boost::mutex::scoped_lock lock(m_mutex_for_wait);
-	while(attempts < m_maxAttempts)
+	while(attempts < m_maxAttempts && processing)
 	{
 		sendMessage(-1, proto_type, proto);
 		boost::system_time const timeout=boost::get_system_time()+ boost::posix_time::milliseconds(sec*1000);
-		if(m_condition_for_wait.timed_wait(lock,timeout,boost::bind( &GameGrail::isReady, this, id )))
+		if(m_condition_for_wait.timed_wait(lock, timeout, boost::bind( &GameGrail::isReady, this, id )))
 			return true;
 		attempts++;
 	}
@@ -369,7 +340,7 @@ bool GameGrail::waitForAll(uint16_t proto_types, void** proto_ptrs, int sec, boo
 	if(toResetReady){
 		resetReady();
 	}
-	while(attempts < m_maxAttempts)
+	while(attempts < m_maxAttempts && processing)
 	{
 		for(int i = 0; i < m_maxPlayers; i++){
 			if(!m_ready[i]){
@@ -378,7 +349,7 @@ bool GameGrail::waitForAll(uint16_t proto_types, void** proto_ptrs, int sec, boo
 			}
 		}
 		boost::system_time const timeout=boost::get_system_time()+ boost::posix_time::milliseconds(sec*1000);
-		if(m_condition_for_wait.timed_wait(lock,timeout,boost::bind( &GameGrail::isReady, this, -1 ))){
+		if(m_condition_for_wait.timed_wait(lock, timeout, boost::bind( &GameGrail::isReady, this, -1 ))){
 			return true;
 		}
 		attempts++;
@@ -388,7 +359,6 @@ bool GameGrail::waitForAll(uint16_t proto_types, void** proto_ptrs, int sec, boo
 
 bool GameGrail::tryNotify(int id, int state, int step, void* reply)
 {
-	boost::mutex::scoped_lock lock(m_mutex_for_notify);
 	if(id == m_token && state == topGameState()->state && step == topGameState()->step) {
 		m_ready[id] = true;
 		if(reply){
@@ -705,7 +675,9 @@ int GameGrail::setStateAttackGiveUp(int cardID, int dstID, int srcID, HARM harm,
 {
 	PlayerEntity *player = getPlayerEntity(dstID);
 	int shieldCardID = -1;
-	if(checkSheild && (GE_SUCCESS == player->checkBasicEffectByName(NAME_SHIELD, &shieldCardID)  || player->checkBasicEffectByName(TIAN_SHI_ZHI_QIANG, &shieldCardID) == GE_SUCCESS)){
+	if(checkSheild && 
+	   (GE_SUCCESS == player->checkBasicEffectByName(NAME_SHIELD, &shieldCardID) || 
+	    GE_SUCCESS == player->checkBasicEffectByName(TIAN_SHI_ZHI_QIANG, &shieldCardID))){
 		setStateTimeline2Miss(cardID, dstID, srcID, isActive);	
 		return setStateMoveOneCardNotToHand(dstID, DECK_BASIC_EFFECT, -1, DECK_DISCARD, shieldCardID, dstID, CAUSE_DEFAULT, true);	
 	}
@@ -719,7 +691,8 @@ int GameGrail::setStateMissileGiveUp(int dstID, int srcID, int harmPoint)
 {
 	PlayerEntity *player = getPlayerEntity(dstID);
 	int shieldCardID = -1;
-	if(player->checkBasicEffectByName(NAME_SHIELD, &shieldCardID) == GE_SUCCESS || player->checkBasicEffectByName(TIAN_SHI_ZHI_QIANG, &shieldCardID) == GE_SUCCESS){	
+	if(player->checkBasicEffectByName(NAME_SHIELD, &shieldCardID) == GE_SUCCESS || 
+	   player->checkBasicEffectByName(TIAN_SHI_ZHI_QIANG, &shieldCardID) == GE_SUCCESS){	
 		return setStateMoveOneCardNotToHand(dstID, DECK_BASIC_EFFECT, -1, DECK_DISCARD, shieldCardID, dstID, CAUSE_DEFAULT, true);	
 	}	
 	else{
@@ -897,27 +870,38 @@ void GameGrail::GameRun()
 			}
 		}
 		catch(GrailError error)	{
-			//currentState是出错的那个state，可能已经被pop掉
+			//currentState是出错的那个state，可能已经被pop掉			
 			GrailState* topState = topGameState();
-			ztLoggerWrite(ZONE, e_Error, "[Table %d] Handle returns error: %d. Current state: %d, Top state: %d, Top iterator: %d, Top step: %d", 
-				m_gameId, ret, stateCode, topState->state, topState->iterator, topState->step);
-			topState->increaseErrorCount();
+			if(topState){
+				ztLoggerWrite(ZONE, e_Error, "[Table %d] Handle throws error: %d. Current state: %d, Top state: %d, Top iterator: %d, Top step: %d", 
+					m_gameId, error, stateCode, topState->state, topState->iterator, topState->step);
+				topState->increaseErrorCount();
+			}
+			else{
+				ztLoggerWrite(ZONE, e_Error, "[Table %d] Handle throws error: %d. Current state: %d", 
+					m_gameId, error, stateCode);
+			}
 		}
 		catch(std::exception const& e) {
 			//currentState是出错的那个state，可能已经被pop掉
 			GrailState* topState = topGameState();
-			ztLoggerWrite(ZONE, e_Error, "[Table %d] Handle returns error: %d. Current state: %d, Top state: %d, Top iterator: %d, Top step: %d", 
-				m_gameId, ret, stateCode, topState->state, topState->iterator, topState->step);
-			topState->increaseErrorCount();
+			if(topState){
+				ztLoggerWrite(ZONE, e_Error, "[Table %d] Handle throws error: %s. Current state: %d, Top state: %d, Top iterator: %d, Top step: %d", 
+					m_gameId, e.what(), stateCode, topState->state, topState->iterator, topState->step);
+				topState->increaseErrorCount();
+			}
+			else{
+				ztLoggerWrite(ZONE, e_Error, "[Table %d] Handle throws error: %s. Current state: %d", 
+					m_gameId, e.what(), stateCode);
+			}
 		}
 	}
-	GameManager::getInstance().deleteGame(GAME_TYPE_GRAIL, m_gameId);
+	dead = true;
 	ztLoggerWrite(ZONE, e_Information, "GameGrail::GameRun() GameGrail [%d] %s end!!", 
 					m_gameId, m_gameName.c_str());
-	delete this;
 }
 
-int GameGrail::playerEnterIntoTable(string userId, int &playerId)
+int GameGrail::playerEnterIntoTable(string userId, string nickname, int &playerId)
 {
 	playerId = GUEST;
 	for(PlayerContextList::iterator it = m_playerContexts.begin(); it != m_playerContexts.end(); it++)
@@ -925,29 +909,32 @@ int GameGrail::playerEnterIntoTable(string userId, int &playerId)
 		if(it->second->getUserId() == userId)
 		{
 			playerId = it->first;
-			it->second->setConnect(true);
-			return SIT_TABLE_SUCCESS;
+			it->second->setConnected(true);
+			return GE_SUCCESS;
 		}
 	}
-	if(!isTableFull())
+	int availableID;
+	for(availableID = 0; !playing && availableID<m_maxPlayers; availableID++)
 	{
-		int availableID;
-		for(availableID = 0; availableID<m_maxPlayers; availableID++)
+		GameGrailPlayerContext *player = m_playerContexts[availableID];
+		if(!player->isConnected())
 		{
-			if(m_playerContexts.find(availableID) == m_playerContexts.end())
-			{
-				GameGrailPlayerContext *player = new GameGrailPlayerContext(userId);
-				UserTask* session = UserSessionManager::getInstance().getUser(userId);
-				player->setName(session->m_nickname);
-				m_playerContexts.insert(PlayerContextList::value_type(availableID, player));
-				playerId = availableID;
-				return SIT_TABLE_SUCCESS;
-			}
+			player->setUserId(userId);
+			player->setName(nickname);
+			playerId = availableID;
+			player->setConnected(true);
+			return GE_SUCCESS;
 		}
 	}
+
+	return GE_PLAYER_FULL;	
+}
+
+int GameGrail::guestEnterIntoTable(string userId)
+{
 	//FIXME: limit guset number
 	m_guestList.push_back(userId);
-	return SIT_TABLE_GUEST;
+	return GE_SUCCESS;
 }
 
 int GameGrail::setStateRoleStrategy()
@@ -999,8 +986,13 @@ Deck* GameGrail::initRoles()
 {
 	Deck *roles;
 	roles = new Deck(sizeof(SUMMON)/sizeof(int));
-	roles->push(sizeof(SUMMON)/sizeof(int), SUMMON);
-	//FIXME: disable random for debug
+	roles->push(sizeof(BASIC_ROLE)/sizeof(int), BASIC_ROLE);
+	if(m_firstExtension){
+		roles->push(sizeof(FIRST_EXT)/sizeof(int), FIRST_EXT);
+	}
+	if(m_secondExtension){
+		roles->push(sizeof(SECOND_EXT)/sizeof(int), SECOND_EXT);
+	}
 	roles->randomize();
 	return roles;
 }
@@ -1070,64 +1062,53 @@ void GameGrail::onPlayerEnter(int playerId)
 	}
 }
 
-void GameGrail::onGuestEnter(string userID)
+void GameGrail::onGuestEnter(string userId)
 {
-	UserTask* session = UserSessionManager::getInstance().getUser(userID);
-	if(!session)
-		return;
 	if(!roleInited)
 	{
 		GameInfo room_info;
 		Coder::roomInfo(m_playerContexts, teamA, teamB, room_info);
 		room_info.set_room_id(m_gameId);
 		room_info.set_player_id(GUEST);
-		session->sendProto(MSG_GAME, room_info);
+		UserSessionManager::getInstance().trySendMessage(userId, MSG_GAME, room_info);
 	}
 	else{
 		GameInfo game_info;
 		toProtoAs(GUEST, game_info);
-		session->sendProto(MSG_GAME, game_info);
+		UserSessionManager::getInstance().trySendMessage(userId, MSG_GAME, game_info);
 	}
 }
 
 void GameGrail::onUserLeave(string userID)
 {
 	m_guestList.remove(userID);
-	if(!playing)
+
+	for(PlayerContextList::iterator it = m_playerContexts.begin(); it != m_playerContexts.end(); it++)
 	{
-		for(PlayerContextList::iterator it = m_playerContexts.begin(); it != m_playerContexts.end(); it++)
+		GameGrailPlayerContext* context = it->second;
+		if(context->getUserId() == userID)
 		{
-			if(it->second->getUserId() == userID)
-			{
-				delete it->second;
-				m_playerContexts.erase(it);
-				GameInfo game_info;
-				Coder::roomInfo(m_playerContexts, teamA, teamB, game_info);
-				sendMessage(-1, MSG_GAME, game_info);	
-				break;
+			context->setConnected(false);
+			if(!playing){
+				context->setUserId("");
+				context->setReady(false);
+				teamA.remove(it->first);
+				teamB.remove(it->first);
 			}
+			Error error;
+			Coder::errorMsg(GE_DISCONNECTED, it->first, error);
+			sendMessage(-1, MSG_ERROR, error);	
+
+			break;
 		}
 	}
-	else{
-		for(PlayerContextList::iterator it = m_playerContexts.begin(); it != m_playerContexts.end(); it++)
-		{
-			PlayerContext* context = it->second;
-			if(context->getUserId() == userID)
-			{
-				context->setConnect(false);
-				Error error;
-				Coder::errorMsg(GE_DISCONNECTED, it->first, error);
-				sendMessage(-1, MSG_ERROR, error);	
-				break;
-			}
-		}
-	}
+
 	for(PlayerContextList::iterator it = m_playerContexts.begin(); it != m_playerContexts.end(); it++)
 	{
 		if(it->second->isConnected())
 			return;
 	}
-	terminate();
+	setDying();
 }
 
 void GameGrail::toProtoAs(int playerId, GameInfo& game_info)

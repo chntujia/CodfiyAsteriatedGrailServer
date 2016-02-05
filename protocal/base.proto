@@ -43,6 +43,7 @@ message LoginRequest {
     required bool asGuest = 1;
     optional string user_id = 2;
     optional string user_password = 3;
+	optional int32 version = 4 [default = -1];
 }
 
 // s -> c 登陆响应
@@ -75,17 +76,27 @@ message RoomListResponse {
 		optional ROLE_STRATEGY role_strategy = 5;
 		optional int32 seat_mode = 6;
 		optional int32 role_range = 7;
+		optional bool allow_guest = 8 [default = true];
+		optional bool has_password = 9 [default = false];
+		optional bool first_extension = 10;
+		optional bool second_extension = 11;
+		optional bool playing = 12 [default = false];
+		optional bool silence = 13 [default = false];
 	}
 	repeated RoomInfo rooms = 1;
 }
 
 // c -> s 创建房间
 message CreateRoomRequest {
-	required ROLE_STRATEGY role_strategy = 1;
-	required int32 max_player = 2;
-	required int32 seat_mode = 3;
-	required int32 role_range = 4;
-	optional string room_name = 5;
+    optional string room_name = 1;
+	optional int32 max_player = 2;
+	optional ROLE_STRATEGY role_strategy = 3;	
+	optional bool first_extension = 4;
+	optional bool second_extension = 5;
+	optional int32 seat_mode = 6;
+	optional bool allow_guest = 7 [default = true];
+	optional string password = 8 [default = ""];
+	optional bool silence = 9 [default = false];
 }
 
 // c -> s 加入房间

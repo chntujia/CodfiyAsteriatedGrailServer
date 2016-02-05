@@ -26,6 +26,13 @@ enum ROLE_STRATEGY{
 	ROLE_STRATEGY_ALL = 9;
 }
 
+enum SEAT_MODE{    
+	SEAT_MODE_RANDOM = 1;
+	SEAT_MODE_2COMBO = 2;
+	SEAT_MODE_3COMBO = 3;
+	SEAT_MODE_INTERLACE = 4;
+}
+
 // s -> c ±¸Ñ¡½ÇÉ«
 message RoleRequest {
     optional ROLE_STRATEGY strategy = 1;

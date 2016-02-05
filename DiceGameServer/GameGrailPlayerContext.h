@@ -5,8 +5,7 @@
 class GameGrailPlayerContext : public PlayerContext
 {
 public:
-	GameGrailPlayerContext(std::string userId) : PlayerContext(userId), ready(false), buf(NULL)
-	{}
+	GameGrailPlayerContext(): ready(false), buf(NULL){}
 	~GameGrailPlayerContext() {
 		if(buf){
 			delete buf;

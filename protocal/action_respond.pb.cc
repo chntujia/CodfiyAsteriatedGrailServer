@@ -59,6 +59,7 @@ const ::google::protobuf::internal::GeneratedMessageReflection*
 const ::google::protobuf::EnumDescriptor* MessageType2_descriptor_ = NULL;
 const ::google::protobuf::EnumDescriptor* PlayerIdConst_descriptor_ = NULL;
 const ::google::protobuf::EnumDescriptor* ROLE_STRATEGY_descriptor_ = NULL;
+const ::google::protobuf::EnumDescriptor* SEAT_MODE_descriptor_ = NULL;
 const ::google::protobuf::EnumDescriptor* BasicActionType_descriptor_ = NULL;
 const ::google::protobuf::EnumDescriptor* BasicRespondType_descriptor_ = NULL;
 const ::google::protobuf::EnumDescriptor* CmdType_descriptor_ = NULL;
@@ -289,10 +290,11 @@ void protobuf_AssignDesc_action_5frespond_2eproto() {
   MessageType2_descriptor_ = file->enum_type(0);
   PlayerIdConst_descriptor_ = file->enum_type(1);
   ROLE_STRATEGY_descriptor_ = file->enum_type(2);
-  BasicActionType_descriptor_ = file->enum_type(3);
-  BasicRespondType_descriptor_ = file->enum_type(4);
-  CmdType_descriptor_ = file->enum_type(5);
-  CardMsgType_descriptor_ = file->enum_type(6);
+  SEAT_MODE_descriptor_ = file->enum_type(3);
+  BasicActionType_descriptor_ = file->enum_type(4);
+  BasicRespondType_descriptor_ = file->enum_type(5);
+  CmdType_descriptor_ = file->enum_type(6);
+  CardMsgType_descriptor_ = file->enum_type(7);
 }
 
 namespace {
@@ -402,20 +404,22 @@ void protobuf_AddDesc_action_5frespond_2eproto() {
     "RATEGY\022\030\n\024ROLE_STRATEGY_RANDOM\020\001\022\024\n\020ROLE"
     "_STRATEGY_31\020\002\022\024\n\020ROLE_STRATEGY_BP\020\003\022\025\n\021"
     "ROLE_STRATEGY_ANY\020\004\022\025\n\021ROLE_STRATEGY_ALL"
-    "\020\t*\350\001\n\017BasicActionType\022\021\n\rACTION_ATTACK\020"
-    "\001\022\020\n\014ACTION_MAGIC\020\002\022\022\n\016ACTION_SPECIAL\020\003\022"
-    "\027\n\023ACTION_ATTACK_SKILL\020\004\022\026\n\022ACTION_MAGIC"
-    "_SKILL\020\005\022\030\n\024ACTION_SPECIAL_SKILL\020\006\022\016\n\nAC"
-    "TION_ANY\020\007\022\027\n\023ACTION_ATTACK_MAGIC\020\010\022\025\n\021A"
-    "CTION_UNACTIONAL\020\t\022\021\n\013ACTION_NONE\020\240\215\006*\307\001"
-    "\n\020BasicRespondType\022\030\n\024RESPOND_REPLY_ATTA"
-    "CK\020\n\022\022\n\016RESPOND_BULLET\020\013\022\020\n\014RESPOND_HEAL"
-    "\020\014\022\023\n\017RESPOND_DISCARD\020\r\022\022\n\016RESPOND_WEAKE"
-    "N\020\016\022\035\n\031RESPOND_ADDITIONAL_ACTION\020\017\022\031\n\025RE"
-    "SPOND_DISCARD_COVER\020\020\022\020\n\014RESPOND_ROLE\020\021*"
-    "*\n\007CmdType\022\016\n\nCMD_ACTION\020\001\022\017\n\013CMD_RESPON"
-    "D\020\002*&\n\013CardMsgType\022\n\n\006CM_USE\020\001\022\013\n\007CM_SHO"
-    "W\020\002", 1923);
+    "\020\t*f\n\tSEAT_MODE\022\024\n\020SEAT_MODE_RANDOM\020\001\022\024\n"
+    "\020SEAT_MODE_2COMBO\020\002\022\024\n\020SEAT_MODE_3COMBO\020"
+    "\003\022\027\n\023SEAT_MODE_INTERLACE\020\004*\350\001\n\017BasicActi"
+    "onType\022\021\n\rACTION_ATTACK\020\001\022\020\n\014ACTION_MAGI"
+    "C\020\002\022\022\n\016ACTION_SPECIAL\020\003\022\027\n\023ACTION_ATTACK"
+    "_SKILL\020\004\022\026\n\022ACTION_MAGIC_SKILL\020\005\022\030\n\024ACTI"
+    "ON_SPECIAL_SKILL\020\006\022\016\n\nACTION_ANY\020\007\022\027\n\023AC"
+    "TION_ATTACK_MAGIC\020\010\022\025\n\021ACTION_UNACTIONAL"
+    "\020\t\022\021\n\013ACTION_NONE\020\240\215\006*\307\001\n\020BasicRespondTy"
+    "pe\022\030\n\024RESPOND_REPLY_ATTACK\020\n\022\022\n\016RESPOND_"
+    "BULLET\020\013\022\020\n\014RESPOND_HEAL\020\014\022\023\n\017RESPOND_DI"
+    "SCARD\020\r\022\022\n\016RESPOND_WEAKEN\020\016\022\035\n\031RESPOND_A"
+    "DDITIONAL_ACTION\020\017\022\031\n\025RESPOND_DISCARD_CO"
+    "VER\020\020\022\020\n\014RESPOND_ROLE\020\021**\n\007CmdType\022\016\n\nCM"
+    "D_ACTION\020\001\022\017\n\013CMD_RESPOND\020\002*&\n\013CardMsgTy"
+    "pe\022\n\n\006CM_USE\020\001\022\013\n\007CM_SHOW\020\002", 2027);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "action_respond.proto", &protobuf_RegisterTypes);
   RoleRequest::default_instance_ = new RoleRequest();
@@ -498,6 +502,22 @@ bool ROLE_STRATEGY_IsValid(int value) {
     case 3:
     case 4:
     case 9:
+      return true;
+    default:
+      return false;
+  }
+}
+
+const ::google::protobuf::EnumDescriptor* SEAT_MODE_descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return SEAT_MODE_descriptor_;
+}
+bool SEAT_MODE_IsValid(int value) {
+  switch(value) {
+    case 1:
+    case 2:
+    case 3:
+    case 4:
       return true;
     default:
       return false;

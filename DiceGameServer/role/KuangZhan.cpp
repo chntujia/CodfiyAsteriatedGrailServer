@@ -176,7 +176,6 @@ int KuangZhan::XueXingPaoXiao(CONTEXT_TIMELINE_1 *con)
 
 int KuangZhan::KuangHua(CONTEXT_TIMELINE_2_HIT *con)
 {
-	int ret;
 	int srcID = con->attack.srcID;
 	int dstID = con->attack.dstID;
 	if(srcID != id){

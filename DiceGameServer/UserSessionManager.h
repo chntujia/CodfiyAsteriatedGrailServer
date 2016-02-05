@@ -28,11 +28,12 @@ private:
 
 public:
 	int32_t GetUserIdSeq();
-	UserSession_Ptr getUser(const string userId);
 
 	void AddUserById(uint32_t userTempId, UserSession_Ptr session); 
 	void AddUser(const string userId, UserSession_Ptr session);
-	void RemoveUser(const string userId, uint32_t userTempId);
+	void RemoveUserById(const uint32_t userTempId);
+	void RemoveUser(const string userId);
+	void trySendMessage(const string userId, uint16_t proto_type, google::protobuf::Message& proto);
 	void doCmd();
 
 public:

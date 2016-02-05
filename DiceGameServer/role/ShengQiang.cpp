@@ -350,7 +350,6 @@ int ShengQiang::DiQiang(CONTEXT_TIMELINE_2_HIT *con)
 
 int ShengQiang::ShengJi(CONTEXT_TIMELINE_2_HIT *con)
 {
-	int ret;
 	int srcID = con->attack.srcID;
 	PlayerEntity * srcPlayer = engine->getPlayerEntity(srcID);
 	int dstID = con->attack.dstID;

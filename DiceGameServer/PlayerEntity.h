@@ -25,8 +25,6 @@ public:
 	int checkBasicEffectByCard(int card);
 	//检查指定名称的基础效果牌是否存在,cardID和src保存找到的牌ID和施放者
 	int checkBasicEffectByName(int name, int* cardID = NULL, int* src = NULL);
-	//检查指定独有技的基础效果牌是否存在,cardID和src保存找到的牌ID和施放者
-	int checkBasicEffectBySpeciality(int speciality, int* cardID = NULL, int* src = NULL);
 	//专属
 	int checkExclusiveEffect(int exclusive);
 	void addExclusiveEffect(int exclusive);

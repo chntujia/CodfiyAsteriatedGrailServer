@@ -248,7 +248,6 @@ int JianDi::JianHunShouHu(CONTEXT_TIMELINE_2_MISS* con)
 {
 	if(getCoverCardNum() >= 3 || used_TIAN_SHI_ZHI_HUN || used_E_MO_ZHI_HUN)
 		return GE_SUCCESS;
-	int cardID;
 	network::SkillMsg skill;
 	Coder::skillNotice(id, id,JIAN_HUN_SHOU_HU, skill);
 	engine->sendMessage(-1, MSG_SKILL, skill);
@@ -268,7 +267,6 @@ int JianDi::JianHunShouHu(CONTEXT_TIMELINE_2_MISS* con)
 //【不屈意志】
 int JianDi::BuQuYiZhi()
 {   
-	int ret;
 	vector<int> cards;
 
 	//更新能量

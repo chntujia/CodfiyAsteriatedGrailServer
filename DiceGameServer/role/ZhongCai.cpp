@@ -99,7 +99,6 @@ int ZhongCai::v_magic_skill(Action* action)
 {
 	int actionID = action->action_id();
 	int playerID = action->src_id();
-	PlayerEntity* dst;
 
 	if(playerID != id){
 		return GE_INVALID_PLAYERID;

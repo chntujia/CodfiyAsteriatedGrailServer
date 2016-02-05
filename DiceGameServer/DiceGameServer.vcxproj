@@ -72,6 +72,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_WIN32_WINNT=0x0501;CPPCONN_PUBLIC_FUNC=;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\boost;..\base;C:\Program Files %28x86%29\MySQL\MySQL Connector C++ 1.1.4\include\cppconn;C:\Program Files %28x86%29\MySQL\MySQL Connector C++ 1.1.4\include;C:\Program Files %28x86%29\MySQL\MySQL Server 5.6\include;..\database;..\protocal;..\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <DisableSpecificWarnings>4018;4819;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -145,14 +146,12 @@
     <ClCompile Include="codec.cpp" />
     <ClCompile Include="Communication.cpp" />
     <ClCompile Include="DiceGameServer.cpp" />
-    <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameGrail.cpp" />
     <ClCompile Include="GameGrailCommon.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="GMCommand.cpp" />
     <ClCompile Include="GrailState.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="PlayerContext.cpp" />
     <ClCompile Include="PlayerEntity.cpp" />
     <ClCompile Include="prebuild.cpp" />
     <ClCompile Include="role\AnSha.cpp" />

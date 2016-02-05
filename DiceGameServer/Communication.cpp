@@ -18,6 +18,7 @@ void player_talk(GameGrail* engine, int m_playerId, Talk* talk)
 		gossip.set_type(GOSSIP_TALK);
 		gossip.set_id(m_playerId);
 		gossip.set_txt(talk->txt());
-		engine->sendMessage(-1, MSG_GOSSIP, gossip);
+		if(!engine->m_silence)
+			engine->sendMessage(-1, MSG_GOSSIP, gossip);
 	}
 }

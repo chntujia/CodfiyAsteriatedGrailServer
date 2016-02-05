@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="gb2312"?>
 <config>
   <server
+    version ="141018"
     ip ="127.0.0.1"
     port ="11111"
 	  thread_num = "4"
-    check_intertime = "60"
+    check_intertime = "600"
     log_level = "debug"/>
   <mysql
     hostname = "tcp://127.0.0.1:3306"

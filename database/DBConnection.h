@@ -5,18 +5,23 @@
 #include "mysql.h"
 #include <mysql_connection.h>
 #include <prepared_statement.h>
+#include <cppconn/exception.h>
 #include <string>
-using namespace sql;
 
 class DBConnection
 {
 public:
 	DBConnection(std::string hostname, std::string username, std::string password);
 	~DBConnection();
-	PreparedStatement* prepare(char* preparedStatement);
-	void executeUpdate(PreparedStatement* preparedStatement);
-	ResultSet* executeQuery(PreparedStatement* preparedStatement);
+	sql::PreparedStatement* prepare(char* preparedStatement);
+	void executeUpdate(sql::PreparedStatement* preparedStatement);
+	sql::ResultSet* executeQuery(sql::PreparedStatement* preparedStatement);
 private:
-	Connection *con;
+	void connect();
+	void logSQLException(sql::SQLException &e);
+	sql::Connection *con;
+	std::string hostname;
+	std::string username;
+	std::string password;
 };
 

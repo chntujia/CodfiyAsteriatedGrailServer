@@ -5,6 +5,7 @@
 #include "boost/date_time/posix_time/posix_time.hpp"
 #include "boost/format.hpp"
 using namespace std;
+using namespace sql;
 using namespace boost::posix_time; 
 
 void UserAccountDAO::insert(string username, string password, string nickname, int status)
@@ -25,7 +26,7 @@ struct UserAccount UserAccountDAO::query(string username, string password)
    query->setString(1, username);
    query->setString(2, password);
    ResultSet* res = connection->executeQuery(query);
-   if(res->next()){
+   if(res && res->next()){
        status = res->getInt("Status");
 	   nickname = res->getString("NickName");
    }

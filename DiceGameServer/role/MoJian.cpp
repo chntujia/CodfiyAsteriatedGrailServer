@@ -298,7 +298,6 @@ int MoJian::AnYingZhiLi(CONTEXT_TIMELINE_2_HIT *con)
 {
 	//在【暗影形态】下 发动的所有攻击伤害+1
 	if(tap) {	
-		int ret;
 		int srcID = con->attack.srcID;
 		int dstID = con->attack.dstID;
 		if(srcID != id){

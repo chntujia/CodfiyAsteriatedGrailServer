@@ -37,6 +37,14 @@ int32_t ServerConfig::Load (void)
 	int32_t iValue = 0;
 	const char* pszValue = NULL;
 
+	// version
+	pszValue = pkElement->Attribute("version", &iValue);
+	if ((NULL == pszValue) || (iValue < 0))
+	{
+		return -1;
+	}
+	m_version = (int32_t)iValue;
+
 	// ip
 	pszValue = pkElement->Attribute("ip", &iValue);
 	if (NULL == pszValue)

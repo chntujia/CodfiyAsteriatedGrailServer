@@ -50,9 +50,9 @@ int FengYin::v_magic_skill(Action *action)
 		card = getCardByID(cardID);
 		dst = engine->getPlayerEntity(action->dst_ids(0));
 		//不是自己的手牌                          || 不是对应的封印牌                 || 目标已有该系的封印
-		if(GE_SUCCESS != checkOneHandCard(cardID) || !card->checkSpeciality(actionID) || GE_SUCCESS == dst->checkBasicEffectBySpeciality(actionID) 
-			                         // 目标不是对手
-		                             || engine->getPlayerEntity(action->dst_ids(0))->getColor() == color){
+		if(GE_SUCCESS != checkOneHandCard(cardID) || !card->checkSpeciality(actionID) || GE_SUCCESS == dst->checkBasicEffectByName(actionID) ||
+		// 目标不是对手
+		   dst->getColor() == color){
 			return GE_INVALID_ACTION;
 		}
 		break;

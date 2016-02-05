@@ -77,22 +77,6 @@ int PlayerEntity::checkBasicEffectByName(int name, int* cardID, int* src)
     return GE_BASIC_EFFECT_NOT_FOUND;
 }
 
-int PlayerEntity::checkBasicEffectBySpeciality(int speciality, int* cardID, int* src)
-{
-	for(list< BasicEffect >::iterator it = basicEffects.begin(); it != basicEffects.end(); it++){
-		if(getCardByID(it->card)->checkSpeciality(speciality)){
-			if(cardID != NULL){
-				*cardID = it->card;
-			}
-			if(src != NULL){
-				*src = it->srcUser;
-			}
-			return GE_SUCCESS;
-		}
-	}
-    return GE_BASIC_EFFECT_NOT_FOUND;
-}
-
 int PlayerEntity::checkExclusiveEffect(int name)
 {
 	if(name < 0 || name > EXCLUSIVE_NUM){
@@ -577,12 +561,13 @@ void PlayerEntity::toProto(SinglePlayerInfo *playerInfo)
 	playerInfo->set_max_hand(handCardsMax);	
 	playerInfo->set_heal_count(crossNum);
 
-	list<BasicEffect>::iterator it;
-	for (it = basicEffects.begin(); it != basicEffects.end(); ++it)
+	list<BasicEffect>effects = basicEffects;
+
+	for (list<BasicEffect>::iterator it = effects.begin(); it != effects.end(); ++it)
 	{
 		playerInfo->add_basic_cards(it->card);
 	}
-	if (basicEffects.size() == 0)
+	if (effects.size() == 0)
 		playerInfo->add_delete_field("basic_cards");
 
 	bool hasEx = false;

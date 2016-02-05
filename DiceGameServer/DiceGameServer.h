@@ -3,6 +3,7 @@
 
 #include "zMisc.h"
 #include "zNetService.h"
+#include "GameManager.h"
 #include "UserSessionManager.h"
 #include "UserTask.h"
 #include "boost/thread.hpp"
@@ -13,34 +14,28 @@ class DiceGameServer : public zNetService, public SingletonBase<DiceGameServer>
 public:
 	friend class SingletonBase<DiceGameServer>;
 	
-	virtual zTCPTask* CreateTask(uint16_t usPort) 
+	zTCPTask* CreateTask(uint16_t usPort) 
 	{
 		return new UserTask(getIOSerivce());
 	}
 
-	virtual zTCPTask* newTCPTask(const uint16_t usPort)
+	zTCPTask* newTCPTask(const uint16_t usPort)
 	{
 		return new UserTask(getIOSerivce());
 	}
 
-	virtual bool serviceCallback()
+	bool serviceCallback()
 	{
-		Check();
 		zNetService::serviceCallback();
+		GameManager::getInstance().Check();					
+		UserSessionManager::getInstance().doCmd();	
 		return true;
-	}
-
-	virtual void Check()
-	{
-		UserSessionManager::getInstance().doCmd();
-		// GMTaskManager::getInstance().doCmd();
 	}
 
 private:
 	DiceGameServer():zNetService("DiceGameServer"){ }
 	~DiceGameServer();
 	bool grailInit();
-	void loadAllGameTable();
 
 public:
 	bool serverInit();

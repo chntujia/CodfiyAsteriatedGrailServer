@@ -422,7 +422,6 @@ int GeDou::BaiShiDouShen(int PlayerID)
 
 int GeDou::BaiShiHarm(CONTEXT_TIMELINE_1 *con)
 {
-	int ret;
 	int srcID = con->attack.srcID;
 	int dstID = con->attack.dstID;
 	if(srcID != id || !tap ){

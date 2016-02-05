@@ -47,10 +47,7 @@ int DieWu::p_before_turn_begin(int &step, int currentPlayerID)
 int DieWu::v_magic_skill(Action *action)
 {
 	int actionID = action->action_id();
-	int cardID;
 	int playerID = action->src_id();
-	CardEntity* card;
-	PlayerEntity* dst;
 
 	if(playerID != id){
 		return GE_INVALID_PLAYERID;
@@ -211,7 +208,6 @@ int DieWu::p_fix_morale(int &step, CONTEXT_LOSE_MORALE *con)
 //¡¾Îè¶¯¡¿
 int DieWu::WuDong(Action *action)
 {   
-	int ret;
 	int flag=action->args(0);
 	int cardID;
 	vector<int> cards;

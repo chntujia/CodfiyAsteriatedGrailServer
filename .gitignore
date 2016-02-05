@@ -9,6 +9,7 @@ DiceGameServer/Release/
 
 protocal/Debug/
 protocal/Release/
+protocal/target/
 
 database/Debug/
 database/Release/
@@ -24,3 +25,5 @@ base/Release/
 *.cache
 *.opensdf
 *.sdf
+*.suo
+DiceGameServer/1*.txt

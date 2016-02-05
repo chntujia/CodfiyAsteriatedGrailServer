@@ -43,14 +43,9 @@ char *zonestr(char *file, int line)
 	static char buff[64];
 
 	int i;
-#ifdef _MSC_VER
-	i = snprintf(buff,63,"%s:%d",strrchr(file, '\\') + 1,line);
+	char* p = strrchr(file, '\\');
+	i = snprintf(buff,63,"%s:%d", p ? p + 1 : file,line);
 	buff[i] = '\0';
-#else
-	snprintf(buff,63,"%s:%d",file,line);
-#endif
-
-
 	return buff;
 }
 

@@ -83,7 +83,6 @@ void* proto_decoder(const char* msg, uint16_t& type)
 		proto->ParseFromArray(msg + SIZEOF_HEADER, header_ptr->len - SIZEOF_HEADER);
 		break;
 	default:
-		type = 0;
 		return NULL;
 		break;
 	}

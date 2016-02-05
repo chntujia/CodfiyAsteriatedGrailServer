@@ -71,4 +71,5 @@ bool DiceGameServer::grailInit()
 		cardList[i++] = new CardEntity(line);
 	}
 	cardDB.close();
+	return 0;
 }
