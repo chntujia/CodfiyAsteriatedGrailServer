@@ -126,12 +126,13 @@ private:
 class GameGrailConfig : public GameConfig
 {
 public:
-	GameGrailConfig(int maxPlayers, int roleStrategy, bool firstExtension, bool secondExtension, int seatMode, bool silence): 
-	  maxPlayers(maxPlayers), roleStrategy(roleStrategy), firstExtension(firstExtension), secondExtension(secondExtension), seatMode(seatMode), silence(silence)
+	GameGrailConfig(int maxPlayers, int roleStrategy, bool firstExtension, bool secondExtension, bool spMoDao, int seatMode, bool silence): 
+	  maxPlayers(maxPlayers), roleStrategy(roleStrategy), firstExtension(firstExtension), secondExtension(secondExtension),spMoDao(spMoDao), seatMode(seatMode), silence(silence) 
 	{}
 	~GameGrailConfig() {}
 	int maxPlayers;
 	int roleStrategy;
+	bool spMoDao;
 	bool firstExtension;
 	bool secondExtension;
 	int seatMode;
@@ -151,6 +152,7 @@ public:
 	bool m_silence;
 	int m_maxAttempts;
 	int m_firstPlayerID;
+	bool m_spMoDao;
 	bool m_firstExtension;
 	bool m_secondExtension;
 	GameInfo room_info;

@@ -975,17 +975,24 @@ class RoomListResponse_RoomInfo : public ::google::protobuf::Message {
   inline bool second_extension() const;
   inline void set_second_extension(bool value);
 
-  // optional bool playing = 12 [default = false];
+  // optional bool sp_mo_dao = 12;
+  inline bool has_sp_mo_dao() const;
+  inline void clear_sp_mo_dao();
+  static const int kSpMoDaoFieldNumber = 12;
+  inline bool sp_mo_dao() const;
+  inline void set_sp_mo_dao(bool value);
+
+  // optional bool playing = 13 [default = false];
   inline bool has_playing() const;
   inline void clear_playing();
-  static const int kPlayingFieldNumber = 12;
+  static const int kPlayingFieldNumber = 13;
   inline bool playing() const;
   inline void set_playing(bool value);
 
-  // optional bool silence = 13 [default = false];
+  // optional bool silence = 14 [default = false];
   inline bool has_silence() const;
   inline void clear_silence();
-  static const int kSilenceFieldNumber = 13;
+  static const int kSilenceFieldNumber = 14;
   inline bool silence() const;
   inline void set_silence(bool value);
 
@@ -1013,6 +1020,8 @@ class RoomListResponse_RoomInfo : public ::google::protobuf::Message {
   inline void clear_has_first_extension();
   inline void set_has_second_extension();
   inline void clear_has_second_extension();
+  inline void set_has_sp_mo_dao();
+  inline void clear_has_sp_mo_dao();
   inline void set_has_playing();
   inline void clear_has_playing();
   inline void set_has_silence();
@@ -1031,11 +1040,12 @@ class RoomListResponse_RoomInfo : public ::google::protobuf::Message {
   bool has_password_;
   bool first_extension_;
   bool second_extension_;
+  bool sp_mo_dao_;
   bool playing_;
   bool silence_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(13 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(14 + 31) / 32];
 
   friend void  protobuf_AddDesc_base_2eproto();
   friend void protobuf_AssignDesc_base_2eproto();
@@ -1227,24 +1237,31 @@ class CreateRoomRequest : public ::google::protobuf::Message {
   inline bool second_extension() const;
   inline void set_second_extension(bool value);
 
-  // optional int32 seat_mode = 6;
+  // optional bool sp_mo_dao = 6;
+  inline bool has_sp_mo_dao() const;
+  inline void clear_sp_mo_dao();
+  static const int kSpMoDaoFieldNumber = 6;
+  inline bool sp_mo_dao() const;
+  inline void set_sp_mo_dao(bool value);
+
+  // optional int32 seat_mode = 7;
   inline bool has_seat_mode() const;
   inline void clear_seat_mode();
-  static const int kSeatModeFieldNumber = 6;
+  static const int kSeatModeFieldNumber = 7;
   inline ::google::protobuf::int32 seat_mode() const;
   inline void set_seat_mode(::google::protobuf::int32 value);
 
-  // optional bool allow_guest = 7 [default = true];
+  // optional bool allow_guest = 8 [default = true];
   inline bool has_allow_guest() const;
   inline void clear_allow_guest();
-  static const int kAllowGuestFieldNumber = 7;
+  static const int kAllowGuestFieldNumber = 8;
   inline bool allow_guest() const;
   inline void set_allow_guest(bool value);
 
-  // optional string password = 8 [default = ""];
+  // optional string password = 9 [default = ""];
   inline bool has_password() const;
   inline void clear_password();
-  static const int kPasswordFieldNumber = 8;
+  static const int kPasswordFieldNumber = 9;
   inline const ::std::string& password() const;
   inline void set_password(const ::std::string& value);
   inline void set_password(const char* value);
@@ -1253,10 +1270,10 @@ class CreateRoomRequest : public ::google::protobuf::Message {
   inline ::std::string* release_password();
   inline void set_allocated_password(::std::string* password);
 
-  // optional bool silence = 9 [default = false];
+  // optional bool silence = 10 [default = false];
   inline bool has_silence() const;
   inline void clear_silence();
-  static const int kSilenceFieldNumber = 9;
+  static const int kSilenceFieldNumber = 10;
   inline bool silence() const;
   inline void set_silence(bool value);
 
@@ -1272,6 +1289,8 @@ class CreateRoomRequest : public ::google::protobuf::Message {
   inline void clear_has_first_extension();
   inline void set_has_second_extension();
   inline void clear_has_second_extension();
+  inline void set_has_sp_mo_dao();
+  inline void clear_has_sp_mo_dao();
   inline void set_has_seat_mode();
   inline void clear_has_seat_mode();
   inline void set_has_allow_guest();
@@ -1286,15 +1305,16 @@ class CreateRoomRequest : public ::google::protobuf::Message {
   ::std::string* room_name_;
   ::google::protobuf::int32 max_player_;
   int role_strategy_;
-  ::google::protobuf::int32 seat_mode_;
   bool first_extension_;
   bool second_extension_;
+  bool sp_mo_dao_;
   bool allow_guest_;
-  bool silence_;
+  ::google::protobuf::int32 seat_mode_;
   ::std::string* password_;
+  bool silence_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(9 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(10 + 31) / 32];
 
   friend void  protobuf_AddDesc_base_2eproto();
   friend void protobuf_AssignDesc_base_2eproto();
@@ -3508,15 +3528,37 @@ inline void RoomListResponse_RoomInfo::set_second_extension(bool value) {
   second_extension_ = value;
 }
 
-// optional bool playing = 12 [default = false];
-inline bool RoomListResponse_RoomInfo::has_playing() const {
+// optional bool sp_mo_dao = 12;
+inline bool RoomListResponse_RoomInfo::has_sp_mo_dao() const {
   return (_has_bits_[0] & 0x00000800u) != 0;
 }
-inline void RoomListResponse_RoomInfo::set_has_playing() {
+inline void RoomListResponse_RoomInfo::set_has_sp_mo_dao() {
   _has_bits_[0] |= 0x00000800u;
 }
-inline void RoomListResponse_RoomInfo::clear_has_playing() {
+inline void RoomListResponse_RoomInfo::clear_has_sp_mo_dao() {
   _has_bits_[0] &= ~0x00000800u;
+}
+inline void RoomListResponse_RoomInfo::clear_sp_mo_dao() {
+  sp_mo_dao_ = false;
+  clear_has_sp_mo_dao();
+}
+inline bool RoomListResponse_RoomInfo::sp_mo_dao() const {
+  return sp_mo_dao_;
+}
+inline void RoomListResponse_RoomInfo::set_sp_mo_dao(bool value) {
+  set_has_sp_mo_dao();
+  sp_mo_dao_ = value;
+}
+
+// optional bool playing = 13 [default = false];
+inline bool RoomListResponse_RoomInfo::has_playing() const {
+  return (_has_bits_[0] & 0x00001000u) != 0;
+}
+inline void RoomListResponse_RoomInfo::set_has_playing() {
+  _has_bits_[0] |= 0x00001000u;
+}
+inline void RoomListResponse_RoomInfo::clear_has_playing() {
+  _has_bits_[0] &= ~0x00001000u;
 }
 inline void RoomListResponse_RoomInfo::clear_playing() {
   playing_ = false;
@@ -3530,15 +3572,15 @@ inline void RoomListResponse_RoomInfo::set_playing(bool value) {
   playing_ = value;
 }
 
-// optional bool silence = 13 [default = false];
+// optional bool silence = 14 [default = false];
 inline bool RoomListResponse_RoomInfo::has_silence() const {
-  return (_has_bits_[0] & 0x00001000u) != 0;
+  return (_has_bits_[0] & 0x00002000u) != 0;
 }
 inline void RoomListResponse_RoomInfo::set_has_silence() {
-  _has_bits_[0] |= 0x00001000u;
+  _has_bits_[0] |= 0x00002000u;
 }
 inline void RoomListResponse_RoomInfo::clear_has_silence() {
-  _has_bits_[0] &= ~0x00001000u;
+  _has_bits_[0] &= ~0x00002000u;
 }
 inline void RoomListResponse_RoomInfo::clear_silence() {
   silence_ = false;
@@ -3744,15 +3786,37 @@ inline void CreateRoomRequest::set_second_extension(bool value) {
   second_extension_ = value;
 }
 
-// optional int32 seat_mode = 6;
-inline bool CreateRoomRequest::has_seat_mode() const {
+// optional bool sp_mo_dao = 6;
+inline bool CreateRoomRequest::has_sp_mo_dao() const {
   return (_has_bits_[0] & 0x00000020u) != 0;
 }
-inline void CreateRoomRequest::set_has_seat_mode() {
+inline void CreateRoomRequest::set_has_sp_mo_dao() {
   _has_bits_[0] |= 0x00000020u;
 }
-inline void CreateRoomRequest::clear_has_seat_mode() {
+inline void CreateRoomRequest::clear_has_sp_mo_dao() {
   _has_bits_[0] &= ~0x00000020u;
+}
+inline void CreateRoomRequest::clear_sp_mo_dao() {
+  sp_mo_dao_ = false;
+  clear_has_sp_mo_dao();
+}
+inline bool CreateRoomRequest::sp_mo_dao() const {
+  return sp_mo_dao_;
+}
+inline void CreateRoomRequest::set_sp_mo_dao(bool value) {
+  set_has_sp_mo_dao();
+  sp_mo_dao_ = value;
+}
+
+// optional int32 seat_mode = 7;
+inline bool CreateRoomRequest::has_seat_mode() const {
+  return (_has_bits_[0] & 0x00000040u) != 0;
+}
+inline void CreateRoomRequest::set_has_seat_mode() {
+  _has_bits_[0] |= 0x00000040u;
+}
+inline void CreateRoomRequest::clear_has_seat_mode() {
+  _has_bits_[0] &= ~0x00000040u;
 }
 inline void CreateRoomRequest::clear_seat_mode() {
   seat_mode_ = 0;
@@ -3766,15 +3830,15 @@ inline void CreateRoomRequest::set_seat_mode(::google::protobuf::int32 value) {
   seat_mode_ = value;
 }
 
-// optional bool allow_guest = 7 [default = true];
+// optional bool allow_guest = 8 [default = true];
 inline bool CreateRoomRequest::has_allow_guest() const {
-  return (_has_bits_[0] & 0x00000040u) != 0;
+  return (_has_bits_[0] & 0x00000080u) != 0;
 }
 inline void CreateRoomRequest::set_has_allow_guest() {
-  _has_bits_[0] |= 0x00000040u;
+  _has_bits_[0] |= 0x00000080u;
 }
 inline void CreateRoomRequest::clear_has_allow_guest() {
-  _has_bits_[0] &= ~0x00000040u;
+  _has_bits_[0] &= ~0x00000080u;
 }
 inline void CreateRoomRequest::clear_allow_guest() {
   allow_guest_ = true;
@@ -3788,15 +3852,15 @@ inline void CreateRoomRequest::set_allow_guest(bool value) {
   allow_guest_ = value;
 }
 
-// optional string password = 8 [default = ""];
+// optional string password = 9 [default = ""];
 inline bool CreateRoomRequest::has_password() const {
-  return (_has_bits_[0] & 0x00000080u) != 0;
+  return (_has_bits_[0] & 0x00000100u) != 0;
 }
 inline void CreateRoomRequest::set_has_password() {
-  _has_bits_[0] |= 0x00000080u;
+  _has_bits_[0] |= 0x00000100u;
 }
 inline void CreateRoomRequest::clear_has_password() {
-  _has_bits_[0] &= ~0x00000080u;
+  _has_bits_[0] &= ~0x00000100u;
 }
 inline void CreateRoomRequest::clear_password() {
   if (password_ != &::google::protobuf::internal::kEmptyString) {
@@ -3858,15 +3922,15 @@ inline void CreateRoomRequest::set_allocated_password(::std::string* password) {
   }
 }
 
-// optional bool silence = 9 [default = false];
+// optional bool silence = 10 [default = false];
 inline bool CreateRoomRequest::has_silence() const {
-  return (_has_bits_[0] & 0x00000100u) != 0;
+  return (_has_bits_[0] & 0x00000200u) != 0;
 }
 inline void CreateRoomRequest::set_has_silence() {
-  _has_bits_[0] |= 0x00000100u;
+  _has_bits_[0] |= 0x00000200u;
 }
 inline void CreateRoomRequest::clear_has_silence() {
-  _has_bits_[0] &= ~0x00000100u;
+  _has_bits_[0] &= ~0x00000200u;
 }
 inline void CreateRoomRequest::clear_silence() {
   silence_ = false;

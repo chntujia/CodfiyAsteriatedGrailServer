@@ -25,10 +25,12 @@ typedef map< int, GameGrailPlayerContext* > PlayerContextList;
 const int SUMMON[] = {1, 2, 3, 4, 5, 6, 7, 8, 9,10,
 	                 11,12,13,14,15,16,17,18,19,20,
 			         21,22,23,24,25,26,27,28,29,30,
-					 31};
-const int BASIC_ROLE[] = {1, 2, 3, 4, 5, 6, 7, 8, 9,10,
+					 31,108};
+const int BASIC_ROLE[] = {1, 2, 3, 4, 5, 6, 7, 9,10,
 	                 11,12,13,14,15,16,17,18,19,20,
 					 21,22,23,24};
+const int MO_DAO[] ={8};
+const int SP_MO_DAO[] ={108};
 const int FIRST_EXT[] = {26, 28, 29};
 const int SECOND_EXT[] = {25, 27, 30, 31};
 bool isValidRoleID(int roleID);
@@ -120,6 +122,8 @@ enum CAUSE{
 	MO_DAN_ZHANG_WO = 802,
 	MO_DAN_RONG_HE = 803,
 	HUI_MIE_FENG_BAO = 804,
+	SP_MO_BAO_CHONG_JI=805,
+	FA_LI_HU_DUN=806,
 	XIU_LUO_LIAN_ZHAN = 901,
     AN_YING_NING_JU = 902,
     AN_YING_ZHI_LI = 903,

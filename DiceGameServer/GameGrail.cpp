@@ -11,11 +11,12 @@
 #include "role\AnSha.h"
 #include "role\KuangZhan.h"
 #include "role\FengYin.h"
-#include "role\MoDao.h"
 #include "role\YuanSu.h"
 #include "role\ShengNv.h"
 #include "role\SiLing.h"
 #include "role\ShengQiang.h"
+#include "role\MoDao.h"
+#include "role\spMoDao.h"
 #include "role\MaoXian.h"
 #include "role\GongNv.h"
 #include "role\ShenGuan.h"
@@ -69,6 +70,9 @@ PlayerEntity* GameGrail::createRole(int id, int roleID, int color)
 		break;
 	case 8:
 		return new MoDao(this,id,color);
+		break;
+	case 108:
+		return new spMoDao(this,id,color);
 		break;
 	case 9:
 		return new MoJian(this,id,color);
@@ -200,6 +204,7 @@ GameGrail::GameGrail(GameGrailConfig *config) : playing(false), processing(true)
 		m_playerContexts[i] = new GameGrailPlayerContext;
 	}
 	m_roleStrategy = config->roleStrategy;
+	m_spMoDao = config->spMoDao;
 	m_firstExtension = config->firstExtension;
 	m_secondExtension = config->secondExtension;
 	m_seatMode = config->seatMode;
@@ -987,6 +992,12 @@ Deck* GameGrail::initRoles()
 	Deck *roles;
 	roles = new Deck(sizeof(SUMMON)/sizeof(int));
 	roles->push(sizeof(BASIC_ROLE)/sizeof(int), BASIC_ROLE);
+	if(m_spMoDao){
+		roles->push(sizeof(SP_MO_DAO)/sizeof(int), SP_MO_DAO);
+	}
+	else{
+		roles->push(sizeof(MO_DAO)/sizeof(int), MO_DAO);
+	}
 	if(m_firstExtension){
 		roles->push(sizeof(FIRST_EXT)/sizeof(int), FIRST_EXT);
 	}

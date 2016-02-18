@@ -80,8 +80,9 @@ message RoomListResponse {
 		optional bool has_password = 9 [default = false];
 		optional bool first_extension = 10;
 		optional bool second_extension = 11;
-		optional bool playing = 12 [default = false];
-		optional bool silence = 13 [default = false];
+		optional bool sp_mo_dao = 12;
+		optional bool playing = 13 [default = false];
+		optional bool silence = 14 [default = false];
 	}
 	repeated RoomInfo rooms = 1;
 }
@@ -93,10 +94,11 @@ message CreateRoomRequest {
 	optional ROLE_STRATEGY role_strategy = 3;	
 	optional bool first_extension = 4;
 	optional bool second_extension = 5;
-	optional int32 seat_mode = 6;
-	optional bool allow_guest = 7 [default = true];
-	optional string password = 8 [default = ""];
-	optional bool silence = 9 [default = false];
+	optional bool sp_mo_dao = 6;
+	optional int32 seat_mode = 7;
+	optional bool allow_guest = 8 [default = true];
+	optional string password = 9 [default = ""];
+	optional bool silence = 10 [default = false];
 }
 
 // c -> s 加入房间

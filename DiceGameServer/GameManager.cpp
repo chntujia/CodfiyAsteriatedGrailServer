@@ -17,6 +17,7 @@ int GameManager::createGame(CreateRoomRequest *req)
 		                                          req->role_strategy(),
 												  req->first_extension(),
 												  req->second_extension(),
+												  req->sp_mo_dao(),
 												  req->seat_mode(),
 												  req->silence());
 	config->setTableName(req->room_name());
@@ -142,6 +143,7 @@ int GameManager::getGameList(RoomListRequest* req, RoomListResponse* res)
 		room->set_seat_mode((SEAT_MODE)game->m_seatMode);
 		room->set_first_extension(game->m_firstExtension);
 		room->set_second_extension(game->m_secondExtension);
+		room->set_sp_mo_dao(game->m_spMoDao);
 		GameContextMapType::iterator iter2 = m_gameGrailContextMap.find(roomId);
 		if(iter2 != m_gameGrailContextMap.end())
 		{
