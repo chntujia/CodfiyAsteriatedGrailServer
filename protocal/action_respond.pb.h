@@ -136,6 +136,26 @@ inline bool SEAT_MODE_Parse(
   return ::google::protobuf::internal::ParseNamedEnum<SEAT_MODE>(
     SEAT_MODE_descriptor(), name, value);
 }
+enum BP_OPRATION {
+  BP_NULL = 1,
+  BP_BAN = 2,
+  BP_PICK = 3
+};
+bool BP_OPRATION_IsValid(int value);
+const BP_OPRATION BP_OPRATION_MIN = BP_NULL;
+const BP_OPRATION BP_OPRATION_MAX = BP_PICK;
+const int BP_OPRATION_ARRAYSIZE = BP_OPRATION_MAX + 1;
+
+const ::google::protobuf::EnumDescriptor* BP_OPRATION_descriptor();
+inline const ::std::string& BP_OPRATION_Name(BP_OPRATION value) {
+  return ::google::protobuf::internal::NameOfEnum(
+    BP_OPRATION_descriptor(), value);
+}
+inline bool BP_OPRATION_Parse(
+    const ::std::string& name, BP_OPRATION* value) {
+  return ::google::protobuf::internal::ParseNamedEnum<BP_OPRATION>(
+    BP_OPRATION_descriptor(), name, value);
+}
 enum BasicActionType {
   ACTION_ATTACK = 1,
   ACTION_MAGIC = 2,
@@ -301,31 +321,41 @@ class RoleRequest : public ::google::protobuf::Message {
   inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
       mutable_role_ids();
 
-  // repeated uint32 args = 3;
+  // repeated int32 args = 3;
   inline int args_size() const;
   inline void clear_args();
   static const int kArgsFieldNumber = 3;
-  inline ::google::protobuf::uint32 args(int index) const;
-  inline void set_args(int index, ::google::protobuf::uint32 value);
-  inline void add_args(::google::protobuf::uint32 value);
-  inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
+  inline ::google::protobuf::int32 args(int index) const;
+  inline void set_args(int index, ::google::protobuf::int32 value);
+  inline void add_args(::google::protobuf::int32 value);
+  inline const ::google::protobuf::RepeatedField< ::google::protobuf::int32 >&
       args() const;
-  inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
+  inline ::google::protobuf::RepeatedField< ::google::protobuf::int32 >*
       mutable_args();
+
+  // optional uint32 opration = 4;
+  inline bool has_opration() const;
+  inline void clear_opration();
+  static const int kOprationFieldNumber = 4;
+  inline ::google::protobuf::uint32 opration() const;
+  inline void set_opration(::google::protobuf::uint32 value);
 
   // @@protoc_insertion_point(class_scope:network.RoleRequest)
  private:
   inline void set_has_strategy();
   inline void clear_has_strategy();
+  inline void set_has_opration();
+  inline void clear_has_opration();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
   ::google::protobuf::RepeatedField< ::google::protobuf::uint32 > role_ids_;
-  ::google::protobuf::RepeatedField< ::google::protobuf::uint32 > args_;
   int strategy_;
+  ::google::protobuf::uint32 opration_;
+  ::google::protobuf::RepeatedField< ::google::protobuf::int32 > args_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(3 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(4 + 31) / 32];
 
   friend void  protobuf_AddDesc_action_5frespond_2eproto();
   friend void protobuf_AssignDesc_action_5frespond_2eproto();
@@ -1643,29 +1673,51 @@ RoleRequest::mutable_role_ids() {
   return &role_ids_;
 }
 
-// repeated uint32 args = 3;
+// repeated int32 args = 3;
 inline int RoleRequest::args_size() const {
   return args_.size();
 }
 inline void RoleRequest::clear_args() {
   args_.Clear();
 }
-inline ::google::protobuf::uint32 RoleRequest::args(int index) const {
+inline ::google::protobuf::int32 RoleRequest::args(int index) const {
   return args_.Get(index);
 }
-inline void RoleRequest::set_args(int index, ::google::protobuf::uint32 value) {
+inline void RoleRequest::set_args(int index, ::google::protobuf::int32 value) {
   args_.Set(index, value);
 }
-inline void RoleRequest::add_args(::google::protobuf::uint32 value) {
+inline void RoleRequest::add_args(::google::protobuf::int32 value) {
   args_.Add(value);
 }
-inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
+inline const ::google::protobuf::RepeatedField< ::google::protobuf::int32 >&
 RoleRequest::args() const {
   return args_;
 }
-inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
+inline ::google::protobuf::RepeatedField< ::google::protobuf::int32 >*
 RoleRequest::mutable_args() {
   return &args_;
+}
+
+// optional uint32 opration = 4;
+inline bool RoleRequest::has_opration() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void RoleRequest::set_has_opration() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void RoleRequest::clear_has_opration() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void RoleRequest::clear_opration() {
+  opration_ = 0u;
+  clear_has_opration();
+}
+inline ::google::protobuf::uint32 RoleRequest::opration() const {
+  return opration_;
+}
+inline void RoleRequest::set_opration(::google::protobuf::uint32 value) {
+  set_has_opration();
+  opration_ = value;
 }
 
 // -------------------------------------------------------------------
@@ -2704,6 +2756,10 @@ inline const EnumDescriptor* GetEnumDescriptor< ::network::ROLE_STRATEGY>() {
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::network::SEAT_MODE>() {
   return ::network::SEAT_MODE_descriptor();
+}
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::network::BP_OPRATION>() {
+  return ::network::BP_OPRATION_descriptor();
 }
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::network::BasicActionType>() {

@@ -54,6 +54,7 @@ class GameInfo;
 class Talk;
 class Error;
 class Gossip;
+class HeartBeat;
 
 enum JoinTeamRequest_Team {
   JoinTeamRequest_Team_TEAM_A = 1,
@@ -114,11 +115,12 @@ enum MessageType {
   MSG_GAME = 16,
   MSG_TALK = 17,
   MSG_GOSSIP = 18,
-  MSG_ERROR = 19
+  MSG_ERROR = 19,
+  MSG_HEARTBEAT = 20
 };
 bool MessageType_IsValid(int value);
 const MessageType MessageType_MIN = MSG_REGISTER_REQ;
-const MessageType MessageType_MAX = MSG_ERROR;
+const MessageType MessageType_MAX = MSG_HEARTBEAT;
 const int MessageType_ARRAYSIZE = MessageType_MAX + 1;
 
 const ::google::protobuf::EnumDescriptor* MessageType_descriptor();
@@ -2505,6 +2507,78 @@ class Gossip : public ::google::protobuf::Message {
 
   void InitAsDefaultInstance();
   static Gossip* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class HeartBeat : public ::google::protobuf::Message {
+ public:
+  HeartBeat();
+  virtual ~HeartBeat();
+
+  HeartBeat(const HeartBeat& from);
+
+  inline HeartBeat& operator=(const HeartBeat& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const HeartBeat& default_instance();
+
+  void Swap(HeartBeat* other);
+
+  // implements Message ----------------------------------------------
+
+  HeartBeat* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const HeartBeat& from);
+  void MergeFrom(const HeartBeat& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // @@protoc_insertion_point(class_scope:network.HeartBeat)
+ private:
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[1];
+
+  friend void  protobuf_AddDesc_base_2eproto();
+  friend void protobuf_AssignDesc_base_2eproto();
+  friend void protobuf_ShutdownFile_base_2eproto();
+
+  void InitAsDefaultInstance();
+  static HeartBeat* default_instance_;
 };
 // ===================================================================
 
@@ -5182,6 +5256,10 @@ inline void Gossip::set_id(::google::protobuf::uint32 value) {
   set_has_id();
   id_ = value;
 }
+
+// -------------------------------------------------------------------
+
+// HeartBeat
 
 
 // @@protoc_insertion_point(namespace_scope)

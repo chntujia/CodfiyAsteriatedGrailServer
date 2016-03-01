@@ -22,6 +22,7 @@ enum MessageType {
     MSG_TALK = 17;
     MSG_GOSSIP = 18;
 	MSG_ERROR = 19;	
+	MSG_HEARTBEAT = 20;
 }
 
 // c -> s ×¢²áÇëÇó
@@ -199,4 +200,7 @@ message Gossip {
     optional GossipType type = 1;
     optional string txt = 2;
     optional uint32 id = 3;
+}
+
+message HeartBeat {
 }

@@ -79,6 +79,9 @@ const ::google::protobuf::internal::GeneratedMessageReflection*
 const ::google::protobuf::Descriptor* Gossip_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   Gossip_reflection_ = NULL;
+const ::google::protobuf::Descriptor* HeartBeat_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  HeartBeat_reflection_ = NULL;
 const ::google::protobuf::EnumDescriptor* MessageType_descriptor_ = NULL;
 const ::google::protobuf::EnumDescriptor* GossipType_descriptor_ = NULL;
 
@@ -442,6 +445,20 @@ void protobuf_AssignDesc_base_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(Gossip));
+  HeartBeat_descriptor_ = file->message_type(18);
+  static const int HeartBeat_offsets_[1] = {
+  };
+  HeartBeat_reflection_ =
+    new ::google::protobuf::internal::GeneratedMessageReflection(
+      HeartBeat_descriptor_,
+      HeartBeat::default_instance_,
+      HeartBeat_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(HeartBeat, _has_bits_[0]),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(HeartBeat, _unknown_fields_),
+      -1,
+      ::google::protobuf::DescriptorPool::generated_pool(),
+      ::google::protobuf::MessageFactory::generated_factory(),
+      sizeof(HeartBeat));
   MessageType_descriptor_ = file->enum_type(0);
   GossipType_descriptor_ = file->enum_type(1);
 }
@@ -494,6 +511,8 @@ void protobuf_RegisterTypes(const ::std::string&) {
     Error_descriptor_, &Error::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
     Gossip_descriptor_, &Gossip::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+    HeartBeat_descriptor_, &HeartBeat::default_instance());
 }
 
 }  // namespace
@@ -537,6 +556,8 @@ void protobuf_ShutdownFile_base_2eproto() {
   delete Error_reflection_;
   delete Gossip::default_instance_;
   delete Gossip_reflection_;
+  delete HeartBeat::default_instance_;
+  delete HeartBeat_reflection_;
 }
 
 void protobuf_AddDesc_base_2eproto() {
@@ -604,18 +625,19 @@ void protobuf_AddDesc_base_2eproto() {
     " \001(\t\"1\n\005Error\022\n\n\002id\030\001 \002(\005\022\016\n\006dst_id\030\002 \002("
     "\005\022\014\n\004args\030\003 \003(\005\"D\n\006Gossip\022!\n\004type\030\001 \001(\0162"
     "\023.network.GossipType\022\013\n\003txt\030\002 \001(\t\022\n\n\002id\030"
-    "\003 \001(\r*\225\003\n\013MessageType\022\024\n\020MSG_REGISTER_RE"
-    "Q\020\001\022\024\n\020MSG_REGISTER_REP\020\002\022\021\n\rMSG_LOGIN_R"
-    "EQ\020\003\022\021\n\rMSG_LOGIN_REP\020\004\022\022\n\016MSG_LOGOUT_RE"
-    "Q\020\005\022\022\n\016MSG_LOGOUT_REP\020\006\022\024\n\020MSG_ROOMLIST_"
-    "REQ\020\007\022\024\n\020MSG_ROOMLIST_REP\020\010\022\027\n\023MSG_CREAT"
-    "E_ROOM_REQ\020\t\022\026\n\022MSG_ENTER_ROOM_REQ\020\n\022\026\n\022"
-    "MSG_ENTER_ROOM_REP\020\013\022\026\n\022MSG_LEAVE_ROOM_R"
-    "EQ\020\014\022\025\n\021MSG_JOIN_TEAM_REQ\020\r\022\026\n\022MSG_READY"
-    "_GAME_REQ\020\016\022\025\n\021MSG_SINGLE_PLAYER\020\017\022\014\n\010MS"
-    "G_GAME\020\020\022\014\n\010MSG_TALK\020\021\022\016\n\nMSG_GOSSIP\020\022\022\r"
-    "\n\tMSG_ERROR\020\023*0\n\nGossipType\022\017\n\013GOSSIP_TA"
-    "LK\020\001\022\021\n\rGOSSIP_NOTICE\020\002", 2743);
+    "\003 \001(\r\"\013\n\tHeartBeat*\250\003\n\013MessageType\022\024\n\020MS"
+    "G_REGISTER_REQ\020\001\022\024\n\020MSG_REGISTER_REP\020\002\022\021"
+    "\n\rMSG_LOGIN_REQ\020\003\022\021\n\rMSG_LOGIN_REP\020\004\022\022\n\016"
+    "MSG_LOGOUT_REQ\020\005\022\022\n\016MSG_LOGOUT_REP\020\006\022\024\n\020"
+    "MSG_ROOMLIST_REQ\020\007\022\024\n\020MSG_ROOMLIST_REP\020\010"
+    "\022\027\n\023MSG_CREATE_ROOM_REQ\020\t\022\026\n\022MSG_ENTER_R"
+    "OOM_REQ\020\n\022\026\n\022MSG_ENTER_ROOM_REP\020\013\022\026\n\022MSG"
+    "_LEAVE_ROOM_REQ\020\014\022\025\n\021MSG_JOIN_TEAM_REQ\020\r"
+    "\022\026\n\022MSG_READY_GAME_REQ\020\016\022\025\n\021MSG_SINGLE_P"
+    "LAYER\020\017\022\014\n\010MSG_GAME\020\020\022\014\n\010MSG_TALK\020\021\022\016\n\nM"
+    "SG_GOSSIP\020\022\022\r\n\tMSG_ERROR\020\023\022\021\n\rMSG_HEARTB"
+    "EAT\020\024*0\n\nGossipType\022\017\n\013GOSSIP_TALK\020\001\022\021\n\r"
+    "GOSSIP_NOTICE\020\002", 2775);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "base.proto", &protobuf_RegisterTypes);
   RegisterRequest::default_instance_ = new RegisterRequest();
@@ -637,6 +659,7 @@ void protobuf_AddDesc_base_2eproto() {
   Talk::default_instance_ = new Talk();
   Error::default_instance_ = new Error();
   Gossip::default_instance_ = new Gossip();
+  HeartBeat::default_instance_ = new HeartBeat();
   RegisterRequest::default_instance_->InitAsDefaultInstance();
   RegisterResponse::default_instance_->InitAsDefaultInstance();
   LoginRequest::default_instance_->InitAsDefaultInstance();
@@ -656,6 +679,7 @@ void protobuf_AddDesc_base_2eproto() {
   Talk::default_instance_->InitAsDefaultInstance();
   Error::default_instance_->InitAsDefaultInstance();
   Gossip::default_instance_->InitAsDefaultInstance();
+  HeartBeat::default_instance_->InitAsDefaultInstance();
   ::google::protobuf::internal::OnShutdown(&protobuf_ShutdownFile_base_2eproto);
 }
 
@@ -690,6 +714,7 @@ bool MessageType_IsValid(int value) {
     case 17:
     case 18:
     case 19:
+    case 20:
       return true;
     default:
       return false;
@@ -7583,6 +7608,162 @@ void Gossip::Swap(Gossip* other) {
   ::google::protobuf::Metadata metadata;
   metadata.descriptor = Gossip_descriptor_;
   metadata.reflection = Gossip_reflection_;
+  return metadata;
+}
+
+
+// ===================================================================
+
+#ifndef _MSC_VER
+#endif  // !_MSC_VER
+
+HeartBeat::HeartBeat()
+  : ::google::protobuf::Message() {
+  SharedCtor();
+}
+
+void HeartBeat::InitAsDefaultInstance() {
+}
+
+HeartBeat::HeartBeat(const HeartBeat& from)
+  : ::google::protobuf::Message() {
+  SharedCtor();
+  MergeFrom(from);
+}
+
+void HeartBeat::SharedCtor() {
+  _cached_size_ = 0;
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+}
+
+HeartBeat::~HeartBeat() {
+  SharedDtor();
+}
+
+void HeartBeat::SharedDtor() {
+  if (this != default_instance_) {
+  }
+}
+
+void HeartBeat::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* HeartBeat::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return HeartBeat_descriptor_;
+}
+
+const HeartBeat& HeartBeat::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_base_2eproto();
+  return *default_instance_;
+}
+
+HeartBeat* HeartBeat::default_instance_ = NULL;
+
+HeartBeat* HeartBeat::New() const {
+  return new HeartBeat;
+}
+
+void HeartBeat::Clear() {
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  mutable_unknown_fields()->Clear();
+}
+
+bool HeartBeat::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
+  ::google::protobuf::uint32 tag;
+  while ((tag = input->ReadTag()) != 0) {
+    if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+        ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+      return true;
+    }
+    DO_(::google::protobuf::internal::WireFormat::SkipField(
+          input, tag, mutable_unknown_fields()));
+  }
+  return true;
+#undef DO_
+}
+
+void HeartBeat::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  if (!unknown_fields().empty()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+}
+
+::google::protobuf::uint8* HeartBeat::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
+  if (!unknown_fields().empty()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  return target;
+}
+
+int HeartBeat::ByteSize() const {
+  int total_size = 0;
+
+  if (!unknown_fields().empty()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void HeartBeat::MergeFrom(const ::google::protobuf::Message& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  const HeartBeat* source =
+    ::google::protobuf::internal::dynamic_cast_if_available<const HeartBeat*>(
+      &from);
+  if (source == NULL) {
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+    MergeFrom(*source);
+  }
+}
+
+void HeartBeat::MergeFrom(const HeartBeat& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+}
+
+void HeartBeat::CopyFrom(const ::google::protobuf::Message& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void HeartBeat::CopyFrom(const HeartBeat& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool HeartBeat::IsInitialized() const {
+
+  return true;
+}
+
+void HeartBeat::Swap(HeartBeat* other) {
+  if (other != this) {
+    _unknown_fields_.Swap(&other->_unknown_fields_);
+    std::swap(_cached_size_, other->_cached_size_);
+  }
+}
+
+::google::protobuf::Metadata HeartBeat::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = HeartBeat_descriptor_;
+  metadata.reflection = HeartBeat_reflection_;
   return metadata;
 }
 

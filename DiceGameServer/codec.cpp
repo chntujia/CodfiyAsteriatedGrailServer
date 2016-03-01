@@ -30,6 +30,10 @@ void* proto_decoder(const char* msg, uint16_t& type)
 	type = header_ptr->type;
 	switch (header_ptr->type)
 	{
+	case MSG_HEARTBEAT:
+		proto = new HeartBeat();
+		proto->ParseFromArray(msg + SIZEOF_HEADER, header_ptr->len - SIZEOF_HEADER);
+		break;
 	case MSG_REGISTER_REQ:
 		proto = new RegisterRequest();
 		proto->ParseFromArray(msg + SIZEOF_HEADER, header_ptr->len - SIZEOF_HEADER);

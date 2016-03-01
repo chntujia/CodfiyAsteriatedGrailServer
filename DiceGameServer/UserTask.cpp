@@ -100,6 +100,13 @@ bool UserTask::cmdMsgParse(const char *pstrMsg, const uint32_t nCmdLen)
 		
 		switch(type)
 		{
+		case MSG_HEARTBEAT:
+			{
+				HeartBeat heartbeat;
+				sendProto(MSG_HEARTBEAT, heartbeat);
+				delete proto;
+				break;
+			}
 		case MSG_LOGIN_REQ:
 			{
 				handleLogIn((LoginRequest*)proto);				
