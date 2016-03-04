@@ -158,6 +158,9 @@ bool UserTask::cmdMsgParse(const char *pstrMsg, const uint32_t nCmdLen)
 				else if(game->m_roleStrategy == ROLE_STRATEGY_ANY && pick->is_pick()){
 					tryNotify(m_playerId, STATE_ROLE_STRATEGY_ANY, 0, pick);
 				}
+				else if(game->m_roleStrategy == ROLE_STRATEGY_BP) {
+					tryNotify(m_playerId, STATE_ROLE_STRATEGY_BP, 0, pick);
+				}
 				break;
 			}
 		case MSG_ACTION:

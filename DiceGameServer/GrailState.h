@@ -215,6 +215,22 @@ private:
 	RoleRequest* messages[MAXPLAYER];
 };
 
+class StateRoleStrategyBP: public GrailState
+{
+private:
+	int step;
+	int* alternativeRoles;
+	int* options;
+	vector<int> red;
+	vector<int> blue;
+	int alternativeNum;
+	int playerNum;
+public:
+	StateRoleStrategyBP(): GrailState(STATE_ROLE_STRATEGY_BP){ alternativeRoles = NULL; options = NULL; step = 0;}
+	~StateRoleStrategyBP() { SAFE_DELETE(alternativeRoles);SAFE_DELETE(options);}
+	int handle(GameGrail* engine);
+};
+
 class StateGameStart : public GrailState
 {
 public:

@@ -341,6 +341,8 @@ enum STEP{
 #define CARDSUM 150
 #define CARDBUF 30
 #define MAXPLAYER 8
+#define MAXROLES 20
+const int BP_ALTERNATIVE_NUM[] = {12,16,20};
 extern CardEntity* cardList[CARDSUM];
 CardEntity* getCardByID(int id);
 #define RED  1
@@ -705,6 +707,14 @@ public:
 		cmd_req.set_strategy(ROLE_STRATEGY_31);
 		for(int i = 0; i < howMany; i++){
 			cmd_req.add_role_ids(roles[i]);
+		}
+	}
+	static void setAlternativeRoles(int howMany, const int *roles, const int *chosen, RoleRequest& cmd_req)
+	{
+		cmd_req.set_strategy(ROLE_STRATEGY_BP);
+		for(int i = 0; i < howMany; i ++){
+			cmd_req.add_role_ids(roles[i]);
+			cmd_req.add_args(chosen[i]);
 		}
 	}
 	static void roomInfo(PlayerContextList players, list< int > teamA, list< int > teamB, GameInfo& room_info)

@@ -328,7 +328,7 @@ bool GameGrail::waitForOne(int id, uint16_t proto_type, google::protobuf::Messag
 	boost::mutex::scoped_lock lock(m_mutex_for_wait);
 	while(attempts < m_maxAttempts && processing)
 	{
-		sendMessage(-1, proto_type, proto);
+		sendMessage(id, proto_type, proto);
 		boost::system_time const timeout=boost::get_system_time()+ boost::posix_time::milliseconds(sec*1000);
 		if(m_condition_for_wait.timed_wait(lock, timeout, boost::bind( &GameGrail::isReady, this, id )))
 			return true;
@@ -956,7 +956,7 @@ int GameGrail::setStateRoleStrategy()
 		pushGameState(new StateRoleStrategyAny);
 		break;
 	case ROLE_STRATEGY_BP:
-		//pushGameState(new GrailState(STATE_ROLE_STRATEGY_BP));
+		pushGameState(new StateRoleStrategyBP);
 		break;
 	default:
 		return GE_INVALID_ARGUMENT;

@@ -33,11 +33,18 @@ enum SEAT_MODE{
 	SEAT_MODE_INTERLACE = 4;
 }
 
+enum BP_OPRATION{
+	BP_NULL = 1;
+	BP_BAN = 2;
+	BP_PICK = 3;
+}
+
 // s -> c 备选角色
 message RoleRequest {
     optional ROLE_STRATEGY strategy = 1;
     repeated uint32 role_ids = 2;   // 可选角色
-	repeated uint32 args = 3;
+	repeated int32 args = 3; //0 未选择 正 被此id选择 负 被此idban
+	optional uint32 opration = 4;
 }
 
 // c -> s 角色选取
