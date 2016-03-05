@@ -11,22 +11,22 @@ bool MoQiang::cmdMsgParse(UserTask *session, uint16_t type, ::google::protobuf::
 		Respond* respond = (Respond*)proto;
 		switch(respond->respond_id())
 		{
-		case AN_ZHI_JIE_FANG:
+		case AN_ZHI_JIE_FANG://暗之解放
 			//tryNotify负责向游戏主线程传消息，只有id等于当前等待id，声明state等于当前state，声明step等于当前step，游戏主线程才会接受
 			session->tryNotify(id,STATE_BOOT,AN_ZHI_JIE_FANG, respond);
 			return true;
 
-        case HUAN_YING_XING_CHEN:
+        case HUAN_YING_XING_CHEN://幻影星辰
 			//tryNotify负责向游戏主线程传消息，只有id等于当前等待id，声明state等于当前state，声明step等于当前step，游戏主线程才会接受
 			session->tryNotify(id,STATE_BOOT,HUAN_YING_XING_CHEN, respond);
 			return true;
 
-		case  AN_ZHI_ZHANG_BI:
+		case  AN_ZHI_ZHANG_BI://暗之障壁
 			//tryNotify负责向游戏主线程传消息，只有id等于当前等待id，声明state等于当前state，声明step等于当前step，游戏主线程才会接受
 			session->tryNotify(id,STATE_TIMELINE_3,AN_ZHI_ZHANG_BI, respond);
 			return true;
 
-		case QI_HEI_ZHI_QIANG:
+		case QI_HEI_ZHI_QIANG://漆黑之枪
 			//tryNotify负责向游戏主线程传消息，只有id等于当前等待id，声明state等于当前state，声明step等于当前step，游戏主线程才会接受
 			session->tryNotify(id,STATE_TIMELINE_2_HIT,QI_HEI_ZHI_QIANG, respond);  //用什么状态？？？
 			return true;
@@ -46,7 +46,7 @@ int  MoQiang::p_before_turn_begin(int &step, int currentPlayerID)
 	availabel_ChongYing=true;
 	used_ChongYing=false;
 	hurtID=-1;
-	HuanYingXingChenEffectFlag = false;
+	HuanYingXingChenEffectFlag = false;//ture就不能炸
 	used_AnZhiJieFang = false;
 	return GE_SUCCESS; 
 }
@@ -165,14 +165,17 @@ int MoQiang::p_timeline_4(int &step, CONTEXT_TIMELINE_4 *con)
 }
 
 //幻影星辰
-int MoQiang::p_lose_morale(int &step, CONTEXT_LOSE_MORALE *con)
+int MoQiang::p_true_lose_morale(int &step, CONTEXT_LOSE_MORALE *con)
 {
-	if(using_HuanYingXingCeng && HUAN_YING_XING_CHEN == con->harm.cause)
+	
+
+	if(using_HuanYingXingCeng && HUAN_YING_XING_CHEN == con->harm.cause&&con->howMany>0)
 	{
 		//flag为true则不造成2法伤
 		HuanYingXingChenEffectFlag = true;
 	}
 	return GE_SUCCESS;
+
 }
 
 

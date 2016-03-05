@@ -12,7 +12,7 @@ public:
 	 int p_timeline_2_miss(int &step, CONTEXT_TIMELINE_2_MISS *con);
 	 int p_timeline_3(int &step, CONTEXT_TIMELINE_3 *con);
 	 int p_timeline_4(int &step, CONTEXT_TIMELINE_4 *con);
-	 int p_lose_morale(int &step, CONTEXT_LOSE_MORALE *con);
+	int p_true_lose_morale(int &step, CONTEXT_LOSE_MORALE *con);
 	 int v_magic_skill(Action *action);
 	 int p_magic_skill(int &step, Action* action);
 	// int v_request_hand(int cardSrc, int howMany, vector<int> cards, HARM harm);
