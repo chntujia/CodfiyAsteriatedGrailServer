@@ -301,7 +301,7 @@ int StateRoleStrategyBP::handle(GameGrail* engine)
 		}
 		RoleRequest message;
 		if(GE_SUCCESS == (ret = roles->pop(alternativeNum, alternativeRoles))){
-			Coder::setAlternativeRoles(alternativeNum, alternativeRoles, options, message);
+			Coder::setAlternativeRoles(-1, alternativeNum, alternativeRoles, options, message);
 			message.set_opration(BP_NULL);
 		}
 		else{
@@ -322,7 +322,7 @@ int StateRoleStrategyBP::handle(GameGrail* engine)
 		if(isBan == 0)
 		{
 			RoleRequest message;
-			Coder::setAlternativeRoles(alternativeNum, alternativeRoles, options, message);
+			Coder::setAlternativeRoles(id, alternativeNum, alternativeRoles, options, message);
 			message.set_opration(BP_BAN);
 			bool recieved = engine->waitForOne(id, network::MSG_ROLE_REQ, message);
 			if(recieved)
@@ -348,7 +348,7 @@ int StateRoleStrategyBP::handle(GameGrail* engine)
 		else
 		{
 			RoleRequest message;
-			Coder::setAlternativeRoles(alternativeNum, alternativeRoles, options, message);
+			Coder::setAlternativeRoles(id, alternativeNum, alternativeRoles, options, message);
 			message.set_opration(BP_PICK);
 			bool recieved = engine->waitForOne(id, network::MSG_ROLE_REQ, message);
 			if(recieved)
@@ -372,7 +372,7 @@ int StateRoleStrategyBP::handle(GameGrail* engine)
 				return GE_TIMEOUT;
 		}
 		RoleRequest message;
-		Coder::setAlternativeRoles(alternativeNum, alternativeRoles, options, message);
+		Coder::setAlternativeRoles(-1, alternativeNum, alternativeRoles, options, message);
 		message.set_opration(BP_NULL);
 		engine->sendMessage(-1, network::MSG_ROLE_REQ, message);
 		step++;

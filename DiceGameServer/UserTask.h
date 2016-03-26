@@ -8,15 +8,11 @@
 #include "MessageQueue.h"
 #include "GameGrail.h"
 #include "UserSessionManager.h"
+#include "UserAccount.h"
 
 using namespace std;
 class GameGrail;
-enum UserType{
-	UT_UNIDENTIFIED = -1,
-	UT_GUEST = 0,
-	UT_NORMAL = 1,
-	UT_VIP = 2	
-};
+
 class UserTask : public zTCPTask, public MessageQueue
 {
 private:      
@@ -24,11 +20,12 @@ private:
 	int         m_playerId;
 	int         m_tableId;
 	bool        m_bAuthen;		//是否在指定时间内发送第一个Login包,如果没发踢掉
+
 	time_t      m_activeTime;
 	int32_t     m_iCheckTime;
 	int32_t		m_gameType;
 	uint32_t	m_iTmpId;
-	UserType    m_userType;
+	ACCOUNT_STATUS    m_userType;
 	static boost::uint32_t m_sIDSeq;
 public:
 	string m_nickname;
@@ -38,7 +35,7 @@ public:
 		m_playerId = -1;
 		m_tableId = -1;
 		m_bAuthen = false;
-		m_userType = UT_UNIDENTIFIED;
+		m_userType = STATUS_LOGIN_FAILED;
 		m_activeTime = time(NULL);
 		m_iCheckTime = ServerConfig::getInstance().m_iCheckTime;
 	}

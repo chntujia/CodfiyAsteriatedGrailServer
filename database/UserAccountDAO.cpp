@@ -20,20 +20,20 @@ void UserAccountDAO::insert(string username, string password, string nickname, i
 
 struct UserAccount UserAccountDAO::query(string username, string password)
 {
-   int status;
+   ACCOUNT_STATUS status;
    string nickname = "NA";
    PreparedStatement* query = connection->prepare("select NickName,Status from user where UserName=? and Password=?");
    query->setString(1, username);
    query->setString(2, password);
    ResultSet* res = connection->executeQuery(query);
    if(res && res->next()){
-       status = res->getInt("Status");
+       status = (ACCOUNT_STATUS)res->getInt("Status");
 	   nickname = res->getString("NickName");
    }
    else{
 	   status = STATUS_LOGIN_FAILED;
    }
-   if(status == STATUS_NORMAL){
+   if(status == STATUS_NORMAL || status == STATUS_VIP){
 	   PreparedStatement* update = connection->prepare("update user set LastLogInTime=? where UserName=? ");
 	   ptime now = second_clock::local_time();
 	   const boost::wformat f = boost::wformat(L"%s-%02d-%02d %02d:%02d:%02d")

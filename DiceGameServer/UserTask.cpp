@@ -33,13 +33,7 @@ void UserTask::OnCheck()
 {
 	time_t tmNow  = time(NULL);
 	if (tmNow - m_activeTime > m_iCheckTime)
-	{
-		if (!m_bAuthen) 
-		{
-			ztLoggerWrite(ZONE,e_Debug, "OnCheck[%s]: don't authen, kicked off ", m_userId.c_str());
-			SetQuit();
-			return;
-		}
+	{	
 		ztLoggerWrite(ZONE,e_Debug, "OnCheck[%s]: heartbeat timeout,be kicked off ", m_userId.c_str());
 		SetQuit();
 		return;
@@ -251,30 +245,40 @@ void UserTask::handleLogIn(LoginRequest* req)
 		sendProto(MSG_LOGIN_REP, response);
 	}
 	else if(req->asguest()){
-		m_userType = UT_GUEST;
+		m_userType = STATUS_GUEST;
 		m_bAuthen = true;
 		m_userId = TOQSTR(m_iTmpId);
-		m_nickname = m_userId;
-		UserSessionManager::getInstance().AddUser(m_userId, this);
-		Coder::logInResponse(STATUS_NORMAL, m_nickname, response);
-		sendProto(MSG_LOGIN_REP, response);
+		m_nickname = m_userId;		
 	}
 	else{
 		struct UserAccount account = DBInstance.userAccountDAO->query(req->user_id(), req->user_password());
-		if(account.status == STATUS_NORMAL){
-			m_userType = UT_NORMAL;
+		m_userType = account.status;
+		if(m_userType == STATUS_NORMAL || m_userType == STATUS_VIP || m_userType == STATUS_ADMIN){
 			m_bAuthen = true;
 			m_userId = account.username;
 			m_nickname = account.nickname;
-			UserSessionManager::getInstance().AddUser(m_userId, this);
 		}
-		Coder::logInResponse(account.status, account.nickname, response);
-		sendProto(MSG_LOGIN_REP, response);
 	}
+	if(m_bAuthen){
+		UserSessionManager::getInstance().AddUser(m_userId, this);		
+	}
+	Coder::logInResponse(m_userType, m_nickname, response);
+	sendProto(MSG_LOGIN_REP, response);
 }
 
 void UserTask::handleCreateRoom(CreateRoomRequest* req)
 {
+	switch(m_userType){
+		case STATUS_GUEST:
+        case STATUS_NORMAL:
+			if(req->sp_mo_dao() || req->role_strategy() == ROLE_STRATEGY_BP){
+				Error error;
+				Coder::errorMsg(GE_VIP_ONLY, -1, error);
+				sendProto(MSG_ERROR, error);
+				return;
+			}
+			break;
+	}
 	int tableId = GameManager::getInstance().createGame(req);
 	EnterRoomRequest enter_room;
 	enter_room.set_room_id(tableId);

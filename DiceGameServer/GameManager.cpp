@@ -50,7 +50,7 @@ void GameManager::Check()
 	}
 }
 
-int GameManager::tryEnterRoom(string userId, string nickname, EnterRoomRequest* req, int& playerId, UserType identity)
+int GameManager::tryEnterRoom(string userId, string nickname, EnterRoomRequest* req, int& playerId, ACCOUNT_STATUS identity)
 {
 	int roomId = req->room_id();
 	GameMapType::iterator iter1 = m_gameGrailMap.find(roomId);
@@ -64,7 +64,7 @@ int GameManager::tryEnterRoom(string userId, string nickname, EnterRoomRequest* 
 		if(iter2 != m_gameGrailContextMap.end())
 		{
 			GameContext context = iter2->second;
-			if(!context.allowGuest && identity <= UT_GUEST)
+			if(!context.allowGuest && identity <= STATUS_GUEST)
 				return GE_NOT_WELCOME;
 			if(!context.password.empty() && req->password() != context.password)
 				return GE_WRONG_PASSWORD;

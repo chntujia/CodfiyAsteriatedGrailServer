@@ -41,10 +41,11 @@ enum BP_OPRATION{
 
 // s -> c 备选角色
 message RoleRequest {
-    optional ROLE_STRATEGY strategy = 1;
-    repeated uint32 role_ids = 2;   // 可选角色
-	repeated int32 args = 3; //0 未选择 正 被此id选择 负 被此idban
-	optional uint32 opration = 4;
+    required uint32 id = 1; //询问的玩家id
+    optional ROLE_STRATEGY strategy = 2;
+    repeated uint32 role_ids = 3;   // 可选角色
+	repeated int32 args = 4; //0 未选择 正 被此id选择 负 被此idban
+	optional uint32 opration = 5;
 }
 
 // c -> s 角色选取

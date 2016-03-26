@@ -33,7 +33,7 @@ public:
 
 	int createGame(CreateRoomRequest *req);
 	int enterRoom(string userId, string nickname, EnterRoomRequest* req, int& playerId);
-	int tryEnterRoom(string userId, string nickname, EnterRoomRequest* req, int& playerId, UserType identity);
+	int tryEnterRoom(string userId, string nickname, EnterRoomRequest* req, int& playerId, ACCOUNT_STATUS identity);
 	int getGame(int tableId, GameGrail **game);
 	int getGameList(RoomListRequest* req, RoomListResponse* res);
 	int setPlayerReady(int roomId, int playerId, ReadyForGameRequest* req);

@@ -76,7 +76,8 @@ void protobuf_AssignDesc_action_5frespond_2eproto() {
       "action_respond.proto");
   GOOGLE_CHECK(file != NULL);
   RoleRequest_descriptor_ = file->message_type(0);
-  static const int RoleRequest_offsets_[4] = {
+  static const int RoleRequest_offsets_[5] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RoleRequest, id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RoleRequest, strategy_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RoleRequest, role_ids_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RoleRequest, args_),
@@ -372,59 +373,59 @@ void protobuf_AddDesc_action_5frespond_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-    "\n\024action_respond.proto\022\007network\"i\n\013RoleR"
-    "equest\022(\n\010strategy\030\001 \001(\0162\026.network.ROLE_"
-    "STRATEGY\022\020\n\010role_ids\030\002 \003(\r\022\014\n\004args\030\003 \003(\005"
-    "\022\020\n\010opration\030\004 \001(\r\">\n\007PickBan\022\020\n\010strateg"
-    "y\030\001 \001(\r\022\017\n\007is_pick\030\002 \001(\010\022\020\n\010role_ids\030\003 \003"
-    "(\r\"&\n\tTurnBegin\022\n\n\002id\030\001 \001(\r\022\r\n\005round\030\002 \001"
-    "(\r\"q\n\006Action\022\023\n\013action_type\030\001 \001(\r\022\021\n\tact"
-    "ion_id\030\002 \001(\r\022\016\n\006src_id\030\003 \001(\r\022\017\n\007dst_ids\030"
-    "\004 \003(\r\022\020\n\010card_ids\030\005 \003(\r\022\014\n\004args\030\006 \003(\r\"^\n"
-    "\007Respond\022\022\n\nrespond_id\030\001 \001(\r\022\016\n\006src_id\030\002"
-    " \001(\r\022\017\n\007dst_ids\030\003 \003(\r\022\020\n\010card_ids\030\004 \003(\r\022"
-    "\014\n\004args\030\005 \003(\r\"^\n\007Command\022\022\n\nrespond_id\030\001"
-    " \001(\r\022\016\n\006src_id\030\002 \001(\r\022\017\n\007dst_ids\030\003 \003(\r\022\020\n"
-    "\010card_ids\030\004 \003(\r\022\014\n\004args\030\005 \003(\r\"X\n\016Command"
-    "Request\022\"\n\010cmd_type\030\001 \001(\0162\020.network.CmdT"
-    "ype\022\"\n\010commands\030\002 \003(\0132\020.network.Command\""
-    "V\n\nErrorInput\022$\n\nerror_type\030\001 \001(\0162\020.netw"
-    "ork.CmdType\022\"\n\010commands\030\002 \003(\0132\020.network."
-    "Command\"E\n\006HitMsg\022\016\n\006cmd_id\030\001 \001(\r\022\013\n\003hit"
-    "\030\002 \001(\r\022\016\n\006src_id\030\003 \001(\r\022\016\n\006dst_id\030\004 \001(\r\"Z"
-    "\n\007CardMsg\022\014\n\004type\030\001 \001(\r\022\016\n\006src_id\030\002 \001(\r\022"
-    "\016\n\006dst_id\030\003 \001(\r\022\020\n\010card_ids\030\004 \003(\r\022\017\n\007is_"
-    "real\030\005 \001(\010\"\\\n\007HurtMsg\022\016\n\006src_id\030\001 \001(\r\022\026\n"
-    "\006dst_id\030\002 \001(\r:\006100000\022\014\n\004hurt\030\003 \001(\r\022\r\n\005c"
-    "ause\030\004 \001(\r\022\014\n\004type\030\005 \001(\r\"=\n\010SkillMsg\022\020\n\010"
-    "skill_id\030\001 \001(\r\022\016\n\006src_id\030\002 \001(\r\022\017\n\007dst_id"
-    "s\030\003 \003(\r*\305\001\n\014MessageType2\022\020\n\014MSG_ROLE_REQ"
-    "\020e\022\020\n\014MSG_PICK_BAN\020f\022\016\n\nMSG_ACTION\020g\022\017\n\013"
-    "MSG_RESPOND\020h\022\017\n\013MSG_CMD_REQ\020j\022\023\n\017MSG_ER"
-    "ROR_INPUT\020k\022\013\n\007MSG_HIT\020l\022\022\n\016MSG_TURN_BEG"
-    "IN\020m\022\014\n\010MSG_CARD\020n\022\014\n\010MSG_HURT\020o\022\r\n\tMSG_"
-    "SKILL\020p*%\n\rPlayerIdConst\022\024\n\016PLAYER_NONE_"
-    "ID\020\240\215\006*\203\001\n\rROLE_STRATEGY\022\030\n\024ROLE_STRATEG"
-    "Y_RANDOM\020\001\022\024\n\020ROLE_STRATEGY_31\020\002\022\024\n\020ROLE"
-    "_STRATEGY_BP\020\003\022\025\n\021ROLE_STRATEGY_ANY\020\004\022\025\n"
-    "\021ROLE_STRATEGY_ALL\020\t*f\n\tSEAT_MODE\022\024\n\020SEA"
-    "T_MODE_RANDOM\020\001\022\024\n\020SEAT_MODE_2COMBO\020\002\022\024\n"
-    "\020SEAT_MODE_3COMBO\020\003\022\027\n\023SEAT_MODE_INTERLA"
-    "CE\020\004*3\n\013BP_OPRATION\022\013\n\007BP_NULL\020\001\022\n\n\006BP_B"
-    "AN\020\002\022\013\n\007BP_PICK\020\003*\350\001\n\017BasicActionType\022\021\n"
-    "\rACTION_ATTACK\020\001\022\020\n\014ACTION_MAGIC\020\002\022\022\n\016AC"
-    "TION_SPECIAL\020\003\022\027\n\023ACTION_ATTACK_SKILL\020\004\022"
-    "\026\n\022ACTION_MAGIC_SKILL\020\005\022\030\n\024ACTION_SPECIA"
-    "L_SKILL\020\006\022\016\n\nACTION_ANY\020\007\022\027\n\023ACTION_ATTA"
-    "CK_MAGIC\020\010\022\025\n\021ACTION_UNACTIONAL\020\t\022\021\n\013ACT"
-    "ION_NONE\020\240\215\006*\307\001\n\020BasicRespondType\022\030\n\024RES"
-    "POND_REPLY_ATTACK\020\n\022\022\n\016RESPOND_BULLET\020\013\022"
-    "\020\n\014RESPOND_HEAL\020\014\022\023\n\017RESPOND_DISCARD\020\r\022\022"
-    "\n\016RESPOND_WEAKEN\020\016\022\035\n\031RESPOND_ADDITIONAL"
-    "_ACTION\020\017\022\031\n\025RESPOND_DISCARD_COVER\020\020\022\020\n\014"
-    "RESPOND_ROLE\020\021**\n\007CmdType\022\016\n\nCMD_ACTION\020"
-    "\001\022\017\n\013CMD_RESPOND\020\002*&\n\013CardMsgType\022\n\n\006CM_"
-    "USE\020\001\022\013\n\007CM_SHOW\020\002", 2098);
+    "\n\024action_respond.proto\022\007network\"u\n\013RoleR"
+    "equest\022\n\n\002id\030\001 \002(\r\022(\n\010strategy\030\002 \001(\0162\026.n"
+    "etwork.ROLE_STRATEGY\022\020\n\010role_ids\030\003 \003(\r\022\014"
+    "\n\004args\030\004 \003(\005\022\020\n\010opration\030\005 \001(\r\">\n\007PickBa"
+    "n\022\020\n\010strategy\030\001 \001(\r\022\017\n\007is_pick\030\002 \001(\010\022\020\n\010"
+    "role_ids\030\003 \003(\r\"&\n\tTurnBegin\022\n\n\002id\030\001 \001(\r\022"
+    "\r\n\005round\030\002 \001(\r\"q\n\006Action\022\023\n\013action_type\030"
+    "\001 \001(\r\022\021\n\taction_id\030\002 \001(\r\022\016\n\006src_id\030\003 \001(\r"
+    "\022\017\n\007dst_ids\030\004 \003(\r\022\020\n\010card_ids\030\005 \003(\r\022\014\n\004a"
+    "rgs\030\006 \003(\r\"^\n\007Respond\022\022\n\nrespond_id\030\001 \001(\r"
+    "\022\016\n\006src_id\030\002 \001(\r\022\017\n\007dst_ids\030\003 \003(\r\022\020\n\010car"
+    "d_ids\030\004 \003(\r\022\014\n\004args\030\005 \003(\r\"^\n\007Command\022\022\n\n"
+    "respond_id\030\001 \001(\r\022\016\n\006src_id\030\002 \001(\r\022\017\n\007dst_"
+    "ids\030\003 \003(\r\022\020\n\010card_ids\030\004 \003(\r\022\014\n\004args\030\005 \003("
+    "\r\"X\n\016CommandRequest\022\"\n\010cmd_type\030\001 \001(\0162\020."
+    "network.CmdType\022\"\n\010commands\030\002 \003(\0132\020.netw"
+    "ork.Command\"V\n\nErrorInput\022$\n\nerror_type\030"
+    "\001 \001(\0162\020.network.CmdType\022\"\n\010commands\030\002 \003("
+    "\0132\020.network.Command\"E\n\006HitMsg\022\016\n\006cmd_id\030"
+    "\001 \001(\r\022\013\n\003hit\030\002 \001(\r\022\016\n\006src_id\030\003 \001(\r\022\016\n\006ds"
+    "t_id\030\004 \001(\r\"Z\n\007CardMsg\022\014\n\004type\030\001 \001(\r\022\016\n\006s"
+    "rc_id\030\002 \001(\r\022\016\n\006dst_id\030\003 \001(\r\022\020\n\010card_ids\030"
+    "\004 \003(\r\022\017\n\007is_real\030\005 \001(\010\"\\\n\007HurtMsg\022\016\n\006src"
+    "_id\030\001 \001(\r\022\026\n\006dst_id\030\002 \001(\r:\006100000\022\014\n\004hur"
+    "t\030\003 \001(\r\022\r\n\005cause\030\004 \001(\r\022\014\n\004type\030\005 \001(\r\"=\n\010"
+    "SkillMsg\022\020\n\010skill_id\030\001 \001(\r\022\016\n\006src_id\030\002 \001"
+    "(\r\022\017\n\007dst_ids\030\003 \003(\r*\305\001\n\014MessageType2\022\020\n\014"
+    "MSG_ROLE_REQ\020e\022\020\n\014MSG_PICK_BAN\020f\022\016\n\nMSG_"
+    "ACTION\020g\022\017\n\013MSG_RESPOND\020h\022\017\n\013MSG_CMD_REQ"
+    "\020j\022\023\n\017MSG_ERROR_INPUT\020k\022\013\n\007MSG_HIT\020l\022\022\n\016"
+    "MSG_TURN_BEGIN\020m\022\014\n\010MSG_CARD\020n\022\014\n\010MSG_HU"
+    "RT\020o\022\r\n\tMSG_SKILL\020p*%\n\rPlayerIdConst\022\024\n\016"
+    "PLAYER_NONE_ID\020\240\215\006*\203\001\n\rROLE_STRATEGY\022\030\n\024"
+    "ROLE_STRATEGY_RANDOM\020\001\022\024\n\020ROLE_STRATEGY_"
+    "31\020\002\022\024\n\020ROLE_STRATEGY_BP\020\003\022\025\n\021ROLE_STRAT"
+    "EGY_ANY\020\004\022\025\n\021ROLE_STRATEGY_ALL\020\t*f\n\tSEAT"
+    "_MODE\022\024\n\020SEAT_MODE_RANDOM\020\001\022\024\n\020SEAT_MODE"
+    "_2COMBO\020\002\022\024\n\020SEAT_MODE_3COMBO\020\003\022\027\n\023SEAT_"
+    "MODE_INTERLACE\020\004*3\n\013BP_OPRATION\022\013\n\007BP_NU"
+    "LL\020\001\022\n\n\006BP_BAN\020\002\022\013\n\007BP_PICK\020\003*\350\001\n\017BasicA"
+    "ctionType\022\021\n\rACTION_ATTACK\020\001\022\020\n\014ACTION_M"
+    "AGIC\020\002\022\022\n\016ACTION_SPECIAL\020\003\022\027\n\023ACTION_ATT"
+    "ACK_SKILL\020\004\022\026\n\022ACTION_MAGIC_SKILL\020\005\022\030\n\024A"
+    "CTION_SPECIAL_SKILL\020\006\022\016\n\nACTION_ANY\020\007\022\027\n"
+    "\023ACTION_ATTACK_MAGIC\020\010\022\025\n\021ACTION_UNACTIO"
+    "NAL\020\t\022\021\n\013ACTION_NONE\020\240\215\006*\307\001\n\020BasicRespon"
+    "dType\022\030\n\024RESPOND_REPLY_ATTACK\020\n\022\022\n\016RESPO"
+    "ND_BULLET\020\013\022\020\n\014RESPOND_HEAL\020\014\022\023\n\017RESPOND"
+    "_DISCARD\020\r\022\022\n\016RESPOND_WEAKEN\020\016\022\035\n\031RESPON"
+    "D_ADDITIONAL_ACTION\020\017\022\031\n\025RESPOND_DISCARD"
+    "_COVER\020\020\022\020\n\014RESPOND_ROLE\020\021**\n\007CmdType\022\016\n"
+    "\nCMD_ACTION\020\001\022\017\n\013CMD_RESPOND\020\002*&\n\013CardMs"
+    "gType\022\n\n\006CM_USE\020\001\022\013\n\007CM_SHOW\020\002", 2110);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "action_respond.proto", &protobuf_RegisterTypes);
   RoleRequest::default_instance_ = new RoleRequest();
@@ -618,6 +619,7 @@ bool CardMsgType_IsValid(int value) {
 // ===================================================================
 
 #ifndef _MSC_VER
+const int RoleRequest::kIdFieldNumber;
 const int RoleRequest::kStrategyFieldNumber;
 const int RoleRequest::kRoleIdsFieldNumber;
 const int RoleRequest::kArgsFieldNumber;
@@ -640,6 +642,7 @@ RoleRequest::RoleRequest(const RoleRequest& from)
 
 void RoleRequest::SharedCtor() {
   _cached_size_ = 0;
+  id_ = 0u;
   strategy_ = 1;
   opration_ = 0u;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
@@ -677,6 +680,7 @@ RoleRequest* RoleRequest::New() const {
 
 void RoleRequest::Clear() {
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    id_ = 0u;
     strategy_ = 1;
     opration_ = 0u;
   }
@@ -692,10 +696,26 @@ bool RoleRequest::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   while ((tag = input->ReadTag()) != 0) {
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional .network.ROLE_STRATEGY strategy = 1;
+      // required uint32 id = 1;
       case 1: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &id_)));
+          set_has_id();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(16)) goto parse_strategy;
+        break;
+      }
+
+      // optional .network.ROLE_STRATEGY strategy = 2;
+      case 2: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+         parse_strategy:
           int value;
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
@@ -703,23 +723,23 @@ bool RoleRequest::MergePartialFromCodedStream(
           if (::network::ROLE_STRATEGY_IsValid(value)) {
             set_strategy(static_cast< ::network::ROLE_STRATEGY >(value));
           } else {
-            mutable_unknown_fields()->AddVarint(1, value);
+            mutable_unknown_fields()->AddVarint(2, value);
           }
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(16)) goto parse_role_ids;
+        if (input->ExpectTag(24)) goto parse_role_ids;
         break;
       }
 
-      // repeated uint32 role_ids = 2;
-      case 2: {
+      // repeated uint32 role_ids = 3;
+      case 3: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
          parse_role_ids:
           DO_((::google::protobuf::internal::WireFormatLite::ReadRepeatedPrimitive<
                    ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
-                 1, 16, input, this->mutable_role_ids())));
+                 1, 24, input, this->mutable_role_ids())));
         } else if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag)
                    == ::google::protobuf::internal::WireFormatLite::
                       WIRETYPE_LENGTH_DELIMITED) {
@@ -729,19 +749,19 @@ bool RoleRequest::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(16)) goto parse_role_ids;
-        if (input->ExpectTag(24)) goto parse_args;
+        if (input->ExpectTag(24)) goto parse_role_ids;
+        if (input->ExpectTag(32)) goto parse_args;
         break;
       }
 
-      // repeated int32 args = 3;
-      case 3: {
+      // repeated int32 args = 4;
+      case 4: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
          parse_args:
           DO_((::google::protobuf::internal::WireFormatLite::ReadRepeatedPrimitive<
                    ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
-                 1, 24, input, this->mutable_args())));
+                 1, 32, input, this->mutable_args())));
         } else if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag)
                    == ::google::protobuf::internal::WireFormatLite::
                       WIRETYPE_LENGTH_DELIMITED) {
@@ -751,13 +771,13 @@ bool RoleRequest::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(24)) goto parse_args;
-        if (input->ExpectTag(32)) goto parse_opration;
+        if (input->ExpectTag(32)) goto parse_args;
+        if (input->ExpectTag(40)) goto parse_opration;
         break;
       }
 
-      // optional uint32 opration = 4;
-      case 4: {
+      // optional uint32 opration = 5;
+      case 5: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
          parse_opration:
@@ -790,27 +810,32 @@ bool RoleRequest::MergePartialFromCodedStream(
 
 void RoleRequest::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // optional .network.ROLE_STRATEGY strategy = 1;
+  // required uint32 id = 1;
+  if (has_id()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(1, this->id(), output);
+  }
+
+  // optional .network.ROLE_STRATEGY strategy = 2;
   if (has_strategy()) {
     ::google::protobuf::internal::WireFormatLite::WriteEnum(
-      1, this->strategy(), output);
+      2, this->strategy(), output);
   }
 
-  // repeated uint32 role_ids = 2;
+  // repeated uint32 role_ids = 3;
   for (int i = 0; i < this->role_ids_size(); i++) {
     ::google::protobuf::internal::WireFormatLite::WriteUInt32(
-      2, this->role_ids(i), output);
+      3, this->role_ids(i), output);
   }
 
-  // repeated int32 args = 3;
+  // repeated int32 args = 4;
   for (int i = 0; i < this->args_size(); i++) {
     ::google::protobuf::internal::WireFormatLite::WriteInt32(
-      3, this->args(i), output);
+      4, this->args(i), output);
   }
 
-  // optional uint32 opration = 4;
+  // optional uint32 opration = 5;
   if (has_opration()) {
-    ::google::protobuf::internal::WireFormatLite::WriteUInt32(4, this->opration(), output);
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(5, this->opration(), output);
   }
 
   if (!unknown_fields().empty()) {
@@ -821,27 +846,32 @@ void RoleRequest::SerializeWithCachedSizes(
 
 ::google::protobuf::uint8* RoleRequest::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
-  // optional .network.ROLE_STRATEGY strategy = 1;
+  // required uint32 id = 1;
+  if (has_id()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(1, this->id(), target);
+  }
+
+  // optional .network.ROLE_STRATEGY strategy = 2;
   if (has_strategy()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
-      1, this->strategy(), target);
+      2, this->strategy(), target);
   }
 
-  // repeated uint32 role_ids = 2;
+  // repeated uint32 role_ids = 3;
   for (int i = 0; i < this->role_ids_size(); i++) {
     target = ::google::protobuf::internal::WireFormatLite::
-      WriteUInt32ToArray(2, this->role_ids(i), target);
+      WriteUInt32ToArray(3, this->role_ids(i), target);
   }
 
-  // repeated int32 args = 3;
+  // repeated int32 args = 4;
   for (int i = 0; i < this->args_size(); i++) {
     target = ::google::protobuf::internal::WireFormatLite::
-      WriteInt32ToArray(3, this->args(i), target);
+      WriteInt32ToArray(4, this->args(i), target);
   }
 
-  // optional uint32 opration = 4;
+  // optional uint32 opration = 5;
   if (has_opration()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(4, this->opration(), target);
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(5, this->opration(), target);
   }
 
   if (!unknown_fields().empty()) {
@@ -855,13 +885,20 @@ int RoleRequest::ByteSize() const {
   int total_size = 0;
 
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    // optional .network.ROLE_STRATEGY strategy = 1;
+    // required uint32 id = 1;
+    if (has_id()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->id());
+    }
+
+    // optional .network.ROLE_STRATEGY strategy = 2;
     if (has_strategy()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::EnumSize(this->strategy());
     }
 
-    // optional uint32 opration = 4;
+    // optional uint32 opration = 5;
     if (has_opration()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::UInt32Size(
@@ -869,7 +906,7 @@ int RoleRequest::ByteSize() const {
     }
 
   }
-  // repeated uint32 role_ids = 2;
+  // repeated uint32 role_ids = 3;
   {
     int data_size = 0;
     for (int i = 0; i < this->role_ids_size(); i++) {
@@ -879,7 +916,7 @@ int RoleRequest::ByteSize() const {
     total_size += 1 * this->role_ids_size() + data_size;
   }
 
-  // repeated int32 args = 3;
+  // repeated int32 args = 4;
   {
     int data_size = 0;
     for (int i = 0; i < this->args_size(); i++) {
@@ -917,6 +954,9 @@ void RoleRequest::MergeFrom(const RoleRequest& from) {
   role_ids_.MergeFrom(from.role_ids_);
   args_.MergeFrom(from.args_);
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (from.has_id()) {
+      set_id(from.id());
+    }
     if (from.has_strategy()) {
       set_strategy(from.strategy());
     }
@@ -940,12 +980,14 @@ void RoleRequest::CopyFrom(const RoleRequest& from) {
 }
 
 bool RoleRequest::IsInitialized() const {
+  if ((_has_bits_[0] & 0x00000001) != 0x00000001) return false;
 
   return true;
 }
 
 void RoleRequest::Swap(RoleRequest* other) {
   if (other != this) {
+    std::swap(id_, other->id_);
     std::swap(strategy_, other->strategy_);
     role_ids_.Swap(&other->role_ids_);
     args_.Swap(&other->args_);

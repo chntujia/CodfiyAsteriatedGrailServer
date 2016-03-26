@@ -67,7 +67,8 @@ enum GrailError{
 	GE_GUEST_FULL,
 	GE_DISCONNECTED,
 	GE_NOT_WELCOME,
-	GE_WRONG_PASSWORD
+	GE_WRONG_PASSWORD,
+	GE_VIP_ONLY
 };
 
 enum CAUSE{
@@ -704,13 +705,15 @@ public:
 	}
 	static void askForRole(int ID, int howMany, const int *roles, RoleRequest& cmd_req)
 	{
+		cmd_req.set_id(ID);
 		cmd_req.set_strategy(ROLE_STRATEGY_31);
 		for(int i = 0; i < howMany; i++){
 			cmd_req.add_role_ids(roles[i]);
 		}
 	}
-	static void setAlternativeRoles(int howMany, const int *roles, const int *chosen, RoleRequest& cmd_req)
+	static void setAlternativeRoles(int ID, int howMany, const int *roles, const int *chosen, RoleRequest& cmd_req)
 	{
+		cmd_req.set_id(ID);
 		cmd_req.set_strategy(ROLE_STRATEGY_BP);
 		for(int i = 0; i < howMany; i ++){
 			cmd_req.add_role_ids(roles[i]);
