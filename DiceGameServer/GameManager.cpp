@@ -64,7 +64,7 @@ int GameManager::tryEnterRoom(string userId, string nickname, EnterRoomRequest* 
 		if(iter2 != m_gameGrailContextMap.end())
 		{
 			GameContext context = iter2->second;
-			if(!context.allowGuest && identity <= STATUS_GUEST)
+			if(!context.allowGuest && identity == STATUS_GUEST)
 				return GE_NOT_WELCOME;
 			if(!context.password.empty() && req->password() != context.password)
 				return GE_WRONG_PASSWORD;
