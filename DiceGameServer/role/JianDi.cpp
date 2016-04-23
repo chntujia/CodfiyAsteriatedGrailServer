@@ -50,6 +50,7 @@ int JianDi::p_before_turn_begin(int &step, int currentPlayerID)
 {
 	used_TIAN_SHI_ZHI_HUN=false;
 	used_E_MO_ZHI_HUN=false;
+	added_BU_QU_YI_ZHI=false;
 	int ret = TianShiYuEMo();
 
 	return ret; 
@@ -205,8 +206,11 @@ int JianDi::p_after_attack(int &step, int playerID)
 	{
 		return GE_SUCCESS;
 	}
-	if(getEnergy()>0)
+	if(!added_BU_QU_YI_ZHI && getEnergy()>0)
+	{
 		addAction(ACTION_ATTACK, BU_QU_YI_ZHI);
+		added_BU_QU_YI_ZHI = true;
+	}
 	return GE_SUCCESS;
 }
 
@@ -291,6 +295,7 @@ int JianDi::BuQuYiZhi()
 	harm.cause =BU_QU_YI_ZHI;
 	engine->setStateMoveCardsToHand(-1, DECK_PILE, id, DECK_HAND,1,cards, harm, false);
 
+	added_BU_QU_YI_ZHI = false;
 	return GE_URGENT;
 }
 //¡¾½£ÆøÕ¶¡¿

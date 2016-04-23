@@ -22,6 +22,14 @@ bool NvWuShen::cmdMsgParse(UserTask *session, uint16_t type, ::google::protobuf:
 	return false;
 }
 
+//统一在p_before_turn_begin 初始化各种回合变量
+int NvWuShen::p_before_turn_begin(int &step, int currentPlayerID) 
+{
+
+	added_SHEN_SHENG_ZHUI_JI = false;
+	return GE_SUCCESS; 
+}
+
 int NvWuShen::p_turn_begin(int &step, int currentPlayerID)
 {
 	if (currentPlayerID != id || !tap )
@@ -147,16 +155,18 @@ int NvWuShen::p_additional_action(int chosen)
 		GameInfo update_info;
 		Coder::crossNotice(id, getCrossNum(), update_info);
 		engine->sendMessage(-1, MSG_GAME, update_info);
+		added_SHEN_SHENG_ZHUI_JI = false;
 	}
 	return ret;
 }
 
 int NvWuShen::ShenShengZhuiJi(int playerID)
 {
-	if(playerID != id || getCrossNum() < 1){
+	if(playerID != id || getCrossNum() < 1 || added_SHEN_SHENG_ZHUI_JI){
 		return GE_SUCCESS;
 	}
 	addAction(ACTION_ATTACK, SHEN_SHENG_ZHUI_JI);
+	added_SHEN_SHENG_ZHUI_JI = true;
 	return GE_SUCCESS;
 }
 

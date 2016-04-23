@@ -7,6 +7,7 @@ class NvWuShen :
 public:
 	NvWuShen(GameGrail *engine, int id, int color): PlayerEntity(engine, id, color){}
 	bool cmdMsgParse(UserTask *session, uint16_t type, ::google::protobuf::Message *proto);
+	int p_before_turn_begin(int &step, int currentPlayerID);
 	int p_turn_begin(int &step, int currentPlayerID);
 	int p_after_attack(int &step, int playerID);
 	int p_after_magic(int &step, int playerID);
@@ -22,5 +23,6 @@ private:
 	int HePingXingZhe(CONTEXT_TIMELINE_1 *con);
 	int JunShenWeiGuang();
 	int YingLingZhaoHuan(CONTEXT_TIMELINE_2_HIT *con);
+	bool added_SHEN_SHENG_ZHUI_JI;
 };
 
