@@ -1,4 +1,4 @@
-#include "GrailState.h"
+ï»¿#include "GrailState.h"
 #include "GameGrail.h"
 #include <Windows.h>
 #include <algorithm>
@@ -22,7 +22,7 @@ int StateSeatArrange::handle(GameGrail* engine)
 	
 	int m_maxPlayers = engine->getGameMaxPlayers();
 	
-	// Ö±½Ó½«Ëæ»ú½á¹û±£´æµ½engineÖĞ
+	// ç›´æ¥å°†éšæœºç»“æœä¿å­˜åˆ°engineä¸­
 	GameInfo& game_info = engine->room_info;
 
 	if(!isSet)
@@ -101,55 +101,34 @@ vector< int > StateSeatArrange::assignColor(int mode, int playerNum)
 			colors.push_back(1);
 			colors.push_back(0);
 		}
-		//Ê×Î»±Øºì
+		//é¦–ä½å¿…çº¢
 		std::random_shuffle (++colors.begin(), colors.end());	
 		break;
 	case SEAT_MODE_2COMBO:
 	{
-		int colors_t[MAXPLAYER];
+		//é—´éš”åï¼Œä¸€å¯¹å‰åäº¤æ¢å°±æ˜¯äºŒè¿
 		for(int i = 0; i < playerNum; i += 2){
-			colors_t[i] = 1;
-			colors_t[i+1] = 0;
+			colors.push_back(1);
+			colors.push_back(0);
 		}
-		int chosen = 4 % playerNum;
+		//é¦–ä½å¿…çº¢ï¼Œåœ¨2~(n-1)ä¸­éšæœºå–ä¸€ä¸å‰ä¸€ä¸ªäº¤æ¢
+		int chosen = rand() % (playerNum -2)+ 2;
 		int swapped = (chosen-1 + playerNum) % playerNum;
-		int temp = colors_t[chosen];
-		colors_t[chosen] = colors_t[swapped];
-		colors_t[swapped] = temp;
-		//Ê×Î»±Øºì
-		int firstRed = rand() % (playerNum/2) + 1;
-		int count = 0;
-		int firstRedId = -1;
-		while(count < firstRed){
-			firstRedId++;
-			if(colors_t[firstRedId] == 1)
-				count++;
-		}
-		for(int i = firstRedId; i < playerNum; i++){
-			colors.push_back(colors_t[i]);
-		}
-		for(int i = 0; i < firstRedId; i++){
-			colors.push_back(colors_t[i]);
-		}
-
+		int temp = colors[chosen];
+		colors[chosen] = colors[swapped];
+		colors[swapped] = temp;
 	}
 		break;
 	case SEAT_MODE_3COMBO:
 	{
 		int colors_t[] = {1, 1, 1, 0, 0, 0};
-		//Ê×Î»±Øºì
-		int firstRed = rand() % (playerNum/2) + 1;
-		int count = 0;
-		int firstRedId = -1;
-		while(count < firstRed){
-			firstRedId++;
-			if(colors_t[firstRedId] == 1)
-				count++;
-		}
-		for(int i = firstRedId; i < playerNum; i++){
+		//é¦–ä½å¿…çº¢
+		int firstRed = rand() % 3;
+		int count = 0;		
+		for(int i = firstRed; i < 6; i++){
 			colors.push_back(colors_t[i]);
 		}
-		for(int i = 0; i < firstRedId; i++){
+		for(int i = 0; i < firstRed; i++){
 			colors.push_back(colors_t[i]);
 		}
     }
@@ -169,12 +148,12 @@ int StateRoleStrategyRandom::handle(GameGrail* engine)
 	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateRoleStrategyRandom", engine->getGameId());
 	Deck* roles = engine->initRoles();
 	int ret;
-	// Ö±½Ó½«Ëæ»ú½á¹û±£´æµ½engineÖĞ
+	// ç›´æ¥å°†éšæœºç»“æœä¿å­˜åˆ°engineä¸­
 	GameInfo& game_info = engine->room_info;
 	int roleID;
 
 	for(int i = 0; i < engine->getGameMaxPlayers(); i++){
-		// iÎªÍæ¼Ò±àºÅ£¬²»ÊÇ×ùºÅ		
+		// iä¸ºç©å®¶ç¼–å·ï¼Œä¸æ˜¯åº§å·		
 		if(GE_SUCCESS == (ret=roles->pop(1, &roleID))){
 			Coder::roleNotice(i, roleID, game_info);
 		}
@@ -585,7 +564,7 @@ int StateActionPhase::handle(GameGrail* engine)
 	int m_currentPlayerID = engine->getCurrentPlayerID();
 
 	PlayerEntity *src = engine->getPlayerEntity(m_currentPlayerID);
-	if( GE_SUCCESS == src->checkExclusiveEffect(EX_TIAO_XIN)){//[Yongzhe]ÌôĞÆ
+	if( GE_SUCCESS == src->checkExclusiveEffect(EX_TIAO_XIN)){//[Yongzhe]æŒ‘è¡…
 		allowAction = ACTION_ATTACK;
 		canGiveUp = true;
 	}
@@ -666,7 +645,7 @@ int StateActionPhase::unactional(Action *action, GameGrail* engine)
 		engine->sendMessage(-1, MSG_ACTION, *action);
 		engine->popGameState_if(STATE_ACTION_PHASE);
 		engine->getTeamArea()->setMorale(color, 0);
-		// ¸üĞÂÊ¿Æø
+		// æ›´æ–°å£«æ°”
 		GameInfo update_info;
 		if (color == RED)
 			update_info.set_red_morale(0);
@@ -958,7 +937,7 @@ int StateAttacked::handle(GameGrail* engine)
 			case RA_ATTACK:
 				card_id = reply_attack->card_ids(0);
 				if(GE_SUCCESS == (ret=engine->getPlayerEntity(context->attack.dstID)->v_reattack(card_id, temp.attack.cardID, reply_attack->dst_ids().Get(0), temp.attack.srcID, context->hitRate))){
-					// ·´À¡Íæ¼ÒĞĞ¶¯
+					// åé¦ˆç©å®¶è¡ŒåŠ¨
 					reply_attack->set_src_id(context->attack.dstID);					
 					
 					bool realCard = true;
@@ -982,7 +961,7 @@ int StateAttacked::handle(GameGrail* engine)
 			case RA_BLOCK:
 				card_id = reply_attack->card_ids(0);
 				if(GE_SUCCESS == (ret=engine->getPlayerEntity(context->attack.dstID)->v_block(card_id))){
-					// ·´À¡Íæ¼ÒĞĞ¶¯
+					// åé¦ˆç©å®¶è¡ŒåŠ¨
 					reply_attack->set_src_id(context->attack.dstID);
 
 					engine->popGameState();
@@ -1250,7 +1229,7 @@ int StateAdditionalAction::handle(GameGrail* engine)
 		{
 			Respond *respond = (Respond*)reply;
 			int chosen = respond->args(0);
-			//·ÅÆúËùÓĞĞĞ¶¯
+			//æ”¾å¼ƒæ‰€æœ‰è¡ŒåŠ¨
 			if(chosen == ACTION_NONE){
 				engine->popGameState();
 				engine->pushGameState(new StateTurnEnd);
@@ -1654,7 +1633,7 @@ int StateBasicEffectChange::handle(GameGrail* engine)
 		Coder::basicNotice(dstID, dst->getBasicEffect(), update_info);
 		engine->sendMessage(-1, MSG_GAME, update_info);
 
-		// Ã»ÓĞÒÆ³ı»òÕßÃ»ÓĞÌí¼Óµ½»ù´¡Ğ§¹ûÇø
+		// æ²¡æœ‰ç§»é™¤æˆ–è€…æ²¡æœ‰æ·»åŠ åˆ°åŸºç¡€æ•ˆæœåŒº
 		if (ret == GE_MOVECARD_FAILED)
 		{
 			engine->popGameState_if(STATE_BASIC_EFFECT_CHANGE);
@@ -1714,7 +1693,7 @@ int StateRequestHand::handle(GameGrail* engine)
 {
 	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateRequestHand, howMany %d", engine->getGameId(), harm.point);
 	int ret = GE_FATAL_ERROR;
-	//×î¶à°ÑÊÖÅÆÈ«Æú£¬ÈôÊÖÅÆÎªÁã£¬Ö±½Ópop
+	//æœ€å¤šæŠŠæ‰‹ç‰Œå…¨å¼ƒï¼Œè‹¥æ‰‹ç‰Œä¸ºé›¶ï¼Œç›´æ¥pop
 	int atMost = engine->getPlayerEntity(targetID)->getHandCardNum();
 	harm.point = harm.point > atMost ? atMost : harm.point;
 	int targetID_t = targetID;
@@ -1740,7 +1719,7 @@ int StateRequestHand::handle(GameGrail* engine)
 		if (GE_SUCCESS == (ret = engine->getReply(targetID, reply)))
 		{
 			Respond* respond = (Respond*) reply;
-			//ÆúÅÆÁË
+			//å¼ƒç‰Œäº†
 			if(respond->args(0) == 1)
 			{
 				if (respond->card_ids_size() != harm_t.point){
@@ -1811,7 +1790,7 @@ int StateRequestHand::handle(GameGrail* engine)
 
 int StateRequestCover::handle(GameGrail* engine)
 {
-	//×î¶à°ÑÊÖÅÆÈ«Æú£¬ÈôÊÖÅÆÎªÁã£¬Ö±½Ópop
+	//æœ€å¤šæŠŠæ‰‹ç‰Œå…¨å¼ƒï¼Œè‹¥æ‰‹ç‰Œä¸ºé›¶ï¼Œç›´æ¥pop
 	int atMost = engine->getPlayerEntity(targetID)->getCoverCardNum();
 	harm.point = harm.point > atMost ? atMost : harm.point;
 	if(harm.point < 1){
@@ -1838,7 +1817,7 @@ int StateRequestCover::handle(GameGrail* engine)
 		if (GE_SUCCESS == (ret = engine->getReply(targetID, reply)))
 		{
 			Respond* respond = (Respond*) reply;
-			//ÆúÅÆÁË
+			//å¼ƒç‰Œäº†
 			if(respond->args(0) == 1)
 			{
 				if (respond->card_ids_size() != harm.point){
@@ -2009,7 +1988,7 @@ int StateTrueLoseMorale::handle(GameGrail* engine)
 	m_teamArea->setMorale(color, morale - context->howMany);
 	morale = m_teamArea->getMorale(color);
 
-	// ¸üĞÂÊ¿Æø
+	// æ›´æ–°å£«æ°”
 	GameInfo update_info;
 	if (color == RED)
 		update_info.set_red_morale(morale);
