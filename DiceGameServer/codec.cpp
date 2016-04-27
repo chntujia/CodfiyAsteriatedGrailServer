@@ -1,5 +1,7 @@
 #include "codec.h"
 
+static HeartBeat heartbeat;
+
 bool proto_encoder(uint16_t type, ::google::protobuf::Message& body, string& msg)
 {
 	MsgHeader header;
@@ -31,8 +33,7 @@ void* proto_decoder(const char* msg, uint16_t& type)
 	switch (header_ptr->type)
 	{
 	case MSG_HEARTBEAT:
-		proto = new HeartBeat();
-		proto->ParseFromArray(msg + SIZEOF_HEADER, header_ptr->len - SIZEOF_HEADER);
+		proto = &heartbeat;
 		break;
 	case MSG_REGISTER_REQ:
 		proto = new RegisterRequest();

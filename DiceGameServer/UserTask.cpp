@@ -98,7 +98,6 @@ bool UserTask::cmdMsgParse(const char *pstrMsg, const uint32_t nCmdLen)
 			{
 				HeartBeat heartbeat;
 				sendProto(MSG_HEARTBEAT, heartbeat);
-				delete proto;
 				break;
 			}
 		case MSG_LOGIN_REQ:
