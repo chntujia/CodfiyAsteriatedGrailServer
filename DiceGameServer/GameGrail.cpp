@@ -384,7 +384,6 @@ bool GameGrail::tryNotify(int id, int state, int step, void* reply)
 	}
 	ztLoggerWrite(ZONE, e_Error, "[Table %d] Unauthorized notify detected. Player id: %d, current token: %d; claimed state: %d, current state: %d; claim step: %d, current step: %d", m_gameId,
 		id, m_token, state, topGameState()->state, step, topGameState()->step);
-	delete reply;
 	return false;
 }
 
