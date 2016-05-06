@@ -76,12 +76,11 @@ void StateSeatArrange::assignTeam(GameGrail* engine)
 		ids.push_back(i);
 	std::random_shuffle (ids.begin(), ids.end());
 	for(int i = 0; i < m_maxPlayers; i++){
-		int chosen = ids[i];
-		if(red_l.end() == std::find(red_l.begin(), red_l.end(), chosen) && blue_l.end() == std::find(blue_l.begin(), blue_l.end(), chosen)){
+		if(red_l.end() == std::find(red_l.begin(), red_l.end(), i) && blue_l.end() == std::find(blue_l.begin(), blue_l.end(), i)){
 			if(red_l.size() < m_maxPlayers/2)
-				red_l.push_back(chosen);
+				red_l.push_back(i);
 			else if(blue_l.size() < m_maxPlayers/2)
-				blue_l.push_back(chosen);
+				blue_l.push_back(i);
 		}
 	}
 	vector< int > red_v( red_l.begin(), red_l.end() );
@@ -258,6 +257,7 @@ int StateRoleStrategyBP::handle(GameGrail* engine)
 	Deck* roles;
 	
 	int ret = 0;
+
 	GameInfo& game_info = engine->room_info;
 	if(step == 0){
 		playerNum = engine->getGameMaxPlayers();
@@ -274,11 +274,18 @@ int StateRoleStrategyBP::handle(GameGrail* engine)
 		for(int i = 0; i < playerNum; i++){
 			player_it = (SinglePlayerInfo*)&(room_info.player_infos().Get(i));
 			int color = player_it->team();
+
 			if(color == RED)
+			{
 				red.push_back(player_it->id());
+				
+			}
 			else
+			{		
 				blue.push_back(player_it->id());
+			}
 		}
+			
 		RoleRequest message;
 		if(GE_SUCCESS == (ret = roles->pop(alternativeNum, alternativeRoles))){
 			Coder::setAlternativeRoles(-1, alternativeNum, alternativeRoles, options, message);
@@ -352,7 +359,7 @@ int StateRoleStrategyBP::handle(GameGrail* engine)
 				return GE_TIMEOUT;
 		}
 		RoleRequest message;
-		Coder::setAlternativeRoles(-1, alternativeNum, alternativeRoles, options, message);
+		Coder::setAlternativeRoles(id, alternativeNum, alternativeRoles, options, message);
 		message.set_opration(BP_NULL);
 		engine->sendMessage(-1, network::MSG_ROLE_REQ, message);
 		step++;
