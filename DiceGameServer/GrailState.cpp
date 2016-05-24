@@ -354,7 +354,7 @@ int StateRoleStrategyBP::handle(GameGrail* engine)
 				return GE_TIMEOUT;
 		}
 		RoleRequest message;
-		Coder::setAlternativeRoles(-1, alternativeNum, alternativeRoles, options, message);
+		Coder::setAlternativeRoles(id, alternativeNum, alternativeRoles, options, message);
 		message.set_opration(BP_NULL);
 		engine->sendMessage(-1, network::MSG_ROLE_REQ, message);
 		step++;
@@ -689,6 +689,7 @@ int StateActionPhase::unactional(Action *action, GameGrail* engine)
 			update_info.set_blue_morale(0);
 		engine->sendMessage(-1, MSG_GAME, update_info);
 		engine->pushGameState(new StateGameOver(1 - color));
+		return GE_SUCCESS;
 	}
 }
 
