@@ -10,6 +10,7 @@
 #include <boost/random.hpp>
 #include <boost/thread/condition_variable.hpp>
 #include "codec.h"
+#include "StatisticData.h"
 using namespace std;
 
 #define GUEST 9
@@ -157,7 +158,7 @@ public:
 	bool m_secondExtension;
 	GameInfo room_info;
 	list< int > teamA, teamB;
-
+	tableLogData m_tableLog;
 protected:
 	int m_roundId;
 	int m_maxPlayers;
@@ -177,6 +178,7 @@ protected:
 	TeamArea* m_teamArea;
 	Deck *pile, *discard;
 	bool m_ready[MAXPLAYER];
+
 	
 public:
 	GameGrail(GameGrailConfig *config);
@@ -189,7 +191,10 @@ public:
 	void sendMessageExcept(int id, uint16_t proto_type, google::protobuf::Message& proto);
 	int playerEnterIntoTable(string userId, string nickname, int& playerId);
 	int guestEnterIntoTable(string userId);
-
+	std::string getUserId(int n){ 
+		PlayerContextList::iterator it = m_playerContexts.find(n);
+		return it->second->getUserId();
+	}
 	GrailState* topGameState() { return m_states.empty()? throw GE_NO_STATE : m_states.top(); }
 	void pushGameState(GrailState* state) { m_states.push(state); }
 	void popGameState() { 
@@ -324,8 +329,9 @@ public:
 	void onUserLeave(string userID);
 	void toProtoAs(int playerId, GameInfo& game_info);
 	bool isTableFull() { return getGameNowPlayers() >= m_maxPlayers; }	
+	tableLogData getTableLog(){ return m_tableLog; }
 protected:	
-	void GameRun();
+	void GameRun();  
 	void kickOffNotConnectedPlayers();
 	void updateTableStatusMessage();
 };

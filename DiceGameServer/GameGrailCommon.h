@@ -346,8 +346,12 @@ enum STEP{
 const int BP_ALTERNATIVE_NUM[] = {12,16,20};
 extern CardEntity* cardList[CARDSUM];
 CardEntity* getCardByID(int id);
+#define RESULT_UNKNOWN 30000
+#define RESULT_WIN 1
+#define RESULT_LOSE 0
 #define RED  1
 #define BLUE 0
+
 
 //应战行动，注意BLOCKED指圣光和应战，HIT指命中或圣盾（由server判定）
 #define REPLYBATTLE  0

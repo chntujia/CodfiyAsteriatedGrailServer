@@ -664,6 +664,7 @@ class StateGameOver: public GrailState
 public:
 	StateGameOver(int winner): GrailState(STATE_GAME_OVER), color(winner){}
 	int handle(GameGrail* engine);
+	int getcolor(){ return color; }
 private:
 	int color;
 };

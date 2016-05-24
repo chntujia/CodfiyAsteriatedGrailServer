@@ -41,6 +41,8 @@
 #include "role\MoNv.h"
 #include "role\ShiRen.h"
 
+
+
 using namespace boost;
 
 PlayerEntity* GameGrail::createRole(int id, int roleID, int color)
@@ -902,6 +904,11 @@ void GameGrail::GameRun()
 		}
 	}
 	dead = true;
+	//完成终局统计数据并写入 by GaelClichy 20160518
+	
+
+	
+	//****************************************
 	ztLoggerWrite(ZONE, e_Information, "GameGrail::GameRun() GameGrail [%d] %s end!!", 
 					m_gameId, m_gameName.c_str());
 }
@@ -909,6 +916,8 @@ void GameGrail::GameRun()
 int GameGrail::playerEnterIntoTable(string userId, string nickname, int &playerId)
 {
 	playerId = GUEST;
+	ztLoggerWrite(ZONE, e_Information, "Push_back_UID:");
+	ztLoggerWrite(ZONE, e_Information, userId.c_str());
 	for(PlayerContextList::iterator it = m_playerContexts.begin(); it != m_playerContexts.end(); it++)
 	{
 		if(it->second->getUserId() == userId)
@@ -939,6 +948,8 @@ int GameGrail::guestEnterIntoTable(string userId)
 {
 	//FIXME: limit guset number
 	m_guestList.push_back(userId);
+	ztLoggerWrite(ZONE, e_Information, "Push_back_UID:");
+	ztLoggerWrite(ZONE, e_Information, userId.c_str());
 	return GE_SUCCESS;
 }
 
@@ -1119,6 +1130,9 @@ void GameGrail::onUserLeave(string userID)
 		if(it->second->isConnected())
 			return;
 	}
+	//废村结束时写入统计数据
+
+	//*****************************
 	setDying();
 }
 
