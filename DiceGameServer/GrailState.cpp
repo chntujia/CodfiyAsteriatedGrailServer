@@ -71,24 +71,25 @@ void StateSeatArrange::assignTeam(GameGrail* engine)
 	int m_maxPlayers = engine->getGameMaxPlayers();
 	list< int > red_l = engine->teamA;
 	list< int > blue_l = engine->teamB;
-	if(rand() % 2)
+	if (rand() % 2)
 		red_l.swap(blue_l);
 	vector< int > ids;
-	for(int i = 0; i < m_maxPlayers; i++)
+	for (int i = 0; i < m_maxPlayers; i++)
 		ids.push_back(i);
-	std::random_shuffle (ids.begin(), ids.end());
-	for(int i = 0; i < m_maxPlayers; i++){
-		if(red_l.end() == std::find(red_l.begin(), red_l.end(), i) && blue_l.end() == std::find(blue_l.begin(), blue_l.end(), i)){
-			if(red_l.size() < m_maxPlayers/2)
-				red_l.push_back(i);
-			else if(blue_l.size() < m_maxPlayers/2)
-				blue_l.push_back(i);
+	std::random_shuffle(ids.begin(), ids.end());
+	for (int i = 0; i < m_maxPlayers; i++){
+		int chosen = ids[i];
+		if (red_l.end() == std::find(red_l.begin(), red_l.end(), chosen) && blue_l.end() == std::find(blue_l.begin(), blue_l.end(), chosen)){
+			if (red_l.size() < m_maxPlayers / 2)
+				red_l.push_back(chosen);
+			else if (blue_l.size() < m_maxPlayers / 2)
+				blue_l.push_back(chosen);
 		}
 	}
-	vector< int > red_v( red_l.begin(), red_l.end() );
-	vector< int > blue_v( blue_l.begin(), blue_l.end() );
-	std::random_shuffle (red_v.begin(), red_v.end());
-	std::random_shuffle (blue_v.begin(), blue_v.end());
+	vector< int > red_v(red_l.begin(), red_l.end());
+	vector< int > blue_v(blue_l.begin(), blue_l.end());
+	std::random_shuffle(red_v.begin(), red_v.end());
+	std::random_shuffle(blue_v.begin(), blue_v.end());
 	red = red_v;
 	blue = blue_v;
 }

@@ -41,8 +41,6 @@
 #include "role\MoNv.h"
 #include "role\ShiRen.h"
 
-
-
 using namespace boost;
 
 PlayerEntity* GameGrail::createRole(int id, int roleID, int color)
@@ -904,11 +902,6 @@ void GameGrail::GameRun()
 		}
 	}
 	dead = true;
-	//完成终局统计数据并写入 by GaelClichy 20160518
-	
-
-	
-	//****************************************
 	ztLoggerWrite(ZONE, e_Information, "GameGrail::GameRun() GameGrail [%d] %s end!!", 
 					m_gameId, m_gameName.c_str());
 }
@@ -948,8 +941,6 @@ int GameGrail::guestEnterIntoTable(string userId)
 {
 	//FIXME: limit guset number
 	m_guestList.push_back(userId);
-	ztLoggerWrite(ZONE, e_Information, "Push_back_UID:");
-	ztLoggerWrite(ZONE, e_Information, userId.c_str());
 	return GE_SUCCESS;
 }
 
