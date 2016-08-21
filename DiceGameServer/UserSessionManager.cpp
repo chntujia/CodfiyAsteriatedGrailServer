@@ -5,7 +5,7 @@ void UserSessionManager::AddUserById(uint32_t userTempId, UserSession_Ptr sessio
 {
 	zMutex_scope_lock lock_guide(m_userIdMap_lock);	
 	pair<UserIdMap_Iter, bool> bPair =  m_userIdMap.insert(
-		make_pair<uint32_t, UserSession_Ptr>(userTempId, session));
+		std::pair<uint32_t, UserSession_Ptr>(userTempId, session));
 	if (bPair.second)
 	{
 		ztLoggerWrite(ZONE, e_Information, "AddUserById::[%d] OK!!!", userTempId);
@@ -31,7 +31,7 @@ void UserSessionManager::AddUser(const string userId, UserSession_Ptr session)
 	}
 	
 	pair<UserMap_Iter, bool> bPair =  m_userMap.insert(
-		make_pair<const string, UserSession_Ptr>(userId, session));
+		std::pair<const string, UserSession_Ptr>(userId, session));
 	if (bPair.second)
 	{
 		ztLoggerWrite(ZONE, e_Information, "AddUser::[%s] OK!!!", userId.c_str());
