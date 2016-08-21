@@ -909,6 +909,8 @@ void GameGrail::GameRun()
 int GameGrail::playerEnterIntoTable(string userId, string nickname, int &playerId)
 {
 	playerId = GUEST;
+	ztLoggerWrite(ZONE, e_Information, "Push_back_UID:");
+	ztLoggerWrite(ZONE, e_Information, userId.c_str());
 	for(PlayerContextList::iterator it = m_playerContexts.begin(); it != m_playerContexts.end(); it++)
 	{
 		if(it->second->getUserId() == userId)
@@ -1119,6 +1121,9 @@ void GameGrail::onUserLeave(string userID)
 		if(it->second->isConnected())
 			return;
 	}
+	//废村结束时写入统计数据
+
+	//*****************************
 	setDying();
 }
 

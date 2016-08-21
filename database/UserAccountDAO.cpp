@@ -17,6 +17,20 @@ void UserAccountDAO::insert(string username, string password, string nickname, i
    update->setInt(4, status);
    connection->executeUpdate(update);
 }
+void UserAccountDAO::gameComplete(string username)
+{
+	PreparedStatement* update = connection->prepare("update user set FinishTimes=FinishTimes+1 where UserName=?");
+
+	update->setString(1, username);
+	connection->executeUpdate(update);
+}
+
+void UserAccountDAO::gameStart(string username)
+{
+	PreparedStatement* update = connection->prepare("update user set PlayTimes=PlayTimes+1 where UserName=?");
+	update->setString(1, username);
+	connection->executeUpdate(update);
+}
 
 struct UserAccount UserAccountDAO::query(string username, string password)
 {

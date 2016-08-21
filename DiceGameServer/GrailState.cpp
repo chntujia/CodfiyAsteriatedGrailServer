@@ -3,7 +3,9 @@
 #include <Windows.h>
 #include <algorithm>
 #include <cstdlib> 
-
+#include "DBServices.h"
+#include "boost/date_time/posix_time/posix_time.hpp"
+#include "boost/format.hpp"
 int StateWaitForEnter::handle(GameGrail* engine)
 {
 	if(engine->isAllStartReady())
@@ -69,25 +71,25 @@ void StateSeatArrange::assignTeam(GameGrail* engine)
 	int m_maxPlayers = engine->getGameMaxPlayers();
 	list< int > red_l = engine->teamA;
 	list< int > blue_l = engine->teamB;
-	if(rand() % 2)
+	if (rand() % 2)
 		red_l.swap(blue_l);
 	vector< int > ids;
-	for(int i = 0; i < m_maxPlayers; i++)
+	for (int i = 0; i < m_maxPlayers; i++)
 		ids.push_back(i);
-	std::random_shuffle (ids.begin(), ids.end());
-	for(int i = 0; i < m_maxPlayers; i++){
+	std::random_shuffle(ids.begin(), ids.end());
+	for (int i = 0; i < m_maxPlayers; i++){
 		int chosen = ids[i];
-		if(red_l.end() == std::find(red_l.begin(), red_l.end(), chosen) && blue_l.end() == std::find(blue_l.begin(), blue_l.end(), chosen)){
-			if(red_l.size() < m_maxPlayers/2)
+		if (red_l.end() == std::find(red_l.begin(), red_l.end(), chosen) && blue_l.end() == std::find(blue_l.begin(), blue_l.end(), chosen)){
+			if (red_l.size() < m_maxPlayers / 2)
 				red_l.push_back(chosen);
-			else if(blue_l.size() < m_maxPlayers/2)
+			else if (blue_l.size() < m_maxPlayers / 2)
 				blue_l.push_back(chosen);
 		}
 	}
-	vector< int > red_v( red_l.begin(), red_l.end() );
-	vector< int > blue_v( blue_l.begin(), blue_l.end() );
-	std::random_shuffle (red_v.begin(), red_v.end());
-	std::random_shuffle (blue_v.begin(), blue_v.end());
+	vector< int > red_v(red_l.begin(), red_l.end());
+	vector< int > blue_v(blue_l.begin(), blue_l.end());
+	std::random_shuffle(red_v.begin(), red_v.end());
+	std::random_shuffle(blue_v.begin(), blue_v.end());
 	red = red_v;
 	blue = blue_v;
 }
@@ -258,7 +260,6 @@ int StateRoleStrategyBP::handle(GameGrail* engine)
 	Deck* roles;
 	
 	int ret = 0;
-
 	GameInfo& game_info = engine->room_info;
 	if(step == 0){
 		playerNum = engine->getGameMaxPlayers();
@@ -275,18 +276,11 @@ int StateRoleStrategyBP::handle(GameGrail* engine)
 		for(int i = 0; i < playerNum; i++){
 			player_it = (SinglePlayerInfo*)&(room_info.player_infos().Get(i));
 			int color = player_it->team();
-
 			if(color == RED)
-			{
 				red.push_back(player_it->id());
-				
-			}
 			else
-			{		
 				blue.push_back(player_it->id());
-			}
 		}
-			
 		RoleRequest message;
 		if(GE_SUCCESS == (ret = roles->pop(alternativeNum, alternativeRoles))){
 			Coder::setAlternativeRoles(-1, alternativeNum, alternativeRoles, options, message);
@@ -385,7 +379,9 @@ int StateGameStart::handle(GameGrail* engine)
 	}
 	int ret;
 	vector< int > cards;
+	PlayerEntity* tempEntity;
 	HARM harm;
+
 	harm.type = HARM_NONE;
 	harm.point = 4;
 	harm.srcID = -1;
@@ -396,8 +392,39 @@ int StateGameStart::handle(GameGrail* engine)
 		iterator++;
 		return ret;
 	}
+	
 	engine->popGameState();	
 	engine->m_firstPlayerID = engine->room_info.player_infos().begin()->id();
+
+	//**写入开局统计数据 by GaelClichy 20160518**
+	engine->m_tableLog.tableMode = engine->m_roleStrategy;
+	engine->m_tableLog.playerNums = engine->getGameMaxPlayers();
+	boost::posix_time::ptime now = boost::posix_time::second_clock::local_time();
+	const boost::wformat f = boost::wformat(L"%s-%02d-%02d %02d:%02d:%02d")
+		% now.date().year_month_day().year
+		% now.date().year_month_day().month.as_number()
+		% now.date().year_month_day().day.as_number()
+
+		% now.time_of_day().hours()
+		% now.time_of_day().minutes()
+		% now.time_of_day().seconds();
+
+	const std::wstring result = f.str();
+	engine->m_tableLog.createTime = string(result.begin(), result.end()); 
+	//engine->m_tableLog.createTime = "test";
+	for (int i = 0; i < engine->m_tableLog.playerNums; i++) //根据人数写入细节数据 
+	{
+		tempEntity = engine->getPlayerEntity(i);
+		engine->m_tableLog.tableDetail[i].playerID = engine->getUserId(i);
+		engine->m_tableLog.tableDetail[i].playerSerial = tempEntity->getID();
+		engine->m_tableLog.tableDetail[i].role = tempEntity->getRoleID();
+		engine->m_tableLog.tableDetail[i].team = tempEntity->getColor();
+
+		DBInstance.userAccountDAO->gameStart(engine->m_tableLog.tableDetail[i].playerID);
+	}
+		
+
+    //****************************************
 	return engine->setStateCurrentPlayer(engine->m_firstPlayerID);
 }
 
@@ -798,7 +825,7 @@ int StateActionPhase::basicSpecial(Action *action, GameGrail* engine)
 				dst = dst->getPost();
 			}
 			if(team->getCup(color) == 5){
-				engine->pushGameState(new StateGameOver(color));
+				engine->pushGameState(new StateGameOver(color));  
 			}
 			HARM grail;
 			grail.cause = CAUSE_SYNTHESIZE;
@@ -2030,8 +2057,27 @@ int StateShowHand::handle(GameGrail* engine)
 
 int StateGameOver::handle(GameGrail* engine)
 {
+	PlayerEntity* tempEntity;
+
 	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateGameOver", engine->getGameId());
 	Sleep(10000);
+	//正常终局写入数据统计 by GaelClichy 20160520
+	engine->m_tableLog.redScore = engine->getTeamArea()->getMorale(RED);
+	engine->m_tableLog.blueScore = engine->getTeamArea()->getMorale(BLUE);
+	engine->m_tableLog.redCupNum = engine->getTeamArea()->getCup(RED);
+	engine->m_tableLog.blueCupNum = engine->getTeamArea()->getCup(BLUE);
+	engine->m_tableLog.winner = this->getcolor(); 
+	for (int i = 0; i < engine->m_tableLog.playerNums; i++) //根据人数写入细节数据
+	{
+		if (engine->m_tableLog.tableDetail[i].team == engine->m_tableLog.winner)
+			engine->m_tableLog.tableDetail[i].result = RESULT_WIN;
+		else
+			engine->m_tableLog.tableDetail[i].result = RESULT_LOSE;
+		DBInstance.userAccountDAO->gameComplete(engine->m_tableLog.tableDetail[i].playerID);
+	}
+	DBInstance.statisticDAO->insert(engine->m_tableLog);
+	//****************************************************
 	engine->setDying();
+	
 	return GE_SUCCESS;
 }
