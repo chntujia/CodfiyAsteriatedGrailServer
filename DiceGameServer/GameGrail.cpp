@@ -1121,9 +1121,6 @@ void GameGrail::onUserLeave(string userID)
 		if(it->second->isConnected())
 			return;
 	}
-	//废村结束时写入统计数据
-
-	//*****************************
 	setDying();
 }
 

@@ -12,6 +12,7 @@ class DBConnection
 {
 public:
 	DBConnection(std::string hostname, std::string username, std::string password);
+	DBConnection(const DBConnection& other);
 	~DBConnection();
 	sql::PreparedStatement* prepare(char* preparedStatement);
 	void executeUpdate(sql::PreparedStatement* preparedStatement);

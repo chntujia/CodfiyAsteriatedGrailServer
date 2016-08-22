@@ -27,3 +27,5 @@ base/Release/
 *.sdf
 *.suo
 DiceGameServer/1*.txt
+DiceGameServer.VC.VC.opendb
+DiceGameServer.VC.db

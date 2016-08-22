@@ -396,7 +396,6 @@ int StateGameStart::handle(GameGrail* engine)
 	engine->popGameState();	
 	engine->m_firstPlayerID = engine->room_info.player_infos().begin()->id();
 
-	//**写入开局统计数据 by GaelClichy 20160518**
 	engine->m_tableLog.tableMode = engine->m_roleStrategy;
 	engine->m_tableLog.playerNums = engine->getGameMaxPlayers();
 	boost::posix_time::ptime now = boost::posix_time::second_clock::local_time();
@@ -411,7 +410,7 @@ int StateGameStart::handle(GameGrail* engine)
 
 	const std::wstring result = f.str();
 	engine->m_tableLog.createTime = string(result.begin(), result.end()); 
-	//engine->m_tableLog.createTime = "test";
+
 	for (int i = 0; i < engine->m_tableLog.playerNums; i++) //根据人数写入细节数据 
 	{
 		tempEntity = engine->getPlayerEntity(i);
@@ -423,8 +422,6 @@ int StateGameStart::handle(GameGrail* engine)
 		DBInstance.userAccountDAO->gameStart(engine->m_tableLog.tableDetail[i].playerID);
 	}
 		
-
-    //****************************************
 	return engine->setStateCurrentPlayer(engine->m_firstPlayerID);
 }
 
@@ -2060,8 +2057,7 @@ int StateGameOver::handle(GameGrail* engine)
 	PlayerEntity* tempEntity;
 
 	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateGameOver", engine->getGameId());
-	Sleep(10000);
-	//正常终局写入数据统计 by GaelClichy 20160520
+	
 	engine->m_tableLog.redScore = engine->getTeamArea()->getMorale(RED);
 	engine->m_tableLog.blueScore = engine->getTeamArea()->getMorale(BLUE);
 	engine->m_tableLog.redCupNum = engine->getTeamArea()->getCup(RED);
@@ -2075,8 +2071,10 @@ int StateGameOver::handle(GameGrail* engine)
 			engine->m_tableLog.tableDetail[i].result = RESULT_LOSE;
 		DBInstance.userAccountDAO->gameComplete(engine->m_tableLog.tableDetail[i].playerID);
 	}
-	DBInstance.statisticDAO->insert(engine->m_tableLog);
-	//****************************************************
+	DBConnection connection = DBInstance.getConnection();
+	StatisticDAO statisticDAO(&connection);
+	statisticDAO.insert(engine->m_tableLog);
+	Sleep(10000);
 	engine->setDying();
 	
 	return GE_SUCCESS;
