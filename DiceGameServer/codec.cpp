@@ -71,6 +71,10 @@ void* proto_decoder(const char* msg, uint16_t& type)
 		proto = new ReadyForGameRequest();
 		proto->ParseFromArray(msg + SIZEOF_HEADER, header_ptr->len - SIZEOF_HEADER);
 		break;
+	case MSG_BECOME_LEADER_REQ:
+		proto = new BecomeLeaderRequest();
+		proto->ParseFromArray(msg + SIZEOF_HEADER, header_ptr->len - SIZEOF_HEADER);
+		break;
 	case MSG_TALK:
 		proto = new Talk();
 		proto->ParseFromArray(msg + SIZEOF_HEADER, header_ptr->len - SIZEOF_HEADER);

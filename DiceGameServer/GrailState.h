@@ -10,6 +10,7 @@ enum STATE{
 	STATE_ROLE_STRATEGY_31,
 	STATE_ROLE_STRATEGY_ANY,
 	STATE_ROLE_STRATEGY_BP,
+	STATE_ROLE_STRATEGY_CM,
 	STATE_GAME_START,
 	STATE_BEFORE_TURN_BEGIN,
 	STATE_TURN_BEGIN,
@@ -183,6 +184,8 @@ private:
 	bool isSet;
 	vector< int > red;
 	vector< int > blue;
+	int red_leader;
+	int blue_leader;
 	GameInfo* messages[MAXPLAYER];
 };
 
@@ -231,6 +234,26 @@ public:
 	int handle(GameGrail* engine);
 };
 
+class StateRoleStrategyCM: public GrailState
+{
+private:
+	int step;
+	int* alternativeRoles;
+	int* options;
+	vector<int> red;
+	vector<int> blue;
+	int idr;
+	int idb;
+	int ibb;
+	int ibr;
+	bool decided;		
+	int alternativeNum;
+	int playerNum;
+public:
+	StateRoleStrategyCM(): GrailState(STATE_ROLE_STRATEGY_CM){ alternativeRoles = NULL; options = NULL; step = 0;}
+	~StateRoleStrategyCM() { SAFE_DELETE(alternativeRoles);SAFE_DELETE(options);}
+	int handle(GameGrail* engine);
+};
 class StateGameStart : public GrailState
 {
 public:

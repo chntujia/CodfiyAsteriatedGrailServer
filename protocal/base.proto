@@ -23,6 +23,7 @@ enum MessageType {
     MSG_GOSSIP = 18;
 	MSG_ERROR = 19;	
 	MSG_HEARTBEAT = 20;
+	MSG_BECOME_LEADER_REQ=21;
 }
 
 // c -> s 注册请求
@@ -120,6 +121,14 @@ message JoinTeamRequest {
 	required Team team = 1;
 }
 
+message BecomeLeaderRequest {
+    enum Leader {
+		Leader_Y=1;
+		Leader_N=0;
+		}
+		required Leader leader = 1;
+}
+
 // c -> s 游戏准备、取消准备
 message ReadyForGameRequest {
 	enum Type {
@@ -133,7 +142,7 @@ message ReadyForGameRequest {
 // s -> c 单个玩家的所有信息，不需要更新的信息可以不填写，为节省数据包大小，repeated数据编号请尽量使用16以内数字
 message SinglePlayerInfo {
     optional uint32 id = 1;        // 编号
-    optional uint32 team = 2;      // 0：蓝队，1：红队，（2：红队first_player，可以不使用）
+    optional uint32 team = 2;      // 0：蓝队，1：红队
     optional uint32 role_id = 3;   // 角色
     
     optional uint32 hand_count = 4;     // 手牌数
@@ -159,6 +168,7 @@ message SinglePlayerInfo {
     optional string nickname = 17; // 昵称
 	optional bool ready = 18 [default = false];
 	repeated string delete_field = 19;  // 删除某个域，用于清空数组
+	optional uint32 leader =20; //1：申请成为队长，0：不申请
 }
 
 // s -> c 局信息

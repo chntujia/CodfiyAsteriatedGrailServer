@@ -657,12 +657,16 @@ public:
 		cmd->set_respond_id(skillID);
 		cmd->set_src_id(playerID);
 	}
+	static void askForInsertBan(int playerID,InsertBanRequest& cmd_req)
+	{
+		cmd_req.set_id(playerID);
+	}
 	static void skillNotice(int srcID, int dstID, int skillID, SkillMsg& skill_msg)
 	{
 		list<int> dstIDs;
 		dstIDs.push_back(dstID);
 		skillNotice(srcID, dstIDs, skillID, skill_msg);
-	}
+	}	
 	static void skillNotice(int srcID, list<int> dstIDs, int skillID, SkillMsg& skill_msg)
 	{
 		skill_msg.set_src_id(srcID);
@@ -719,6 +723,15 @@ public:
 	{
 		cmd_req.set_id(ID);
 		cmd_req.set_strategy(ROLE_STRATEGY_BP);
+		for(int i = 0; i < howMany; i ++){
+			cmd_req.add_role_ids(roles[i]);
+			cmd_req.add_args(chosen[i]);
+		}
+	}
+	static void setCMRoles(int ID, int howMany, const int *roles, const int *chosen, RoleRequest& cmd_req)
+	{
+		cmd_req.set_id(ID);
+		cmd_req.set_strategy(ROLE_STRATEGY_CM);
 		for(int i = 0; i < howMany; i ++){
 			cmd_req.add_role_ids(roles[i]);
 			cmd_req.add_args(chosen[i]);

@@ -138,6 +138,12 @@ bool UserTask::cmdMsgParse(const char *pstrMsg, const uint32_t nCmdLen)
 				delete proto;
 				break;
 			}
+		case MSG_BECOME_LEADER_REQ:
+			{
+				handleBecomeLeader((BecomeLeaderRequest*)proto);		
+				delete proto;
+				break;
+			}
 		case MSG_READY_GAME_REQ:
 			{
 				handleReadyGame((ReadyForGameRequest*)proto);					
@@ -160,6 +166,9 @@ bool UserTask::cmdMsgParse(const char *pstrMsg, const uint32_t nCmdLen)
 				}
 				else if(game->m_roleStrategy == ROLE_STRATEGY_BP) {
 					tryNotify(m_playerId, STATE_ROLE_STRATEGY_BP, 0, pick);
+				}
+				else if(game->m_roleStrategy == ROLE_STRATEGY_CM) {
+					tryNotify(m_playerId, STATE_ROLE_STRATEGY_CM, 0, pick);
 				}
 				break;
 			}
@@ -366,6 +375,17 @@ void UserTask::handleJoinTeam(JoinTeamRequest* req)
 	}
 	else
 		ztLoggerWrite(ZONE, e_Warning, "UserTask::cmdMsgParse() userId [%s] cannot join team. Table %d.", 
+					m_userId.c_str(), m_tableId);
+}
+
+void UserTask::handleBecomeLeader(BecomeLeaderRequest* req)
+{
+	GameGrail* game = getGame();
+	if(game){
+		game->setLeader(m_playerId, req->leader());
+	}
+	else
+		ztLoggerWrite(ZONE, e_Warning, "UserTask::cmdMsgParse() userId [%s] cannot become leader. Table %d.", 
 					m_userId.c_str(), m_tableId);
 }
 

@@ -157,8 +157,9 @@ public:
 	bool m_firstExtension;
 	bool m_secondExtension;
 	GameInfo room_info;
-	list< int > teamA, teamB;
+	list< int > teamA, teamB,leaderL;
 	tableLogData m_tableLog;
+
 protected:
 	int m_roundId;
 	int m_maxPlayers;
@@ -266,6 +267,21 @@ public:
 			sendMessage(-1, MSG_GAME, update);
 		}		
 	}
+	void setLeader(int id, int leader){
+		if(id<-1 || id>m_maxPlayers){
+			return;
+		}
+		GameInfo update;
+		SinglePlayerInfo *player = update.add_player_infos();
+		player->set_id(id);
+		player->set_leader(leader);
+		if(leader == BecomeLeaderRequest_Leader_Leader_Y){
+			leaderL.remove(id);
+			leaderL.push_back(id);}
+		else if(leader == BecomeLeaderRequest_Leader_Leader_N)
+		leaderL.remove(id);
+		sendMessage(-1, MSG_GAME, update);
+		}
 	bool isAllStartReady(){
 		for(PlayerContextList::iterator it = m_playerContexts.begin(); it != m_playerContexts.end(); it++)
 		{

@@ -960,6 +960,9 @@ int GameGrail::setStateRoleStrategy()
 	case ROLE_STRATEGY_BP:
 		pushGameState(new StateRoleStrategyBP);
 		break;
+	case ROLE_STRATEGY_CM:
+		pushGameState(new StateRoleStrategyCM);
+		break;
 	default:
 		return GE_INVALID_ARGUMENT;
 	}
