@@ -657,10 +657,6 @@ public:
 		cmd->set_respond_id(skillID);
 		cmd->set_src_id(playerID);
 	}
-	static void askForInsertBan(int playerID,InsertBanRequest& cmd_req)
-	{
-		cmd_req.set_id(playerID);
-	}
 	static void skillNotice(int srcID, int dstID, int skillID, SkillMsg& skill_msg)
 	{
 		list<int> dstIDs;

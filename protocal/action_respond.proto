@@ -5,7 +5,6 @@ enum MessageType2 {
     MSG_PICK_BAN = 102;
     MSG_ACTION = 103;
     MSG_RESPOND= 104;
-	MSG_INSERT_BAN= 105;
     MSG_CMD_REQ = 106;
     MSG_ERROR_INPUT = 107;
 	MSG_HIT = 108;
@@ -59,10 +58,6 @@ message RoleRequest {
     repeated uint32 role_ids = 3;   // 可选角色
 	repeated int32 args = 4; //0 未选择 正 被此id选择 负 被此idban
 	optional uint32 opration = 5;
-}
-//s -> c 额外禁用
-message InsertBanRequest {
-    required uint32 id = 1; //询问的玩家id
 }
 
 // c -> s 角色选取
