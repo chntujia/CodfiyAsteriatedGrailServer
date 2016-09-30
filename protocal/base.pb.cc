@@ -61,6 +61,12 @@ const ::google::protobuf::Descriptor* JoinTeamRequest_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   JoinTeamRequest_reflection_ = NULL;
 const ::google::protobuf::EnumDescriptor* JoinTeamRequest_Team_descriptor_ = NULL;
+const ::google::protobuf::Descriptor* BecomeLeaderRequest_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  BecomeLeaderRequest_reflection_ = NULL;
+const ::google::protobuf::Descriptor* BecomeLeaderResponse_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  BecomeLeaderResponse_reflection_ = NULL;
 const ::google::protobuf::Descriptor* ReadyForGameRequest_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   ReadyForGameRequest_reflection_ = NULL;
@@ -321,7 +327,36 @@ void protobuf_AssignDesc_base_2eproto() {
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(JoinTeamRequest, _internal_metadata_),
       -1);
   JoinTeamRequest_Team_descriptor_ = JoinTeamRequest_descriptor_->enum_type(0);
-  ReadyForGameRequest_descriptor_ = file->message_type(12);
+  BecomeLeaderRequest_descriptor_ = file->message_type(12);
+  static const int BecomeLeaderRequest_offsets_[1] = {
+  };
+  BecomeLeaderRequest_reflection_ =
+    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
+      BecomeLeaderRequest_descriptor_,
+      BecomeLeaderRequest::default_instance_,
+      BecomeLeaderRequest_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BecomeLeaderRequest, _has_bits_[0]),
+      -1,
+      -1,
+      sizeof(BecomeLeaderRequest),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BecomeLeaderRequest, _internal_metadata_),
+      -1);
+  BecomeLeaderResponse_descriptor_ = file->message_type(13);
+  static const int BecomeLeaderResponse_offsets_[1] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BecomeLeaderResponse, yes_),
+  };
+  BecomeLeaderResponse_reflection_ =
+    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
+      BecomeLeaderResponse_descriptor_,
+      BecomeLeaderResponse::default_instance_,
+      BecomeLeaderResponse_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BecomeLeaderResponse, _has_bits_[0]),
+      -1,
+      -1,
+      sizeof(BecomeLeaderResponse),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BecomeLeaderResponse, _internal_metadata_),
+      -1);
+  ReadyForGameRequest_descriptor_ = file->message_type(14);
   static const int ReadyForGameRequest_offsets_[1] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ReadyForGameRequest, type_),
   };
@@ -337,8 +372,8 @@ void protobuf_AssignDesc_base_2eproto() {
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ReadyForGameRequest, _internal_metadata_),
       -1);
   ReadyForGameRequest_Type_descriptor_ = ReadyForGameRequest_descriptor_->enum_type(0);
-  SinglePlayerInfo_descriptor_ = file->message_type(13);
-  static const int SinglePlayerInfo_offsets_[19] = {
+  SinglePlayerInfo_descriptor_ = file->message_type(15);
+  static const int SinglePlayerInfo_offsets_[20] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SinglePlayerInfo, id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SinglePlayerInfo, team_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SinglePlayerInfo, role_id_),
@@ -358,6 +393,7 @@ void protobuf_AssignDesc_base_2eproto() {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SinglePlayerInfo, nickname_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SinglePlayerInfo, ready_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SinglePlayerInfo, delete_field_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SinglePlayerInfo, leader_),
   };
   SinglePlayerInfo_reflection_ =
     ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
@@ -370,7 +406,7 @@ void protobuf_AssignDesc_base_2eproto() {
       sizeof(SinglePlayerInfo),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SinglePlayerInfo, _internal_metadata_),
       -1);
-  GameInfo_descriptor_ = file->message_type(14);
+  GameInfo_descriptor_ = file->message_type(16);
   static const int GameInfo_offsets_[14] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(GameInfo, room_id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(GameInfo, player_id_),
@@ -398,7 +434,7 @@ void protobuf_AssignDesc_base_2eproto() {
       sizeof(GameInfo),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(GameInfo, _internal_metadata_),
       -1);
-  Talk_descriptor_ = file->message_type(15);
+  Talk_descriptor_ = file->message_type(17);
   static const int Talk_offsets_[1] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Talk, txt_),
   };
@@ -413,7 +449,7 @@ void protobuf_AssignDesc_base_2eproto() {
       sizeof(Talk),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Talk, _internal_metadata_),
       -1);
-  Error_descriptor_ = file->message_type(16);
+  Error_descriptor_ = file->message_type(18);
   static const int Error_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Error, id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Error, dst_id_),
@@ -430,7 +466,7 @@ void protobuf_AssignDesc_base_2eproto() {
       sizeof(Error),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Error, _internal_metadata_),
       -1);
-  Gossip_descriptor_ = file->message_type(17);
+  Gossip_descriptor_ = file->message_type(19);
   static const int Gossip_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Gossip, type_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Gossip, txt_),
@@ -447,7 +483,7 @@ void protobuf_AssignDesc_base_2eproto() {
       sizeof(Gossip),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Gossip, _internal_metadata_),
       -1);
-  HeartBeat_descriptor_ = file->message_type(18);
+  HeartBeat_descriptor_ = file->message_type(20);
   static const int HeartBeat_offsets_[1] = {
   };
   HeartBeat_reflection_ =
@@ -503,6 +539,10 @@ void protobuf_RegisterTypes(const ::std::string&) {
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
       JoinTeamRequest_descriptor_, &JoinTeamRequest::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+      BecomeLeaderRequest_descriptor_, &BecomeLeaderRequest::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+      BecomeLeaderResponse_descriptor_, &BecomeLeaderResponse::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
       ReadyForGameRequest_descriptor_, &ReadyForGameRequest::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
       SinglePlayerInfo_descriptor_, &SinglePlayerInfo::default_instance());
@@ -547,6 +587,10 @@ void protobuf_ShutdownFile_base_2eproto() {
   delete LeaveRoomRequest_reflection_;
   delete JoinTeamRequest::default_instance_;
   delete JoinTeamRequest_reflection_;
+  delete BecomeLeaderRequest::default_instance_;
+  delete BecomeLeaderRequest_reflection_;
+  delete BecomeLeaderResponse::default_instance_;
+  delete BecomeLeaderResponse_reflection_;
   delete ReadyForGameRequest::default_instance_;
   delete ReadyForGameRequest_reflection_;
   delete SinglePlayerInfo::default_instance_;
@@ -605,43 +649,46 @@ void protobuf_AddDesc_base_2eproto() {
     "omRequest\"o\n\017JoinTeamRequest\022+\n\004team\030\001 \002"
     "(\0162\035.network.JoinTeamRequest.Team\"/\n\004Tea"
     "m\022\n\n\006TEAM_A\020\001\022\n\n\006TEAM_B\020\000\022\017\n\013TEAM_RANDOM"
-    "\020\002\"\207\001\n\023ReadyForGameRequest\022/\n\004type\030\001 \002(\016"
-    "2!.network.ReadyForGameRequest.Type\"\?\n\004T"
-    "ype\022\017\n\013START_READY\020\001\022\026\n\022CANCEL_START_RED"
-    "AY\020\002\022\016\n\nSEAT_READY\020\003\"\356\002\n\020SinglePlayerInf"
-    "o\022\n\n\002id\030\001 \001(\r\022\014\n\004team\030\002 \001(\r\022\017\n\007role_id\030\003"
-    " \001(\r\022\022\n\nhand_count\030\004 \001(\r\022\022\n\nheal_count\030\005"
-    " \001(\r\022\020\n\010ex_cards\030\006 \003(\r\022\023\n\013basic_cards\030\007 "
-    "\003(\r\022\013\n\003gem\030\010 \001(\r\022\017\n\007crystal\030\t \001(\r\022\024\n\014yel"
-    "low_token\030\n \001(\r\022\022\n\nblue_token\030\013 \001(\r\022\025\n\rc"
-    "overed_count\030\014 \001(\r\022\020\n\010is_knelt\030\r \001(\010\022\r\n\005"
-    "hands\030\016 \003(\r\022\020\n\010covereds\030\017 \003(\r\022\020\n\010max_han"
-    "d\030\020 \001(\r\022\020\n\010nickname\030\021 \001(\t\022\024\n\005ready\030\022 \001(\010"
-    ":\005false\022\024\n\014delete_field\030\023 \003(\t\"\267\002\n\010GameIn"
-    "fo\022\017\n\007room_id\030\001 \001(\005\022\021\n\tplayer_id\030\002 \001(\005\022\022"
-    "\n\nred_morale\030\003 \001(\r\022\023\n\013blue_morale\030\004 \001(\r\022"
-    "\017\n\007red_gem\030\005 \001(\r\022\020\n\010blue_gem\030\006 \001(\r\022\023\n\013re"
-    "d_crystal\030\007 \001(\r\022\024\n\014blue_crystal\030\010 \001(\r\022\021\n"
-    "\tred_grail\030\t \001(\r\022\022\n\nblue_grail\030\n \001(\r\022\014\n\004"
-    "pile\030\013 \001(\r\022\017\n\007discard\030\014 \001(\r\022\031\n\nis_starte"
-    "d\030\r \001(\010:\005false\022/\n\014player_infos\030\016 \003(\0132\031.n"
-    "etwork.SinglePlayerInfo\"\023\n\004Talk\022\013\n\003txt\030\001"
-    " \001(\t\"1\n\005Error\022\n\n\002id\030\001 \002(\005\022\016\n\006dst_id\030\002 \002("
-    "\005\022\014\n\004args\030\003 \003(\005\"D\n\006Gossip\022!\n\004type\030\001 \001(\0162"
-    "\023.network.GossipType\022\013\n\003txt\030\002 \001(\t\022\n\n\002id\030"
-    "\003 \001(\r\"\013\n\tHeartBeat*\250\003\n\013MessageType\022\024\n\020MS"
-    "G_REGISTER_REQ\020\001\022\024\n\020MSG_REGISTER_REP\020\002\022\021"
-    "\n\rMSG_LOGIN_REQ\020\003\022\021\n\rMSG_LOGIN_REP\020\004\022\022\n\016"
-    "MSG_LOGOUT_REQ\020\005\022\022\n\016MSG_LOGOUT_REP\020\006\022\024\n\020"
-    "MSG_ROOMLIST_REQ\020\007\022\024\n\020MSG_ROOMLIST_REP\020\010"
-    "\022\027\n\023MSG_CREATE_ROOM_REQ\020\t\022\026\n\022MSG_ENTER_R"
-    "OOM_REQ\020\n\022\026\n\022MSG_ENTER_ROOM_REP\020\013\022\026\n\022MSG"
-    "_LEAVE_ROOM_REQ\020\014\022\025\n\021MSG_JOIN_TEAM_REQ\020\r"
-    "\022\026\n\022MSG_READY_GAME_REQ\020\016\022\025\n\021MSG_SINGLE_P"
-    "LAYER\020\017\022\014\n\010MSG_GAME\020\020\022\014\n\010MSG_TALK\020\021\022\016\n\nM"
-    "SG_GOSSIP\020\022\022\r\n\tMSG_ERROR\020\023\022\021\n\rMSG_HEARTB"
-    "EAT\020\024*0\n\nGossipType\022\017\n\013GOSSIP_TALK\020\001\022\021\n\r"
-    "GOSSIP_NOTICE\020\002", 2775);
+    "\020\002\"\025\n\023BecomeLeaderRequest\"*\n\024BecomeLeade"
+    "rResponse\022\022\n\003yes\030\001 \001(\010:\005false\"\207\001\n\023ReadyF"
+    "orGameRequest\022/\n\004type\030\001 \002(\0162!.network.Re"
+    "adyForGameRequest.Type\"\?\n\004Type\022\017\n\013START_"
+    "READY\020\001\022\026\n\022CANCEL_START_REDAY\020\002\022\016\n\nSEAT_"
+    "READY\020\003\"\376\002\n\020SinglePlayerInfo\022\n\n\002id\030\001 \001(\r"
+    "\022\014\n\004team\030\002 \001(\r\022\017\n\007role_id\030\003 \001(\r\022\022\n\nhand_"
+    "count\030\004 \001(\r\022\022\n\nheal_count\030\005 \001(\r\022\020\n\010ex_ca"
+    "rds\030\006 \003(\r\022\023\n\013basic_cards\030\007 \003(\r\022\013\n\003gem\030\010 "
+    "\001(\r\022\017\n\007crystal\030\t \001(\r\022\024\n\014yellow_token\030\n \001"
+    "(\r\022\022\n\nblue_token\030\013 \001(\r\022\025\n\rcovered_count\030"
+    "\014 \001(\r\022\020\n\010is_knelt\030\r \001(\010\022\r\n\005hands\030\016 \003(\r\022\020"
+    "\n\010covereds\030\017 \003(\r\022\020\n\010max_hand\030\020 \001(\r\022\020\n\010ni"
+    "ckname\030\021 \001(\t\022\024\n\005ready\030\022 \001(\010:\005false\022\024\n\014de"
+    "lete_field\030\023 \003(\t\022\016\n\006leader\030\024 \001(\r\"\267\002\n\010Gam"
+    "eInfo\022\017\n\007room_id\030\001 \001(\005\022\021\n\tplayer_id\030\002 \001("
+    "\005\022\022\n\nred_morale\030\003 \001(\r\022\023\n\013blue_morale\030\004 \001"
+    "(\r\022\017\n\007red_gem\030\005 \001(\r\022\020\n\010blue_gem\030\006 \001(\r\022\023\n"
+    "\013red_crystal\030\007 \001(\r\022\024\n\014blue_crystal\030\010 \001(\r"
+    "\022\021\n\tred_grail\030\t \001(\r\022\022\n\nblue_grail\030\n \001(\r\022"
+    "\014\n\004pile\030\013 \001(\r\022\017\n\007discard\030\014 \001(\r\022\031\n\nis_sta"
+    "rted\030\r \001(\010:\005false\022/\n\014player_infos\030\016 \003(\0132"
+    "\031.network.SinglePlayerInfo\"\023\n\004Talk\022\013\n\003tx"
+    "t\030\001 \001(\t\"1\n\005Error\022\n\n\002id\030\001 \002(\005\022\016\n\006dst_id\030\002"
+    " \002(\005\022\014\n\004args\030\003 \003(\005\"D\n\006Gossip\022!\n\004type\030\001 \001"
+    "(\0162\023.network.GossipType\022\013\n\003txt\030\002 \001(\t\022\n\n\002"
+    "id\030\003 \001(\r\"\013\n\tHeartBeat*\336\003\n\013MessageType\022\024\n"
+    "\020MSG_REGISTER_REQ\020\001\022\024\n\020MSG_REGISTER_REP\020"
+    "\002\022\021\n\rMSG_LOGIN_REQ\020\003\022\021\n\rMSG_LOGIN_REP\020\004\022"
+    "\022\n\016MSG_LOGOUT_REQ\020\005\022\022\n\016MSG_LOGOUT_REP\020\006\022"
+    "\024\n\020MSG_ROOMLIST_REQ\020\007\022\024\n\020MSG_ROOMLIST_RE"
+    "P\020\010\022\027\n\023MSG_CREATE_ROOM_REQ\020\t\022\026\n\022MSG_ENTE"
+    "R_ROOM_REQ\020\n\022\026\n\022MSG_ENTER_ROOM_REP\020\013\022\026\n\022"
+    "MSG_LEAVE_ROOM_REQ\020\014\022\025\n\021MSG_JOIN_TEAM_RE"
+    "Q\020\r\022\026\n\022MSG_READY_GAME_REQ\020\016\022\025\n\021MSG_SINGL"
+    "E_PLAYER\020\017\022\014\n\010MSG_GAME\020\020\022\014\n\010MSG_TALK\020\021\022\016"
+    "\n\nMSG_GOSSIP\020\022\022\r\n\tMSG_ERROR\020\023\022\021\n\rMSG_HEA"
+    "RTBEAT\020\024\022\031\n\025MSG_BECOME_LEADER_REQ\020\025\022\031\n\025M"
+    "SG_BECOME_LEADER_REP\020\026*0\n\nGossipType\022\017\n\013"
+    "GOSSIP_TALK\020\001\022\021\n\rGOSSIP_NOTICE\020\002", 2912);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "base.proto", &protobuf_RegisterTypes);
   RegisterRequest::default_instance_ = new RegisterRequest();
@@ -657,6 +704,8 @@ void protobuf_AddDesc_base_2eproto() {
   EnterRoomRequest::default_instance_ = new EnterRoomRequest();
   LeaveRoomRequest::default_instance_ = new LeaveRoomRequest();
   JoinTeamRequest::default_instance_ = new JoinTeamRequest();
+  BecomeLeaderRequest::default_instance_ = new BecomeLeaderRequest();
+  BecomeLeaderResponse::default_instance_ = new BecomeLeaderResponse();
   ReadyForGameRequest::default_instance_ = new ReadyForGameRequest();
   SinglePlayerInfo::default_instance_ = new SinglePlayerInfo();
   GameInfo::default_instance_ = new GameInfo();
@@ -677,6 +726,8 @@ void protobuf_AddDesc_base_2eproto() {
   EnterRoomRequest::default_instance_->InitAsDefaultInstance();
   LeaveRoomRequest::default_instance_->InitAsDefaultInstance();
   JoinTeamRequest::default_instance_->InitAsDefaultInstance();
+  BecomeLeaderRequest::default_instance_->InitAsDefaultInstance();
+  BecomeLeaderResponse::default_instance_->InitAsDefaultInstance();
   ReadyForGameRequest::default_instance_->InitAsDefaultInstance();
   SinglePlayerInfo::default_instance_->InitAsDefaultInstance();
   GameInfo::default_instance_->InitAsDefaultInstance();
@@ -719,6 +770,8 @@ bool MessageType_IsValid(int value) {
     case 18:
     case 19:
     case 20:
+    case 21:
+    case 22:
       return true;
     default:
       return false;
@@ -6753,6 +6806,476 @@ void JoinTeamRequest::clear_team() {
 
 // ===================================================================
 
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+BecomeLeaderRequest::BecomeLeaderRequest()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:network.BecomeLeaderRequest)
+}
+
+void BecomeLeaderRequest::InitAsDefaultInstance() {
+}
+
+BecomeLeaderRequest::BecomeLeaderRequest(const BecomeLeaderRequest& from)
+  : ::google::protobuf::Message(),
+    _internal_metadata_(NULL) {
+  SharedCtor();
+  MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:network.BecomeLeaderRequest)
+}
+
+void BecomeLeaderRequest::SharedCtor() {
+  _cached_size_ = 0;
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+}
+
+BecomeLeaderRequest::~BecomeLeaderRequest() {
+  // @@protoc_insertion_point(destructor:network.BecomeLeaderRequest)
+  SharedDtor();
+}
+
+void BecomeLeaderRequest::SharedDtor() {
+  if (this != default_instance_) {
+  }
+}
+
+void BecomeLeaderRequest::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* BecomeLeaderRequest::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return BecomeLeaderRequest_descriptor_;
+}
+
+const BecomeLeaderRequest& BecomeLeaderRequest::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_base_2eproto();
+  return *default_instance_;
+}
+
+BecomeLeaderRequest* BecomeLeaderRequest::default_instance_ = NULL;
+
+BecomeLeaderRequest* BecomeLeaderRequest::New(::google::protobuf::Arena* arena) const {
+  BecomeLeaderRequest* n = new BecomeLeaderRequest;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void BecomeLeaderRequest::Clear() {
+// @@protoc_insertion_point(message_clear_start:network.BecomeLeaderRequest)
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  if (_internal_metadata_.have_unknown_fields()) {
+    mutable_unknown_fields()->Clear();
+  }
+}
+
+bool BecomeLeaderRequest::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:network.BecomeLeaderRequest)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+  handle_unusual:
+    if (tag == 0 ||
+        ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+        ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+      goto success;
+    }
+    DO_(::google::protobuf::internal::WireFormat::SkipField(
+          input, tag, mutable_unknown_fields()));
+  }
+success:
+  // @@protoc_insertion_point(parse_success:network.BecomeLeaderRequest)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:network.BecomeLeaderRequest)
+  return false;
+#undef DO_
+}
+
+void BecomeLeaderRequest::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:network.BecomeLeaderRequest)
+  if (_internal_metadata_.have_unknown_fields()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+  // @@protoc_insertion_point(serialize_end:network.BecomeLeaderRequest)
+}
+
+::google::protobuf::uint8* BecomeLeaderRequest::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:network.BecomeLeaderRequest)
+  if (_internal_metadata_.have_unknown_fields()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:network.BecomeLeaderRequest)
+  return target;
+}
+
+int BecomeLeaderRequest::ByteSize() const {
+// @@protoc_insertion_point(message_byte_size_start:network.BecomeLeaderRequest)
+  int total_size = 0;
+
+  if (_internal_metadata_.have_unknown_fields()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void BecomeLeaderRequest::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:network.BecomeLeaderRequest)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  const BecomeLeaderRequest* source = 
+      ::google::protobuf::internal::DynamicCastToGenerated<const BecomeLeaderRequest>(
+          &from);
+  if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:network.BecomeLeaderRequest)
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:network.BecomeLeaderRequest)
+    MergeFrom(*source);
+  }
+}
+
+void BecomeLeaderRequest::MergeFrom(const BecomeLeaderRequest& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:network.BecomeLeaderRequest)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  if (from._internal_metadata_.have_unknown_fields()) {
+    mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+  }
+}
+
+void BecomeLeaderRequest::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:network.BecomeLeaderRequest)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void BecomeLeaderRequest::CopyFrom(const BecomeLeaderRequest& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:network.BecomeLeaderRequest)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool BecomeLeaderRequest::IsInitialized() const {
+
+  return true;
+}
+
+void BecomeLeaderRequest::Swap(BecomeLeaderRequest* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void BecomeLeaderRequest::InternalSwap(BecomeLeaderRequest* other) {
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::google::protobuf::Metadata BecomeLeaderRequest::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = BecomeLeaderRequest_descriptor_;
+  metadata.reflection = BecomeLeaderRequest_reflection_;
+  return metadata;
+}
+
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// BecomeLeaderRequest
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
+
+// ===================================================================
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int BecomeLeaderResponse::kYesFieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+BecomeLeaderResponse::BecomeLeaderResponse()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:network.BecomeLeaderResponse)
+}
+
+void BecomeLeaderResponse::InitAsDefaultInstance() {
+}
+
+BecomeLeaderResponse::BecomeLeaderResponse(const BecomeLeaderResponse& from)
+  : ::google::protobuf::Message(),
+    _internal_metadata_(NULL) {
+  SharedCtor();
+  MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:network.BecomeLeaderResponse)
+}
+
+void BecomeLeaderResponse::SharedCtor() {
+  _cached_size_ = 0;
+  yes_ = false;
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+}
+
+BecomeLeaderResponse::~BecomeLeaderResponse() {
+  // @@protoc_insertion_point(destructor:network.BecomeLeaderResponse)
+  SharedDtor();
+}
+
+void BecomeLeaderResponse::SharedDtor() {
+  if (this != default_instance_) {
+  }
+}
+
+void BecomeLeaderResponse::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* BecomeLeaderResponse::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return BecomeLeaderResponse_descriptor_;
+}
+
+const BecomeLeaderResponse& BecomeLeaderResponse::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_base_2eproto();
+  return *default_instance_;
+}
+
+BecomeLeaderResponse* BecomeLeaderResponse::default_instance_ = NULL;
+
+BecomeLeaderResponse* BecomeLeaderResponse::New(::google::protobuf::Arena* arena) const {
+  BecomeLeaderResponse* n = new BecomeLeaderResponse;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void BecomeLeaderResponse::Clear() {
+// @@protoc_insertion_point(message_clear_start:network.BecomeLeaderResponse)
+  yes_ = false;
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  if (_internal_metadata_.have_unknown_fields()) {
+    mutable_unknown_fields()->Clear();
+  }
+}
+
+bool BecomeLeaderResponse::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:network.BecomeLeaderResponse)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // optional bool yes = 1 [default = false];
+      case 1: {
+        if (tag == 8) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
+                 input, &yes_)));
+          set_has_yes();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectAtEnd()) goto success;
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:network.BecomeLeaderResponse)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:network.BecomeLeaderResponse)
+  return false;
+#undef DO_
+}
+
+void BecomeLeaderResponse::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:network.BecomeLeaderResponse)
+  // optional bool yes = 1 [default = false];
+  if (has_yes()) {
+    ::google::protobuf::internal::WireFormatLite::WriteBool(1, this->yes(), output);
+  }
+
+  if (_internal_metadata_.have_unknown_fields()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+  // @@protoc_insertion_point(serialize_end:network.BecomeLeaderResponse)
+}
+
+::google::protobuf::uint8* BecomeLeaderResponse::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:network.BecomeLeaderResponse)
+  // optional bool yes = 1 [default = false];
+  if (has_yes()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(1, this->yes(), target);
+  }
+
+  if (_internal_metadata_.have_unknown_fields()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:network.BecomeLeaderResponse)
+  return target;
+}
+
+int BecomeLeaderResponse::ByteSize() const {
+// @@protoc_insertion_point(message_byte_size_start:network.BecomeLeaderResponse)
+  int total_size = 0;
+
+  // optional bool yes = 1 [default = false];
+  if (has_yes()) {
+    total_size += 1 + 1;
+  }
+
+  if (_internal_metadata_.have_unknown_fields()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void BecomeLeaderResponse::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:network.BecomeLeaderResponse)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  const BecomeLeaderResponse* source = 
+      ::google::protobuf::internal::DynamicCastToGenerated<const BecomeLeaderResponse>(
+          &from);
+  if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:network.BecomeLeaderResponse)
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:network.BecomeLeaderResponse)
+    MergeFrom(*source);
+  }
+}
+
+void BecomeLeaderResponse::MergeFrom(const BecomeLeaderResponse& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:network.BecomeLeaderResponse)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (from.has_yes()) {
+      set_yes(from.yes());
+    }
+  }
+  if (from._internal_metadata_.have_unknown_fields()) {
+    mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+  }
+}
+
+void BecomeLeaderResponse::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:network.BecomeLeaderResponse)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void BecomeLeaderResponse::CopyFrom(const BecomeLeaderResponse& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:network.BecomeLeaderResponse)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool BecomeLeaderResponse::IsInitialized() const {
+
+  return true;
+}
+
+void BecomeLeaderResponse::Swap(BecomeLeaderResponse* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void BecomeLeaderResponse::InternalSwap(BecomeLeaderResponse* other) {
+  std::swap(yes_, other->yes_);
+  std::swap(_has_bits_[0], other->_has_bits_[0]);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::google::protobuf::Metadata BecomeLeaderResponse::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = BecomeLeaderResponse_descriptor_;
+  metadata.reflection = BecomeLeaderResponse_reflection_;
+  return metadata;
+}
+
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// BecomeLeaderResponse
+
+// optional bool yes = 1 [default = false];
+bool BecomeLeaderResponse::has_yes() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+void BecomeLeaderResponse::set_has_yes() {
+  _has_bits_[0] |= 0x00000001u;
+}
+void BecomeLeaderResponse::clear_has_yes() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+void BecomeLeaderResponse::clear_yes() {
+  yes_ = false;
+  clear_has_yes();
+}
+ bool BecomeLeaderResponse::yes() const {
+  // @@protoc_insertion_point(field_get:network.BecomeLeaderResponse.yes)
+  return yes_;
+}
+ void BecomeLeaderResponse::set_yes(bool value) {
+  set_has_yes();
+  yes_ = value;
+  // @@protoc_insertion_point(field_set:network.BecomeLeaderResponse.yes)
+}
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
+
+// ===================================================================
+
 const ::google::protobuf::EnumDescriptor* ReadyForGameRequest_Type_descriptor() {
   protobuf_AssignDescriptorsOnce();
   return ReadyForGameRequest_Type_descriptor_;
@@ -7074,6 +7597,7 @@ const int SinglePlayerInfo::kMaxHandFieldNumber;
 const int SinglePlayerInfo::kNicknameFieldNumber;
 const int SinglePlayerInfo::kReadyFieldNumber;
 const int SinglePlayerInfo::kDeleteFieldFieldNumber;
+const int SinglePlayerInfo::kLeaderFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 SinglePlayerInfo::SinglePlayerInfo()
@@ -7110,6 +7634,7 @@ void SinglePlayerInfo::SharedCtor() {
   max_hand_ = 0u;
   nickname_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   ready_ = false;
+  leader_ = 0u;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -7176,11 +7701,12 @@ void SinglePlayerInfo::Clear() {
     is_knelt_ = false;
     max_hand_ = 0u;
   }
-  if (_has_bits_[16 / 32] & 196608u) {
+  if (_has_bits_[16 / 32] & 720896u) {
     if (has_nickname()) {
       nickname_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
     }
     ready_ = false;
+    leader_ = 0u;
   }
 
 #undef ZR_HELPER_
@@ -7509,6 +8035,21 @@ bool SinglePlayerInfo::MergePartialFromCodedStream(
           goto handle_unusual;
         }
         if (input->ExpectTag(154)) goto parse_delete_field;
+        if (input->ExpectTag(160)) goto parse_leader;
+        break;
+      }
+
+      // optional uint32 leader = 20;
+      case 20: {
+        if (tag == 160) {
+         parse_leader:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &leader_)));
+          set_has_leader();
+        } else {
+          goto handle_unusual;
+        }
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -7647,6 +8188,11 @@ void SinglePlayerInfo::SerializeWithCachedSizes(
       19, this->delete_field(i), output);
   }
 
+  // optional uint32 leader = 20;
+  if (has_leader()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(20, this->leader(), output);
+  }
+
   if (_internal_metadata_.have_unknown_fields()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -7767,6 +8313,11 @@ void SinglePlayerInfo::SerializeWithCachedSizes(
       WriteStringToArray(19, this->delete_field(i), target);
   }
 
+  // optional uint32 leader = 20;
+  if (has_leader()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(20, this->leader(), target);
+  }
+
   if (_internal_metadata_.have_unknown_fields()) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         unknown_fields(), target);
@@ -7865,7 +8416,7 @@ int SinglePlayerInfo::ByteSize() const {
     }
 
   }
-  if (_has_bits_[16 / 32] & 196608u) {
+  if (_has_bits_[16 / 32] & 720896u) {
     // optional string nickname = 17;
     if (has_nickname()) {
       total_size += 2 +
@@ -7876,6 +8427,13 @@ int SinglePlayerInfo::ByteSize() const {
     // optional bool ready = 18 [default = false];
     if (has_ready()) {
       total_size += 2 + 1;
+    }
+
+    // optional uint32 leader = 20;
+    if (has_leader()) {
+      total_size += 2 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->leader());
     }
 
   }
@@ -8012,6 +8570,9 @@ void SinglePlayerInfo::MergeFrom(const SinglePlayerInfo& from) {
     if (from.has_ready()) {
       set_ready(from.ready());
     }
+    if (from.has_leader()) {
+      set_leader(from.leader());
+    }
   }
   if (from._internal_metadata_.have_unknown_fields()) {
     mutable_unknown_fields()->MergeFrom(from.unknown_fields());
@@ -8061,6 +8622,7 @@ void SinglePlayerInfo::InternalSwap(SinglePlayerInfo* other) {
   nickname_.Swap(&other->nickname_);
   std::swap(ready_, other->ready_);
   delete_field_.UnsafeArenaSwap(&other->delete_field_);
+  std::swap(leader_, other->leader_);
   std::swap(_has_bits_[0], other->_has_bits_[0]);
   _internal_metadata_.Swap(&other->_internal_metadata_);
   std::swap(_cached_size_, other->_cached_size_);
@@ -8616,6 +9178,30 @@ SinglePlayerInfo::delete_field() const {
 SinglePlayerInfo::mutable_delete_field() {
   // @@protoc_insertion_point(field_mutable_list:network.SinglePlayerInfo.delete_field)
   return &delete_field_;
+}
+
+// optional uint32 leader = 20;
+bool SinglePlayerInfo::has_leader() const {
+  return (_has_bits_[0] & 0x00080000u) != 0;
+}
+void SinglePlayerInfo::set_has_leader() {
+  _has_bits_[0] |= 0x00080000u;
+}
+void SinglePlayerInfo::clear_has_leader() {
+  _has_bits_[0] &= ~0x00080000u;
+}
+void SinglePlayerInfo::clear_leader() {
+  leader_ = 0u;
+  clear_has_leader();
+}
+ ::google::protobuf::uint32 SinglePlayerInfo::leader() const {
+  // @@protoc_insertion_point(field_get:network.SinglePlayerInfo.leader)
+  return leader_;
+}
+ void SinglePlayerInfo::set_leader(::google::protobuf::uint32 value) {
+  set_has_leader();
+  leader_ = value;
+  // @@protoc_insertion_point(field_set:network.SinglePlayerInfo.leader)
 }
 
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS

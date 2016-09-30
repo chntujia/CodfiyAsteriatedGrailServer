@@ -59,7 +59,7 @@ private:
 	void handleRoomList(RoomListRequest* request);
 	void handleJoinTeam(JoinTeamRequest* request);
 	void handleReadyGame(ReadyForGameRequest* request);
-	void handleBecomeLeader(BecomeLeaderRequest* request);
+	void handleBecomeLeader(BecomeLeaderResponse* request);
 };
 
 #endif

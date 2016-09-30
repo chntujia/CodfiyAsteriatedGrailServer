@@ -10,7 +10,7 @@
 #include "action_respond.pb.h"
 
 #include <list>
-
+#define DEBUG
 using namespace boost::interprocess;
 using namespace network;
 using namespace std;

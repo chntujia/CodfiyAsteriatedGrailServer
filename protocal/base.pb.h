@@ -38,6 +38,8 @@ void protobuf_AddDesc_base_2eproto();
 void protobuf_AssignDesc_base_2eproto();
 void protobuf_ShutdownFile_base_2eproto();
 
+class BecomeLeaderRequest;
+class BecomeLeaderResponse;
 class CreateRoomRequest;
 class EnterRoomRequest;
 class Error;
@@ -119,11 +121,13 @@ enum MessageType {
   MSG_TALK = 17,
   MSG_GOSSIP = 18,
   MSG_ERROR = 19,
-  MSG_HEARTBEAT = 20
+  MSG_HEARTBEAT = 20,
+  MSG_BECOME_LEADER_REQ = 21,
+  MSG_BECOME_LEADER_REP = 22
 };
 bool MessageType_IsValid(int value);
 const MessageType MessageType_MIN = MSG_REGISTER_REQ;
-const MessageType MessageType_MAX = MSG_HEARTBEAT;
+const MessageType MessageType_MAX = MSG_BECOME_LEADER_REP;
 const int MessageType_ARRAYSIZE = MessageType_MAX + 1;
 
 const ::google::protobuf::EnumDescriptor* MessageType_descriptor();
@@ -1752,6 +1756,182 @@ class JoinTeamRequest : public ::google::protobuf::Message /* @@protoc_insertion
 };
 // -------------------------------------------------------------------
 
+class BecomeLeaderRequest : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:network.BecomeLeaderRequest) */ {
+ public:
+  BecomeLeaderRequest();
+  virtual ~BecomeLeaderRequest();
+
+  BecomeLeaderRequest(const BecomeLeaderRequest& from);
+
+  inline BecomeLeaderRequest& operator=(const BecomeLeaderRequest& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields();
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const BecomeLeaderRequest& default_instance();
+
+  void Swap(BecomeLeaderRequest* other);
+
+  // implements Message ----------------------------------------------
+
+  inline BecomeLeaderRequest* New() const { return New(NULL); }
+
+  BecomeLeaderRequest* New(::google::protobuf::Arena* arena) const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const BecomeLeaderRequest& from);
+  void MergeFrom(const BecomeLeaderRequest& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const {
+    return InternalSerializeWithCachedSizesToArray(false, output);
+  }
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(BecomeLeaderRequest* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // @@protoc_insertion_point(class_scope:network.BecomeLeaderRequest)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  friend void  protobuf_AddDesc_base_2eproto();
+  friend void protobuf_AssignDesc_base_2eproto();
+  friend void protobuf_ShutdownFile_base_2eproto();
+
+  void InitAsDefaultInstance();
+  static BecomeLeaderRequest* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class BecomeLeaderResponse : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:network.BecomeLeaderResponse) */ {
+ public:
+  BecomeLeaderResponse();
+  virtual ~BecomeLeaderResponse();
+
+  BecomeLeaderResponse(const BecomeLeaderResponse& from);
+
+  inline BecomeLeaderResponse& operator=(const BecomeLeaderResponse& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields();
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const BecomeLeaderResponse& default_instance();
+
+  void Swap(BecomeLeaderResponse* other);
+
+  // implements Message ----------------------------------------------
+
+  inline BecomeLeaderResponse* New() const { return New(NULL); }
+
+  BecomeLeaderResponse* New(::google::protobuf::Arena* arena) const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const BecomeLeaderResponse& from);
+  void MergeFrom(const BecomeLeaderResponse& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const {
+    return InternalSerializeWithCachedSizesToArray(false, output);
+  }
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(BecomeLeaderResponse* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional bool yes = 1 [default = false];
+  bool has_yes() const;
+  void clear_yes();
+  static const int kYesFieldNumber = 1;
+  bool yes() const;
+  void set_yes(bool value);
+
+  // @@protoc_insertion_point(class_scope:network.BecomeLeaderResponse)
+ private:
+  inline void set_has_yes();
+  inline void clear_has_yes();
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  bool yes_;
+  friend void  protobuf_AddDesc_base_2eproto();
+  friend void protobuf_AssignDesc_base_2eproto();
+  friend void protobuf_ShutdownFile_base_2eproto();
+
+  void InitAsDefaultInstance();
+  static BecomeLeaderResponse* default_instance_;
+};
+// -------------------------------------------------------------------
+
 class ReadyForGameRequest : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:network.ReadyForGameRequest) */ {
  public:
   ReadyForGameRequest();
@@ -2108,6 +2288,13 @@ class SinglePlayerInfo : public ::google::protobuf::Message /* @@protoc_insertio
   const ::google::protobuf::RepeatedPtrField< ::std::string>& delete_field() const;
   ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_delete_field();
 
+  // optional uint32 leader = 20;
+  bool has_leader() const;
+  void clear_leader();
+  static const int kLeaderFieldNumber = 20;
+  ::google::protobuf::uint32 leader() const;
+  void set_leader(::google::protobuf::uint32 value);
+
   // @@protoc_insertion_point(class_scope:network.SinglePlayerInfo)
  private:
   inline void set_has_id();
@@ -2138,6 +2325,8 @@ class SinglePlayerInfo : public ::google::protobuf::Message /* @@protoc_insertio
   inline void clear_has_nickname();
   inline void set_has_ready();
   inline void clear_has_ready();
+  inline void set_has_leader();
+  inline void clear_has_leader();
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   ::google::protobuf::uint32 _has_bits_[1];
@@ -2161,6 +2350,7 @@ class SinglePlayerInfo : public ::google::protobuf::Message /* @@protoc_insertio
   ::google::protobuf::uint32 max_hand_;
   ::google::protobuf::internal::ArenaStringPtr nickname_;
   ::google::protobuf::RepeatedPtrField< ::std::string> delete_field_;
+  ::google::protobuf::uint32 leader_;
   friend void  protobuf_AddDesc_base_2eproto();
   friend void protobuf_AssignDesc_base_2eproto();
   friend void protobuf_ShutdownFile_base_2eproto();
@@ -4254,6 +4444,38 @@ inline void JoinTeamRequest::set_team(::network::JoinTeamRequest_Team value) {
 
 // -------------------------------------------------------------------
 
+// BecomeLeaderRequest
+
+// -------------------------------------------------------------------
+
+// BecomeLeaderResponse
+
+// optional bool yes = 1 [default = false];
+inline bool BecomeLeaderResponse::has_yes() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void BecomeLeaderResponse::set_has_yes() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void BecomeLeaderResponse::clear_has_yes() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void BecomeLeaderResponse::clear_yes() {
+  yes_ = false;
+  clear_has_yes();
+}
+inline bool BecomeLeaderResponse::yes() const {
+  // @@protoc_insertion_point(field_get:network.BecomeLeaderResponse.yes)
+  return yes_;
+}
+inline void BecomeLeaderResponse::set_yes(bool value) {
+  set_has_yes();
+  yes_ = value;
+  // @@protoc_insertion_point(field_set:network.BecomeLeaderResponse.yes)
+}
+
+// -------------------------------------------------------------------
+
 // ReadyForGameRequest
 
 // required .network.ReadyForGameRequest.Type type = 1;
@@ -4824,6 +5046,30 @@ inline ::google::protobuf::RepeatedPtrField< ::std::string>*
 SinglePlayerInfo::mutable_delete_field() {
   // @@protoc_insertion_point(field_mutable_list:network.SinglePlayerInfo.delete_field)
   return &delete_field_;
+}
+
+// optional uint32 leader = 20;
+inline bool SinglePlayerInfo::has_leader() const {
+  return (_has_bits_[0] & 0x00080000u) != 0;
+}
+inline void SinglePlayerInfo::set_has_leader() {
+  _has_bits_[0] |= 0x00080000u;
+}
+inline void SinglePlayerInfo::clear_has_leader() {
+  _has_bits_[0] &= ~0x00080000u;
+}
+inline void SinglePlayerInfo::clear_leader() {
+  leader_ = 0u;
+  clear_has_leader();
+}
+inline ::google::protobuf::uint32 SinglePlayerInfo::leader() const {
+  // @@protoc_insertion_point(field_get:network.SinglePlayerInfo.leader)
+  return leader_;
+}
+inline void SinglePlayerInfo::set_leader(::google::protobuf::uint32 value) {
+  set_has_leader();
+  leader_ = value;
+  // @@protoc_insertion_point(field_set:network.SinglePlayerInfo.leader)
 }
 
 // -------------------------------------------------------------------
@@ -5424,6 +5670,10 @@ inline void Gossip::set_id(::google::protobuf::uint32 value) {
 // HeartBeat
 
 #endif  // !PROTOBUF_INLINE_NOT_IN_HEADERS
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

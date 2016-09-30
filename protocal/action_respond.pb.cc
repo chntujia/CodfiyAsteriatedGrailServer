@@ -62,6 +62,7 @@ const ::google::protobuf::EnumDescriptor* PlayerIdConst_descriptor_ = NULL;
 const ::google::protobuf::EnumDescriptor* ROLE_STRATEGY_descriptor_ = NULL;
 const ::google::protobuf::EnumDescriptor* SEAT_MODE_descriptor_ = NULL;
 const ::google::protobuf::EnumDescriptor* BP_OPRATION_descriptor_ = NULL;
+const ::google::protobuf::EnumDescriptor* CM_OPRATION_descriptor_ = NULL;
 const ::google::protobuf::EnumDescriptor* BasicActionType_descriptor_ = NULL;
 const ::google::protobuf::EnumDescriptor* BasicRespondType_descriptor_ = NULL;
 const ::google::protobuf::EnumDescriptor* CmdType_descriptor_ = NULL;
@@ -297,10 +298,11 @@ void protobuf_AssignDesc_action_5frespond_2eproto() {
   ROLE_STRATEGY_descriptor_ = file->enum_type(2);
   SEAT_MODE_descriptor_ = file->enum_type(3);
   BP_OPRATION_descriptor_ = file->enum_type(4);
-  BasicActionType_descriptor_ = file->enum_type(5);
-  BasicRespondType_descriptor_ = file->enum_type(6);
-  CmdType_descriptor_ = file->enum_type(7);
-  CardMsgType_descriptor_ = file->enum_type(8);
+  CM_OPRATION_descriptor_ = file->enum_type(5);
+  BasicActionType_descriptor_ = file->enum_type(6);
+  BasicRespondType_descriptor_ = file->enum_type(7);
+  CmdType_descriptor_ = file->enum_type(8);
+  CardMsgType_descriptor_ = file->enum_type(9);
 }
 
 namespace {
@@ -409,27 +411,32 @@ void protobuf_AddDesc_action_5frespond_2eproto() {
     "\020j\022\023\n\017MSG_ERROR_INPUT\020k\022\013\n\007MSG_HIT\020l\022\022\n\016"
     "MSG_TURN_BEGIN\020m\022\014\n\010MSG_CARD\020n\022\014\n\010MSG_HU"
     "RT\020o\022\r\n\tMSG_SKILL\020p*%\n\rPlayerIdConst\022\024\n\016"
-    "PLAYER_NONE_ID\020\240\215\006*\203\001\n\rROLE_STRATEGY\022\030\n\024"
+    "PLAYER_NONE_ID\020\240\215\006*\231\001\n\rROLE_STRATEGY\022\030\n\024"
     "ROLE_STRATEGY_RANDOM\020\001\022\024\n\020ROLE_STRATEGY_"
-    "31\020\002\022\024\n\020ROLE_STRATEGY_BP\020\003\022\025\n\021ROLE_STRAT"
-    "EGY_ANY\020\004\022\025\n\021ROLE_STRATEGY_ALL\020\t*f\n\tSEAT"
-    "_MODE\022\024\n\020SEAT_MODE_RANDOM\020\001\022\024\n\020SEAT_MODE"
-    "_2COMBO\020\002\022\024\n\020SEAT_MODE_3COMBO\020\003\022\027\n\023SEAT_"
-    "MODE_INTERLACE\020\004*3\n\013BP_OPRATION\022\013\n\007BP_NU"
-    "LL\020\001\022\n\n\006BP_BAN\020\002\022\013\n\007BP_PICK\020\003*\350\001\n\017BasicA"
-    "ctionType\022\021\n\rACTION_ATTACK\020\001\022\020\n\014ACTION_M"
-    "AGIC\020\002\022\022\n\016ACTION_SPECIAL\020\003\022\027\n\023ACTION_ATT"
-    "ACK_SKILL\020\004\022\026\n\022ACTION_MAGIC_SKILL\020\005\022\030\n\024A"
-    "CTION_SPECIAL_SKILL\020\006\022\016\n\nACTION_ANY\020\007\022\027\n"
-    "\023ACTION_ATTACK_MAGIC\020\010\022\025\n\021ACTION_UNACTIO"
-    "NAL\020\t\022\021\n\013ACTION_NONE\020\240\215\006*\307\001\n\020BasicRespon"
-    "dType\022\030\n\024RESPOND_REPLY_ATTACK\020\n\022\022\n\016RESPO"
-    "ND_BULLET\020\013\022\020\n\014RESPOND_HEAL\020\014\022\023\n\017RESPOND"
-    "_DISCARD\020\r\022\022\n\016RESPOND_WEAKEN\020\016\022\035\n\031RESPON"
-    "D_ADDITIONAL_ACTION\020\017\022\031\n\025RESPOND_DISCARD"
-    "_COVER\020\020\022\020\n\014RESPOND_ROLE\020\021**\n\007CmdType\022\016\n"
-    "\nCMD_ACTION\020\001\022\017\n\013CMD_RESPOND\020\002*&\n\013CardMs"
-    "gType\022\n\n\006CM_USE\020\001\022\013\n\007CM_SHOW\020\002", 2110);
+    "31\020\002\022\024\n\020ROLE_STRATEGY_BP\020\003\022\024\n\020ROLE_STRAT"
+    "EGY_CM\020\004\022\025\n\021ROLE_STRATEGY_ANY\020\005\022\025\n\021ROLE_"
+    "STRATEGY_ALL\020\t*|\n\tSEAT_MODE\022\024\n\020SEAT_MODE"
+    "_RANDOM\020\001\022\024\n\020SEAT_MODE_2COMBO\020\002\022\024\n\020SEAT_"
+    "MODE_3COMBO\020\003\022\027\n\023SEAT_MODE_INTERLACE\020\004\022\024"
+    "\n\020SEAT_MODE_RBBRRB\020\005*3\n\013BP_OPRATION\022\013\n\007B"
+    "P_NULL\020\001\022\n\n\006BP_BAN\020\002\022\013\n\007BP_PICK\020\003*}\n\013CM_"
+    "OPRATION\022\013\n\007CM_NULL\020\001\022\016\n\nCM_RED_BAN\020\002\022\r\n"
+    "\tCM_RED_IB\020\003\022\017\n\013CM_RED_PICK\020\004\022\017\n\013CM_BLUE"
+    "_BAN\020\005\022\016\n\nCM_BLUE_IB\020\006\022\020\n\014CM_BLUE_PICK\020\007"
+    "*\350\001\n\017BasicActionType\022\021\n\rACTION_ATTACK\020\001\022"
+    "\020\n\014ACTION_MAGIC\020\002\022\022\n\016ACTION_SPECIAL\020\003\022\027\n"
+    "\023ACTION_ATTACK_SKILL\020\004\022\026\n\022ACTION_MAGIC_S"
+    "KILL\020\005\022\030\n\024ACTION_SPECIAL_SKILL\020\006\022\016\n\nACTI"
+    "ON_ANY\020\007\022\027\n\023ACTION_ATTACK_MAGIC\020\010\022\025\n\021ACT"
+    "ION_UNACTIONAL\020\t\022\021\n\013ACTION_NONE\020\240\215\006*\337\001\n\020"
+    "BasicRespondType\022\030\n\024RESPOND_REPLY_ATTACK"
+    "\020\n\022\022\n\016RESPOND_BULLET\020\013\022\020\n\014RESPOND_HEAL\020\014"
+    "\022\023\n\017RESPOND_DISCARD\020\r\022\022\n\016RESPOND_WEAKEN\020"
+    "\016\022\035\n\031RESPOND_ADDITIONAL_ACTION\020\017\022\031\n\025RESP"
+    "OND_DISCARD_COVER\020\020\022\020\n\014RESPOND_ROLE\020\021\022\026\n"
+    "\022RESPOND_INSERT_BAN\020\022**\n\007CmdType\022\016\n\nCMD_"
+    "ACTION\020\001\022\017\n\013CMD_RESPOND\020\002*&\n\013CardMsgType"
+    "\022\n\n\006CM_USE\020\001\022\013\n\007CM_SHOW\020\002", 2305);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "action_respond.proto", &protobuf_RegisterTypes);
   RoleRequest::default_instance_ = new RoleRequest();
@@ -511,6 +518,7 @@ bool ROLE_STRATEGY_IsValid(int value) {
     case 2:
     case 3:
     case 4:
+    case 5:
     case 9:
       return true;
     default:
@@ -528,6 +536,7 @@ bool SEAT_MODE_IsValid(int value) {
     case 2:
     case 3:
     case 4:
+    case 5:
       return true;
     default:
       return false;
@@ -543,6 +552,25 @@ bool BP_OPRATION_IsValid(int value) {
     case 1:
     case 2:
     case 3:
+      return true;
+    default:
+      return false;
+  }
+}
+
+const ::google::protobuf::EnumDescriptor* CM_OPRATION_descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return CM_OPRATION_descriptor_;
+}
+bool CM_OPRATION_IsValid(int value) {
+  switch(value) {
+    case 1:
+    case 2:
+    case 3:
+    case 4:
+    case 5:
+    case 6:
+    case 7:
       return true;
     default:
       return false;
@@ -585,6 +613,7 @@ bool BasicRespondType_IsValid(int value) {
     case 15:
     case 16:
     case 17:
+    case 18:
       return true;
     default:
       return false;

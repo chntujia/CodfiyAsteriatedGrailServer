@@ -6,13 +6,14 @@
 #include "DBServices.h"
 #include "boost/date_time/posix_time/posix_time.hpp"
 #include "boost/format.hpp"
+
+
 int StateWaitForEnter::handle(GameGrail* engine)
 {
 	if(engine->isAllStartReady())
 	{
 		engine->popGameState();
-		engine->pushGameState(new StateSeatArrange);
-		engine->playing = true;
+		engine->pushGameState(new StateSeatArrange);		
 	}
 	Sleep(1000);
 	return GE_SUCCESS;
@@ -49,10 +50,7 @@ int StateSeatArrange::handle(GameGrail* engine)
 			}
 			player_info->set_id(id);
 			player_info->set_team(color);
-			if (id==red_leader)
-				player_info->set_leader(1);
-			if (id==blue_leader)
-				player_info->set_leader(1);
+			player_info->set_nickname(engine->getPlayerContext(id)->getName());
 		}
 		game_info.set_is_started(true);
 		for(int i = 0; i < m_maxPlayers; i++){
@@ -62,7 +60,8 @@ int StateSeatArrange::handle(GameGrail* engine)
 		isSet = true;
 	}
 	if(engine->waitForAll(MSG_GAME, (void**)messages, false)){
-		engine->popGameState();	  
+		engine->popGameState();
+		engine->playing = true;
 		return engine->setStateRoleStrategy();
 	}
 	else{
@@ -75,10 +74,7 @@ void StateSeatArrange::assignTeam(GameGrail* engine)
 	int m_maxPlayers = engine->getGameMaxPlayers();
 	list< int > red_l = engine->teamA;
 	list< int > blue_l = engine->teamB;
-	list< int > leader_l = engine->leaderL;
-	vector< int >leader_r;
-	vector< int >leader_b;
-	vector< int >leader_n;
+
 	if(rand() % 2)
 		red_l.swap(blue_l);
 
@@ -86,55 +82,7 @@ void StateSeatArrange::assignTeam(GameGrail* engine)
 	for (int i = 0; i < m_maxPlayers; i++)
 		ids.push_back(i);
 	std::random_shuffle(ids.begin(), ids.end());
-	for (int i = 0; i < m_maxPlayers; i++){
-		int chosen = ids[i];
-		if(leader_l.end() != std::find(leader_l.begin(), leader_l.end(), chosen)){
-			if(red_l.end() != std::find(red_l.begin(), red_l.end(), chosen)) 
-				leader_r.push_back(chosen);
-			else if(blue_l.end() != std::find(blue_l.begin(), blue_l.end(), chosen))
-				leader_b.push_back(chosen);
-			else
-				leader_n.push_back(chosen);
-		}
-	}
-	bool noredl=false;
-	bool nobluel=false;
-		switch(leader_r.size()){
-		case 0:
-			if (leader_n.size()>0){
-				std::random_shuffle (leader_n.begin(), leader_n.end());
-				leader_r.push_back(leader_n.back());
-				red_l.push_back(leader_n.back());
-				leader_n.pop_back();
-				break;
-			}
-			else{noredl=true;break;}
-		case 1: 
-		case 2:
-		case 3:
-			{
-			std::random_shuffle (leader_r.begin(), leader_r.end());
-			break;
-			}
-		}
-		switch(leader_b.size()){
-		case 0:
-			if (leader_n.size()>0){
-				std::random_shuffle (leader_n.begin(), leader_n.end());
-				leader_b.push_back(leader_n.back());
-				blue_l.push_back(leader_n.back());
-				leader_n.pop_back();
-				break;
-			}
-			else{nobluel=true;break;}
-		case 1: 
-		case 2:
-		case 3:
-			{
-			std::random_shuffle (leader_b.begin(), leader_b.end());
-			break;
-			}
-		}	
+	
 	for(int i = 0; i < m_maxPlayers; i++){
 		int chosen = ids[i];
 		if(red_l.end() == std::find(red_l.begin(), red_l.end(), chosen) && blue_l.end() == std::find(blue_l.begin(), blue_l.end(), chosen)){
@@ -148,10 +96,7 @@ void StateSeatArrange::assignTeam(GameGrail* engine)
 	vector< int > blue_v( blue_l.begin(), blue_l.end() );
 	std::random_shuffle (red_v.begin(), red_v.end());
 	std::random_shuffle (blue_v.begin(), blue_v.end());
-	if(noredl){red_leader=red_v.back();}
-	else red_leader=leader_r.back();
-	if(nobluel){blue_leader=blue_v.back();}
-	else blue_leader=leader_b.back();
+	
 	red = red_v;
 	blue = blue_v;
 }
@@ -212,6 +157,65 @@ vector< int > StateSeatArrange::assignColor(int mode, int playerNum)
 		break;
 	}
 	return colors;
+}
+
+int StateLeaderElection::handle(GameGrail* engine)
+{
+	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateLeaderElection", engine->getGameId());
+	void* reply;
+	int maxPlayer = engine->getGameMaxPlayers();
+	GameInfo& game_info = engine->room_info;
+	bool isTimeOut = !engine->waitForAll(network::MSG_BECOME_LEADER_REQ, (void**)messages);
+
+	for (int i = 0; i < maxPlayer; i++) {
+		if (GE_SUCCESS == engine->getReply(i, reply)) {
+			BecomeLeaderResponse *respond = (BecomeLeaderResponse*)reply;
+			if (respond->yes()) {
+				SinglePlayerInfo* player_it = engine->getPlayerInfo(i);				
+				if (player_it->team() == RED) {
+					red.push_back(i);
+				}
+				else {
+					blue.push_back(i);
+				}
+			}			
+		}
+	}
+
+	if (red.empty()) {
+		for (int i = 0; i < maxPlayer; i++) {
+			SinglePlayerInfo player_it = game_info.player_infos().Get(i);
+			if (player_it.team() == RED) {
+				red.push_back(i);
+			}
+		}
+	}
+	if (blue.empty()) {
+		for (int i = 0; i < maxPlayer; i++) {
+			SinglePlayerInfo player_it = game_info.player_infos().Get(i);
+			if (player_it.team() == BLUE) {
+				blue.push_back(i);
+			}
+		}
+	}
+
+	int rl = red[rand() % red.size()];
+	int bl = blue[rand() % blue.size()];
+	engine->getPlayerInfo(rl)->set_leader(1);
+	engine->getPlayerInfo(bl)->set_leader(1);
+
+	GameInfo update;
+	SinglePlayerInfo *player;
+	player = update.add_player_infos();
+	player->set_id(rl);
+	player->set_leader(1);
+	player = update.add_player_infos();
+	player->set_id(bl);
+	player->set_leader(1);
+
+	engine->sendMessage(-1, MSG_GAME, update);
+	engine->popGameState();
+	return isTimeOut ? GE_TIMEOUT : GE_SUCCESS;
 }
 
 int StateRoleStrategyRandom::handle(GameGrail* engine)
@@ -363,13 +367,13 @@ int StateRoleStrategyBP::handle(GameGrail* engine)
 	while(step > 0 && step <= (playerNum*2)) {
 		int color = step % 2;
 		int index = (step-1)/4;
-		int isBan = ((step-1)/2)%2;
+		int isPick = ((step-1)/2)%2;
 		int id = 0;
 		if(color == 1)
 			id = red[index];
 		else
 			id = blue[index];
-		if(isBan == 0)
+		if(isPick == 0)
 		{
 			RoleRequest message;
 			Coder::setAlternativeRoles(id, alternativeNum, alternativeRoles, options, message);
@@ -383,7 +387,6 @@ int StateRoleStrategyBP::handle(GameGrail* engine)
 				{
 					PickBan* respond = (PickBan*) reply;
 					int chosen = respond->role_ids(0);
-					Coder::roleNotice(id, chosen, game_info);
 					for(int i = 0; i < alternativeNum; ++ i)
 						if(alternativeRoles[i] == chosen)
 						{
@@ -416,6 +419,7 @@ int StateRoleStrategyBP::handle(GameGrail* engine)
 							options[i] = step;
 							break;
 						}
+					engine->sendMessage(-1, MSG_GAME, game_info);
 				}
 			}
 			else
@@ -424,33 +428,31 @@ int StateRoleStrategyBP::handle(GameGrail* engine)
 		RoleRequest message;
 		Coder::setAlternativeRoles(id, alternativeNum, alternativeRoles, options, message);
 		message.set_opration(BP_NULL);
-		engine->sendMessage(-1, network::MSG_ROLE_REQ, message);
+		engine->sendMessage(-1, network::MSG_ROLE_REQ, message);		
 		step++;
 	}
-
-	game_info.set_is_started(true);
-	engine->sendMessage(-1, MSG_GAME, game_info);
 
 	engine->initPlayerEntities();
 	engine->popGameState();
 	engine->pushGameState(new StateGameStart);
 	return ret ? GE_TIMEOUT : GE_SUCCESS;
 }
+
 int StateRoleStrategyCM::handle(GameGrail* engine)
 {
 	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateRoleStrategyCM", engine->getGameId());
 	Deck* roles;
-	
+
 	int ret = 0;
 
 	GameInfo& game_info = engine->room_info;
-	if(step == 0){
-		decided=false;
-		ibb=0;
-		ibr=0;
+	if (step == 0) {
+		decided = false;
+		ibb = 0;
+		ibr = 0;
 		playerNum = engine->getGameMaxPlayers();
-		alternativeNum = BP_ALTERNATIVE_NUM[playerNum/2-2];
-		if(alternativeNum <= 0)
+		alternativeNum = BP_ALTERNATIVE_NUM[playerNum / 2 - 2];
+		if (alternativeNum <= 0)
 			return GE_FATAL_ERROR;
 		alternativeRoles = new int[alternativeNum];
 		options = new int[alternativeNum];
@@ -458,54 +460,55 @@ int StateRoleStrategyCM::handle(GameGrail* engine)
 		memset(options, 0, sizeof(int)* alternativeNum);
 		roles = engine->initRoles();
 		GameInfo& room_info = engine->room_info;
-		SinglePlayerInfo* player_it;
-		for(int i = 0; i < playerNum; i++){
-			player_it = (SinglePlayerInfo*)&(room_info.player_infos().Get(i));
-			int leader = player_it->leader();
-			int color = player_it->team();
-			if(leader==1)
+		for (int i = 0; i < playerNum; i++) {
+			SinglePlayerInfo player_it = room_info.player_infos().Get(i);
+			int leader = player_it.leader();
+			int color = player_it.team();
+			if (leader == 1)
 			{
-				if(color==RED)idr=player_it->id();
-				else  idb=player_it->id();
+				if (color == RED)
+					idr = player_it.id();
+				else  
+					idb = player_it.id();
 			}
-			if(color == RED)
+			if (color == RED)
 			{
-				red.push_back(player_it->id());	
+				red.push_back(player_it.id());
 			}
 			else
-			{		
-				blue.push_back(player_it->id());
+			{
+				blue.push_back(player_it.id());
 			}
-			}	
+		}
 		RoleRequest message;
-		if(GE_SUCCESS == (ret = roles->pop(alternativeNum, alternativeRoles))){
+		if (GE_SUCCESS == (ret = roles->pop(alternativeNum, alternativeRoles))) {
 			Coder::setCMRoles(-1, alternativeNum, alternativeRoles, options, message);
 			message.set_opration(CM_NULL);
 		}
-		else{
+		else {
 			return ret;
 		}
 		engine->sendMessage(-1, network::MSG_ROLE_REQ, message);
 		step = 1;
 	}
-	while(step > 0 && step <= 9) {
-		int id1=0;int id2=0;int id=0;
-		if(step==1)
+	while (step > 0 && step <= 9) {
+		int id1 = 0; int id2 = 0; int id = 0;
+		if (step == 1)
 		{
 			RoleRequest message;
 			Coder::setCMRoles(idr, alternativeNum, alternativeRoles, options, message);
 			message.set_opration(CM_RED_BAN);
 			bool recieved = engine->waitForOne(idr, network::MSG_ROLE_REQ, message);
-			if(recieved)
+			if (recieved)
 			{
 				void* reply;
 				int ret;
 				if (GE_SUCCESS == (ret = engine->getReply(idr, reply)))
 				{
-					PickBan* respond = (PickBan*) reply;
+					PickBan* respond = (PickBan*)reply;
 					int chosen = respond->role_ids(0);
-					for(int i = 0; i < alternativeNum; ++ i)
-						if(alternativeRoles[i] == chosen)
+					for (int i = 0; i < alternativeNum; ++i)
+						if (alternativeRoles[i] == chosen)
 						{
 							options[i] = 12;
 							break;
@@ -515,22 +518,22 @@ int StateRoleStrategyCM::handle(GameGrail* engine)
 			else
 				return GE_TIMEOUT;
 		}
-		else if(step==2 || step==3)
+		else if (step == 2 || step == 3)
 		{
 			RoleRequest message;
 			Coder::setCMRoles(idb, alternativeNum, alternativeRoles, options, message);
 			message.set_opration(CM_BLUE_BAN);
 			bool recieved = engine->waitForOne(idb, network::MSG_ROLE_REQ, message);
-			if(recieved)
+			if (recieved)
 			{
 				void* reply;
 				int ret;
 				if (GE_SUCCESS == (ret = engine->getReply(idb, reply)))
 				{
-					PickBan* respond = (PickBan*) reply;
+					PickBan* respond = (PickBan*)reply;
 					int chosen = respond->role_ids(0);
-					for(int i = 0; i < alternativeNum; ++ i)
-						if(alternativeRoles[i] == chosen)
+					for (int i = 0; i < alternativeNum; ++i)
+						if (alternativeRoles[i] == chosen)
 						{
 							options[i] = 15;
 							break;
@@ -541,129 +544,130 @@ int StateRoleStrategyCM::handle(GameGrail* engine)
 				return GE_TIMEOUT;
 		}
 		else
-		{   
+		{
 			int color = step % 2;
-			int index = (step-4)/2;
-			if(color == 0){id1=idr;id2=idb;id = red[index];}
-			else{id1=idb;id2=idr;id = blue[index];}
-			if(ibb+ibr!=2 && !decided){
-			if(id2==idr && ibr==0 )
-			{
-			RoleRequest message;
-			Coder::setCMRoles(idr, alternativeNum, alternativeRoles, options, message);
-			message.set_opration(CM_RED_IB);
-			bool recieved = engine->waitForOne(idr, network::MSG_ROLE_REQ, message);
-			if(recieved)
-			{
-				decided=true;
-				void* reply;
-				int ret;
-				if (GE_SUCCESS == (ret = engine->getReply(idr, reply)))
+			int index = (step - 4) / 2;
+			if (color == 0) { id1 = idr; id2 = idb; id = red[index]; }
+			else { id1 = idb; id2 = idr; id = blue[index]; }
+			if (ibb + ibr != 2 && !decided) {
+				if (id2 == idr && ibr == 0)
 				{
-					PickBan* respond = (PickBan*) reply;
-					int chosen = respond->role_ids(0);
-					if (chosen!=100)
+					RoleRequest message;
+					Coder::setCMRoles(idr, alternativeNum, alternativeRoles, options, message);
+					message.set_opration(CM_RED_IB);
+					bool recieved = engine->waitForOne(idr, network::MSG_ROLE_REQ, message);
+					if (recieved)
 					{
-						for(int i = 0; i < alternativeNum; ++ i)
+						decided = true;
+						void* reply;
+						int ret;
+						if (GE_SUCCESS == (ret = engine->getReply(idr, reply)))
 						{
-							if(alternativeRoles[i] == chosen)
+							PickBan* respond = (PickBan*)reply;
+							int chosen = respond->role_ids(0);
+							if (chosen != 100)
 							{
-								options[i] = 13;
-								break;
+								for (int i = 0; i < alternativeNum; ++i)
+								{
+									if (alternativeRoles[i] == chosen)
+									{
+										options[i] = 13;
+										break;
+									}
+								}
+								ibr = 1;
 							}
-							}
-						ibr=1;
+						}
 					}
+					else
+						return GE_TIMEOUT;
 				}
-			}
-			else
-				return GE_TIMEOUT;
-			}
-			else if(id2==idb && ibb==0)
-			{
-			RoleRequest message;
-			Coder::setCMRoles(idb, alternativeNum, alternativeRoles, options, message);
-			message.set_opration(CM_BLUE_IB);
-			bool recieved = engine->waitForOne(idb, network::MSG_ROLE_REQ, message);
-			if(recieved)
-			{
-				decided=true;
-				void* reply;
-				int ret;
-				if (GE_SUCCESS == (ret = engine->getReply(idb, reply)))
+				else if (id2 == idb && ibb == 0)
 				{
+					RoleRequest message;
+					Coder::setCMRoles(idb, alternativeNum, alternativeRoles, options, message);
+					message.set_opration(CM_BLUE_IB);
+					bool recieved = engine->waitForOne(idb, network::MSG_ROLE_REQ, message);
+					if (recieved)
+					{
+						decided = true;
+						void* reply;
+						int ret;
+						if (GE_SUCCESS == (ret = engine->getReply(idb, reply)))
+						{
 
-					PickBan* respond = (PickBan*) reply;
-					int chosen = respond->role_ids(0);
-					if (chosen!=100)
-					{
-						for(int i = 0; i < alternativeNum; ++ i)
-						{
-							if(alternativeRoles[i] == chosen)
+							PickBan* respond = (PickBan*)reply;
+							int chosen = respond->role_ids(0);
+							if (chosen != 100)
 							{
-								options[i] = 16;
-								break;
+								for (int i = 0; i < alternativeNum; ++i)
+								{
+									if (alternativeRoles[i] == chosen)
+									{
+										options[i] = 16;
+										break;
+									}
+								}
+								ibb = 1;
 							}
 						}
-						ibb=1;
+					}
+					else
+						return GE_TIMEOUT;
+				}
+			}
+			else {
+				RoleRequest message;
+				Coder::setCMRoles(id1, alternativeNum, alternativeRoles, options, message);
+				if (id1 == idr) { message.set_opration(CM_RED_PICK); }
+				else message.set_opration(CM_BLUE_PICK);
+				bool recieved = engine->waitForOne(id1, network::MSG_ROLE_REQ, message);
+				if (recieved)
+				{
+					decided = false;
+					void* reply;
+					int ret;
+					if (GE_SUCCESS == (ret = engine->getReply(id1, reply)))
+					{
+						PickBan* respond = (PickBan*)reply;
+						int chosen = respond->role_ids(0);
+						Coder::roleNotice(id, chosen, game_info);
+						for (int i = 0; i < alternativeNum; ++i)
+							if (alternativeRoles[i] == chosen)
+							{
+								options[i] = (id1 == idr) ? 14 : 17;
+								break;
+							}
+						engine->sendMessage(-1, MSG_GAME, game_info);
 					}
 				}
-			}
-			else
-				return GE_TIMEOUT;
-			}
-			}
-			else{
-			RoleRequest message;
-			Coder::setCMRoles(id1, alternativeNum, alternativeRoles, options, message);
-			if(id1==idr){message.set_opration(CM_RED_PICK);}
-			else message.set_opration(CM_BLUE_PICK);
-			bool recieved = engine->waitForOne(id1, network::MSG_ROLE_REQ, message);
-			if(recieved)
-			{
-				decided=false;
-				void* reply;
-				int ret;
-				if (GE_SUCCESS == (ret = engine->getReply(id1, reply)))
-				{
-					PickBan* respond = (PickBan*) reply;
-					int chosen = respond->role_ids(0);
-					Coder::roleNotice(id, chosen, game_info);
-					for(int i = 0; i < alternativeNum; ++ i)
-						if(alternativeRoles[i] == chosen)
-						{
-							options[i]=(id1==idr)?14:17;
-							break;
-						}
-				}
-			}
-			else
-				return GE_TIMEOUT;
+				else
+					return GE_TIMEOUT;
 			}
 		}
-			RoleRequest message;
-			int idn;
-			if(step==1)idn=idr;
-			else if(step==2 ||step==3)idn=idb;
-			else
-				idn = decided?id2:id1;
-			Coder::setCMRoles(idn, alternativeNum, alternativeRoles, options, message);
-			message.set_opration(CM_NULL);
-			engine->sendMessage(-1, network::MSG_ROLE_REQ, message);
-			for(int i = 0; i < alternativeNum; ++ i){
-				if(options[i]>10)options[i]-=10;}
-			if(!decided)
+		RoleRequest message;
+		int idn;
+		if (step == 1)idn = idr;
+		else if (step == 2 || step == 3)idn = idb;
+		else
+			idn = decided ? id2 : id1;
+		Coder::setCMRoles(idn, alternativeNum, alternativeRoles, options, message);
+		message.set_opration(CM_NULL);
+		engine->sendMessage(-1, network::MSG_ROLE_REQ, message);
+		for (int i = 0; i < alternativeNum; ++i) {
+			if (options[i] > 10)options[i] -= 10;
+		}
+		if (!decided)
 			step++;
-			
-			}
-	game_info.set_is_started(true);
-	engine->sendMessage(-1, MSG_GAME, game_info);
+
+	}
+	
 	engine->initPlayerEntities();
 	engine->popGameState();
 	engine->pushGameState(new StateGameStart);
 	return ret ? GE_TIMEOUT : GE_SUCCESS;
-	
-	}
+
+}
 
 int StateGameStart::handle(GameGrail* engine)
 {	

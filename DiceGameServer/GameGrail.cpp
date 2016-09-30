@@ -214,6 +214,7 @@ GameGrail::GameGrail(GameGrailConfig *config) : playing(false), processing(true)
 	m_maxAttempts = 1;
 	m_teamArea = NULL;
 	pile = discard = NULL;
+	room_info.set_room_id(m_gameId);
 	pushGameState(new StateWaitForEnter);
 }
 
@@ -841,6 +842,25 @@ PlayerEntity* GameGrail::getPlayerEntity(int playerID)
 	return m_playerEntities[playerID]; 
 }
 
+SinglePlayerInfo* GameGrail::getPlayerInfo(int id)
+{
+	for (int i = 0; i < m_maxPlayers; i++) {
+		SinglePlayerInfo* player = (SinglePlayerInfo*)&(room_info.player_infos(i));
+		if (player->id() == id)
+			return player;
+	}
+	throw GE_INVALID_PLAYERID;
+}
+
+GameGrailPlayerContext* GameGrail::getPlayerContext(int id)
+{
+	PlayerContextList::iterator it = m_playerContexts.find(id);
+	if (it != m_playerContexts.end()) {
+		return it->second;
+	}
+	throw GE_INVALID_PLAYERID;
+}
+
 void GameGrail::GameRun()
 {
 	ztLoggerWrite(ZONE, e_Information, "GameGrail::GameRun() GameGrail [%d] %s create!!", 
@@ -962,6 +982,7 @@ int GameGrail::setStateRoleStrategy()
 		break;
 	case ROLE_STRATEGY_CM:
 		pushGameState(new StateRoleStrategyCM);
+		pushGameState(new StateLeaderElection);
 		break;
 	default:
 		return GE_INVALID_ARGUMENT;
@@ -1060,37 +1081,49 @@ void GameGrail::initPlayerEntities()
 
 void GameGrail::onPlayerEnter(int playerId)
 {
-	if(!roleInited)
+	if(roleInited)
 	{
-		GameInfo room_info;
-		Coder::roomInfo(m_playerContexts, teamA, teamB, room_info);
-		sendMessageExcept(playerId, MSG_GAME, room_info);
-
-		room_info.set_room_id(m_gameId);
-		room_info.set_player_id(playerId);
-		sendMessage(playerId, MSG_GAME, room_info);
-	}
-	else{
 		//FIXME: reconnect notice?
 		GameInfo game_info;
 		toProtoAs(playerId, game_info);
+		sendMessage(playerId, MSG_GAME, game_info);		
+	}
+	else if (playing) {
+		GameInfo game_info = room_info;
+		game_info.set_player_id(playerId);
+		sendMessage(playerId, MSG_GAME, game_info);
+	}
+	else {
+		GameInfo game_info;
+		Coder::roomInfo(m_playerContexts, teamA, teamB, game_info);
+		sendMessageExcept(playerId, MSG_GAME, game_info);
+
+		game_info.set_room_id(m_gameId);
+		game_info.set_player_id(playerId);
 		sendMessage(playerId, MSG_GAME, game_info);
 	}
 }
 
 void GameGrail::onGuestEnter(string userId)
 {
-	if(!roleInited)
+	if(roleInited)
 	{
-		GameInfo room_info;
-		Coder::roomInfo(m_playerContexts, teamA, teamB, room_info);
-		room_info.set_room_id(m_gameId);
-		room_info.set_player_id(GUEST);
-		UserSessionManager::getInstance().trySendMessage(userId, MSG_GAME, room_info);
+		GameInfo game_info;
+		toProtoAs(GUEST, game_info);
+		game_info.set_room_id(m_gameId);
+		UserSessionManager::getInstance().trySendMessage(userId, MSG_GAME, game_info);
+		
+	}
+	else if (playing) {
+		GameInfo game_info = room_info;
+		game_info.set_player_id(GUEST);
+		UserSessionManager::getInstance().trySendMessage(userId, MSG_GAME, game_info);
 	}
 	else{
 		GameInfo game_info;
-		toProtoAs(GUEST, game_info);
+		Coder::roomInfo(m_playerContexts, teamA, teamB, game_info);
+		game_info.set_room_id(m_gameId);
+		game_info.set_player_id(GUEST);
 		UserSessionManager::getInstance().trySendMessage(userId, MSG_GAME, game_info);
 	}
 }
@@ -1154,6 +1187,7 @@ void GameGrail::toProtoAs(int playerId, GameInfo& game_info)
 		PlayerEntity* player = getPlayerEntity(id);
 		player->toProto(player_info);
 		player_info->set_nickname(m_playerContexts[id]->getName());
+		player_info->set_leader(room_info.player_infos(i).leader());
 		if(id == playerId){
 			list <int> hands = player->getHandCards();
 			for(list<int>::iterator it = hands.begin(); it != hands.end(); it++){

@@ -23,7 +23,8 @@ enum MessageType {
     MSG_GOSSIP = 18;
 	MSG_ERROR = 19;	
 	MSG_HEARTBEAT = 20;
-	MSG_BECOME_LEADER_REQ=21;
+	MSG_BECOME_LEADER_REQ = 21;
+	MSG_BECOME_LEADER_REP = 22;
 }
 
 // c -> s 注册请求
@@ -121,12 +122,13 @@ message JoinTeamRequest {
 	required Team team = 1;
 }
 
-message BecomeLeaderRequest {
-    enum Leader {
-		Leader_Y=1;
-		Leader_N=0;
-		}
-		required Leader leader = 1;
+// s -> c 是否申请队长
+message BecomeLeaderRequest {   
+}
+
+// c -> s 申请队长答复
+message BecomeLeaderResponse {
+    optional bool yes = 1 [default = false];
 }
 
 // c -> s 游戏准备、取消准备

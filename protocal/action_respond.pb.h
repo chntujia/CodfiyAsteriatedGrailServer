@@ -100,7 +100,8 @@ enum ROLE_STRATEGY {
   ROLE_STRATEGY_RANDOM = 1,
   ROLE_STRATEGY_31 = 2,
   ROLE_STRATEGY_BP = 3,
-  ROLE_STRATEGY_ANY = 4,
+  ROLE_STRATEGY_CM = 4,
+  ROLE_STRATEGY_ANY = 5,
   ROLE_STRATEGY_ALL = 9
 };
 bool ROLE_STRATEGY_IsValid(int value);
@@ -122,11 +123,12 @@ enum SEAT_MODE {
   SEAT_MODE_RANDOM = 1,
   SEAT_MODE_2COMBO = 2,
   SEAT_MODE_3COMBO = 3,
-  SEAT_MODE_INTERLACE = 4
+  SEAT_MODE_INTERLACE = 4,
+  SEAT_MODE_RBBRRB = 5
 };
 bool SEAT_MODE_IsValid(int value);
 const SEAT_MODE SEAT_MODE_MIN = SEAT_MODE_RANDOM;
-const SEAT_MODE SEAT_MODE_MAX = SEAT_MODE_INTERLACE;
+const SEAT_MODE SEAT_MODE_MAX = SEAT_MODE_RBBRRB;
 const int SEAT_MODE_ARRAYSIZE = SEAT_MODE_MAX + 1;
 
 const ::google::protobuf::EnumDescriptor* SEAT_MODE_descriptor();
@@ -158,6 +160,30 @@ inline bool BP_OPRATION_Parse(
     const ::std::string& name, BP_OPRATION* value) {
   return ::google::protobuf::internal::ParseNamedEnum<BP_OPRATION>(
     BP_OPRATION_descriptor(), name, value);
+}
+enum CM_OPRATION {
+  CM_NULL = 1,
+  CM_RED_BAN = 2,
+  CM_RED_IB = 3,
+  CM_RED_PICK = 4,
+  CM_BLUE_BAN = 5,
+  CM_BLUE_IB = 6,
+  CM_BLUE_PICK = 7
+};
+bool CM_OPRATION_IsValid(int value);
+const CM_OPRATION CM_OPRATION_MIN = CM_NULL;
+const CM_OPRATION CM_OPRATION_MAX = CM_BLUE_PICK;
+const int CM_OPRATION_ARRAYSIZE = CM_OPRATION_MAX + 1;
+
+const ::google::protobuf::EnumDescriptor* CM_OPRATION_descriptor();
+inline const ::std::string& CM_OPRATION_Name(CM_OPRATION value) {
+  return ::google::protobuf::internal::NameOfEnum(
+    CM_OPRATION_descriptor(), value);
+}
+inline bool CM_OPRATION_Parse(
+    const ::std::string& name, CM_OPRATION* value) {
+  return ::google::protobuf::internal::ParseNamedEnum<CM_OPRATION>(
+    CM_OPRATION_descriptor(), name, value);
 }
 enum BasicActionType {
   ACTION_ATTACK = 1,
@@ -194,11 +220,12 @@ enum BasicRespondType {
   RESPOND_WEAKEN = 14,
   RESPOND_ADDITIONAL_ACTION = 15,
   RESPOND_DISCARD_COVER = 16,
-  RESPOND_ROLE = 17
+  RESPOND_ROLE = 17,
+  RESPOND_INSERT_BAN = 18
 };
 bool BasicRespondType_IsValid(int value);
 const BasicRespondType BasicRespondType_MIN = RESPOND_REPLY_ATTACK;
-const BasicRespondType BasicRespondType_MAX = RESPOND_ROLE;
+const BasicRespondType BasicRespondType_MAX = RESPOND_INSERT_BAN;
 const int BasicRespondType_ARRAYSIZE = BasicRespondType_MAX + 1;
 
 const ::google::protobuf::EnumDescriptor* BasicRespondType_descriptor();
@@ -3098,6 +3125,11 @@ template <> struct is_proto_enum< ::network::BP_OPRATION> : ::google::protobuf::
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::network::BP_OPRATION>() {
   return ::network::BP_OPRATION_descriptor();
+}
+template <> struct is_proto_enum< ::network::CM_OPRATION> : ::google::protobuf::internal::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::network::CM_OPRATION>() {
+  return ::network::CM_OPRATION_descriptor();
 }
 template <> struct is_proto_enum< ::network::BasicActionType> : ::google::protobuf::internal::true_type {};
 template <>

@@ -157,7 +157,7 @@ public:
 	bool m_firstExtension;
 	bool m_secondExtension;
 	GameInfo room_info;
-	list< int > teamA, teamB,leaderL;
+	list< int > teamA, teamB;
 	tableLogData m_tableLog;
 
 protected:
@@ -215,6 +215,9 @@ public:
 	}
 	int getCurrentPlayerID() const { return m_currentPlayerID; }
 	PlayerEntity* getPlayerEntity(int id);
+	SinglePlayerInfo* getPlayerInfo(int id);
+	GameGrailPlayerContext* getPlayerContext(int id);
+
 	TeamArea* getTeamArea() { return m_teamArea; }
 
 	void resetReady(int id = -1){		
@@ -267,21 +270,7 @@ public:
 			sendMessage(-1, MSG_GAME, update);
 		}		
 	}
-	void setLeader(int id, int leader){
-		if(id<-1 || id>m_maxPlayers){
-			return;
-		}
-		GameInfo update;
-		SinglePlayerInfo *player = update.add_player_infos();
-		player->set_id(id);
-		player->set_leader(leader);
-		if(leader == BecomeLeaderRequest_Leader_Leader_Y){
-			leaderL.remove(id);
-			leaderL.push_back(id);}
-		else if(leader == BecomeLeaderRequest_Leader_Leader_N)
-		leaderL.remove(id);
-		sendMessage(-1, MSG_GAME, update);
-		}
+
 	bool isAllStartReady(){
 		for(PlayerContextList::iterator it = m_playerContexts.begin(); it != m_playerContexts.end(); it++)
 		{
@@ -290,6 +279,7 @@ public:
 		}
 		return true;
 	}
+
 	bool isReady(int id);
 	bool waitForOne(int id, uint16_t proto_type, google::protobuf::Message& proto, int timeout, bool resetReady = true);
 	bool waitForOne(int id, uint16_t proto_type, google::protobuf::Message& proto, bool toResetReady = true) { return waitForOne(id, proto_type, proto, m_responseTime, toResetReady); }

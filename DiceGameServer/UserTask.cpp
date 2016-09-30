@@ -88,9 +88,9 @@ bool UserTask::cmdMsgParse(const char *pstrMsg, const uint32_t nCmdLen)
 		
 		m_activeTime = time(NULL);
 
-#ifdef Debug
-		ztLoggerWrite(ZONE, e_Debug, "[%s]Receive: type: %d,\n%s", m_userId.c_str(), type, proto->DebugString().c_str());
-#endif		
+//#ifdef Debug
+		ztLoggerWrite(ZONE, e_Error, "[%s]Receive: type: %d,\n%s", m_userId.c_str(), type, proto->DebugString().c_str());
+//#endif		
 		
 		switch(type)
 		{
@@ -138,10 +138,9 @@ bool UserTask::cmdMsgParse(const char *pstrMsg, const uint32_t nCmdLen)
 				delete proto;
 				break;
 			}
-		case MSG_BECOME_LEADER_REQ:
+		case MSG_BECOME_LEADER_REP:
 			{
-				handleBecomeLeader((BecomeLeaderRequest*)proto);		
-				delete proto;
+				handleBecomeLeader((BecomeLeaderResponse*)proto);		
 				break;
 			}
 		case MSG_READY_GAME_REQ:
@@ -276,10 +275,11 @@ void UserTask::handleLogIn(LoginRequest* req)
 
 void UserTask::handleCreateRoom(CreateRoomRequest* req)
 {
+#ifndef DEBUG 
 	switch(m_userType){
 		case STATUS_GUEST:
         case STATUS_NORMAL:
-			if(req->sp_mo_dao() || req->role_strategy() == ROLE_STRATEGY_BP){
+			if(req->sp_mo_dao() || req->role_strategy() == ROLE_STRATEGY_BP || req->role_strategy() == ROLE_STRATEGY_CM){
 				Error error;
 				Coder::errorMsg(GE_VIP_ONLY, -1, error);
 				sendProto(MSG_ERROR, error);
@@ -287,6 +287,7 @@ void UserTask::handleCreateRoom(CreateRoomRequest* req)
 			}
 			break;
 	}
+#endif
 	int tableId = GameManager::getInstance().createGame(req);
 	EnterRoomRequest enter_room;
 	enter_room.set_room_id(tableId);
@@ -378,11 +379,11 @@ void UserTask::handleJoinTeam(JoinTeamRequest* req)
 					m_userId.c_str(), m_tableId);
 }
 
-void UserTask::handleBecomeLeader(BecomeLeaderRequest* req)
+void UserTask::handleBecomeLeader(BecomeLeaderResponse* res)
 {
 	GameGrail* game = getGame();
 	if(game){
-		game->setLeader(m_playerId, req->leader());
+		tryNotify(m_playerId, STATE_LEADER_ELECTION, 0, res);
 	}
 	else
 		ztLoggerWrite(ZONE, e_Warning, "UserTask::cmdMsgParse() userId [%s] cannot become leader. Table %d.", 

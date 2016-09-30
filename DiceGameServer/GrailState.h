@@ -6,11 +6,12 @@ enum STATE{
 	STATE_FATAL_ERROR,
 	STATE_WAIT_FOR_ENTER,
 	STATE_SEAT_ARRANGE,	
+	STATE_LEADER_ELECTION,
 	STATE_ROLE_STRATEGY_RANDOM,
 	STATE_ROLE_STRATEGY_31,
 	STATE_ROLE_STRATEGY_ANY,
 	STATE_ROLE_STRATEGY_BP,
-	STATE_ROLE_STRATEGY_CM,
+	STATE_ROLE_STRATEGY_CM,	
 	STATE_GAME_START,
 	STATE_BEFORE_TURN_BEGIN,
 	STATE_TURN_BEGIN,
@@ -189,6 +190,23 @@ private:
 	GameInfo* messages[MAXPLAYER];
 };
 
+class StateLeaderElection : public GrailState
+{
+public:
+	StateLeaderElection(): GrailState(STATE_LEADER_ELECTION) {		
+		for (int i = 0; i < MAXPLAYER; i++) {
+			messages[i] = &message;
+		}
+	}
+	int handle(GameGrail* engine);
+
+private:
+	vector< int > red;
+	vector< int > blue;
+	BecomeLeaderRequest * messages[MAXPLAYER];
+	BecomeLeaderRequest message;
+};
+
 class StateRoleStrategyRandom : public GrailState
 {
 public:
@@ -254,6 +272,7 @@ public:
 	~StateRoleStrategyCM() { SAFE_DELETE(alternativeRoles);SAFE_DELETE(options);}
 	int handle(GameGrail* engine);
 };
+
 class StateGameStart : public GrailState
 {
 public:
