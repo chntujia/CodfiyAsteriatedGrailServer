@@ -88,9 +88,9 @@ bool UserTask::cmdMsgParse(const char *pstrMsg, const uint32_t nCmdLen)
 		
 		m_activeTime = time(NULL);
 
-//#ifdef Debug
+#ifdef DEBUG
 		ztLoggerWrite(ZONE, e_Error, "[%s]Receive: type: %d,\n%s", m_userId.c_str(), type, proto->DebugString().c_str());
-//#endif		
+#endif		
 		
 		switch(type)
 		{

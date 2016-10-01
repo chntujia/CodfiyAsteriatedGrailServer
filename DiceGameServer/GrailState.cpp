@@ -2354,8 +2354,6 @@ int StateShowHand::handle(GameGrail* engine)
 
 int StateGameOver::handle(GameGrail* engine)
 {
-	PlayerEntity* tempEntity;
-
 	ztLoggerWrite(ZONE, e_Debug, "[Table %d] Enter StateGameOver", engine->getGameId());
 	
 	engine->m_tableLog.redScore = engine->getTeamArea()->getMorale(RED);
