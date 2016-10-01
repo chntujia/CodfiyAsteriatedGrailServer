@@ -184,17 +184,17 @@ int StateLeaderElection::handle(GameGrail* engine)
 
 	if (red.empty()) {
 		for (int i = 0; i < maxPlayer; i++) {
-			SinglePlayerInfo player_it = game_info.player_infos().Get(i);
+			SinglePlayerInfo player_it = game_info.player_infos(i);
 			if (player_it.team() == RED) {
-				red.push_back(i);
+				red.push_back(player_it.id());
 			}
 		}
 	}
 	if (blue.empty()) {
 		for (int i = 0; i < maxPlayer; i++) {
-			SinglePlayerInfo player_it = game_info.player_infos().Get(i);
+			SinglePlayerInfo player_it = game_info.player_infos(i);
 			if (player_it.team() == BLUE) {
-				blue.push_back(i);
+				blue.push_back(player_it.id());
 			}
 		}
 	}
