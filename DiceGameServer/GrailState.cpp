@@ -448,8 +448,8 @@ int StateRoleStrategyCM::handle(GameGrail* engine)
 	GameInfo& game_info = engine->room_info;
 	if (step == 0) {
 		decided = false;
-		ibb = 0;
-		ibr = 0;
+		ibb = 1;
+		ibr = 1;
 		playerNum = engine->getGameMaxPlayers();
 		alternativeNum = BP_ALTERNATIVE_NUM[playerNum / 2 - 2];
 		if (alternativeNum <= 0)
@@ -547,10 +547,11 @@ int StateRoleStrategyCM::handle(GameGrail* engine)
 		{
 			int color = step % 2;
 			int index = (step - 4) / 2;
-			if (color == 0) { id1 = idr; id2 = idb; id = red[index]; }
-			else { id1 = idb; id2 = idr; id = blue[index]; }
-			if (ibb + ibr != 2 && !decided) {
-				if (id2 == idr && ibr == 0)
+			bool ibable;
+			if (color == 0) { id1 = idr; id2 = idb; ibable = ibb; id = red[index]; }
+			else { id1 = idb; id2 = idr; ibable = ibr; id = blue[index]; }
+			if (ibable && !decided) {
+				if (id2 == idr && ibr == 1)
 				{
 					RoleRequest message;
 					Coder::setCMRoles(idr, alternativeNum, alternativeRoles, options, message);
@@ -575,14 +576,14 @@ int StateRoleStrategyCM::handle(GameGrail* engine)
 										break;
 									}
 								}
-								ibr = 1;
+								ibr = 0;
 							}
 						}
 					}
 					else
 						return GE_TIMEOUT;
 				}
-				else if (id2 == idb && ibb == 0)
+				else if (id2 == idb && ibb == 1)
 				{
 					RoleRequest message;
 					Coder::setCMRoles(idb, alternativeNum, alternativeRoles, options, message);
@@ -608,7 +609,7 @@ int StateRoleStrategyCM::handle(GameGrail* engine)
 										break;
 									}
 								}
-								ibb = 1;
+								ibb = 0;
 							}
 						}
 					}

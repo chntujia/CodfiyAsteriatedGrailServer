@@ -262,8 +262,8 @@ private:
 	vector<int> blue;
 	int idr;
 	int idb;
-	int ibb;
-	int ibr;
+	bool ibb;
+	bool ibr;
 	bool decided;		
 	int alternativeNum;
 	int playerNum;
