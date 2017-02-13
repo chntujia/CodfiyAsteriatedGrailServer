@@ -14,15 +14,6 @@ DBConnection::DBConnection(std::string hostname, std::string username, std::stri
 	connect();
 }
 
-DBConnection::DBConnection(const DBConnection& other)
-{
-	this->hostname = other.hostname;
-	this->username = other.username;
-	this->password = other.password;
-	this->con = NULL;
-	connect();
-}
-
 DBConnection::~DBConnection()
 {
 	ztLoggerWrite(ZONE, e_Information, "DBConnection::~DBConnection(): con: %p", con);

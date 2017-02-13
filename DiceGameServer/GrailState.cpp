@@ -2370,9 +2370,8 @@ int StateGameOver::handle(GameGrail* engine)
 			engine->m_tableLog.tableDetail[i].result = RESULT_LOSE;
 		DBInstance.userAccountDAO->gameComplete(engine->m_tableLog.tableDetail[i].playerID);
 	}
-	DBConnection connection = DBInstance.getConnection();
-	StatisticDAO statisticDAO(&connection);
-	statisticDAO.insert(engine->m_tableLog);
+	DBInstance.statisticDAO->insert(engine->m_tableLog);
+
 	Sleep(10000);
 	engine->setDying();
 	
