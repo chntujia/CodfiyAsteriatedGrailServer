@@ -14,10 +14,21 @@ DBConnection::DBConnection(std::string hostname, std::string username, std::stri
 	connect();
 }
 
+DBConnection::DBConnection(const DBConnection& that) {
+	this->hostname = that.hostname;
+	this->username = that.username;
+	this->password = that.password;
+	this->con = that.con;
+}
+
 DBConnection::~DBConnection()
 {
 	ztLoggerWrite(ZONE, e_Information, "DBConnection::~DBConnection(): con: %p", con);
 	SAFE_DELETE(con);
+}
+
+DBConnection DBConnection::clone() {
+	return DBConnection(hostname, username, password);
 }
 
 
