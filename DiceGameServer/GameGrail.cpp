@@ -287,7 +287,7 @@ void GameGrail::sendMessageExcept(int id, uint16_t proto_type, google::protobuf:
 	ztLoggerWrite(ZONE, e_Debug, "[Table %d] send to all except %d, type:%d, string:\n%s \nsize: %d", m_gameId, id, proto_type, proto.DebugString().c_str(), proto.ByteSize());
 #endif
 	for(PlayerContextList::iterator it = m_playerContexts.begin(); it != m_playerContexts.end(); it++){
-		if(it->first != id){
+		if(it->first != id && it->second->isConnected()){
 			UserSessionManager::getInstance().trySendMessage(it->second->getUserId(), proto_type, proto);
 		}
 	}
@@ -834,12 +834,31 @@ int GameGrail::setStateCheckTurnEnd()
 
 PlayerEntity* GameGrail::getPlayerEntity(int playerID)
 {
-	if(playerID<0 || playerID>m_maxPlayers){
-		ztLoggerWrite(ZONE, e_Error, "[Table %d] Invalid PlayerID: %d", 
-					m_gameId, playerID);
+	if(playerID < 0 || playerID > m_maxPlayers){
+		ztLoggerWrite(ZONE, e_Error, "[Table %d] Invalid PlayerID: %d", m_gameId, playerID);
 		throw GE_INVALID_PLAYERID;
 	}
 	return m_playerEntities[playerID]; 
+}
+
+PlayerEntity* GameGrail::getNextPlayerEntity(PlayerEntity* current, int iterator, int step)
+{
+	PlayerEntity* next;
+	if (iterator == 0) {
+		next = getPlayerEntity(m_currentPlayerID);
+	}
+	else if(!current){
+		next = getPlayerEntity(m_currentPlayerID);
+		for (int i = 0; i < iterator; i++) {
+			next = next->getPost();
+		}		
+	}
+	else {
+		next = current->getPost();
+	}
+	ztLoggerWrite(ZONE, e_Information, "[Table %d] playerId: %d, name: %s, PlayerEntity: %s, iterator: %d, step: %d", 
+		m_gameId, next->getID(), next->getName().c_str(), next->type(), iterator, step);
+	return next;
 }
 
 SinglePlayerInfo* GameGrail::getPlayerInfo(int id)
@@ -863,74 +882,50 @@ GameGrailPlayerContext* GameGrail::getPlayerContext(int id)
 
 void GameGrail::GameRun()
 {
-	ztLoggerWrite(ZONE, e_Information, "GameGrail::GameRun() GameGrail [%d] %s create!!", 
+	ztLoggerWrite(ZONE, e_Information, "[Table %d] %s created", 
 					m_gameId, m_gameName.c_str());
-	int ret;
-	GrailState* currentState;
+	int error = 0;
 	while(processing)
-	{
-		ret = GE_NO_STATE;
-		currentState = topGameState();
-		int stateCode = currentState->state;
-		try{			
-			if(currentState){	
-				if(currentState->getErrorCount() > 3){
-					ztLoggerWrite(ZONE, e_Error, "[Table %d] State: %d is popped because of too many errors ", m_gameId, currentState->state);
-					popGameState();
-					continue;
-				}
-				ret = currentState->handle(this);
+	{		
+		try{
+			if (error > 3) {
+				ztLoggerWrite(ZONE, e_Error, "[Table %d] %s is popped because of too many errors ", m_gameId, topGameState()->type());
+				popGameState();
+			}
 
+			GrailState* currentState = topGameState();
+			if (currentState->state != STATE_WAIT_FOR_ENTER) {
+				ztLoggerWrite(ZONE, e_Information, "[Table %d] Enter %s", m_gameId, currentState->type());
 			}
-			else{
-				ztLoggerWrite(ZONE, e_Error, "[Table %d] Empty state", m_gameId);
-				break;
+
+			int ret = currentState->handle(this);
+			if (ret != GE_SUCCESS && ret != GE_TIMEOUT && ret != GE_URGENT) {
+				ztLoggerWrite(ZONE, e_Error, "[Table %d] Handle returns error: %d", m_gameId, ret);
+				error++;
 			}
-			if(ret != GE_SUCCESS && ret != GE_TIMEOUT && ret != GE_URGENT){
-				//currentState是出错的那个state，可能已经被pop掉
-				GrailState* topState = topGameState();
-				ztLoggerWrite(ZONE, e_Error, "[Table %d] Handle returns error: %d. Current state: %d, Top state: %d, Top iterator: %d, roleId: %d, Top step: %d", 
-					m_gameId, ret, stateCode, topState->state, topState->iterator, getPlayerEntity(topState->iterator)->getRoleID(), topState->step);
-				topState->increaseErrorCount();
+			else {
+				error = 0;
 			}
 		}
-		catch(GrailError error)	{
-			//currentState是出错的那个state，可能已经被pop掉			
-			GrailState* topState = topGameState();
-			if(topState){
-				ztLoggerWrite(ZONE, e_Error, "[Table %d] Handle throws error: %d. Current state: %d, Top state: %d, Top iterator: %d, Top step: %d", 
-					m_gameId, error, stateCode, topState->state, topState->iterator, topState->step);
-				topState->increaseErrorCount();
-			}
-			else{
-				ztLoggerWrite(ZONE, e_Error, "[Table %d] Handle throws error: %d. Current state: %d", 
-					m_gameId, error, stateCode);
+		catch(GrailError e)	{
+			ztLoggerWrite(ZONE, e_Error, "[Table %d] Handle throws error: %d", m_gameId, e);	
+			error++;
+			if (e == GE_NO_STATE) {
+				break;
 			}
 		}
 		catch(std::exception const& e) {
-			//currentState是出错的那个state，可能已经被pop掉
-			GrailState* topState = topGameState();
-			if(topState){
-				ztLoggerWrite(ZONE, e_Error, "[Table %d] Handle throws error: %s. Current state: %d, Top state: %d, Top iterator: %d, Top step: %d", 
-					m_gameId, e.what(), stateCode, topState->state, topState->iterator, topState->step);
-				topState->increaseErrorCount();
-			}
-			else{
-				ztLoggerWrite(ZONE, e_Error, "[Table %d] Handle throws error: %s. Current state: %d", 
-					m_gameId, e.what(), stateCode);
-			}
+			ztLoggerWrite(ZONE, e_Error, "[Table %d] Handle throws error: %s", m_gameId, e.what());
+			error++;
 		}
 	}
 	dead = true;
-	ztLoggerWrite(ZONE, e_Information, "GameGrail::GameRun() GameGrail [%d] %s end!!", 
-					m_gameId, m_gameName.c_str());
+	ztLoggerWrite(ZONE, e_Information, "[Table %d] ended", m_gameId);
 }
 
 int GameGrail::playerEnterIntoTable(string userId, string nickname, int &playerId)
 {
 	playerId = GUEST;
-	ztLoggerWrite(ZONE, e_Information, "Push_back_UID:");
-	ztLoggerWrite(ZONE, e_Information, userId.c_str());
 	for(PlayerContextList::iterator it = m_playerContexts.begin(); it != m_playerContexts.end(); it++)
 	{
 		if(it->second->getUserId() == userId)
@@ -1049,9 +1044,7 @@ void GameGrail::initPlayerEntities()
 		player_it = (SinglePlayerInfo*)&(room_info.player_infos().Get(i));
 		id = player_it->id();
 		roleID = player_it->role_id();
-		//roleID = 25;
 		color = player_it->team();
-		//FIXME: 全封印时代
 		m_playerEntities[id] = createRole(id, roleID, color);
 		m_playerEntities[id]->setRoleID(roleID);
 		position2id[i] = id;

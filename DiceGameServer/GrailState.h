@@ -148,8 +148,8 @@ class GrailState
 public:
 	const int state;
 	int step;
-	int iterator;
-	GrailState(int s): state(s), step(STEP_INIT), iterator(0), errorCount(0) {}
+	int iterator;  //跟当前回合玩家的距离，0代表就是当前回合的玩家
+	GrailState(int s): state(s), step(STEP_INIT), iterator(0) {}
 	virtual ~GrailState() {}
 	void moveIterator(int ret) {
 		if(GE_SUCCESS == ret || STEP_DONE == step){
@@ -157,11 +157,8 @@ public:
 			step = STEP_INIT;
 		}
 	}
-	virtual int handle(GameGrail* engine) = 0;	
-	int getErrorCount() { return errorCount; }
-	void increaseErrorCount() { errorCount++; }
-private:
-	int errorCount;
+	virtual int handle(GameGrail* engine) = 0;		
+	const char* type() const { return typeid(*this).name(); }
 };
 
 class StateWaitForEnter : public GrailState

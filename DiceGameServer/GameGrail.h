@@ -153,6 +153,7 @@ public:
 	bool m_silence;
 	int m_maxAttempts;
 	int m_firstPlayerID;
+	int m_currentPlayerID;
 	bool m_spMoDao;
 	bool m_firstExtension;
 	bool m_secondExtension;
@@ -164,8 +165,7 @@ protected:
 	int m_roundId;
 	int m_maxPlayers;
 	int m_token;
-	int m_responseTime;
-	int m_currentPlayerID;
+	int m_responseTime;	
 
 	boost::mutex m_mutex_for_wait;
 	boost::condition_variable m_condition_for_wait;	
@@ -215,6 +215,7 @@ public:
 	}
 	int getCurrentPlayerID() const { return m_currentPlayerID; }
 	PlayerEntity* getPlayerEntity(int id);
+	PlayerEntity* getNextPlayerEntity(PlayerEntity* current, int iterator, int step);
 	SinglePlayerInfo* getPlayerInfo(int id);
 	GameGrailPlayerContext* getPlayerContext(int id);
 
@@ -338,6 +339,4 @@ public:
 	tableLogData getTableLog(){ return m_tableLog; }
 protected:	
 	void GameRun();  
-	void kickOffNotConnectedPlayers();
-	void updateTableStatusMessage();
 };
