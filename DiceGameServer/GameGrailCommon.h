@@ -10,7 +10,6 @@
 #include "action_respond.pb.h"
 
 #include <list>
-#define DEBUG
 using namespace boost::interprocess;
 using namespace network;
 using namespace std;
@@ -344,6 +343,7 @@ enum STEP{
 #define MAXPLAYER 8
 #define MAXROLES 20
 const int BP_ALTERNATIVE_NUM[] = {12,16,20};
+extern ELogLevel logLevel;
 extern CardEntity* cardList[CARDSUM];
 CardEntity* getCardByID(int id);
 #define RESULT_UNKNOWN 30000
@@ -422,7 +422,6 @@ typedef struct{
 
 #define TOQSTR(x)  boost::lexical_cast<std::string>(x)
 
-string combMessage(string item1,string item2 = "",string item3 = "",string item4 = "",string item5 = "",string item6 = "",string item7 = "");
 //编码器,编辑各类通讯信息
 class Coder
 {

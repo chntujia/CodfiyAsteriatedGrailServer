@@ -256,9 +256,8 @@ int GameGrail::popGameState_if(int state)
 
 void GameGrail::sendMessage(int id, uint16_t proto_type, google::protobuf::Message& proto)
 {
-#ifdef Debug
-	ztLoggerWrite(ZONE, e_Debug, "[Table %d] send to %d, type:%d, string:\n%s \nsize: %d", m_gameId, id, proto_type, proto.DebugString().c_str(), proto.ByteSize());
-#endif
+	ztLoggerWrite(ZONE, e_Information, "[Table %d] send to %d, type:%d, string:\n%s \nsize: %d", m_gameId, id, proto_type, proto.DebugString().c_str(), proto.ByteSize());
+
 	if(id == -1){
 		for(PlayerContextList::iterator it = m_playerContexts.begin(); it != m_playerContexts.end(); it++){
 			if(!it->second->isConnected()){
@@ -283,9 +282,9 @@ void GameGrail::sendMessage(int id, uint16_t proto_type, google::protobuf::Messa
 
 void GameGrail::sendMessageExcept(int id, uint16_t proto_type, google::protobuf::Message& proto)
 {
-#ifdef Debug
-	ztLoggerWrite(ZONE, e_Debug, "[Table %d] send to all except %d, type:%d, string:\n%s \nsize: %d", m_gameId, id, proto_type, proto.DebugString().c_str(), proto.ByteSize());
-#endif
+
+	ztLoggerWrite(ZONE, e_Information, "[Table %d] send to all except %d, type:%d, string:\n%s \nsize: %d", m_gameId, id, proto_type, proto.DebugString().c_str(), proto.ByteSize());
+
 	for(PlayerContextList::iterator it = m_playerContexts.begin(); it != m_playerContexts.end(); it++){
 		if(it->first != id && it->second->isConnected()){
 			UserSessionManager::getInstance().trySendMessage(it->second->getUserId(), proto_type, proto);
@@ -882,8 +881,7 @@ GameGrailPlayerContext* GameGrail::getPlayerContext(int id)
 
 void GameGrail::GameRun()
 {
-	ztLoggerWrite(ZONE, e_Information, "[Table %d] %s created", 
-					m_gameId, m_gameName.c_str());
+	ztLoggerWrite(ZONE, e_Information, "[Table %d] %s created", m_gameId, m_gameName.c_str());
 	int error = 0;
 	while(processing)
 	{		

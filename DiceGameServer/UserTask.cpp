@@ -13,7 +13,7 @@ using namespace network;
 
 UserTask::~UserTask()
 {
-	ztLoggerWrite(ZONE, e_Debug, "~UserTask[%s] deleted", m_userId.c_str() );
+	ztLoggerWrite(ZONE, e_Information, "~UserTask[%s] deleted", m_userId.c_str() );
 	UserSessionManager::getInstance().RemoveUserById(m_iTmpId);
 	GameGrail* game = getGame();
 	if(game){
@@ -34,7 +34,7 @@ void UserTask::OnCheck()
 	time_t tmNow  = time(NULL);
 	if (tmNow - m_activeTime > m_iCheckTime)
 	{	
-		ztLoggerWrite(ZONE,e_Debug, "OnCheck[%s]: heartbeat timeout,be kicked off ", m_userId.c_str());
+		ztLoggerWrite(ZONE, e_Information, "OnCheck[%s]: heartbeat timeout,be kicked off ", m_userId.c_str());
 		SetQuit();
 		return;
 	}
@@ -88,9 +88,9 @@ bool UserTask::cmdMsgParse(const char *pstrMsg, const uint32_t nCmdLen)
 		
 		m_activeTime = time(NULL);
 
-#ifdef DEBUG
-		ztLoggerWrite(ZONE, e_Error, "[%s]Receive: type: %d,\n%s", m_userId.c_str(), type, proto->DebugString().c_str());
-#endif		
+
+		ztLoggerWrite(ZONE, e_Information, "[%s]Receive: type: %d,\n%s", m_userId.c_str(), type, proto->DebugString().c_str());
+		
 		
 		switch(type)
 		{
@@ -275,19 +275,19 @@ void UserTask::handleLogIn(LoginRequest* req)
 
 void UserTask::handleCreateRoom(CreateRoomRequest* req)
 {
-#ifndef DEBUG 
-	switch(m_userType){
+	if (logLevel != e_Debug) {
+		switch (m_userType) {
 		case STATUS_GUEST:
-        case STATUS_NORMAL:
-			if(req->sp_mo_dao() || req->role_strategy() == ROLE_STRATEGY_BP || req->role_strategy() == ROLE_STRATEGY_CM){
+		case STATUS_NORMAL:
+			if (req->sp_mo_dao() || req->role_strategy() == ROLE_STRATEGY_BP || req->role_strategy() == ROLE_STRATEGY_CM) {
 				Error error;
 				Coder::errorMsg(GE_VIP_ONLY, -1, error);
 				sendProto(MSG_ERROR, error);
 				return;
 			}
 			break;
+		}
 	}
-#endif
 	int tableId = GameManager::getInstance().createGame(req);
 	EnterRoomRequest enter_room;
 	enter_room.set_room_id(tableId);
