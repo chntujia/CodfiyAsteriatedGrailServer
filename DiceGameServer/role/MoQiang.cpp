@@ -95,6 +95,14 @@ int MoQiang::p_boot(int &step, int currentPlayerID)
 
 int MoQiang::p_timeline_2_miss(int &step, CONTEXT_TIMELINE_2_MISS *con)
 {
+	if(con->srcID!=id||!con->isActive)
+    {
+        return GE_SUCCESS;
+     }
+
+        if(used_ChongYing)
+        cardCount=0;  
+
 	used_AnZhiJieFang = true;
 	return GE_SUCCESS;
 }
