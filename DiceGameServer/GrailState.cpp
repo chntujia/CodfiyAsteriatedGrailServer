@@ -26,45 +26,34 @@ int StateSeatArrange::handle(GameGrail* engine)
 	// 直接将随机结果保存到engine中
 	GameInfo& game_info = engine->room_info;
 
-	if(!isSet)
-	{
-		srand ((unsigned int)time(NULL));
-		assignTeam(engine);
-		vector< int > colors = assignColor(engine->m_seatMode, m_maxPlayers);
+	srand ((unsigned int)time(NULL));
+	assignTeam(engine);
+	vector< int > colors = assignColor(engine->m_seatMode, m_maxPlayers);
 
-		SinglePlayerInfo *player_info;
+	SinglePlayerInfo *player_info;
 
-		for(int i = 0; i < m_maxPlayers; i++){
-			player_info = game_info.add_player_infos();
-			int color = colors[i];
-			int id;
-			if(color){
-				id = red.back();
-				red.pop_back();
-			}
-			else{
-				id = blue.back();
-				blue.pop_back();
-			}
-			player_info->set_id(id);
-			player_info->set_team(color);
-			player_info->set_nickname(engine->getPlayerContext(id)->getName());
+	for (int i = 0; i < m_maxPlayers; i++) {
+		player_info = game_info.add_player_infos();
+		int color = colors[i];
+		int id;
+		if (color) {
+			id = red.back();
+			red.pop_back();
 		}
-		game_info.set_is_started(true);
-		for(int i = 0; i < m_maxPlayers; i++){
-			messages[i] = &game_info;
+		else {
+			id = blue.back();
+			blue.pop_back();
 		}
-		engine->resetReady();
-		isSet = true;
+		player_info->set_id(id);
+		player_info->set_team(color);
+		player_info->set_nickname(engine->getPlayerContext(id)->getName());
 	}
-	if(engine->waitForAll(MSG_GAME, (void**)messages, false)){
-		engine->popGameState();
-		engine->playing = true;
-		return engine->setStateRoleStrategy();
-	}
-	else{
-		return GE_TIMEOUT;
-	}
+	game_info.set_is_started(true);
+
+	engine->sendMessage(-1, MSG_GAME, game_info);
+    engine->popGameState();
+	engine->playing = true;
+	return engine->setStateRoleStrategy();
 }
 
 void StateSeatArrange::assignTeam(GameGrail* engine)

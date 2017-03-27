@@ -164,27 +164,21 @@ public:
 class StateWaitForEnter : public GrailState
 {
 public:
-	StateWaitForEnter(): GrailState(STATE_WAIT_FOR_ENTER), isSet(false){}
+	StateWaitForEnter(): GrailState(STATE_WAIT_FOR_ENTER){}
 	int handle(GameGrail* engine);
-private:
-	bool isSet;
 };
 
 class StateSeatArrange : public GrailState
 {
 public:
-	StateSeatArrange(): GrailState(STATE_SEAT_ARRANGE), isSet(false){}
+	StateSeatArrange(): GrailState(STATE_SEAT_ARRANGE){}
 	int handle(GameGrail* engine);
 private:
 	void assignTeam(GameGrail* engine);
 	vector< int > assignColor(int mode, int playerNum);
 
-	bool isSet;
 	vector< int > red;
 	vector< int > blue;
-	int red_leader;
-	int blue_leader;
-	GameInfo* messages[MAXPLAYER];
 };
 
 class StateLeaderElection : public GrailState
