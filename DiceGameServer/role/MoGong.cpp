@@ -374,7 +374,6 @@ int MoGong::v_additional_action(int chosen)
 
 int MoGong::p_additional_action(int chosen)
 {
-	GameInfo update_info;
 	switch(chosen)
 	{
 	//【多重射击】
@@ -737,20 +736,10 @@ int MoGong::DuoChongSheJi(int playerID)
 	if(playerID != id || !available_DUO_CHONG_SHE_JI) {
 		return GE_SUCCESS;
 	}
-	// 盖牌至少一个风系
-	/*bool has_wind = false;
-	for (list<int>::iterator it = coverCards.begin(); it != coverCards.end(); ++it)
-	{
-		CardEntity* card = getCardByID(*it);
-		if(card->getElement() == ELEMENT_WIND) {
-			has_wind = true;
-			break;
-		}
-	}
-	if (has_wind) {
+	// 有盖牌
+	if (!coverCards.empty()) {
 		addAction(ACTION_ATTACK, DUO_CHONG_SHE_JI);
-	}*/
-	addAction(ACTION_ATTACK, DUO_CHONG_SHE_JI);
+	}
 	return GE_SUCCESS;
 }
 
