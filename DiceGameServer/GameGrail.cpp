@@ -362,6 +362,17 @@ bool GameGrail::waitForAll(uint16_t proto_types, void** proto_ptrs, int sec, boo
 	return false;
 }
 
+bool GameGrail::falseNotify(int id)
+{
+	if (id == m_token) {
+		m_ready[id] = true;
+		m_playerContexts[id]->setBuf(NULL);
+		m_condition_for_wait.notify_one();
+		return true;
+	}
+	return false;
+}
+
 bool GameGrail::tryNotify(int id, int state, int step, void* reply)
 {
 	if(id == m_token && state == topGameState()->state && step == topGameState()->step) {

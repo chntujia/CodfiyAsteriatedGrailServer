@@ -363,7 +363,10 @@ void UserTask::handleReadyGame(ReadyForGameRequest* req)
 		}
 		break;
 	case ReadyForGameRequest_Type_SEAT_READY:
-		tryNotify(m_playerId, STATE_SEAT_ARRANGE);
+		GameGrail* game = getGame();
+		if (game) {
+			game->falseNotify(m_playerId);
+		}
 		break;
 	}
 }
