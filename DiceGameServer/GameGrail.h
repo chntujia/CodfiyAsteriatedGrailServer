@@ -144,7 +144,6 @@ class GameGrail : public Game
 {
 public:
 	bool playing;
-	bool processing;
 	bool dead;
 	bool roleInited;
 
@@ -184,10 +183,6 @@ protected:
 public:
 	GameGrail(GameGrailConfig *config);
 	~GameGrail();
-	void setDying(){
-		processing = false;
-		m_maxAttempts = 0;
-	}
 	void sendMessage(int id, uint16_t proto_type, google::protobuf::Message& proto);
 	void sendMessageExcept(int id, uint16_t proto_type, google::protobuf::Message& proto);
 	int playerEnterIntoTable(string userId, string nickname, int& playerId);

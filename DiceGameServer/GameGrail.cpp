@@ -194,7 +194,7 @@ void TeamArea::setMorale(int color, int value)
         this->moraleBLUE = value;
 }
 
-GameGrail::GameGrail(GameGrailConfig *config) : playing(false), processing(true), dead(false), roleInited(false)
+GameGrail::GameGrail(GameGrailConfig *config) : playing(false), dead(false), roleInited(false)
 {
 	m_gameId = config->getTableId();
 	m_gameName = config->getTableName();
@@ -326,7 +326,8 @@ bool GameGrail::waitForOne(int id, uint16_t proto_type, google::protobuf::Messag
 	
 	int attempts = 0;
 	boost::mutex::scoped_lock lock(m_mutex_for_wait);
-	while(attempts < m_maxAttempts && processing)
+
+	while(attempts < m_maxAttempts)
 	{
 		sendMessage(-1, proto_type, proto);
 		boost::system_time const timeout=boost::get_system_time()+ boost::posix_time::milliseconds(sec*1000);
@@ -345,7 +346,8 @@ bool GameGrail::waitForAll(uint16_t proto_types, void** proto_ptrs, int sec, boo
 	if(toResetReady){
 		resetReady();
 	}
-	while(attempts < m_maxAttempts && processing)
+	
+	while(attempts < m_maxAttempts)
 	{
 		for(int i = 0; i < m_maxPlayers; i++){
 			if(!m_ready[i]){
@@ -894,7 +896,7 @@ void GameGrail::GameRun()
 {
 	ztLoggerWrite(ZONE, e_Information, "[Table %d] %s created", m_gameId, m_gameName.c_str());
 	int error = 0;
-	while(processing)
+	while(true)
 	{		
 		try{
 			if (error > 3) {
@@ -902,6 +904,10 @@ void GameGrail::GameRun()
 				popGameState();
 			}
 
+			int nowPlayer = getGameNowPlayers();
+			if (nowPlayer == 0) {
+				break;
+			}
 			GrailState* currentState = topGameState();
 			if (currentState->state != STATE_WAIT_FOR_ENTER) {
 				ztLoggerWrite(ZONE, e_Information, "[Table %d] Enter %s", m_gameId, currentState->type());
@@ -1153,13 +1159,6 @@ void GameGrail::onUserLeave(string userID)
 			break;
 		}
 	}
-
-	for(PlayerContextList::iterator it = m_playerContexts.begin(); it != m_playerContexts.end(); it++)
-	{
-		if(it->second->isConnected())
-			return;
-	}
-	setDying();
 }
 
 void GameGrail::toProtoAs(int playerId, GameInfo& game_info)

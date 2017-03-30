@@ -3,7 +3,7 @@
 // game state define
 
 enum STATE{
-	STATE_FATAL_ERROR,
+	STATE_IDLE,
 	STATE_WAIT_FOR_ENTER,
 	STATE_SEAT_ARRANGE,	
 	STATE_LEADER_ELECTION,
@@ -159,6 +159,13 @@ public:
 	}
 	virtual int handle(GameGrail* engine) = 0;		
 	const char* type() const { return typeid(*this).name(); }
+};
+
+class StateIdle : public GrailState
+{
+public:
+	StateIdle() : GrailState(STATE_IDLE) {}
+	int handle(GameGrail* engine);
 };
 
 class StateWaitForEnter : public GrailState

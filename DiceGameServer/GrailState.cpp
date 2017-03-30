@@ -7,6 +7,12 @@
 #include "boost/date_time/posix_time/posix_time.hpp"
 #include "boost/format.hpp"
 
+int StateIdle::handle(GameGrail* engine)
+{
+	Sleep(60 * 1000);
+	return GE_SUCCESS;
+}
+
 
 int StateWaitForEnter::handle(GameGrail* engine)
 {
@@ -2323,9 +2329,6 @@ int StateGameOver::handle(GameGrail* engine)
 	DBConnection con = DBInstance.newConnection();
 	StatisticDAO statisticDAO(&con);
 	statisticDAO.insert(engine->m_tableLog);
-
-	engine->setDying();
-	Sleep(10000);
-	
+	engine->pushGameState(new StateIdle);
 	return GE_SUCCESS;
 }
