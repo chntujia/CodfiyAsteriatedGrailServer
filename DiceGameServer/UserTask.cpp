@@ -14,6 +14,7 @@ using namespace network;
 UserTask::~UserTask()
 {
 	ztLoggerWrite(ZONE, e_Information, "~UserTask[%s] deleted", m_userId.c_str() );
+	UserSessionManager::getInstance().RemoveUser(m_userId);
 	UserSessionManager::getInstance().RemoveUserById(m_iTmpId);
 	GameGrail* game = getGame();
 	if(game){
@@ -38,12 +39,6 @@ void UserTask::OnCheck()
 		SetQuit();
 		return;
 	}
-}
-
-void UserTask::OnQuit()
-{
-	UserSessionManager::getInstance().RemoveUser(m_userId);
-	zTCPTask::OnQuit();
 }
 
 GameGrail* UserTask::getGame()

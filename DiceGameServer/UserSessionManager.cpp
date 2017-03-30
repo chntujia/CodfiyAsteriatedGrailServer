@@ -3,7 +3,6 @@
 
 void UserSessionManager::AddUserById(uint32_t userTempId, UserSession_Ptr session)
 {
-	zMutex_scope_lock lock_guide(m_userIdMap_lock);	
 	pair<UserIdMap_Iter, bool> bPair =  m_userIdMap.insert(
 		std::pair<uint32_t, UserSession_Ptr>(userTempId, session));
 	if (bPair.second)
@@ -71,7 +70,6 @@ void UserSessionManager::trySendMessage(const string userId, uint16_t proto_type
 
 void UserSessionManager::doCmd()
 {
-	zMutex_scope_lock lock_guide(m_userIdMap_lock);	
 	for (UserIdMap_Iter iter = m_userIdMap.begin(); iter != m_userIdMap.end(); ++iter)
 	{
 		UserSession_Ptr sess =  iter->second;

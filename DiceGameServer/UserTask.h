@@ -49,7 +49,6 @@ public:
 	bool tryNotify(int id, int state, int step = 0, void* reply = NULL);
 	void Start();
 	void OnCheck();
-	void OnQuit();
 	void sendProto(uint16_t proto_type, google::protobuf::Message& proto);
 private:
 	void handleLogIn(LoginRequest* request);
