@@ -12,6 +12,7 @@ public:
 	void init(std::string hostname, std::string username, std::string password){
 		connection = new DBConnection(hostname, username, password);
 		userAccountDAO = new UserAccountDAO(connection);
+		StatisticDAO::initNextTableLogId(connection);
 	}
 
 	~DBServices(){
