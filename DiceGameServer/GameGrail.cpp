@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 
 #include <boost/bind.hpp>
 #include "GameGrail.h"
@@ -194,7 +194,7 @@ void TeamArea::setMorale(int color, int value)
         this->moraleBLUE = value;
 }
 
-GameGrail::GameGrail(GameGrailConfig *config) : playing(false), dead(false), roleInited(false)
+GameGrail::GameGrail(GameGrailConfig *config) : playing(false), roleInited(false), interrupted(false), discarded(false), gameover(false), dead(false)
 {
 	m_gameId = config->getTableId();
 	m_gameName = config->getTableName();
@@ -298,6 +298,9 @@ void GameGrail::sendMessageExcept(int id, uint16_t proto_type, google::protobuf:
 
 bool GameGrail::isReady(int id)
 {
+	if (interrupted) {
+		return true;
+	}
 	if(id == -1){
 		for(int i = 0; i < m_maxPlayers; i++){
 			if(!m_ready[i]){
@@ -313,17 +316,14 @@ bool GameGrail::isReady(int id)
 	return false;
 } 
 
-bool GameGrail::waitForOne(int id, uint16_t proto_type, google::protobuf::Message& proto, int sec, bool toResetReady)
+bool GameGrail::waitForOne(int id, uint16_t proto_type, google::protobuf::Message& proto, int sec)
 {
 	if(id < 0 || id >= m_maxPlayers){
-		ztLoggerWrite(ZONE, e_Error, "unvaliad player id: %d", id);
-		return false;
+		throw GE_INVALID_PLAYERID;
 	}
-	m_token = id;
-	if(toResetReady){
-		resetReady(id);
-	}	
-	
+
+	resetReady(id);
+	m_token = id;		
 	int attempts = 0;
 	boost::mutex::scoped_lock lock(m_mutex_for_wait);
 
@@ -331,21 +331,19 @@ bool GameGrail::waitForOne(int id, uint16_t proto_type, google::protobuf::Messag
 	{
 		sendMessage(-1, proto_type, proto);
 		boost::system_time const timeout=boost::get_system_time()+ boost::posix_time::milliseconds(sec*1000);
-		if(m_condition_for_wait.timed_wait(lock, timeout, boost::bind( &GameGrail::isReady, this, id )))
-			return true;
+		if (m_condition_for_wait.timed_wait(lock, timeout, boost::bind(&GameGrail::isReady, this, id))) {
+			return interrupted ? throw GE_INTERRUPTED : true;
+		}
 		attempts++;
 	}
 	return false;
 }
 
-bool GameGrail::waitForAll(uint16_t proto_types, void** proto_ptrs, int sec, bool toResetReady)
+bool GameGrail::waitForAll(uint16_t proto_types, void** proto_ptrs, int sec)
 {
 	m_token = -1;
 	int attempts = 0;
 	boost::mutex::scoped_lock lock(m_mutex_for_wait);
-	if(toResetReady){
-		resetReady();
-	}
 	
 	while(attempts < m_maxAttempts)
 	{
@@ -357,7 +355,7 @@ bool GameGrail::waitForAll(uint16_t proto_types, void** proto_ptrs, int sec, boo
 		}
 		boost::system_time const timeout=boost::get_system_time()+ boost::posix_time::milliseconds(sec*1000);
 		if(m_condition_for_wait.timed_wait(lock, timeout, boost::bind( &GameGrail::isReady, this, -1 ))){
-			return true;
+			return interrupted ? throw GE_INTERRUPTED : true;
 		}
 		attempts++;
 	}
@@ -366,9 +364,8 @@ bool GameGrail::waitForAll(uint16_t proto_types, void** proto_ptrs, int sec, boo
 
 bool GameGrail::falseNotify(int id)
 {
-	if (id == m_token) {
-		m_ready[id] = true;
-		m_playerContexts[id]->setBuf(NULL);
+	if (id == m_token || topGameState()->state == STATE_POLLING_DISCONNECTED) {
+		interrupted = true;
 		m_condition_for_wait.notify_one();
 		return true;
 	}
@@ -377,18 +374,18 @@ bool GameGrail::falseNotify(int id)
 
 bool GameGrail::tryNotify(int id, int state, int step, void* reply)
 {
-	if(id == m_token && state == topGameState()->state && step == topGameState()->step) {
-		m_ready[id] = true;
+	if(id == m_token && state == topGameState()->state && step == topGameState()->step) {		
 		if(reply){
 			m_playerContexts[id]->setBuf(reply);
+			m_ready[id] = true;
 		}
 		m_condition_for_wait.notify_one();
 		return true;
 	}
-	else if(m_token == -1 && state == topGameState()->state && step == topGameState()->step){
-		m_ready[id] = true;
+	else if(m_token == -1 && state == topGameState()->state && step == topGameState()->step){		
 		if(reply){
 			m_playerContexts[id]->setBuf(reply);
+			m_ready[id] = true;
 		}
 		if(isReady(-1)){
 			m_condition_for_wait.notify_one();
@@ -406,16 +403,16 @@ int GameGrail::getReply(int id, void* &reply)
 	if((iter=m_playerContexts.find(id)) == m_playerContexts.end()){
 		return GE_INVALID_PLAYERID;
 	} 
-	reply = iter->second->getBuf();
-	if(!reply){
+	if (!m_ready[id]) {
 		return GE_NO_REPLY;
-	}	
-	return GE_SUCCESS;
+	}
+	reply = iter->second->getBuf();
+	return reply ? GE_SUCCESS : GE_NO_REPLY;
 }
 
-//FIXME: ÏÖ½×¶ÎÖ»Ö§³ÖÒ²Ö»ĞèÖ§³ÖÒÔÏÂÇé¿ö£º
-//´ÓÅÆ¶Ñ¡¢»ù´¡×´Ì¬¡¢±ğÈËÊÖÅÆÒÆÈëÊÖÅÆ
-//ÊÖÅÆÒÆ³öÖÁÆúÅÆ¶Ñ¡¢»ù´¡×´Ì¬¡¢±ğÈËÊÖÀï¡¢¸ÇÅÆ
+//FIXME: ç°é˜¶æ®µåªæ”¯æŒä¹Ÿåªéœ€æ”¯æŒä»¥ä¸‹æƒ…å†µï¼š
+//ä»ç‰Œå †ã€åŸºç¡€çŠ¶æ€ã€åˆ«äººæ‰‹ç‰Œç§»å…¥æ‰‹ç‰Œ
+//æ‰‹ç‰Œç§»å‡ºè‡³å¼ƒç‰Œå †ã€åŸºç¡€çŠ¶æ€ã€åˆ«äººæ‰‹é‡Œã€ç›–ç‰Œ
 int GameGrail::setStateMoveCards(int srcOwner, int srcArea, int dstOwner, int dstArea, int howMany, vector< int > cards, HARM harm, bool isShown)
 {
 	PlayerEntity *src;
@@ -569,7 +566,7 @@ int GameGrail::setStateChangeMaxHand(int dstID, bool using_fixed, bool fixed, in
 int GameGrail::drawCardsFromPile(int howMany, vector< int > &cards)
 {	
 	int out[CARDBUF];
-	//ÅÆ¶ÑºÄÍê
+	//ç‰Œå †è€—å®Œ
 	if(GE_SUCCESS != pile->pop(howMany,out)){
 		int temp[CARDSUM];
 		int outPtr;
@@ -655,7 +652,7 @@ int GameGrail::setStateCheckBasicEffect()
 		pushGameState(new StateBeforeAction);
 		pushGameState(new StateBetweenWeakAndAction);
 	}
-	//ÖĞ¶¾ push timeline3 states here based on basicEffect
+	//ä¸­æ¯’ push timeline3 states here based on basicEffect
 	list<BasicEffect> basicEffects = player->getBasicEffect();
 	for(list<BasicEffect>::iterator it = basicEffects.begin(); it!=basicEffects.end(); it++)
 	{
@@ -737,7 +734,7 @@ int GameGrail::setStateTimeline1(int cardID, int dstID, int srcID, bool isActive
 	con->hitRate = RATE_NORMAL;
 	con->checkShield = true;
 
-	// °µÃğ
+	// æš—ç­
 	if(getCardByID(cardID)->getElement() == ELEMENT_DARKNESS){
 		con->hitRate = RATE_NOREATTACK;
 	}
@@ -806,7 +803,7 @@ int GameGrail::setStateTimeline3(int dstID, HARM harm)
 	pushGameState(new StateTimeline3(con));
 	return GE_SUCCESS;
 }
- //Áé»êÊõÊ¿-->¡¾Áé»êÁ´½Ó¡¿  added by Tony
+ //çµé­‚æœ¯å£«-->ã€çµé­‚é“¾æ¥ã€‘  added by Tony
 int GameGrail::setStateTimeline6(int dstID, HARM harm)
 {
 	CONTEXT_TIMELINE_6 *con = new CONTEXT_TIMELINE_6;
@@ -892,9 +889,21 @@ GameGrailPlayerContext* GameGrail::getPlayerContext(int id)
 	throw GE_INVALID_PLAYERID;
 }
 
+int GameGrail::getDisconnectedPlayerId()
+{
+	for (PlayerContextList::iterator it = m_playerContexts.begin(); it != m_playerContexts.end(); it++)
+	{
+		if (!it->second->isConnected()) {
+			return it->first;
+		}
+	}
+	return -1;
+}
+
 void GameGrail::GameRun()
 {
 	ztLoggerWrite(ZONE, e_Information, "[Table %d] %s created", m_gameId, m_gameName.c_str());
+	int mvpElected = false;
 	int error = 0;
 	while(true)
 	{		
@@ -908,11 +917,21 @@ void GameGrail::GameRun()
 			if (nowPlayer == 0) {
 				break;
 			}
+
 			GrailState* currentState = topGameState();
+			if (roleInited) {				
+				if (!gameover && !discarded && nowPlayer < m_maxPlayers && currentState->state != STATE_POLLING_DISCONNECTED) {
+					pushGameState(new StatePollingDisconnected(nowPlayer / 2));
+				}
+				if (gameover && !mvpElected) {
+					pushGameState(new StatePollingGameover);
+					mvpElected = true;
+				}
+			}
+			
 			if (currentState->state != STATE_WAIT_FOR_ENTER) {
 				ztLoggerWrite(ZONE, e_Information, "[Table %d] Enter %s", m_gameId, currentState->type());
 			}
-
 			int ret = currentState->handle(this);
 			if (ret != GE_SUCCESS && ret != GE_TIMEOUT && ret != GE_URGENT) {
 				ztLoggerWrite(ZONE, e_Error, "[Table %d] Handle returns error: %d", m_gameId, ret);
@@ -922,12 +941,16 @@ void GameGrail::GameRun()
 				error = 0;
 			}
 		}
-		catch(GrailError e)	{
-			ztLoggerWrite(ZONE, e_Error, "[Table %d] Handle throws error: %d", m_gameId, e);	
-			error++;
+		catch(GrailError e)	{				
+			if (e == GE_INTERRUPTED) {
+				interrupted = false;
+				continue;
+			}
+			ztLoggerWrite(ZONE, e_Error, "[Table %d] Handle throws error: %d", m_gameId, e);
 			if (e == GE_NO_STATE) {
 				break;
 			}
+			error++;
 		}
 		catch(std::exception const& e) {
 			ztLoggerWrite(ZONE, e_Error, "[Table %d] Handle throws error: %s", m_gameId, e.what());
@@ -1089,19 +1112,9 @@ void GameGrail::initPlayerEntities()
 
 void GameGrail::onPlayerEnter(int playerId)
 {
-	if(roleInited)
+	//StateWaitForEnter
+	if(!playing)
 	{
-		//FIXME: reconnect notice?
-		GameInfo game_info;
-		toProtoAs(playerId, game_info);
-		sendMessage(playerId, MSG_GAME, game_info);		
-	}
-	else if (playing) {
-		GameInfo game_info = room_info;
-		game_info.set_player_id(playerId);
-		sendMessage(playerId, MSG_GAME, game_info);
-	}
-	else {
 		GameInfo game_info;
 		Coder::roomInfo(m_playerContexts, teamA, teamB, game_info);
 		sendMessageExcept(playerId, MSG_GAME, game_info);
@@ -1109,6 +1122,23 @@ void GameGrail::onPlayerEnter(int playerId)
 		game_info.set_room_id(m_gameId);
 		game_info.set_player_id(playerId);
 		sendMessage(playerId, MSG_GAME, game_info);
+	}
+	//StateSeatArrange
+	else if (!roleInited) {
+		GameInfo game_info = room_info;
+		game_info.set_player_id(playerId);
+		sendMessage(playerId, MSG_GAME, game_info);
+		falseNotify(playerId);
+	}
+	//StateGameStart
+	else {		
+		Gossip gossip;		
+		Coder::noticeMsg("ç©å®¶" + std::to_string(playerId) + "å›æ¥äº†", gossip);
+		sendMessageExcept(playerId, MSG_GOSSIP, gossip);
+		GameInfo game_info;
+		toProtoAs(playerId, game_info);
+		sendMessage(playerId, MSG_GAME, game_info);
+		falseNotify(playerId);
 	}
 }
 
@@ -1152,6 +1182,9 @@ void GameGrail::onUserLeave(string userID)
 				teamA.remove(it->first);
 				teamB.remove(it->first);
 			}
+			else if(roleInited){
+				falseNotify(it->first);
+			}
 			Error error;
 			Coder::errorMsg(GE_DISCONNECTED, it->first, error);
 			sendMessage(-1, MSG_ERROR, error);	
@@ -1176,14 +1209,13 @@ void GameGrail::toProtoAs(int playerId, GameInfo& game_info)
 
 	game_info.set_pile(pile->get_size());
 	game_info.set_discard(discard->get_size());
-	game_info.set_is_started(true);
 
 	game_info.set_player_id(playerId);
 
 	for(int i = 0; i < m_maxPlayers; i++)
 	{
 		SinglePlayerInfo* player_info = game_info.add_player_infos();
-		//°´×ù´ÎË³Ğò
+		//æŒ‰åº§æ¬¡é¡ºåº
 		int id = room_info.player_infos(i).id();
 		PlayerEntity* player = getPlayerEntity(id);
 		player->toProto(player_info);

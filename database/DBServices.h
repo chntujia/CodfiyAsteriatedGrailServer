@@ -12,11 +12,12 @@ public:
 	void init(std::string hostname, std::string username, std::string password){
 		connection = new DBConnection(hostname, username, password);
 		userAccountDAO = new UserAccountDAO(connection);
-		StatisticDAO::initNextTableLogId(connection);
+		statisticDAO = new StatisticDAO(connection);
 	}
 
 	~DBServices(){
 		delete userAccountDAO;
+		delete statisticDAO;
 		delete connection;
 	}
 
@@ -25,6 +26,7 @@ public:
 	}
 
 	UserAccountDAO* userAccountDAO;
+	StatisticDAO* statisticDAO;
 private:
 	DBConnection* connection;
 };

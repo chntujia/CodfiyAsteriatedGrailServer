@@ -4,6 +4,8 @@
 
 enum STATE{
 	STATE_IDLE,
+	STATE_POLLING_DISCONNECTED,
+	STATE_POLLING_GAMEOVER,
 	STATE_WAIT_FOR_ENTER,
 	STATE_SEAT_ARRANGE,	
 	STATE_LEADER_ELECTION,
@@ -168,6 +170,24 @@ public:
 	int handle(GameGrail* engine);
 };
 
+int poll(string object, list<string> options, int threshold, GameGrail* engine);
+
+class StatePollingDisconnected : public GrailState
+{
+public:
+	StatePollingDisconnected(int threshold) : threshold(threshold), GrailState(STATE_POLLING_DISCONNECTED) {}
+	int handle(GameGrail* engine);
+private:
+	int threshold;
+};
+
+class StatePollingGameover : public GrailState
+{
+public:
+	StatePollingGameover() : GrailState(STATE_POLLING_GAMEOVER) {}
+	int handle(GameGrail* engine);
+};
+
 class StateWaitForEnter : public GrailState
 {
 public:
@@ -191,7 +211,7 @@ private:
 class StateLeaderElection : public GrailState
 {
 public:
-	StateLeaderElection(): GrailState(STATE_LEADER_ELECTION) {		
+	StateLeaderElection(): isSet(false), GrailState(STATE_LEADER_ELECTION) {		
 		for (int i = 0; i < MAXPLAYER; i++) {
 			messages[i] = &message;
 		}
@@ -199,6 +219,7 @@ public:
 	int handle(GameGrail* engine);
 
 private:
+	bool isSet;
 	vector< int > red;
 	vector< int > blue;
 	BecomeLeaderRequest * messages[MAXPLAYER];

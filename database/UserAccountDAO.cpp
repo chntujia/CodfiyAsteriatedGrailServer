@@ -1,4 +1,4 @@
-#include "UserAccountDAO.h"
+﻿#include "UserAccountDAO.h"
 #include <string>
 #include <mysql.h>
 #include <prepared_statement.h>
@@ -25,6 +25,13 @@ void UserAccountDAO::gameComplete(string username)
 void UserAccountDAO::gameStart(string username)
 {
 	PreparedStatement* update = connection->prepare("update user set PlayTimes=PlayTimes+1 where UserName=?");
+	update->setString(1, username);
+	connection->executeUpdate(update);
+}
+
+void UserAccountDAO::gameFlee(string username)
+{
+	PreparedStatement* update = connection->prepare("update user set FleeTimes=FleeTimes+1 where UserName=?");
 	update->setString(1, username);
 	connection->executeUpdate(update);
 }

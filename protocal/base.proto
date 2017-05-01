@@ -25,6 +25,8 @@ enum MessageType {
 	MSG_HEARTBEAT = 20;
 	MSG_BECOME_LEADER_REQ = 21;
 	MSG_BECOME_LEADER_REP = 22;
+	MSG_POLLING_REQ = 23;
+	MSG_POLLING_REP = 24;
 }
 
 // c -> s ×¢²áÇëÇó
@@ -136,7 +138,6 @@ message ReadyForGameRequest {
 	enum Type {
 		START_READY = 1;
 		CANCEL_START_REDAY = 2;
-		SEAT_READY = 3;
 	}
 	required Type type = 1;
 }
@@ -187,8 +188,7 @@ message GameInfo {
     optional uint32 blue_grail = 10;  // À¶¶ÓĞÇ±­Êı 
 	optional uint32 pile = 11;       // ÅÆ¶Ñ
 	optional uint32 discard = 12;    // ÆúÅÆÇø
-	optional bool is_started = 13 [default = false];    
-	repeated SinglePlayerInfo player_infos = 14;
+	repeated SinglePlayerInfo player_infos = 13;
 }
 
 // c -> s ÁÄÌì
@@ -215,4 +215,13 @@ message Gossip {
 }
 
 message HeartBeat {
+}
+
+message PollingRequest {
+    required string object = 1;
+	repeated string options = 2;
+}
+
+message PollingResponse {
+    optional uint32 option = 1;
 }

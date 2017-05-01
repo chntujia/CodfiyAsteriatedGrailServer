@@ -95,6 +95,10 @@ void* proto_decoder(const char* msg, uint16_t& type)
 		proto = new BecomeLeaderResponse();
 		proto->ParseFromArray(msg + SIZEOF_HEADER, header_ptr->len - SIZEOF_HEADER);
 		break;
+	case MSG_POLLING_REP:
+		proto = new PollingResponse();
+		proto->ParseFromArray(msg + SIZEOF_HEADER, header_ptr->len - SIZEOF_HEADER);
+		break;
 	default:
 		return NULL;
 		break;

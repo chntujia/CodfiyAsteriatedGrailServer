@@ -13,6 +13,93 @@ int StateIdle::handle(GameGrail* engine)
 	return GE_SUCCESS;
 }
 
+int poll(string object, list<string> options, int threshold, GameGrail* engine)
+{
+	engine->resetReady(-1);
+	PollingRequest msg;
+	Coder::pollingMsg(object, options, msg);
+	PollingRequest * messages[MAXPLAYER];
+	int maxPlayer = engine->getGameMaxPlayers();
+	for (int i = 0; i < maxPlayer; i++) {
+		messages[i] = &msg;
+	}
+	int opSize = msg.options_size();
+	vector<int> counter(opSize, 0);
+	engine->waitForAll(MSG_POLLING_REQ, (void**)messages);
+	void* reply;
+	for (int i = 0; i < maxPlayer; i++) {
+		if (GE_SUCCESS == engine->getReply(i, reply)) {
+			PollingResponse *respond = (PollingResponse*)reply;
+			int opt = respond->option();
+			if (opt >= 0 && opt < opSize) {
+				counter[opt]++;
+			}
+		}
+	}
+	int maxOpt = 0;
+	for (int i = 0; i < opSize; i++) {
+		if (counter[i] > counter[maxOpt]) {
+			maxOpt = i;
+		}
+	}
+	maxOpt = counter[maxOpt] > threshold ? maxOpt : -1;
+	return maxOpt;
+}
+
+int StatePollingDisconnected::handle(GameGrail* engine)
+{
+	if (engine->getGameNowPlayers() < engine->getGameMaxPlayers()) {
+		int opt = poll("这次忍了，下次还等吗？", list<string> {"当然是选择原谅她啊", "不等"}, threshold, engine);
+		if (opt == 0) {
+			Gossip gossip;
+			Coder::noticeMsg("绿色的光芒充斥着房间，大伙决定再给他一次机会", gossip);
+			engine->sendMessage(-1, MSG_GOSSIP, gossip);
+		}
+		else if (opt == 1) {
+			for (int i = 0; i < engine->getGameMaxPlayers(); i++) {
+				if (!engine->getPlayerContext(i)->isConnected()) {
+					DBInstance.userAccountDAO->gameFlee(engine->getUserId(i));
+				}
+			}
+			engine->discarded = true;
+
+			Gossip gossip;
+			Coder::noticeMsg("房间已废，可有序离开，愿外面没有始乱终弃的人", gossip);
+			engine->sendMessage(-1, MSG_GOSSIP, gossip);
+			engine->popGameState();
+			engine->pushGameState(new StateIdle);
+		}
+	}
+	else {
+		engine->popGameState();
+	}
+	return GE_SUCCESS;
+}
+
+int StatePollingGameover::handle(GameGrail* engine)
+{
+	list<string> names;
+	int maxPlayer = engine->getGameMaxPlayers();
+	for (int i = 0; i < maxPlayer; i++) {
+		names.push_back(engine->getPlayerContext(i)->getName());
+	}
+	int opt = poll("本场的mvp由你决定", names, maxPlayer / 2, engine);	
+	engine->m_tableLog.mvp = opt;
+	DBInstance.statisticDAO->insert(engine->m_tableLog);
+
+	Gossip gossip;
+	if (opt != -1) {
+		Coder::noticeMsg("恭喜" + engine->getPlayerContext(opt)->getName() + "成为本场的mvp", gossip);
+	}
+	else {
+		Coder::noticeMsg("没人获得过半的票，本场mvp空缺", gossip);
+	}
+	engine->sendMessage(-1, MSG_GOSSIP, gossip);
+
+	engine->popGameState();
+	engine->pushGameState(new StateIdle);	
+	return GE_SUCCESS;
+}
 
 int StateWaitForEnter::handle(GameGrail* engine)
 {
@@ -27,6 +114,7 @@ int StateWaitForEnter::handle(GameGrail* engine)
 
 int StateSeatArrange::handle(GameGrail* engine)
 {	
+	engine->playing = true;
 	int m_maxPlayers = engine->getGameMaxPlayers();
 	
 	// 直接将随机结果保存到engine中
@@ -54,11 +142,9 @@ int StateSeatArrange::handle(GameGrail* engine)
 		player_info->set_team(color);
 		player_info->set_nickname(engine->getPlayerContext(id)->getName());
 	}
-	game_info.set_is_started(true);
 
 	engine->sendMessage(-1, MSG_GAME, game_info);
-    engine->popGameState();
-	engine->playing = true;
+    engine->popGameState();	
 	return engine->setStateRoleStrategy();
 }
 
@@ -154,6 +240,10 @@ vector< int > StateSeatArrange::assignColor(int mode, int playerNum)
 
 int StateLeaderElection::handle(GameGrail* engine)
 {
+	if (!isSet) {
+		engine->resetReady(-1);
+		isSet = true;
+	}
 	void* reply;
 	int maxPlayer = engine->getGameMaxPlayers();
 	GameInfo& game_info = engine->room_info;
@@ -227,7 +317,6 @@ int StateRoleStrategyRandom::handle(GameGrail* engine)
 			return ret;
 		}
 	}
-	game_info.set_is_started(true);
 	engine->sendMessage(-1, MSG_GAME, game_info);
 	SAFE_DELETE(roles);
 	engine->initPlayerEntities();
@@ -238,13 +327,11 @@ int StateRoleStrategyRandom::handle(GameGrail* engine)
 
 int StateRoleStrategy31::handle(GameGrail* engine)
 {
-	Deck* roles;
-	int ret;
-	int options[3];
-	int playerNum = engine->getGameMaxPlayers();
+	int ret;	
 	if(!isSet){
-		roles = engine->initRoles();
-		for(int i = 0; i < playerNum; i++){	
+		int options[3];
+		Deck* roles = engine->initRoles();
+		for(int i = 0; i < engine->getGameMaxPlayers(); i++){
 			if(GE_SUCCESS == (ret = roles->pop(3, options))){
 				messages[i] = new RoleRequest;
 				Coder::askForRole(i, 3, options, *messages[i]);
@@ -253,6 +340,8 @@ int StateRoleStrategy31::handle(GameGrail* engine)
 				return ret;
 			}
 		}
+		engine->resetReady(-1);
+		SAFE_DELETE(roles);
 		isSet = true;
 	}
 	void* reply;
@@ -271,9 +360,7 @@ int StateRoleStrategy31::handle(GameGrail* engine)
 			Coder::roleNotice(i, chosen, game_info);
 		}
 	}
-	game_info.set_is_started(true);
-	engine->sendMessage(-1, MSG_GAME, game_info);
-	SAFE_DELETE(roles);
+	engine->sendMessage(-1, MSG_GAME, game_info);	
 	engine->initPlayerEntities();
 	engine->popGameState();
 	engine->pushGameState(new StateGameStart);
@@ -283,18 +370,18 @@ int StateRoleStrategy31::handle(GameGrail* engine)
 int StateRoleStrategyAny::handle(GameGrail* engine)
 {
 	int ret;
-	int playerNum = engine->getGameMaxPlayers();
 	if(!isSet){
-		for(int i = 0; i < playerNum; i++){	
+		for(int i = 0; i < engine->getGameMaxPlayers(); i++){
 			messages[i] = new RoleRequest;
 			Coder::askForRole(i, sizeof(SUMMON)/sizeof(int), SUMMON, *messages[i]);
 		}
+		engine->resetReady(-1);
 		isSet = true;
 	}
 	void* reply;
 	int chosen;
 	GameInfo& game_info = engine->room_info;
-	bool isTimeOut = !engine->waitForAll(network::MSG_ROLE_REQ, (void**)messages, true);
+	bool isTimeOut = !engine->waitForAll(network::MSG_ROLE_REQ, (void**)messages);
 			
 	for(int i = 0; i < engine->getGameMaxPlayers(); i++){	
 		if(GE_SUCCESS == (ret = engine->getReply(i, reply))){
@@ -306,7 +393,6 @@ int StateRoleStrategyAny::handle(GameGrail* engine)
 			Coder::roleNotice(i, i + 1, game_info);
 		}
 	}
-	game_info.set_is_started(true);
 	engine->sendMessage(-1, MSG_GAME, game_info);
 
 	engine->initPlayerEntities();
@@ -659,7 +745,7 @@ int StateRoleStrategyCM::handle(GameGrail* engine)
 
 int StateGameStart::handle(GameGrail* engine)
 {	
-	if(!isSet){
+	if(!isSet){		
 		ztLoggerWrite(ZONE, e_Information, "[Table %d] RoomInfo: %s", engine->getGameId(), engine->room_info.DebugString().c_str());
 		isSet=true;
 		engine->initDecks();
@@ -2313,6 +2399,8 @@ int StateShowHand::handle(GameGrail* engine)
 
 int StateGameOver::handle(GameGrail* engine)
 {	
+	engine->gameover = true;
+	Sleep(1000);
 	engine->m_tableLog.redScore = engine->getTeamArea()->getMorale(RED);
 	engine->m_tableLog.blueScore = engine->getTeamArea()->getMorale(BLUE);
 	engine->m_tableLog.redCupNum = engine->getTeamArea()->getCup(RED);
@@ -2326,9 +2414,5 @@ int StateGameOver::handle(GameGrail* engine)
 			engine->m_tableLog.tableDetail[i].result = RESULT_LOSE;
 		DBInstance.userAccountDAO->gameComplete(engine->m_tableLog.tableDetail[i].playerID);
 	}
-	DBConnection con = DBInstance.newConnection();
-	StatisticDAO statisticDAO(&con);
-	statisticDAO.insert(engine->m_tableLog);
-	engine->pushGameState(new StateIdle);
 	return GE_SUCCESS;
 }

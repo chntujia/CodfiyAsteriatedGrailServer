@@ -8,9 +8,8 @@
 class StatisticDAO: BaseDAO
 {
 public:
-	StatisticDAO(DBConnection* conn): BaseDAO(conn) {};
+	StatisticDAO(DBConnection* conn);
 	void insert(const tableLogData& data);	
-	static void initNextTableLogId(DBConnection* conn);
 private:
-	static boost::uint32_t nextTableLogId;
+	boost::uint32_t nextTableLogId;
 };

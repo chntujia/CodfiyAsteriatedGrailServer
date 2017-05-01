@@ -8,9 +8,8 @@
 using namespace std;
 using namespace sql;
 
-boost::uint32_t StatisticDAO::nextTableLogId = -1;
 
-void StatisticDAO::initNextTableLogId(DBConnection* connection)
+StatisticDAO::StatisticDAO(DBConnection* conn) : BaseDAO(conn)
 {
 	sql::PreparedStatement* query = connection->prepare("select MAX(id) from tableLog");
 	sql::ResultSet* res = connection->executeQuery(query);
@@ -24,10 +23,10 @@ void StatisticDAO::insert(const tableLogData& data)
 	switch (data.playerNums)
 	{
 		case 6:
-			insertRow = connection->prepare("insert into TableLog values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+			insertRow = connection->prepare("insert into TableLog values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 			break;
 		case 4:
-			insertRow = connection->prepare("insert into TableLog values(?,?,?,?,?,?,?,?,?,?,?,?,?,null,null)"); 
+			insertRow = connection->prepare("insert into TableLog values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,null,null)"); 
 			break;
 	}
 	insertRow->setInt(TABLELOG_COL_ID, logId);
@@ -39,6 +38,12 @@ void StatisticDAO::insert(const tableLogData& data)
 	insertRow->setInt(TABLELOG_COL_REDCUPNUM, data.redCupNum);
 	insertRow->setInt(TABLELOG_COL_BLUECUPNUM, data.blueCupNum);
 	insertRow->setString(TABLELOG_COL_CREATETIME, data.createTime);
+	if (data.mvp != -1) {
+		insertRow->setString(TABLELOG_COL_MVP, data.tableDetail[data.mvp].playerID);
+	}
+	else {
+		insertRow->setNull(TABLELOG_COL_MVP, 0);
+	}
 
 	for (int i = 0; i < data.playerNums; i++) {
 		ztLoggerWrite(ZONE, e_Debug, "player %d: %s", i, data.tableDetail[i].playerID.c_str());
