@@ -15,7 +15,7 @@ int MaoXian::v_buy(Action *action)
 	}
 	int gem = action->args(0);
 	int crystal = action->args(1);
-	if((gem==1 || gem==2) && crystal==0){
+	if(gem < 3 && crystal==0){
 		return GE_SUCCESS;
 	}
 	return GE_INVALID_ACTION;
