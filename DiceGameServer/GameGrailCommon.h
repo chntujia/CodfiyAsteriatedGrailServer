@@ -624,7 +624,6 @@ public:
     {
         cmd_req.set_cmd_type(CMD_RESPOND);
 		Command *cmd;
-
         list<ACTION_QUOTA>::iterator it;
         cmd = cmd_req.add_commands();
 		cmd->set_respond_id(network::RESPOND_ADDITIONAL_ACTION);
