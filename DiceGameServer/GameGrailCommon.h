@@ -10,9 +10,6 @@
 #include "action_respond.pb.h"
 
 #include <list>
-#if _MSC_VER >= 1600  
-#pragma execution_character_set("utf-8")  
-#endif
 using namespace boost::interprocess;
 using namespace network;
 using namespace std;
@@ -64,7 +61,6 @@ enum GrailError{
 	GE_NO_STATE,
 	GE_NO_CONTEXT,
 	GE_NO_REPLY,
-	GE_INTERRUPTED,
 	GE_NOT_SUPPORTED,
 	GE_PLAYER_FULL,
 	GE_GUEST_FULL,
@@ -684,6 +680,7 @@ public:
 			player_info = (SinglePlayerInfo*)&(game_info.player_infos(i));
 			if (player_info->id() == playerID)
 			{
+				player_info->set_max_hand(6);
 				player_info->set_role_id(roleID);
 				break;
 			}
@@ -760,19 +757,6 @@ public:
 	{
 		error.set_id(id);
 		error.set_dst_id(dstId);
-	}
-	static void pollingMsg(string object, list<string> options, PollingRequest& msg)
-	{
-		msg.set_object(object);
-		list<string>::iterator it;
-		for (it = options.begin(); it != options.end(); ++it)
-		{
-			msg.add_options(*it);
-		}
-	}
-	static void noticeMsg(string notice, Gossip& msg) {
-		msg.set_type(GOSSIP_NOTICE);
-		msg.set_txt(notice);
 	}
 };
 
