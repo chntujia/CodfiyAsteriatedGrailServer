@@ -10,6 +10,9 @@
 #include "action_respond.pb.h"
 
 #include <list>
+#if _MSC_VER >= 1600  
+#pragma execution_character_set("utf-8")  
+#endif
 using namespace boost::interprocess;
 using namespace network;
 using namespace std;
@@ -61,6 +64,7 @@ enum GrailError{
 	GE_NO_STATE,
 	GE_NO_CONTEXT,
 	GE_NO_REPLY,
+	GE_INTERRUPTED,
 	GE_NOT_SUPPORTED,
 	GE_PLAYER_FULL,
 	GE_GUEST_FULL,
@@ -624,6 +628,7 @@ public:
     {
         cmd_req.set_cmd_type(CMD_RESPOND);
 		Command *cmd;
+
         list<ACTION_QUOTA>::iterator it;
         cmd = cmd_req.add_commands();
 		cmd->set_respond_id(network::RESPOND_ADDITIONAL_ACTION);
@@ -679,8 +684,8 @@ public:
 			player_info = (SinglePlayerInfo*)&(game_info.player_infos(i));
 			if (player_info->id() == playerID)
 			{
-				player_info->set_max_hand(6);
 				player_info->set_role_id(roleID);
+				player_info->set_max_hand(6);	//目前没有起始上限不为6的角色,先随便改一下
 				break;
 			}
 		}
@@ -756,6 +761,19 @@ public:
 	{
 		error.set_id(id);
 		error.set_dst_id(dstId);
+	}
+	static void pollingMsg(string object, list<string> options, PollingRequest& msg)
+	{
+		msg.set_object(object);
+		list<string>::iterator it;
+		for (it = options.begin(); it != options.end(); ++it)
+		{
+			msg.add_options(*it);
+		}
+	}
+	static void noticeMsg(string notice, Gossip& msg) {
+		msg.set_type(GOSSIP_NOTICE);
+		msg.set_txt(notice);
 	}
 };
 
