@@ -28,11 +28,11 @@ bool DiceGameServer::serverInit()
 	}
 
 	//设置日志级别
-	ELogLevel level = getDebugLevel(ServerConfig::getInstance().m_strDebugLevel.c_str());
+	logLevel = getDebugLevel(ServerConfig::getInstance().m_strDebugLevel.c_str());
 	//ztLoggerInit("ChatServer.log",level);
 	char buffer[100];
 	sprintf(buffer, "%d.txt", time(NULL));
-	CZTLoger::Instance().SetFile(buffer,level);
+	CZTLoger::Instance().SetFile(buffer, logLevel);
 	
 	uint16_t usPort = ServerConfig::getInstance().m_sPort;
 	std::string dbHostname = ServerConfig::getInstance().m_db_hostname;
@@ -52,8 +52,8 @@ void DiceGameServer::reload()
 {
 	ztLoggerWrite(ZONE, e_Information, "DiceGameServer Reload Config ");
 	ServerConfig::getInstance().Reload();
-	ELogLevel level = getDebugLevel(ServerConfig::getInstance().m_strDebugLevel.c_str());
-	ztLoggerSetLevel(level);
+	logLevel = getDebugLevel(ServerConfig::getInstance().m_strDebugLevel.c_str());
+	ztLoggerSetLevel(logLevel);
 }
 
 bool DiceGameServer::grailInit()

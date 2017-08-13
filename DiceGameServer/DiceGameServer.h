@@ -26,8 +26,8 @@ public:
 
 	bool serviceCallback()
 	{
-		zNetService::serviceCallback();
-		GameManager::getInstance().Check();					
+		GameManager::getInstance().Check();
+		zNetService::serviceCallback();		
 		UserSessionManager::getInstance().doCmd();	
 		return true;
 	}

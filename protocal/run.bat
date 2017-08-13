@@ -7,7 +7,7 @@ for /f %%i in (proto_list) do (
 )
 del proto_list
 
-set export_path=..\..\gui\protocol\
+set export_path=..\..\CodfiyAsteriatedGrailClient\protocol\
 
 dir /b %proto_path%*.proto > proto_list
 for /f %%i in (proto_list) do ( 

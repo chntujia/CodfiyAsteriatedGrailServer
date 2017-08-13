@@ -14,12 +14,17 @@ public:
 		userAccountDAO = new UserAccountDAO(connection);
 		statisticDAO = new StatisticDAO(connection);
 	}
+
 	~DBServices(){
 		delete userAccountDAO;
 		delete statisticDAO;
 		delete connection;
-
 	}
+
+	DBConnection newConnection() {
+		return connection->clone();
+	}
+
 	UserAccountDAO* userAccountDAO;
 	StatisticDAO* statisticDAO;
 private:

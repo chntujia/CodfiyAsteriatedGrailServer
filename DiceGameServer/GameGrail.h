@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include <iostream>
 #include <list>
@@ -14,7 +14,6 @@
 using namespace std;
 
 #define GUEST 9
-
 
 class GrailState;
 class PlayerEntity;
@@ -144,27 +143,30 @@ class GameGrail : public Game
 {
 public:
 	bool playing;
-	bool processing;
-	bool dead;
 	bool roleInited;
+	bool interrupted;
+	bool discarded;
+	bool gameover;
+	bool dead;	
 
 	int m_roleStrategy;	
 	int m_seatMode;
 	bool m_silence;
 	int m_maxAttempts;
 	int m_firstPlayerID;
+	int m_currentPlayerID;
 	bool m_spMoDao;
 	bool m_firstExtension;
 	bool m_secondExtension;
 	GameInfo room_info;
 	list< int > teamA, teamB;
 	tableLogData m_tableLog;
+
 protected:
 	int m_roundId;
 	int m_maxPlayers;
 	int m_token;
-	int m_responseTime;
-	int m_currentPlayerID;
+	int m_responseTime;	
 
 	boost::mutex m_mutex_for_wait;
 	boost::condition_variable m_condition_for_wait;	
@@ -183,10 +185,6 @@ protected:
 public:
 	GameGrail(GameGrailConfig *config);
 	~GameGrail();
-	void setDying(){
-		processing = false;
-		m_maxAttempts = 0;
-	}
 	void sendMessage(int id, uint16_t proto_type, google::protobuf::Message& proto);
 	void sendMessageExcept(int id, uint16_t proto_type, google::protobuf::Message& proto);
 	int playerEnterIntoTable(string userId, string nickname, int& playerId);
@@ -214,17 +212,22 @@ public:
 	}
 	int getCurrentPlayerID() const { return m_currentPlayerID; }
 	PlayerEntity* getPlayerEntity(int id);
+	PlayerEntity* getNextPlayerEntity(PlayerEntity* current, int iterator, int step);
+	SinglePlayerInfo* getPlayerInfo(int id);
+	GameGrailPlayerContext* getPlayerContext(int id);
+
 	TeamArea* getTeamArea() { return m_teamArea; }
 
-	void resetReady(int id = -1){		
+	void resetReady(int id){		
 		if(id<-1 || id>m_maxPlayers){
 			return;
 		}
+		interrupted = false;
 		if(id == -1){
 			memset(m_ready, 0, sizeof(m_ready));
 		}
 		else{
-			memset(m_ready,1,sizeof(m_ready));
+			memset(m_ready, 1, sizeof(m_ready));
 			m_ready[id] = 0;
 		}
 	}	
@@ -266,6 +269,7 @@ public:
 			sendMessage(-1, MSG_GAME, update);
 		}		
 	}
+
 	bool isAllStartReady(){
 		for(PlayerContextList::iterator it = m_playerContexts.begin(); it != m_playerContexts.end(); it++)
 		{
@@ -274,25 +278,26 @@ public:
 		}
 		return true;
 	}
+
 	bool isReady(int id);
-	bool waitForOne(int id, uint16_t proto_type, google::protobuf::Message& proto, int timeout, bool resetReady = true);
-	bool waitForOne(int id, uint16_t proto_type, google::protobuf::Message& proto, bool toResetReady = true) { return waitForOne(id, proto_type, proto, m_responseTime, toResetReady); }
-	bool waitForAll(uint16_t proto_type, void** proto_ptrs, int timeout, bool toResetReady = true);
-	bool waitForAll(uint16_t proto_type, void** proto_ptrs, bool toResetReady = true) { return waitForAll(proto_type, proto_ptrs, m_responseTime, toResetReady); }
+	bool waitForOne(int id, uint16_t proto_type, google::protobuf::Message& proto, int timeout);
+	bool waitForOne(int id, uint16_t proto_type, google::protobuf::Message& proto) { return waitForOne(id, proto_type, proto, m_responseTime); }
+	bool waitForAll(uint16_t proto_type, void** proto_ptrs, int timeout);
+	bool waitForAll(uint16_t proto_type, void** proto_ptrs) { return waitForAll(proto_type, proto_ptrs, m_responseTime); }
+	bool falseNotify(int id);
 	bool tryNotify(int id, int state, int step = 0, void* reply = NULL);
 	int getReply(int id, void* &reply);
 	
 	int drawCardsFromPile(int howMany, vector< int > &cards);
-	//setStateÇ°×ºµÄº¯ÊıÉæ¼°²åÈë×´Ì¬
-	//µ×²ãAPIÔ­ÔòÉÏ²»Ö±½Óµ÷ÓÃ
+	//setStateå‰ç¼€çš„å‡½æ•°æ¶‰åŠæ’å…¥çŠ¶æ€
 	int setStateMoveCards(int srcOwner, int srcArea, int dstOwner, int dstArea, int howMany, vector< int > cards, HARM harm, bool isShown);
-	//ÒÆÅÆÖÁÊÖÉÏ£¬ĞèÌá¹©HARM£¬Èô´ÓÃşÅÆ¶ÑÉÏÒÆ³ö£¬cards²»ÓÃ¸³Öµ
+	//ç§»ç‰Œè‡³æ‰‹ä¸Šï¼Œéœ€æä¾›HARMï¼Œè‹¥ä»æ‘¸ç‰Œå †ä¸Šç§»å‡ºï¼Œcardsä¸ç”¨èµ‹å€¼
 	int setStateMoveCardsToHand(int srcOwner, int srcArea, int dstOwner, int dstArea, int howMany, vector< int > cards, HARM harm, bool isShown);
-	//ÉÏÃæµÄ¼ò»¯£¬ÒÆ1ÅÆÖÁÊÖÉÏ£¬ĞèÌá¹©HARM£¬Èô´ÓÃşÅÆ¶ÑÉÏÒÆ³ö£¬cards²»ÓÃ¸³Öµ
+	//ä¸Šé¢çš„ç®€åŒ–ï¼Œç§»1ç‰Œè‡³æ‰‹ä¸Šï¼Œéœ€æä¾›HARMï¼Œè‹¥ä»æ‘¸ç‰Œå †ä¸Šç§»å‡ºï¼Œcardsä¸ç”¨èµ‹å€¼
 	int setStateMoveOneCardToHand(int srcOwner, int srcArea, int dstOwner, int dstArea, int cardID, HARM harm, bool isShown);
-	//ÒÆÅÆÖÁÊÖÉÏÒÔÍâµÄµØ·½£¬ĞèÌá¹©Ô­Òò£¬Èô´ÓÃşÅÆ¶ÑÉÏÒÆ³ö£¬cards²»ÓÃ¸³Öµ
+	//ç§»ç‰Œè‡³æ‰‹ä¸Šä»¥å¤–çš„åœ°æ–¹ï¼Œéœ€æä¾›åŸå› ï¼Œè‹¥ä»æ‘¸ç‰Œå †ä¸Šç§»å‡ºï¼Œcardsä¸ç”¨èµ‹å€¼
 	int setStateMoveCardsNotToHand(int srcOwner, int srcArea, int dstOwner, int dstArea, int howMany, vector< int > cards, int doerID, int cause, bool isShown);
-	//ÉÏÃæµÄ¼ò»¯£¬ÒÆ1ÅÆÖÁÊÖÉÏÒÔÍâµÄµØ·½£¬ĞèÌá¹©Ô­Òò£¬Èô´ÓÃşÅÆ¶ÑÉÏÒÆ³ö£¬cards²»ÓÃ¸³Öµ
+	//ä¸Šé¢çš„ç®€åŒ–ï¼Œç§»1ç‰Œè‡³æ‰‹ä¸Šä»¥å¤–çš„åœ°æ–¹ï¼Œéœ€æä¾›åŸå› ï¼Œè‹¥ä»æ‘¸ç‰Œå †ä¸Šç§»å‡ºï¼Œcardsä¸ç”¨èµ‹å€¼
 	int setStateMoveOneCardNotToHand(int srcOwner, int srcArea, int dstOwner, int dstArea, int cardID, int doerID, int cause, bool isShown);
 
 	int setStateUseCard(int cardID, int dstID, int srcID, bool stay = false, bool realCard = true);
@@ -330,8 +335,7 @@ public:
 	void toProtoAs(int playerId, GameInfo& game_info);
 	bool isTableFull() { return getGameNowPlayers() >= m_maxPlayers; }	
 	tableLogData getTableLog(){ return m_tableLog; }
-protected:	
+protected:
+	int getDisconnectedPlayerId();
 	void GameRun();  
-	void kickOffNotConnectedPlayers();
-	void updateTableStatusMessage();
 };

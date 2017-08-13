@@ -13,7 +13,8 @@ using namespace network;
 
 UserTask::~UserTask()
 {
-	ztLoggerWrite(ZONE, e_Debug, "~UserTask[%s] deleted", m_userId.c_str() );
+	ztLoggerWrite(ZONE, e_Information, "~UserTask[%s] deleted", m_userId.c_str() );
+	UserSessionManager::getInstance().RemoveUser(m_userId);
 	UserSessionManager::getInstance().RemoveUserById(m_iTmpId);
 	GameGrail* game = getGame();
 	if(game){
@@ -34,16 +35,10 @@ void UserTask::OnCheck()
 	time_t tmNow  = time(NULL);
 	if (tmNow - m_activeTime > m_iCheckTime)
 	{	
-		ztLoggerWrite(ZONE,e_Debug, "OnCheck[%s]: heartbeat timeout,be kicked off ", m_userId.c_str());
+		ztLoggerWrite(ZONE, e_Information, "OnCheck[%s]: heartbeat timeout,be kicked off ", m_userId.c_str());
 		SetQuit();
 		return;
 	}
-}
-
-void UserTask::OnQuit()
-{
-	UserSessionManager::getInstance().RemoveUser(m_userId);
-	zTCPTask::OnQuit();
 }
 
 GameGrail* UserTask::getGame()
@@ -88,140 +83,156 @@ bool UserTask::cmdMsgParse(const char *pstrMsg, const uint32_t nCmdLen)
 		
 		m_activeTime = time(NULL);
 
-#ifdef Debug
-		ztLoggerWrite(ZONE, e_Debug, "[%s]Receive: type: %d,\n%s", m_userId.c_str(), type, proto->DebugString().c_str());
-#endif		
+
+		ztLoggerWrite(ZONE, e_Information, "[%s]Receive: type: %d,\n%s", m_userId.c_str(), type, proto->DebugString().c_str());
 		
-		switch(type)
+		
+		switch (type)
 		{
 		case MSG_HEARTBEAT:
-			{
-				HeartBeat heartbeat;
-				sendProto(MSG_HEARTBEAT, heartbeat);
-				break;
-			}
+		{
+			HeartBeat heartbeat;
+			sendProto(MSG_HEARTBEAT, heartbeat);
+			break;
+		}
 		case MSG_LOGIN_REQ:
-			{
-				handleLogIn((LoginRequest*)proto);				
-				delete proto;
-				break;
-			}
+		{
+			handleLogIn((LoginRequest*)proto);
+			delete proto;
+			break;
+		}
 		//创建房间
 		case MSG_CREATE_ROOM_REQ:
-			{
-				handleCreateRoom((CreateRoomRequest*)proto);
-				delete proto;
-				break;
-			}
+		{
+			handleCreateRoom((CreateRoomRequest*)proto);
+			delete proto;
+			break;
+		}
 		//进入房间
 		case MSG_ENTER_ROOM_REQ:
-			{					
-				handleEnterRoom((EnterRoomRequest*)proto, false);
-				delete proto;    // 如果不需要tryNotify或者tryNotify不带reply的话，释放message对象，这一步相当重要
-				break;	
-			}
+		{
+			handleEnterRoom((EnterRoomRequest*)proto, false);
+			delete proto;    // 如果不需要tryNotify或者tryNotify不带reply的话，释放message对象，这一步相当重要
+			break;
+		}
 		case MSG_LEAVE_ROOM_REQ:
-			{
-				handleLeaveRoom((LeaveRoomRequest*)proto);
-				delete proto;
-				break;
-			}
+		{
+			handleLeaveRoom((LeaveRoomRequest*)proto);
+			delete proto;
+			break;
+		}
 		case MSG_ROOMLIST_REQ:
-			{
-				handleRoomList((RoomListRequest*)proto);					
-				delete proto;    // 如果不需要tryNotify或者tryNotify不带reply的话，释放message对象，这一步相当重要
-				break;	
-			}
+		{
+			handleRoomList((RoomListRequest*)proto);
+			delete proto;    // 如果不需要tryNotify或者tryNotify不带reply的话，释放message对象，这一步相当重要
+			break;
+		}
 		case MSG_JOIN_TEAM_REQ:
-			{
-				handleJoinTeam((JoinTeamRequest*)proto);		
-				delete proto;
-				break;
-			}
+		{
+			handleJoinTeam((JoinTeamRequest*)proto);
+			delete proto;
+			break;
+		}
+		case MSG_BECOME_LEADER_REP:
+		{
+			handleBecomeLeader((BecomeLeaderResponse*)proto);
+			break;
+		}
 		case MSG_READY_GAME_REQ:
-			{
-				handleReadyGame((ReadyForGameRequest*)proto);					
-				delete proto;    // 如果不需要tryNotify或者tryNotify不带reply的话，释放message对象，这一步相当重要
-				break;	
-			}
+		{
+			handleReadyGame((ReadyForGameRequest*)proto);
+			delete proto;    // 如果不需要tryNotify或者tryNotify不带reply的话，释放message对象，这一步相当重要
+			break;
+		}
 		case MSG_PICK_BAN:
-			{
-				PickBan* pick = (PickBan*)proto;
-				GameGrail* game = getGame();
-				if(!game){
-					delete proto;
-					break;
-				}
-				if(game->m_roleStrategy == ROLE_STRATEGY_31 && pick->is_pick()){
-					tryNotify(m_playerId, STATE_ROLE_STRATEGY_31, 0, pick);
-				}
-				else if(game->m_roleStrategy == ROLE_STRATEGY_ANY && pick->is_pick()){
-					tryNotify(m_playerId, STATE_ROLE_STRATEGY_ANY, 0, pick);
-				}
-				else if(game->m_roleStrategy == ROLE_STRATEGY_BP) {
-					tryNotify(m_playerId, STATE_ROLE_STRATEGY_BP, 0, pick);
-				}
-				break;
-			}
-		case MSG_ACTION:
-			{
-				Action *action = (Action*)proto;
-				// 行动
-				tryNotify(m_playerId, STATE_ACTION_PHASE, 0, action);
-				break;
-			}
-		case MSG_RESPOND:
-			{
-				Respond* respond = (Respond*)proto;
-				switch(respond->respond_id())
-				{
-				case RESPOND_REPLY_ATTACK:
-					tryNotify(m_playerId, STATE_ATTACKED, 0, respond);
-					break;
-				case RESPOND_DISCARD:
-					tryNotify(m_playerId, STATE_REQUEST_HAND, 0, respond);
-					break;
-				case RESPOND_DISCARD_COVER:
-					tryNotify(m_playerId, STATE_REQUEST_COVER, 0, respond);
-					break;
-				case RESPOND_BULLET:
-					tryNotify(m_playerId, STATE_MISSILED, 0, respond);
-					break;
-				case RESPOND_WEAKEN:
-					tryNotify(m_playerId, STATE_WEAKEN, 0, respond);
-					break;
-				case RESPOND_ADDITIONAL_ACTION:
-					tryNotify(m_playerId, STATE_ADDITIONAL_ACTION, 0, respond);
-					break;
-				case RESPOND_HEAL:
-					tryNotify(m_playerId, STATE_ASK_FOR_CROSS, 0, respond);
-					break;			
-				case WEI_LI_CI_FU:
-					QiDao::WeiLiCiFuParse(this, m_playerId, proto);
-					break;
-				case JI_ANG_KUANG_XIANG_QU:
-				case JI_ANG_KUANG_XIANG_QU_2:
-				case SHENG_LI_JIAO_XIANG_SHI:
-				case SHENG_LI_JIAO_XIANG_SHI_2:
-					ShiRen::ShiRenParse(this, m_playerId, proto);
-					break;
-				default:
-					//尝试从角色的cmdMsgParse里找匹配
-					GameGrail* game = getGame();
-					if(!game || game->getPlayerEntity(m_playerId)->cmdMsgParse(this, type, proto) == false){
-						ztLoggerWrite(ZONE, e_Error, "[%s]Received undefine MSG_RESPOND:\n%s", m_userId.c_str(), proto->DebugString().c_str());
-						delete proto;
-					}
-				}		
-				break;
-			}
-		case MSG_TALK:
-			{
-				Talk* talk = (Talk*) proto;
-				player_talk(getGame(), m_playerId, talk);
+		{
+			PickBan* pick = (PickBan*)proto;
+			GameGrail* game = getGame();
+			if (!game) {
 				delete proto;
 				break;
 			}
+			if (game->m_roleStrategy == ROLE_STRATEGY_31 && pick->is_pick()) {
+				tryNotify(m_playerId, STATE_ROLE_STRATEGY_31, 0, pick);
+			}
+			else if (game->m_roleStrategy == ROLE_STRATEGY_ANY && pick->is_pick()) {
+				tryNotify(m_playerId, STATE_ROLE_STRATEGY_ANY, 0, pick);
+			}
+			else if (game->m_roleStrategy == ROLE_STRATEGY_BP) {
+				tryNotify(m_playerId, STATE_ROLE_STRATEGY_BP, 0, pick);
+			}
+			else if (game->m_roleStrategy == ROLE_STRATEGY_CM) {
+				tryNotify(m_playerId, STATE_ROLE_STRATEGY_CM, 0, pick);
+			}
+			break;
+		}
+		case MSG_ACTION:
+		{
+			Action *action = (Action*)proto;
+			// 行动
+			tryNotify(m_playerId, STATE_ACTION_PHASE, 0, action);
+			break;
+		}
+		case MSG_RESPOND:
+		{
+			Respond* respond = (Respond*)proto;
+			switch (respond->respond_id())
+			{
+			case RESPOND_REPLY_ATTACK:
+				tryNotify(m_playerId, STATE_ATTACKED, 0, respond);
+				break;
+			case RESPOND_DISCARD:
+				tryNotify(m_playerId, STATE_REQUEST_HAND, 0, respond);
+				break;
+			case RESPOND_DISCARD_COVER:
+				tryNotify(m_playerId, STATE_REQUEST_COVER, 0, respond);
+				break;
+			case RESPOND_BULLET:
+				tryNotify(m_playerId, STATE_MISSILED, 0, respond);
+				break;
+			case RESPOND_WEAKEN:
+				tryNotify(m_playerId, STATE_WEAKEN, 0, respond);
+				break;
+			case RESPOND_ADDITIONAL_ACTION:
+				tryNotify(m_playerId, STATE_ADDITIONAL_ACTION, 0, respond);
+				break;
+			case RESPOND_HEAL:
+				tryNotify(m_playerId, STATE_ASK_FOR_CROSS, 0, respond);
+				break;
+			case WEI_LI_CI_FU:
+				QiDao::WeiLiCiFuParse(this, m_playerId, proto);
+				break;
+			case JI_ANG_KUANG_XIANG_QU:
+			case JI_ANG_KUANG_XIANG_QU_2:
+			case SHENG_LI_JIAO_XIANG_SHI:
+			case SHENG_LI_JIAO_XIANG_SHI_2:
+				ShiRen::ShiRenParse(this, m_playerId, proto);
+				break;
+			default:
+				//尝试从角色的cmdMsgParse里找匹配
+				GameGrail* game = getGame();
+				if (!game || game->getPlayerEntity(m_playerId)->cmdMsgParse(this, type, proto) == false) {
+					ztLoggerWrite(ZONE, e_Error, "[%s]Received undefine MSG_RESPOND:\n%s", m_userId.c_str(), proto->DebugString().c_str());
+					delete proto;
+				}
+			}
+			break;
+		}
+		case MSG_TALK:
+		{
+			Talk* talk = (Talk*)proto;
+			player_talk(getGame(), m_playerId, talk);
+			delete proto;
+			break;
+		}
+		case MSG_POLLING_REP:
+		{
+			GameGrail*game = getGame();
+			if (game) {
+				tryNotify(m_playerId, game->gameover ? STATE_POLLING_GAMEOVER : STATE_POLLING_DISCONNECTED, 0, proto);
+			}
+			break;
+		}
 		default:
 			ztLoggerWrite(ZONE, e_Error, "[%s]Received undefine MSG_TYPE: type:%d,\n To proto: %s", m_userId.c_str(), type, proto->DebugString().c_str());
 			delete proto;
@@ -267,16 +278,18 @@ void UserTask::handleLogIn(LoginRequest* req)
 
 void UserTask::handleCreateRoom(CreateRoomRequest* req)
 {
-	switch(m_userType){
+	if (logLevel != e_Debug) {
+		switch (m_userType) {
 		case STATUS_GUEST:
-        case STATUS_NORMAL:
-			if(req->sp_mo_dao() || req->role_strategy() == ROLE_STRATEGY_BP){
+		case STATUS_NORMAL:
+			if (req->sp_mo_dao() || req->role_strategy() == ROLE_STRATEGY_BP || req->role_strategy() == ROLE_STRATEGY_CM) {
 				Error error;
 				Coder::errorMsg(GE_VIP_ONLY, -1, error);
 				sendProto(MSG_ERROR, error);
 				return;
 			}
 			break;
+		}
 	}
 	int tableId = GameManager::getInstance().createGame(req);
 	EnterRoomRequest enter_room;
@@ -340,21 +353,18 @@ void UserTask::handleRoomList(RoomListRequest* req)
 
 void UserTask::handleReadyGame(ReadyForGameRequest* req)
 {
-	switch(req->type())
+	switch (req->type())
 	{
 	case ReadyForGameRequest_Type_START_READY:
 	case ReadyForGameRequest_Type_CANCEL_START_REDAY:
-		{
-			int ret = GameManager::getInstance().setPlayerReady(m_tableId, m_playerId, req);
-			if (ret != GE_SUCCESS){
-				ztLoggerWrite(ZONE, e_Error, "UserTask::cmdMsgParse() userId [%s] cannot get ready. Table %d. Ret: %d", 
-					m_userId.c_str(), m_tableId, ret);
-			}		
+	{
+		int ret = GameManager::getInstance().setPlayerReady(m_tableId, m_playerId, req);
+		if (ret != GE_SUCCESS) {
+			ztLoggerWrite(ZONE, e_Error, "UserTask::cmdMsgParse() userId [%s] cannot get ready. Table %d. Ret: %d",
+				m_userId.c_str(), m_tableId, ret);
 		}
-		break;
-	case ReadyForGameRequest_Type_SEAT_READY:
-		tryNotify(m_playerId, STATE_SEAT_ARRANGE);
-		break;
+	}
+	break;
 	}
 }
 
@@ -366,6 +376,17 @@ void UserTask::handleJoinTeam(JoinTeamRequest* req)
 	}
 	else
 		ztLoggerWrite(ZONE, e_Warning, "UserTask::cmdMsgParse() userId [%s] cannot join team. Table %d.", 
+					m_userId.c_str(), m_tableId);
+}
+
+void UserTask::handleBecomeLeader(BecomeLeaderResponse* res)
+{
+	GameGrail* game = getGame();
+	if(game){
+		tryNotify(m_playerId, STATE_LEADER_ELECTION, 0, res);
+	}
+	else
+		ztLoggerWrite(ZONE, e_Warning, "UserTask::cmdMsgParse() userId [%s] cannot become leader. Table %d.", 
 					m_userId.c_str(), m_tableId);
 }
 

@@ -1,6 +1,6 @@
 // Protocol Buffers - Google's data interchange format
 // Copyright 2008 Google Inc.  All rights reserved.
-// http://code.google.com/p/protobuf/
+// https://developers.google.com/protocol-buffers/
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are
@@ -41,14 +41,18 @@
 
 #include <google/protobuf/stubs/common.h>
 
+
 namespace google {
 namespace protobuf {
-
+  class Arena;
 namespace io {
   class CodedInputStream;
   class CodedOutputStream;
   class ZeroCopyInputStream;
   class ZeroCopyOutputStream;
+}
+namespace internal {
+  class WireFormatLite;
 }
 
 // Interface to light weight protocol messages.
@@ -77,7 +81,7 @@ namespace io {
 class LIBPROTOBUF_EXPORT MessageLite {
  public:
   inline MessageLite() {}
-  virtual ~MessageLite();
+  virtual ~MessageLite() {}
 
   // Basic Operations ------------------------------------------------
 
@@ -87,6 +91,27 @@ class LIBPROTOBUF_EXPORT MessageLite {
   // Construct a new instance of the same type.  Ownership is passed to the
   // caller.
   virtual MessageLite* New() const = 0;
+
+  // Construct a new instance on the arena. Ownership is passed to the caller
+  // if arena is a NULL. Default implementation for backwards compatibility.
+  virtual MessageLite* New(::google::protobuf::Arena* arena) const;
+
+  // Get the arena, if any, associated with this message. Virtual method
+  // required for generic operations but most arena-related operations should
+  // use the GetArenaNoVirtual() generated-code method. Default implementation
+  // to reduce code size by avoiding the need for per-type implementations when
+  // types do not implement arena support.
+  virtual ::google::protobuf::Arena* GetArena() const { return NULL; }
+
+  // Get a pointer that may be equal to this message's arena, or may not be. If
+  // the value returned by this method is equal to some arena pointer, then this
+  // message is on that arena; however, if this message is on some arena, this
+  // method may or may not return that arena's pointer. As a tradeoff, this
+  // method may be more efficient than GetArena(). The intent is to allow
+  // underlying representations that use e.g. tagged pointers to sometimes store
+  // the arena pointer directly, and sometimes in a more indirect way, and allow
+  // a fastpath comparison against the arena pointer when it's easy to obtain.
+  virtual void* GetMaybeArenaPointer() const { return GetArena(); }
 
   // Clear all fields of the message and set them to their default values.
   // Clear() avoids freeing memory, assuming that any memory allocated
@@ -109,11 +134,13 @@ class LIBPROTOBUF_EXPORT MessageLite {
 
   // Parsing ---------------------------------------------------------
   // Methods for parsing in protocol buffer format.  Most of these are
-  // just simple wrappers around MergeFromCodedStream().
+  // just simple wrappers around MergeFromCodedStream().  Clear() will be called
+  // before merging the input.
 
-  // Fill the message with a protocol buffer parsed from the given input
-  // stream.  Returns false on a read error or if the input is in the
-  // wrong format.
+  // Fill the message with a protocol buffer parsed from the given input stream.
+  // Returns false on a read error or if the input is in the wrong format.  A
+  // successful return does not indicate the entire input is consumed, ensure
+  // you call ConsumedEntireMessage() to check that if applicable.
   bool ParseFromCodedStream(io::CodedInputStream* input);
   // Like ParseFromCodedStream(), but accepts messages that are missing
   // required fields.
@@ -132,7 +159,11 @@ class LIBPROTOBUF_EXPORT MessageLite {
   // missing required fields.
   bool ParsePartialFromBoundedZeroCopyStream(io::ZeroCopyInputStream* input,
                                              int size);
-  // Parse a protocol buffer contained in a string.
+  // Parses a protocol buffer contained in a string. Returns true on success.
+  // This function takes a string in the (non-human-readable) binary wire
+  // format, matching the encoding output by MessageLite::SerializeToString().
+  // If you'd like to convert a human-readable string into a protocol buffer
+  // object, see google::protobuf::TextFormat::ParseFromString().
   bool ParseFromString(const string& data);
   // Like ParseFromString(), but accepts messages that are missing
   // required fields.
@@ -210,6 +241,9 @@ class LIBPROTOBUF_EXPORT MessageLite {
   // Computes the serialized size of the message.  This recursively calls
   // ByteSize() on all embedded messages.  If a subclass does not override
   // this, it MUST override SetCachedSize().
+  //
+  // ByteSize() is generally linear in the number of fields defined for the
+  // proto.
   virtual int ByteSize() const = 0;
 
   // Serializes the message without recomputing the size.  The message must
@@ -218,10 +252,11 @@ class LIBPROTOBUF_EXPORT MessageLite {
   virtual void SerializeWithCachedSizes(
       io::CodedOutputStream* output) const = 0;
 
-  // Like SerializeWithCachedSizes, but writes directly to *target, returning
-  // a pointer to the byte immediately after the last byte written.  "target"
-  // must point at a byte array of at least ByteSize() bytes.
-  virtual uint8* SerializeWithCachedSizesToArray(uint8* target) const;
+  // A version of SerializeWithCachedSizesToArray, below, that does
+  // not guarantee deterministic serialization.
+  virtual uint8* SerializeWithCachedSizesToArray(uint8* target) const {
+    return InternalSerializeWithCachedSizesToArray(false, target);
+  }
 
   // Returns the result of the last call to ByteSize().  An embedded message's
   // size is needed both to serialize it (because embedded messages are
@@ -236,7 +271,22 @@ class LIBPROTOBUF_EXPORT MessageLite {
   // method.)
   virtual int GetCachedSize() const = 0;
 
+  // Functions below here are not part of the public interface.  It isn't
+  // enforced, but they should be treated as private, and will be private
+  // at some future time.  Unfortunately the implementation of the "friend"
+  // keyword in GCC is broken at the moment, but we expect it will be fixed.
+
+  // Like SerializeWithCachedSizes, but writes directly to *target, returning
+  // a pointer to the byte immediately after the last byte written.  "target"
+  // must point at a byte array of at least ByteSize() bytes.  If deterministic
+  // is true then we use deterministic serialization, e.g., map keys are sorted.
+  // FOR INTERNAL USE ONLY!
+  virtual uint8* InternalSerializeWithCachedSizesToArray(bool deterministic,
+                                                         uint8* target) const;
+
  private:
+  friend class internal::WireFormatLite;
+
   GOOGLE_DISALLOW_EVIL_CONSTRUCTORS(MessageLite);
 };
 

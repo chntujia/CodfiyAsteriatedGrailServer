@@ -23,7 +23,6 @@ private:
 	UserMap m_userMap;
 	UserIdMap m_userIdMap;
 	zMutex m_userMap_lock;
-	zMutex m_userIdMap_lock;
 	int32_t m_userIdSeq;
 
 public:

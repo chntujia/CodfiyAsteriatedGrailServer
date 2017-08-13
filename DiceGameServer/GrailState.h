@@ -3,13 +3,17 @@
 // game state define
 
 enum STATE{
-	STATE_FATAL_ERROR,
+	STATE_IDLE,
+	STATE_POLLING_DISCONNECTED,
+	STATE_POLLING_GAMEOVER,
 	STATE_WAIT_FOR_ENTER,
 	STATE_SEAT_ARRANGE,	
+	STATE_LEADER_ELECTION,
 	STATE_ROLE_STRATEGY_RANDOM,
 	STATE_ROLE_STRATEGY_31,
 	STATE_ROLE_STRATEGY_ANY,
 	STATE_ROLE_STRATEGY_BP,
+	STATE_ROLE_STRATEGY_CM,	
 	STATE_GAME_START,
 	STATE_BEFORE_TURN_BEGIN,
 	STATE_TURN_BEGIN,
@@ -146,8 +150,8 @@ class GrailState
 public:
 	const int state;
 	int step;
-	int iterator;
-	GrailState(int s): state(s), step(STEP_INIT), iterator(0), errorCount(0) {}
+	int iterator;  //跟当前回合玩家的距离，0代表就是当前回合的玩家
+	GrailState(int s): state(s), step(STEP_INIT), iterator(0) {}
 	virtual ~GrailState() {}
 	void moveIterator(int ret) {
 		if(GE_SUCCESS == ret || STEP_DONE == step){
@@ -155,35 +159,71 @@ public:
 			step = STEP_INIT;
 		}
 	}
-	virtual int handle(GameGrail* engine) = 0;	
-	int getErrorCount() { return errorCount; }
-	void increaseErrorCount() { errorCount++; }
+	virtual int handle(GameGrail* engine) = 0;		
+	const char* type() const { return typeid(*this).name(); }
+};
+
+class StateIdle : public GrailState
+{
+public:
+	StateIdle() : GrailState(STATE_IDLE) {}
+	int handle(GameGrail* engine);
+};
+
+int poll(string object, list<string> options, int threshold, GameGrail* engine);
+
+class StatePollingDisconnected : public GrailState
+{
+public:
+	StatePollingDisconnected(int threshold) : threshold(threshold), GrailState(STATE_POLLING_DISCONNECTED) {}
+	int handle(GameGrail* engine);
 private:
-	int errorCount;
+	int threshold;
+};
+
+class StatePollingGameover : public GrailState
+{
+public:
+	StatePollingGameover() : GrailState(STATE_POLLING_GAMEOVER) {}
+	int handle(GameGrail* engine);
 };
 
 class StateWaitForEnter : public GrailState
 {
 public:
-	StateWaitForEnter(): GrailState(STATE_WAIT_FOR_ENTER), isSet(false){}
+	StateWaitForEnter(): GrailState(STATE_WAIT_FOR_ENTER){}
 	int handle(GameGrail* engine);
-private:
-	bool isSet;
 };
 
 class StateSeatArrange : public GrailState
 {
 public:
-	StateSeatArrange(): GrailState(STATE_SEAT_ARRANGE), isSet(false){}
+	StateSeatArrange(): GrailState(STATE_SEAT_ARRANGE){}
 	int handle(GameGrail* engine);
 private:
 	void assignTeam(GameGrail* engine);
 	vector< int > assignColor(int mode, int playerNum);
 
+	vector< int > red;
+	vector< int > blue;
+};
+
+class StateLeaderElection : public GrailState
+{
+public:
+	StateLeaderElection(): isSet(false), GrailState(STATE_LEADER_ELECTION) {		
+		for (int i = 0; i < MAXPLAYER; i++) {
+			messages[i] = &message;
+		}
+	}
+	int handle(GameGrail* engine);
+
+private:
 	bool isSet;
 	vector< int > red;
 	vector< int > blue;
-	GameInfo* messages[MAXPLAYER];
+	BecomeLeaderRequest * messages[MAXPLAYER];
+	BecomeLeaderRequest message;
 };
 
 class StateRoleStrategyRandom : public GrailState
@@ -228,6 +268,27 @@ private:
 public:
 	StateRoleStrategyBP(): GrailState(STATE_ROLE_STRATEGY_BP){ alternativeRoles = NULL; options = NULL; step = 0;}
 	~StateRoleStrategyBP() { SAFE_DELETE(alternativeRoles);SAFE_DELETE(options);}
+	int handle(GameGrail* engine);
+};
+
+class StateRoleStrategyCM: public GrailState
+{
+private:
+	int step;
+	int* alternativeRoles;
+	int* options;
+	vector<int> red;
+	vector<int> blue;
+	int idr;
+	int idb;
+	bool ibb;
+	bool ibr;
+	bool decided;		
+	int alternativeNum;
+	int playerNum;
+public:
+	StateRoleStrategyCM(): GrailState(STATE_ROLE_STRATEGY_CM){ alternativeRoles = NULL; options = NULL; step = 0;}
+	~StateRoleStrategyCM() { SAFE_DELETE(alternativeRoles);SAFE_DELETE(options);}
 	int handle(GameGrail* engine);
 };
 

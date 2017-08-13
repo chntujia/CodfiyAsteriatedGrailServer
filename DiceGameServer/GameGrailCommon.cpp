@@ -1,5 +1,6 @@
 #include "GameGrailCommon.h"
 CardEntity* cardList[CARDSUM];
+ELogLevel logLevel;
 
 CardEntity* getCardByID(int id)
 {

@@ -18,11 +18,14 @@ enum PlayerIdConst {
 	PLAYER_NONE_ID = 100000;
 }
 
+
+
 enum ROLE_STRATEGY{    
 	ROLE_STRATEGY_RANDOM = 1;
 	ROLE_STRATEGY_31 = 2;
 	ROLE_STRATEGY_BP = 3;
-	ROLE_STRATEGY_ANY = 4;
+	ROLE_STRATEGY_CM = 4;
+	ROLE_STRATEGY_ANY = 5;
 	ROLE_STRATEGY_ALL = 9;
 }
 
@@ -31,6 +34,7 @@ enum SEAT_MODE{
 	SEAT_MODE_2COMBO = 2;
 	SEAT_MODE_3COMBO = 3;
 	SEAT_MODE_INTERLACE = 4;
+	SEAT_MODE_RBBRRB = 5;
 }
 
 enum BP_OPRATION{
@@ -38,7 +42,15 @@ enum BP_OPRATION{
 	BP_BAN = 2;
 	BP_PICK = 3;
 }
-
+enum CM_OPRATION{
+	CM_NULL = 1;
+	CM_RED_BAN = 2;
+	CM_RED_IB = 3;
+	CM_RED_PICK = 4;
+	CM_BLUE_BAN = 5;
+	CM_BLUE_IB = 6;
+	CM_BLUE_PICK = 7;
+}
 // s -> c 备选角色
 message RoleRequest {
     required uint32 id = 1; //询问的玩家id
@@ -97,6 +109,7 @@ enum BasicRespondType {
 	RESPOND_ADDITIONAL_ACTION = 15;       // 额外行动
 	RESPOND_DISCARD_COVER = 16;           // 丢弃盖牌
 	RESPOND_ROLE = 17;
+	RESPOND_INSERT_BAN = 18;
 }
 
 // c -> s, s -> c 启动及技能响应及应战及治疗响应及爆牌，根据不同的行动填写不同长度的args，可以用到 s -> c

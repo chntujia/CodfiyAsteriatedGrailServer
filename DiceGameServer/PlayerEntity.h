@@ -17,6 +17,7 @@ class PlayerEntity
 {
 public:
     PlayerEntity(GameGrail *engine, int id, int color);
+	const char* type() const { return typeid(*this).name(); }
 	//在该玩家前增加基础效果
     int addBasicEffect(int effectCard, int srcUserID=-1);
     //移除基础效果
