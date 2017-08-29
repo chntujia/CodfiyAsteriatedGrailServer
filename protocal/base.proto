@@ -188,7 +188,8 @@ message GameInfo {
     optional uint32 blue_grail = 10;  // 蓝队星杯数 
 	optional uint32 pile = 11;       // 牌堆
 	optional uint32 discard = 12;    // 弃牌区
-	repeated SinglePlayerInfo player_infos = 13;
+	optional bool is_started = 13 [default = false];
+	repeated SinglePlayerInfo player_infos = 14;
 }
 
 // c -> s 聊天

@@ -2513,10 +2513,17 @@ class GameInfo : public ::google::protobuf::Message /* @@protoc_insertion_point(
   ::google::protobuf::uint32 discard() const;
   void set_discard(::google::protobuf::uint32 value);
 
-  // repeated .network.SinglePlayerInfo player_infos = 13;
+  // optional bool is_started = 13 [default = false];
+  bool has_is_started() const;
+  void clear_is_started();
+  static const int kIsStartedFieldNumber = 13;
+  bool is_started() const;
+  void set_is_started(bool value);
+
+  // repeated .network.SinglePlayerInfo player_infos = 14;
   int player_infos_size() const;
   void clear_player_infos();
-  static const int kPlayerInfosFieldNumber = 13;
+  static const int kPlayerInfosFieldNumber = 14;
   const ::network::SinglePlayerInfo& player_infos(int index) const;
   ::network::SinglePlayerInfo* mutable_player_infos(int index);
   ::network::SinglePlayerInfo* add_player_infos();
@@ -2551,6 +2558,8 @@ class GameInfo : public ::google::protobuf::Message /* @@protoc_insertion_point(
   inline void clear_has_pile();
   inline void set_has_discard();
   inline void clear_has_discard();
+  inline void set_has_is_started();
+  inline void clear_has_is_started();
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   ::google::protobuf::uint32 _has_bits_[1];
@@ -2568,6 +2577,7 @@ class GameInfo : public ::google::protobuf::Message /* @@protoc_insertion_point(
   ::google::protobuf::uint32 pile_;
   ::google::protobuf::uint32 discard_;
   ::google::protobuf::RepeatedPtrField< ::network::SinglePlayerInfo > player_infos_;
+  bool is_started_;
   friend void  protobuf_AddDesc_base_2eproto();
   friend void protobuf_AssignDesc_base_2eproto();
   friend void protobuf_ShutdownFile_base_2eproto();
@@ -5563,7 +5573,31 @@ inline void GameInfo::set_discard(::google::protobuf::uint32 value) {
   // @@protoc_insertion_point(field_set:network.GameInfo.discard)
 }
 
-// repeated .network.SinglePlayerInfo player_infos = 13;
+// optional bool is_started = 13 [default = false];
+inline bool GameInfo::has_is_started() const {
+  return (_has_bits_[0] & 0x00001000u) != 0;
+}
+inline void GameInfo::set_has_is_started() {
+  _has_bits_[0] |= 0x00001000u;
+}
+inline void GameInfo::clear_has_is_started() {
+  _has_bits_[0] &= ~0x00001000u;
+}
+inline void GameInfo::clear_is_started() {
+  is_started_ = false;
+  clear_has_is_started();
+}
+inline bool GameInfo::is_started() const {
+  // @@protoc_insertion_point(field_get:network.GameInfo.is_started)
+  return is_started_;
+}
+inline void GameInfo::set_is_started(bool value) {
+  set_has_is_started();
+  is_started_ = value;
+  // @@protoc_insertion_point(field_set:network.GameInfo.is_started)
+}
+
+// repeated .network.SinglePlayerInfo player_infos = 14;
 inline int GameInfo::player_infos_size() const {
   return player_infos_.size();
 }

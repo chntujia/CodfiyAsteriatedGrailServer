@@ -1209,7 +1209,7 @@ void GameGrail::toProtoAs(int playerId, GameInfo& game_info)
 
 	game_info.set_pile(pile->get_size());
 	game_info.set_discard(discard->get_size());
-
+	game_info.set_is_started(true);
 	game_info.set_player_id(playerId);
 
 	for(int i = 0; i < m_maxPlayers; i++)

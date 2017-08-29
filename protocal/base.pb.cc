@@ -413,7 +413,7 @@ void protobuf_AssignDesc_base_2eproto() {
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SinglePlayerInfo, _internal_metadata_),
       -1);
   GameInfo_descriptor_ = file->message_type(16);
-  static const int GameInfo_offsets_[13] = {
+  static const int GameInfo_offsets_[14] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(GameInfo, room_id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(GameInfo, player_id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(GameInfo, red_morale_),
@@ -426,6 +426,7 @@ void protobuf_AssignDesc_base_2eproto() {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(GameInfo, blue_grail_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(GameInfo, pile_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(GameInfo, discard_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(GameInfo, is_started_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(GameInfo, player_infos_),
   };
   GameInfo_reflection_ =
@@ -707,34 +708,35 @@ void protobuf_AddDesc_base_2eproto() {
     "\030\r \001(\010\022\r\n\005hands\030\016 \003(\r\022\020\n\010covereds\030\017 \003(\r\022"
     "\020\n\010max_hand\030\020 \001(\r\022\020\n\010nickname\030\021 \001(\t\022\024\n\005r"
     "eady\030\022 \001(\010:\005false\022\024\n\014delete_field\030\023 \003(\t\022"
-    "\016\n\006leader\030\024 \001(\r\"\234\002\n\010GameInfo\022\017\n\007room_id\030"
+    "\016\n\006leader\030\024 \001(\r\"\267\002\n\010GameInfo\022\017\n\007room_id\030"
     "\001 \001(\005\022\021\n\tplayer_id\030\002 \001(\005\022\022\n\nred_morale\030\003"
     " \001(\r\022\023\n\013blue_morale\030\004 \001(\r\022\017\n\007red_gem\030\005 \001"
     "(\r\022\020\n\010blue_gem\030\006 \001(\r\022\023\n\013red_crystal\030\007 \001("
     "\r\022\024\n\014blue_crystal\030\010 \001(\r\022\021\n\tred_grail\030\t \001"
     "(\r\022\022\n\nblue_grail\030\n \001(\r\022\014\n\004pile\030\013 \001(\r\022\017\n\007"
-    "discard\030\014 \001(\r\022/\n\014player_infos\030\r \003(\0132\031.ne"
-    "twork.SinglePlayerInfo\"\023\n\004Talk\022\013\n\003txt\030\001 "
-    "\001(\t\"1\n\005Error\022\n\n\002id\030\001 \002(\005\022\016\n\006dst_id\030\002 \002(\005"
-    "\022\014\n\004args\030\003 \003(\005\"D\n\006Gossip\022!\n\004type\030\001 \001(\0162\023"
-    ".network.GossipType\022\013\n\003txt\030\002 \001(\t\022\n\n\002id\030\003"
-    " \001(\r\"\013\n\tHeartBeat\"1\n\016PollingRequest\022\016\n\006o"
-    "bject\030\001 \002(\t\022\017\n\007options\030\002 \003(\t\"!\n\017PollingR"
-    "esponse\022\016\n\006option\030\001 \001(\r*\210\004\n\013MessageType\022"
-    "\024\n\020MSG_REGISTER_REQ\020\001\022\024\n\020MSG_REGISTER_RE"
-    "P\020\002\022\021\n\rMSG_LOGIN_REQ\020\003\022\021\n\rMSG_LOGIN_REP\020"
-    "\004\022\022\n\016MSG_LOGOUT_REQ\020\005\022\022\n\016MSG_LOGOUT_REP\020"
-    "\006\022\024\n\020MSG_ROOMLIST_REQ\020\007\022\024\n\020MSG_ROOMLIST_"
-    "REP\020\010\022\027\n\023MSG_CREATE_ROOM_REQ\020\t\022\026\n\022MSG_EN"
-    "TER_ROOM_REQ\020\n\022\026\n\022MSG_ENTER_ROOM_REP\020\013\022\026"
-    "\n\022MSG_LEAVE_ROOM_REQ\020\014\022\025\n\021MSG_JOIN_TEAM_"
-    "REQ\020\r\022\026\n\022MSG_READY_GAME_REQ\020\016\022\025\n\021MSG_SIN"
-    "GLE_PLAYER\020\017\022\014\n\010MSG_GAME\020\020\022\014\n\010MSG_TALK\020\021"
-    "\022\016\n\nMSG_GOSSIP\020\022\022\r\n\tMSG_ERROR\020\023\022\021\n\rMSG_H"
-    "EARTBEAT\020\024\022\031\n\025MSG_BECOME_LEADER_REQ\020\025\022\031\n"
-    "\025MSG_BECOME_LEADER_REP\020\026\022\023\n\017MSG_POLLING_"
-    "REQ\020\027\022\023\n\017MSG_POLLING_REP\020\030*0\n\nGossipType"
-    "\022\017\n\013GOSSIP_TALK\020\001\022\021\n\rGOSSIP_NOTICE\020\002", 2996);
+    "discard\030\014 \001(\r\022\031\n\nis_started\030\r \001(\010:\005false"
+    "\022/\n\014player_infos\030\016 \003(\0132\031.network.SingleP"
+    "layerInfo\"\023\n\004Talk\022\013\n\003txt\030\001 \001(\t\"1\n\005Error\022"
+    "\n\n\002id\030\001 \002(\005\022\016\n\006dst_id\030\002 \002(\005\022\014\n\004args\030\003 \003("
+    "\005\"D\n\006Gossip\022!\n\004type\030\001 \001(\0162\023.network.Goss"
+    "ipType\022\013\n\003txt\030\002 \001(\t\022\n\n\002id\030\003 \001(\r\"\013\n\tHeart"
+    "Beat\"1\n\016PollingRequest\022\016\n\006object\030\001 \002(\t\022\017"
+    "\n\007options\030\002 \003(\t\"!\n\017PollingResponse\022\016\n\006op"
+    "tion\030\001 \001(\r*\210\004\n\013MessageType\022\024\n\020MSG_REGIST"
+    "ER_REQ\020\001\022\024\n\020MSG_REGISTER_REP\020\002\022\021\n\rMSG_LO"
+    "GIN_REQ\020\003\022\021\n\rMSG_LOGIN_REP\020\004\022\022\n\016MSG_LOGO"
+    "UT_REQ\020\005\022\022\n\016MSG_LOGOUT_REP\020\006\022\024\n\020MSG_ROOM"
+    "LIST_REQ\020\007\022\024\n\020MSG_ROOMLIST_REP\020\010\022\027\n\023MSG_"
+    "CREATE_ROOM_REQ\020\t\022\026\n\022MSG_ENTER_ROOM_REQ\020"
+    "\n\022\026\n\022MSG_ENTER_ROOM_REP\020\013\022\026\n\022MSG_LEAVE_R"
+    "OOM_REQ\020\014\022\025\n\021MSG_JOIN_TEAM_REQ\020\r\022\026\n\022MSG_"
+    "READY_GAME_REQ\020\016\022\025\n\021MSG_SINGLE_PLAYER\020\017\022"
+    "\014\n\010MSG_GAME\020\020\022\014\n\010MSG_TALK\020\021\022\016\n\nMSG_GOSSI"
+    "P\020\022\022\r\n\tMSG_ERROR\020\023\022\021\n\rMSG_HEARTBEAT\020\024\022\031\n"
+    "\025MSG_BECOME_LEADER_REQ\020\025\022\031\n\025MSG_BECOME_L"
+    "EADER_REP\020\026\022\023\n\017MSG_POLLING_REQ\020\027\022\023\n\017MSG_"
+    "POLLING_REP\020\030*0\n\nGossipType\022\017\n\013GOSSIP_TA"
+    "LK\020\001\022\021\n\rGOSSIP_NOTICE\020\002", 3023);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "base.proto", &protobuf_RegisterTypes);
   RegisterRequest::default_instance_ = new RegisterRequest();
@@ -9271,6 +9273,7 @@ const int GameInfo::kRedGrailFieldNumber;
 const int GameInfo::kBlueGrailFieldNumber;
 const int GameInfo::kPileFieldNumber;
 const int GameInfo::kDiscardFieldNumber;
+const int GameInfo::kIsStartedFieldNumber;
 const int GameInfo::kPlayerInfosFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
@@ -9305,6 +9308,7 @@ void GameInfo::SharedCtor() {
   blue_grail_ = 0u;
   pile_ = 0u;
   discard_ = 0u;
+  is_started_ = false;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -9364,7 +9368,10 @@ void GameInfo::Clear() {
   if (_has_bits_[0 / 32] & 255u) {
     ZR_(room_id_, blue_crystal_);
   }
-  ZR_(red_grail_, discard_);
+  if (_has_bits_[8 / 32] & 7936u) {
+    ZR_(red_grail_, discard_);
+    is_started_ = false;
+  }
 
 #undef ZR_HELPER_
 #undef ZR_
@@ -9561,13 +9568,28 @@ bool GameInfo::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(106)) goto parse_player_infos;
+        if (input->ExpectTag(104)) goto parse_is_started;
         break;
       }
 
-      // repeated .network.SinglePlayerInfo player_infos = 13;
+      // optional bool is_started = 13 [default = false];
       case 13: {
-        if (tag == 106) {
+        if (tag == 104) {
+         parse_is_started:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
+                 input, &is_started_)));
+          set_has_is_started();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(114)) goto parse_player_infos;
+        break;
+      }
+
+      // repeated .network.SinglePlayerInfo player_infos = 14;
+      case 14: {
+        if (tag == 114) {
          parse_player_infos:
           DO_(input->IncrementRecursionDepth());
          parse_loop_player_infos:
@@ -9576,7 +9598,7 @@ bool GameInfo::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(106)) goto parse_loop_player_infos;
+        if (input->ExpectTag(114)) goto parse_loop_player_infos;
         input->UnsafeDecrementRecursionDepth();
         if (input->ExpectAtEnd()) goto success;
         break;
@@ -9667,10 +9689,15 @@ void GameInfo::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteUInt32(12, this->discard(), output);
   }
 
-  // repeated .network.SinglePlayerInfo player_infos = 13;
+  // optional bool is_started = 13 [default = false];
+  if (has_is_started()) {
+    ::google::protobuf::internal::WireFormatLite::WriteBool(13, this->is_started(), output);
+  }
+
+  // repeated .network.SinglePlayerInfo player_infos = 14;
   for (unsigned int i = 0, n = this->player_infos_size(); i < n; i++) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      13, this->player_infos(i), output);
+      14, this->player_infos(i), output);
   }
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -9743,11 +9770,16 @@ void GameInfo::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(12, this->discard(), target);
   }
 
-  // repeated .network.SinglePlayerInfo player_infos = 13;
+  // optional bool is_started = 13 [default = false];
+  if (has_is_started()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(13, this->is_started(), target);
+  }
+
+  // repeated .network.SinglePlayerInfo player_infos = 14;
   for (unsigned int i = 0, n = this->player_infos_size(); i < n; i++) {
     target = ::google::protobuf::internal::WireFormatLite::
       InternalWriteMessageNoVirtualToArray(
-        13, this->player_infos(i), false, target);
+        14, this->player_infos(i), false, target);
   }
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -9820,7 +9852,7 @@ int GameInfo::ByteSize() const {
     }
 
   }
-  if (_has_bits_[8 / 32] & 3840u) {
+  if (_has_bits_[8 / 32] & 7936u) {
     // optional uint32 red_grail = 9;
     if (has_red_grail()) {
       total_size += 1 +
@@ -9849,8 +9881,13 @@ int GameInfo::ByteSize() const {
           this->discard());
     }
 
+    // optional bool is_started = 13 [default = false];
+    if (has_is_started()) {
+      total_size += 1 + 1;
+    }
+
   }
-  // repeated .network.SinglePlayerInfo player_infos = 13;
+  // repeated .network.SinglePlayerInfo player_infos = 14;
   total_size += 1 * this->player_infos_size();
   for (int i = 0; i < this->player_infos_size(); i++) {
     total_size +=
@@ -9931,6 +9968,9 @@ void GameInfo::MergeFrom(const GameInfo& from) {
     if (from.has_discard()) {
       set_discard(from.discard());
     }
+    if (from.has_is_started()) {
+      set_is_started(from.is_started());
+    }
   }
   if (from._internal_metadata_.have_unknown_fields()) {
     mutable_unknown_fields()->MergeFrom(from.unknown_fields());
@@ -9973,6 +10013,7 @@ void GameInfo::InternalSwap(GameInfo* other) {
   std::swap(blue_grail_, other->blue_grail_);
   std::swap(pile_, other->pile_);
   std::swap(discard_, other->discard_);
+  std::swap(is_started_, other->is_started_);
   player_infos_.UnsafeArenaSwap(&other->player_infos_);
   std::swap(_has_bits_[0], other->_has_bits_[0]);
   _internal_metadata_.Swap(&other->_internal_metadata_);
@@ -10278,7 +10319,31 @@ void GameInfo::clear_discard() {
   // @@protoc_insertion_point(field_set:network.GameInfo.discard)
 }
 
-// repeated .network.SinglePlayerInfo player_infos = 13;
+// optional bool is_started = 13 [default = false];
+bool GameInfo::has_is_started() const {
+  return (_has_bits_[0] & 0x00001000u) != 0;
+}
+void GameInfo::set_has_is_started() {
+  _has_bits_[0] |= 0x00001000u;
+}
+void GameInfo::clear_has_is_started() {
+  _has_bits_[0] &= ~0x00001000u;
+}
+void GameInfo::clear_is_started() {
+  is_started_ = false;
+  clear_has_is_started();
+}
+ bool GameInfo::is_started() const {
+  // @@protoc_insertion_point(field_get:network.GameInfo.is_started)
+  return is_started_;
+}
+ void GameInfo::set_is_started(bool value) {
+  set_has_is_started();
+  is_started_ = value;
+  // @@protoc_insertion_point(field_set:network.GameInfo.is_started)
+}
+
+// repeated .network.SinglePlayerInfo player_infos = 14;
 int GameInfo::player_infos_size() const {
   return player_infos_.size();
 }

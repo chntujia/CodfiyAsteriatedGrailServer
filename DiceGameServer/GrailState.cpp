@@ -142,7 +142,7 @@ int StateSeatArrange::handle(GameGrail* engine)
 		player_info->set_team(color);
 		player_info->set_nickname(engine->getPlayerContext(id)->getName());
 	}
-
+	game_info.set_is_started(true);
 	engine->sendMessage(-1, MSG_GAME, game_info);
     engine->popGameState();	
 	return engine->setStateRoleStrategy();
@@ -317,6 +317,7 @@ int StateRoleStrategyRandom::handle(GameGrail* engine)
 			return ret;
 		}
 	}
+	game_info.set_is_started(true);
 	engine->sendMessage(-1, MSG_GAME, game_info);
 	SAFE_DELETE(roles);
 	engine->initPlayerEntities();
@@ -360,6 +361,7 @@ int StateRoleStrategy31::handle(GameGrail* engine)
 			Coder::roleNotice(i, chosen, game_info);
 		}
 	}
+	game_info.set_is_started(true);
 	engine->sendMessage(-1, MSG_GAME, game_info);	
 	engine->initPlayerEntities();
 	engine->popGameState();
@@ -393,6 +395,7 @@ int StateRoleStrategyAny::handle(GameGrail* engine)
 			Coder::roleNotice(i, i + 1, game_info);
 		}
 	}
+	game_info.set_is_started(true);
 	engine->sendMessage(-1, MSG_GAME, game_info);
 
 	engine->initPlayerEntities();
