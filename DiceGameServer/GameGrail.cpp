@@ -249,7 +249,7 @@ int GameGrail::popGameState_if(int state)
 		m_states.pop();
 		return GE_SUCCESS;
 	}
-	ztLoggerWrite(ZONE, e_Warning, "[Table %d] Attempt to pop state: %d, but current state: %d"
+	ztLoggerWrite(ZONE, e_Error, "[Table %d] Attempt to pop state: %d, but current state: %d"
 		, m_gameId, state, topGameState()->state);
 	return GE_INCONSISTENT_STATE;
 }
@@ -889,17 +889,6 @@ GameGrailPlayerContext* GameGrail::getPlayerContext(int id)
 	throw GE_INVALID_PLAYERID;
 }
 
-int GameGrail::getDisconnectedPlayerId()
-{
-	for (PlayerContextList::iterator it = m_playerContexts.begin(); it != m_playerContexts.end(); it++)
-	{
-		if (!it->second->isConnected()) {
-			return it->first;
-		}
-	}
-	return -1;
-}
-
 void GameGrail::GameRun()
 {
 	ztLoggerWrite(ZONE, e_Information, "[Table %d] %s created", m_gameId, m_gameName.c_str());
@@ -917,10 +906,9 @@ void GameGrail::GameRun()
 			if (nowPlayer == 0) {
 				break;
 			}
-
-			GrailState* currentState = topGameState();
+			
 			if (roleInited) {				
-				if (!gameover && !discarded && nowPlayer < m_maxPlayers && currentState->state != STATE_POLLING_DISCONNECTED) {
+				if (!gameover && !discarded && nowPlayer < m_maxPlayers && topGameState()->state != STATE_POLLING_DISCONNECTED) {
 					pushGameState(new StatePollingDisconnected(nowPlayer / 2));
 				}
 				if (gameover && !mvpElected) {
@@ -928,6 +916,8 @@ void GameGrail::GameRun()
 					mvpElected = true;
 				}
 			}
+
+			GrailState* currentState = topGameState();
 			
 			if (currentState->state != STATE_WAIT_FOR_ENTER) {
 				ztLoggerWrite(ZONE, e_Information, "[Table %d] Enter %s", m_gameId, currentState->type());

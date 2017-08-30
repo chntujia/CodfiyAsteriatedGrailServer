@@ -336,6 +336,5 @@ public:
 	bool isTableFull() { return getGameNowPlayers() >= m_maxPlayers; }	
 	tableLogData getTableLog(){ return m_tableLog; }
 protected:
-	int getDisconnectedPlayerId();
 	void GameRun();  
 };
