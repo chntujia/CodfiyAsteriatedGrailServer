@@ -172,6 +172,7 @@ message SinglePlayerInfo {
 	optional bool ready = 18 [default = false];
 	repeated string delete_field = 19;  // 删除某个域，用于清空数组
 	optional uint32 leader =20; //1：申请成为队长，0：不申请
+	optional bool online = 21;//是否在线
 }
 
 // s -> c 局信息
