@@ -286,25 +286,27 @@ int TianShi::TianShiJiBan()
 		void* reply;
 		if (GE_SUCCESS == (ret = engine->getReply(id, reply)))
 		{
-			Respond* respond = (Respond*) reply;
-			dstID = respond->dst_ids(0);
+			Respond* respond = (Respond*)reply;
+			if (respond->args(0) == 1) {
+				dstID = respond->dst_ids(0);
+				SkillMsg skill_msg;
+				Coder::skillNotice(id, dstID, TIAN_SHI_JI_BAN, skill_msg);
+				engine->sendMessage(-1, MSG_SKILL, skill_msg);
+
+				PlayerEntity* player = engine->getPlayerEntity(dstID);
+				player->addCrossNum(1);
+				GameInfo game_info;
+				Coder::crossNotice(dstID, player->getCrossNum(), game_info);
+				engine->sendMessage(-1, MSG_GAME, game_info);
+			}
+				return GE_SUCCESS;
 		}
+		return ret;
 	}
 	else{
-		dstID = id;
+		//超时啥都不用做
+		return GE_TIMEOUT;
 	}
-
-	SkillMsg skill_msg;
-	Coder::skillNotice(id, dstID, TIAN_SHI_JI_BAN, skill_msg);
-	engine->sendMessage(-1, MSG_SKILL, skill_msg);
-
-	PlayerEntity* player = engine->getPlayerEntity(dstID);
-	player->addCrossNum(1);
-	GameInfo game_info;
-	Coder::crossNotice(dstID, player->getCrossNum(), game_info);
-	engine->sendMessage(-1, MSG_GAME, game_info);
-
-	return GE_SUCCESS;
 }
 
 int TianShi::TianShiZhiGe()

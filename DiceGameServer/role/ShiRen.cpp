@@ -642,7 +642,7 @@ int ShiRen::BuXieZhiXian(Action* action)
 	else if(choice == 2)
 	{
 		HARM qipai;
-		qipai.point = num;
+		qipai.point = num -1;
 		qipai.srcID = id;
 		qipai.type = HARM_NONE;
 		qipai.cause = BU_XIE_HE_XIAN;
@@ -715,12 +715,15 @@ int ShiRen::ChenLunXieZouQu(CONTEXT_HARM_END *con)
 				Coder::showCardNotice(id, cardNum, cardIDs, show_card);
 				engine->sendMessage(-1, MSG_CARD, show_card);
 
+				if(getCardByID(cardIDs[0])->getType() == TYPE_MAGIC || getCardByID(cardIDs[1])->getType() == TYPE_MAGIC)
+				{
 				HARM harm;
 				harm.type = HARM_MAGIC;
 				harm.point = 1;
 				harm.srcID = id;
 				harm.cause = CHEN_LUN_XIE_ZOU_QU;
 				engine->setStateTimeline3(dstID, harm);
+				}
 				engine->setStateMoveCardsNotToHand(id, DECK_HAND, -1, DECK_DISCARD, cardNum, cardIDs, id, CHEN_LUN_XIE_ZOU_QU, true);
 				return GE_URGENT;
 			}

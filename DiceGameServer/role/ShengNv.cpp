@@ -181,35 +181,30 @@ int ShengNv::BingShuangDaoYan(CONTEXT_TIMELINE_1 *con)
 	int ret;
 	Coder::askForSkill(id, BING_SHUANG_DAO_YAN, cmd_req);
 	//有限等待，由UserTask调用tryNotify唤醒
-	if(engine->waitForOne(id, network::MSG_CMD_REQ, cmd_req))
+	if (engine->waitForOne(id, network::MSG_CMD_REQ, cmd_req))
 	{
 		void* reply;
 		if (GE_SUCCESS == (ret = engine->getReply(id, reply)))
 		{
-			Respond* respond = (Respond*) reply;
-			int dstID = respond->dst_ids(0);
-			PlayerEntity * dstPlayer = engine->getPlayerEntity(dstID);
-			SkillMsg skill_msg;
-			Coder::skillNotice(id, id, BING_SHUANG_DAO_YAN, skill_msg);
-			engine->sendMessage(-1, MSG_SKILL, skill_msg);
-			dstPlayer->addCrossNum(1);
-			GameInfo update_info;
-			Coder::crossNotice(dstID, dstPlayer->getCrossNum(), update_info);
-			engine->sendMessage(-1, MSG_GAME, update_info);
+			Respond* respond = (Respond*)reply;
+			if (respond->args(0) == 1) {
+				int dstID = respond->dst_ids(0);
+				SkillMsg skill_msg;
+				Coder::skillNotice(id, dstID, BING_SHUANG_DAO_YAN, skill_msg);
+				engine->sendMessage(-1, MSG_SKILL, skill_msg);
+
+				PlayerEntity* player = engine->getPlayerEntity(dstID);
+				player->addCrossNum(1);
+				GameInfo game_info;
+				Coder::crossNotice(dstID, player->getCrossNum(), game_info);
+				engine->sendMessage(-1, MSG_GAME, game_info);
+			}
+			return GE_SUCCESS;
 		}
 		return ret;
 	}
-	else{
-		//超时为自己加治疗
-		int dstID = id;
-		PlayerEntity * dstPlayer = engine->getPlayerEntity(dstID);
-		SkillMsg skill_msg;
-		Coder::skillNotice(id, id, BING_SHUANG_DAO_YAN, skill_msg);
-		engine->sendMessage(-1, MSG_SKILL, skill_msg);
-		dstPlayer->addCrossNum(1);
-		GameInfo update_info;
-		Coder::crossNotice(dstID, dstPlayer->getCrossNum(), update_info);
-		engine->sendMessage(-1, MSG_GAME, update_info);
+	else {
+		//超时啥都不用做
 		return GE_TIMEOUT;
 	}
 }

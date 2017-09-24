@@ -18,6 +18,10 @@ bool AnSha::cmdMsgParse(UserTask *session, uint16_t type, ::google::protobuf::Me
 			//tryNotify负责向游戏主线程传消息，只有id等于当前等待id，声明state等于当前state，声明step等于当前step，游戏主线程才会接受
 			session->tryNotify(id, STATE_BOOT, QIAN_XING, respond);
 			return true;
+		case FAN_SHI:
+			//tryNotify负责向游戏主线程传消息，只有id等于当前等待id，声明state等于当前state，声明step等于当前step，游戏主线程才会接受
+			session->tryNotify(id, ::STATE_TIMELINE_6_DRAWN, FAN_SHI, respond);
+			return true;
 		}
 	}
 	//没匹配则返回false
@@ -81,6 +85,7 @@ int AnSha::p_timeline_6_drawn(int &step, CONTEXT_TIMELINE_6_DRAWN *con)
 	{
 		return GE_SUCCESS;
 	}
+	step = FAN_SHI;
 	int ret = FanShi(con);
 	if(toNextStep(ret) || ret == GE_URGENT){
 		//全部走完后，请把step设成STEP_DONE
@@ -112,20 +117,38 @@ int AnSha::p_before_action(int &step, int currentPlayerID)
 
 int AnSha::FanShi(CONTEXT_TIMELINE_6_DRAWN *con)
 {
-	
-	vector<int> cards;
-	HARM harm;
-	harm.srcID = id;
-	harm.type = HARM_NONE;
-	harm.point = 1;
-	harm.cause = FAN_SHI;
-	engine->setStateMoveCardsToHand(-1, DECK_PILE, con->harm.srcID, DECK_HAND, 1, cards, harm, false);
+	CommandRequest cmd_req;
+	Coder::askForSkill(id, FAN_SHI, cmd_req);
+	//有限等待，由UserTask调用tryNotify唤醒
+	if (engine->waitForOne(id, network::MSG_CMD_REQ, cmd_req))
+	{
+		void* reply;
+		int ret;
+		if (GE_SUCCESS == (ret = engine->getReply(id, reply)))
+		{
+			Respond* respond = (Respond*)reply;
+			if (respond->args(0) == 1) {
+				vector<int> cards;
+				HARM harm;
+				harm.srcID = id;
+				harm.type = HARM_NONE;
+				harm.point = 1;
+				harm.cause = FAN_SHI;
+				engine->setStateMoveCardsToHand(-1, DECK_PILE, con->harm.srcID, DECK_HAND, 1, cards, harm, false);
 
-	SkillMsg skill_msg;
-	Coder::skillNotice(id, con->harm.srcID, FAN_SHI, skill_msg);
-	engine->sendMessage(-1, MSG_SKILL, skill_msg);
-
-	return GE_URGENT;
+				SkillMsg skill_msg;
+				Coder::skillNotice(id, con->harm.srcID, FAN_SHI, skill_msg);
+				engine->sendMessage(-1, MSG_SKILL, skill_msg);
+				return GE_URGENT;
+			}
+			return GE_SUCCESS;
+		}
+		return ret;
+	}
+	else {
+		//超时啥都不用做
+		return GE_TIMEOUT;
+	}
 }
 
 int AnSha::ShuiYing(CONTEXT_TIMELINE_3 *con)
