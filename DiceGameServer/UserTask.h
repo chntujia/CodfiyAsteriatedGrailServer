@@ -16,7 +16,8 @@ class GameGrail;
 class UserTask : public zTCPTask, public MessageQueue
 {
 private:      
-	string		m_userId;
+	string		m_username;
+	int         m_userId;
 	int         m_playerId;
 	int         m_tableId;
 	bool        m_bAuthen;		//是否在指定时间内发送第一个Login包,如果没发踢掉
@@ -31,7 +32,8 @@ public:
 	string m_nickname;
 	UserTask( boost::asio::io_service& service): zTCPTask(service) 
 	{
-		m_userId = "";
+		m_username = "";
+		m_userId = -1;
 		m_playerId = -1;
 		m_tableId = -1;
 		m_bAuthen = false;
@@ -41,7 +43,8 @@ public:
 	}
 
 	~UserTask();
-	string getUserID(){  return m_userId;  }
+	int getUserID(){  return m_userId;  }
+	string getUsername() { return m_username; }
 	uint32_t getUserTempId(){ return m_iTmpId; }
 	bool msgParse(const void *pstrMsg, const uint32_t nCmdLen);
 	bool cmdMsgParse(const char *pstrMsg, const uint32_t nCmdLen);

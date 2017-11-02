@@ -279,11 +279,14 @@ public:
 		return true;
 	}
 
-	bool isReady(int id);
+	bool isReadyOrInterrupted(int id);
+	bool isReadyOrInterruptedOrDisconnected(int id);
 	bool waitForOne(int id, uint16_t proto_type, google::protobuf::Message& proto, int timeout);
 	bool waitForOne(int id, uint16_t proto_type, google::protobuf::Message& proto) { return waitForOne(id, proto_type, proto, m_responseTime); }
 	bool waitForAll(uint16_t proto_type, void** proto_ptrs, int timeout);
 	bool waitForAll(uint16_t proto_type, void** proto_ptrs) { return waitForAll(proto_type, proto_ptrs, m_responseTime); }
+	bool waitForAllConnected(uint16_t proto_type, google::protobuf::Message& proto, int timeout);
+	bool waitForAllConnected(uint16_t proto_type, google::protobuf::Message& proto) { return waitForAllConnected(proto_type, proto, m_responseTime); }
 	bool falseNotify(int id);
 	bool tryNotify(int id, int state, int step = 0, void* reply = NULL);
 	int getReply(int id, void* &reply);

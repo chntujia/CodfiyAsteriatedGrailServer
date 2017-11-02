@@ -12,6 +12,7 @@ enum ACCOUNT_STATUS{
 };
 
 struct UserAccount{
+	int userId;
 	std::string username;
 	std::string nickname;
 	ACCOUNT_STATUS status;

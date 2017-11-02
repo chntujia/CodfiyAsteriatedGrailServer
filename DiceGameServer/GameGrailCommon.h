@@ -761,15 +761,7 @@ public:
 		error.set_id(id);
 		error.set_dst_id(dstId);
 	}
-	static void pollingMsg(string object, list<string> options, PollingRequest& msg)
-	{
-		msg.set_object(object);
-		list<string>::iterator it;
-		for (it = options.begin(); it != options.end(); ++it)
-		{
-			msg.add_options(*it);
-		}
-	}
+
 	static void noticeMsg(string notice, Gossip& msg) {
 		msg.set_type(GOSSIP_NOTICE);
 		msg.set_txt(notice);

@@ -162,6 +162,26 @@ inline bool GossipType_Parse(
   return ::google::protobuf::internal::ParseNamedEnum<GossipType>(
     GossipType_descriptor(), name, value);
 }
+enum PollingType {
+  POLLING_FORCE_WAIT = 1,
+  POLLING_LEGAL_LEAVE = 2,
+  POLLING_MVP = 3
+};
+bool PollingType_IsValid(int value);
+const PollingType PollingType_MIN = POLLING_FORCE_WAIT;
+const PollingType PollingType_MAX = POLLING_MVP;
+const int PollingType_ARRAYSIZE = PollingType_MAX + 1;
+
+const ::google::protobuf::EnumDescriptor* PollingType_descriptor();
+inline const ::std::string& PollingType_Name(PollingType value) {
+  return ::google::protobuf::internal::NameOfEnum(
+    PollingType_descriptor(), value);
+}
+inline bool PollingType_Parse(
+    const ::std::string& name, PollingType* value) {
+  return ::google::protobuf::internal::ParseNamedEnum<PollingType>(
+    PollingType_descriptor(), name, value);
+}
 // ===================================================================
 
 class RegisterRequest : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:network.RegisterRequest) */ {
@@ -3073,44 +3093,22 @@ class PollingRequest : public ::google::protobuf::Message /* @@protoc_insertion_
 
   // accessors -------------------------------------------------------
 
-  // required string object = 1;
-  bool has_object() const;
-  void clear_object();
-  static const int kObjectFieldNumber = 1;
-  const ::std::string& object() const;
-  void set_object(const ::std::string& value);
-  void set_object(const char* value);
-  void set_object(const char* value, size_t size);
-  ::std::string* mutable_object();
-  ::std::string* release_object();
-  void set_allocated_object(::std::string* object);
-
-  // repeated string options = 2;
-  int options_size() const;
-  void clear_options();
-  static const int kOptionsFieldNumber = 2;
-  const ::std::string& options(int index) const;
-  ::std::string* mutable_options(int index);
-  void set_options(int index, const ::std::string& value);
-  void set_options(int index, const char* value);
-  void set_options(int index, const char* value, size_t size);
-  ::std::string* add_options();
-  void add_options(const ::std::string& value);
-  void add_options(const char* value);
-  void add_options(const char* value, size_t size);
-  const ::google::protobuf::RepeatedPtrField< ::std::string>& options() const;
-  ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_options();
+  // required .network.PollingType type = 1;
+  bool has_type() const;
+  void clear_type();
+  static const int kTypeFieldNumber = 1;
+  ::network::PollingType type() const;
+  void set_type(::network::PollingType value);
 
   // @@protoc_insertion_point(class_scope:network.PollingRequest)
  private:
-  inline void set_has_object();
-  inline void clear_has_object();
+  inline void set_has_type();
+  inline void clear_has_type();
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   ::google::protobuf::uint32 _has_bits_[1];
   mutable int _cached_size_;
-  ::google::protobuf::internal::ArenaStringPtr object_;
-  ::google::protobuf::RepeatedPtrField< ::std::string> options_;
+  int type_;
   friend void  protobuf_AddDesc_base_2eproto();
   friend void protobuf_AssignDesc_base_2eproto();
   friend void protobuf_ShutdownFile_base_2eproto();
@@ -3188,7 +3186,7 @@ class PollingResponse : public ::google::protobuf::Message /* @@protoc_insertion
 
   // accessors -------------------------------------------------------
 
-  // optional uint32 option = 1;
+  // required uint32 option = 1;
   bool has_option() const;
   void clear_option();
   static const int kOptionFieldNumber = 1;
@@ -5882,120 +5880,36 @@ inline void Gossip::set_id(::google::protobuf::uint32 value) {
 
 // PollingRequest
 
-// required string object = 1;
-inline bool PollingRequest::has_object() const {
+// required .network.PollingType type = 1;
+inline bool PollingRequest::has_type() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
-inline void PollingRequest::set_has_object() {
+inline void PollingRequest::set_has_type() {
   _has_bits_[0] |= 0x00000001u;
 }
-inline void PollingRequest::clear_has_object() {
+inline void PollingRequest::clear_has_type() {
   _has_bits_[0] &= ~0x00000001u;
 }
-inline void PollingRequest::clear_object() {
-  object_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  clear_has_object();
+inline void PollingRequest::clear_type() {
+  type_ = 1;
+  clear_has_type();
 }
-inline const ::std::string& PollingRequest::object() const {
-  // @@protoc_insertion_point(field_get:network.PollingRequest.object)
-  return object_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+inline ::network::PollingType PollingRequest::type() const {
+  // @@protoc_insertion_point(field_get:network.PollingRequest.type)
+  return static_cast< ::network::PollingType >(type_);
 }
-inline void PollingRequest::set_object(const ::std::string& value) {
-  set_has_object();
-  object_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:network.PollingRequest.object)
-}
-inline void PollingRequest::set_object(const char* value) {
-  set_has_object();
-  object_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:network.PollingRequest.object)
-}
-inline void PollingRequest::set_object(const char* value, size_t size) {
-  set_has_object();
-  object_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:network.PollingRequest.object)
-}
-inline ::std::string* PollingRequest::mutable_object() {
-  set_has_object();
-  // @@protoc_insertion_point(field_mutable:network.PollingRequest.object)
-  return object_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline ::std::string* PollingRequest::release_object() {
-  // @@protoc_insertion_point(field_release:network.PollingRequest.object)
-  clear_has_object();
-  return object_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline void PollingRequest::set_allocated_object(::std::string* object) {
-  if (object != NULL) {
-    set_has_object();
-  } else {
-    clear_has_object();
-  }
-  object_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), object);
-  // @@protoc_insertion_point(field_set_allocated:network.PollingRequest.object)
-}
-
-// repeated string options = 2;
-inline int PollingRequest::options_size() const {
-  return options_.size();
-}
-inline void PollingRequest::clear_options() {
-  options_.Clear();
-}
-inline const ::std::string& PollingRequest::options(int index) const {
-  // @@protoc_insertion_point(field_get:network.PollingRequest.options)
-  return options_.Get(index);
-}
-inline ::std::string* PollingRequest::mutable_options(int index) {
-  // @@protoc_insertion_point(field_mutable:network.PollingRequest.options)
-  return options_.Mutable(index);
-}
-inline void PollingRequest::set_options(int index, const ::std::string& value) {
-  // @@protoc_insertion_point(field_set:network.PollingRequest.options)
-  options_.Mutable(index)->assign(value);
-}
-inline void PollingRequest::set_options(int index, const char* value) {
-  options_.Mutable(index)->assign(value);
-  // @@protoc_insertion_point(field_set_char:network.PollingRequest.options)
-}
-inline void PollingRequest::set_options(int index, const char* value, size_t size) {
-  options_.Mutable(index)->assign(
-    reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_set_pointer:network.PollingRequest.options)
-}
-inline ::std::string* PollingRequest::add_options() {
-  // @@protoc_insertion_point(field_add_mutable:network.PollingRequest.options)
-  return options_.Add();
-}
-inline void PollingRequest::add_options(const ::std::string& value) {
-  options_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add:network.PollingRequest.options)
-}
-inline void PollingRequest::add_options(const char* value) {
-  options_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add_char:network.PollingRequest.options)
-}
-inline void PollingRequest::add_options(const char* value, size_t size) {
-  options_.Add()->assign(reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_add_pointer:network.PollingRequest.options)
-}
-inline const ::google::protobuf::RepeatedPtrField< ::std::string>&
-PollingRequest::options() const {
-  // @@protoc_insertion_point(field_list:network.PollingRequest.options)
-  return options_;
-}
-inline ::google::protobuf::RepeatedPtrField< ::std::string>*
-PollingRequest::mutable_options() {
-  // @@protoc_insertion_point(field_mutable_list:network.PollingRequest.options)
-  return &options_;
+inline void PollingRequest::set_type(::network::PollingType value) {
+  assert(::network::PollingType_IsValid(value));
+  set_has_type();
+  type_ = value;
+  // @@protoc_insertion_point(field_set:network.PollingRequest.type)
 }
 
 // -------------------------------------------------------------------
 
 // PollingResponse
 
-// optional uint32 option = 1;
+// required uint32 option = 1;
 inline bool PollingResponse::has_option() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
@@ -6094,6 +6008,11 @@ template <> struct is_proto_enum< ::network::GossipType> : ::google::protobuf::i
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::network::GossipType>() {
   return ::network::GossipType_descriptor();
+}
+template <> struct is_proto_enum< ::network::PollingType> : ::google::protobuf::internal::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::network::PollingType>() {
+  return ::network::PollingType_descriptor();
 }
 
 }  // namespace protobuf

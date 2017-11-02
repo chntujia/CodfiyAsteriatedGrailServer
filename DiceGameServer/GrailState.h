@@ -170,15 +170,14 @@ public:
 	int handle(GameGrail* engine);
 };
 
-int poll(string object, list<string> options, int threshold, GameGrail* engine);
-
 class StatePollingDisconnected : public GrailState
 {
 public:
-	StatePollingDisconnected(int threshold) : threshold(threshold), GrailState(STATE_POLLING_DISCONNECTED) {}
+	StatePollingDisconnected(int threshold) : threshold(threshold), beginTime(time(NULL)), GrailState(STATE_POLLING_DISCONNECTED) {}
 	int handle(GameGrail* engine);
-private:
+private:	
 	int threshold;
+	int beginTime;
 };
 
 class StatePollingGameover : public GrailState

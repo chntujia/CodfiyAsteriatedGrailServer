@@ -38,26 +38,28 @@ void UserAccountDAO::gameFlee(string username)
 
 struct UserAccount UserAccountDAO::query(string username, string password)
 {
-   ACCOUNT_STATUS status;
-   string nickname = "NA";
-   PreparedStatement* query = connection->prepare("select NickName,Status from user where UserName=? and Password=?");
-   query->setString(1, username);
-   query->setString(2, password);
-   ResultSet* res = connection->executeQuery(query);
-   if(res && res->next()){
-       status = (ACCOUNT_STATUS)res->getInt("Status");
-	   nickname = res->getString("NickName");
-   }
-   else{
-	   status = STATUS_LOGIN_FAILED;
-   }
-   if(status == STATUS_NORMAL || status == STATUS_VIP){
-	   PreparedStatement* update = connection->prepare("update user set LastLogInTime=NOW() where UserName=? ");
+	int userId = -1;
+	ACCOUNT_STATUS status;
+	string nickname = "NA";
+	PreparedStatement* query = connection->prepare("select Id,NickName,Status from user where UserName=? and Password=?");
+	query->setString(1, username);
+	query->setString(2, password);
+	ResultSet* res = connection->executeQuery(query);
+	if(res && res->next()){
+		userId = res->getInt("Id");
+		status = (ACCOUNT_STATUS)res->getInt("Status");
+		nickname = res->getString("NickName");
+	}
+	else {
+		status = STATUS_LOGIN_FAILED;
+	}
+	if (status == STATUS_NORMAL || status == STATUS_VIP) {
+		PreparedStatement* update = connection->prepare("update user set LastLogInTime=NOW() where UserName=? ");
 
-	   update->setString(1, username);
-	   connection->executeUpdate(update);
-   }
-   delete res;
-   struct UserAccount account = {username, nickname, status};
-   return account;
+		update->setString(1, username);
+		connection->executeUpdate(update);
+	}
+	delete res;
+	struct UserAccount account = { userId, username, nickname, status };
+	return account;
 }

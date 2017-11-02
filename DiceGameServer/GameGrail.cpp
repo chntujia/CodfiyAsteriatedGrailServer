@@ -296,7 +296,7 @@ void GameGrail::sendMessageExcept(int id, uint16_t proto_type, google::protobuf:
 
 }
 
-bool GameGrail::isReady(int id)
+bool GameGrail::isReadyOrInterrupted(int id)
 {
 	if (interrupted) {
 		return true;
@@ -316,6 +316,26 @@ bool GameGrail::isReady(int id)
 	return false;
 } 
 
+bool GameGrail::isReadyOrInterruptedOrDisconnected(int id)
+{
+	if (interrupted) {
+		return true;
+	}
+	if (id == -1) {
+		for (int i = 0; i < m_maxPlayers; i++) {
+			if (!m_ready[i] && m_playerContexts[i]->isConnected()) {
+				return false;
+			}
+		}
+		return true;
+	}
+	else if (id >= 0 && id < m_maxPlayers) {
+		return m_ready[id] || !m_playerContexts[id]->isConnected();
+	}
+	ztLoggerWrite(ZONE, e_Error, "invalid player id: %d", id);
+	return false;
+}
+
 bool GameGrail::waitForOne(int id, uint16_t proto_type, google::protobuf::Message& proto, int sec)
 {
 	if(id < 0 || id >= m_maxPlayers){
@@ -331,7 +351,7 @@ bool GameGrail::waitForOne(int id, uint16_t proto_type, google::protobuf::Messag
 	{
 		sendMessage(-1, proto_type, proto);
 		boost::system_time const timeout=boost::get_system_time()+ boost::posix_time::milliseconds(sec*1000);
-		if (m_condition_for_wait.timed_wait(lock, timeout, boost::bind(&GameGrail::isReady, this, id))) {
+		if (m_condition_for_wait.timed_wait(lock, timeout, boost::bind(&GameGrail::isReadyOrInterrupted, this, id))) {
 			return interrupted ? throw GE_INTERRUPTED : true;
 		}
 		attempts++;
@@ -353,8 +373,30 @@ bool GameGrail::waitForAll(uint16_t proto_types, void** proto_ptrs, int sec)
 				sendMessage(i, proto_types, *proto);
 			}
 		}
-		boost::system_time const timeout=boost::get_system_time()+ boost::posix_time::milliseconds(sec*1000);
-		if(m_condition_for_wait.timed_wait(lock, timeout, boost::bind( &GameGrail::isReady, this, -1 ))){
+		boost::system_time const timeout = boost::get_system_time()+ boost::posix_time::milliseconds(sec*1000);
+		if(m_condition_for_wait.timed_wait(lock, timeout, boost::bind( &GameGrail::isReadyOrInterrupted, this, -1 ))){
+			return interrupted ? throw GE_INTERRUPTED : true;
+		}
+		attempts++;
+	}
+	return false;
+}
+
+bool GameGrail::waitForAllConnected(uint16_t proto_type, google::protobuf::Message& proto, int sec)
+{
+	m_token = -1;
+	int attempts = 0;
+	boost::mutex::scoped_lock lock(m_mutex_for_wait);
+
+	while (attempts < m_maxAttempts)
+	{
+		for (int i = 0; i < m_maxPlayers; i++) {
+			if (!m_ready[i] && m_playerContexts[i]->isConnected()) {
+				sendMessage(i, proto_type, proto);
+			}
+		}
+		boost::system_time const timeout = boost::get_system_time() + boost::posix_time::milliseconds(sec * 1000);
+		if (m_condition_for_wait.timed_wait(lock, timeout, boost::bind(&GameGrail::isReadyOrInterruptedOrDisconnected, this, -1))) {
 			return interrupted ? throw GE_INTERRUPTED : true;
 		}
 		attempts++;
@@ -387,9 +429,7 @@ bool GameGrail::tryNotify(int id, int state, int step, void* reply)
 			m_playerContexts[id]->setBuf(reply);
 			m_ready[id] = true;
 		}
-		if(isReady(-1)){
-			m_condition_for_wait.notify_one();
-		}
+		m_condition_for_wait.notify_one();
 	    return true;
 	}
 	ztLoggerWrite(ZONE, e_Error, "[Table %d] Unauthorized notify detected. Player id: %d, current token: %d; claimed state: %d, current state: %d; claim step: %d, current step: %d", m_gameId,

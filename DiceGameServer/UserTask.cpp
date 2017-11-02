@@ -13,12 +13,12 @@ using namespace network;
 
 UserTask::~UserTask()
 {
-	ztLoggerWrite(ZONE, e_Information, "~UserTask[%s] deleted", m_userId.c_str() );
-	UserSessionManager::getInstance().RemoveUser(m_userId);
+	ztLoggerWrite(ZONE, e_Information, "~UserTask[%s] deleted", m_username.c_str() );
+	UserSessionManager::getInstance().RemoveUser(m_username);
 	UserSessionManager::getInstance().RemoveUserById(m_iTmpId);
 	GameGrail* game = getGame();
 	if(game){
-		game->onUserLeave(m_userId);
+		game->onUserLeave(m_username);
 	}
 }
 
@@ -35,7 +35,7 @@ void UserTask::OnCheck()
 	time_t tmNow  = time(NULL);
 	if (tmNow - m_activeTime > m_iCheckTime)
 	{	
-		ztLoggerWrite(ZONE, e_Information, "OnCheck[%s]: heartbeat timeout,be kicked off ", m_userId.c_str());
+		ztLoggerWrite(ZONE, e_Information, "OnCheck[%s]: heartbeat timeout,be kicked off ", m_username.c_str());
 		SetQuit();
 		return;
 	}
@@ -77,14 +77,14 @@ bool UserTask::cmdMsgParse(const char *pstrMsg, const uint32_t nCmdLen)
 		uint16_t type;
 		::google::protobuf::Message *proto = (::google::protobuf::Message*) proto_decoder(pstrMsg, type);
 		if(!proto){
-			ztLoggerWrite(ZONE, e_Error, "[%s]Receive: Unkown type: %d", m_userId.c_str(), type);
+			ztLoggerWrite(ZONE, e_Error, "[%s]Receive: Unkown type: %d", m_username.c_str(), type);
 			return false;
 		}
 		
 		m_activeTime = time(NULL);
 
 
-		ztLoggerWrite(ZONE, e_Information, "[%s]Receive: type: %d,\n%s", m_userId.c_str(), type, proto->DebugString().c_str());
+		ztLoggerWrite(ZONE, e_Information, "[%s]Receive: type: %d,\n%s", m_username.c_str(), type, proto->DebugString().c_str());
 		
 		
 		switch (type)
@@ -212,7 +212,7 @@ bool UserTask::cmdMsgParse(const char *pstrMsg, const uint32_t nCmdLen)
 				//尝试从角色的cmdMsgParse里找匹配
 				GameGrail* game = getGame();
 				if (!game || game->getPlayerEntity(m_playerId)->cmdMsgParse(this, type, proto) == false) {
-					ztLoggerWrite(ZONE, e_Error, "[%s]Received undefine MSG_RESPOND:\n%s", m_userId.c_str(), proto->DebugString().c_str());
+					ztLoggerWrite(ZONE, e_Error, "[%s]Received undefine MSG_RESPOND:\n%s", m_username.c_str(), proto->DebugString().c_str());
 					delete proto;
 				}
 			}
@@ -234,15 +234,15 @@ bool UserTask::cmdMsgParse(const char *pstrMsg, const uint32_t nCmdLen)
 			break;
 		}
 		default:
-			ztLoggerWrite(ZONE, e_Error, "[%s]Received undefine MSG_TYPE: type:%d,\n To proto: %s", m_userId.c_str(), type, proto->DebugString().c_str());
+			ztLoggerWrite(ZONE, e_Error, "[%s]Received undefine MSG_TYPE: type:%d,\n To proto: %s", m_username.c_str(), type, proto->DebugString().c_str());
 			delete proto;
 		}
 		return true;
 	}catch(GrailError e){
-		ztLoggerWrite(ZONE, e_Error, "[%s]UserTask throws error: %d, Received Message: %s", m_userId.c_str(), e, pstrMsg);
+		ztLoggerWrite(ZONE, e_Error, "[%s]UserTask throws error: %d, Received Message: %s", m_username.c_str(), e, pstrMsg);
 		return false;
 	}catch(std::exception const& e) {
-		ztLoggerWrite(ZONE, e_Error, "[%s]UserTask throws error: %s, Received Message: %s",	m_userId.c_str(), e.what(), pstrMsg);
+		ztLoggerWrite(ZONE, e_Error, "[%s]UserTask throws error: %s, Received Message: %s", m_username.c_str(), e.what(), pstrMsg);
 	}
 }
 
@@ -257,20 +257,22 @@ void UserTask::handleLogIn(LoginRequest* req)
 	else if(req->asguest()){
 		m_userType = STATUS_GUEST;
 		m_bAuthen = true;
-		m_userId = TOQSTR(m_iTmpId);
-		m_nickname = m_userId;		
+		m_userId = -1;
+		m_username = TOQSTR(m_iTmpId);
+		m_nickname = m_username;
 	}
 	else{
 		struct UserAccount account = DBInstance.userAccountDAO->query(req->user_id(), req->user_password());
 		m_userType = account.status;
 		if(m_userType == STATUS_NORMAL || m_userType == STATUS_VIP || m_userType == STATUS_ADMIN){
 			m_bAuthen = true;
-			m_userId = account.username;
+			m_userId = account.userId;
+			m_username = account.username;
 			m_nickname = account.nickname;
 		}
 	}
 	if(m_bAuthen){
-		UserSessionManager::getInstance().AddUser(m_userId, this);		
+		UserSessionManager::getInstance().AddUser(m_username, this);
 	}
 	Coder::logInResponse(m_userType, m_nickname, response);
 	sendProto(MSG_LOGIN_REP, response);
@@ -300,20 +302,20 @@ void UserTask::handleCreateRoom(CreateRoomRequest* req)
 void UserTask::handleEnterRoom(EnterRoomRequest* req, bool bypassed)
 {
 	ztLoggerWrite(ZONE, e_Information, "UserTask::handleEnterRoom() userId [%s] enter Table %d.", 
-			m_userId.c_str(), m_tableId);
+		m_username.c_str(), m_tableId);
 	int playerId = GUEST;
 	int ret;
 	if(m_tableId != req->room_id()){
 		GameGrail* game = getGame();
 		if(game){
-			game->onUserLeave(m_userId);
+			game->onUserLeave(m_username);
 		}
 	}
 	if(bypassed){
-		ret = GameManager::getInstance().enterRoom(m_userId, m_nickname, req, playerId);
+		ret = GameManager::getInstance().enterRoom(m_username, m_nickname, req, playerId);
 	}
 	else{
-		ret = GameManager::getInstance().tryEnterRoom(m_userId, m_nickname, req, playerId, m_userType);
+		ret = GameManager::getInstance().tryEnterRoom(m_username, m_nickname, req, playerId, m_userType);
 	}
 	if(ret == GE_SUCCESS){
 		m_tableId = req->room_id();
@@ -330,11 +332,11 @@ void UserTask::handleLeaveRoom(LeaveRoomRequest* request)
 {
 	GameGrail* game = getGame();
 	if(game){
-		game->onUserLeave(m_userId);
+		game->onUserLeave(m_username);
 	}
 	else{
 		ztLoggerWrite(ZONE, e_Warning, "UserTask::cmdMsgParse() userId [%s] cannot leave Table %d.", 
-			m_userId.c_str(), m_tableId);
+			m_username.c_str(), m_tableId);
 	}
 }
 
@@ -347,7 +349,7 @@ void UserTask::handleRoomList(RoomListRequest* req)
 	}
 	else{
 		ztLoggerWrite(ZONE, e_Error, "UserTask::cmdMsgParse() userId [%s] cannot retrieve TableList. Ret: %d", 
-			m_userId.c_str(), ret);
+			m_username.c_str(), ret);
 	}
 }
 
@@ -361,7 +363,7 @@ void UserTask::handleReadyGame(ReadyForGameRequest* req)
 		int ret = GameManager::getInstance().setPlayerReady(m_tableId, m_playerId, req);
 		if (ret != GE_SUCCESS) {
 			ztLoggerWrite(ZONE, e_Error, "UserTask::cmdMsgParse() userId [%s] cannot get ready. Table %d. Ret: %d",
-				m_userId.c_str(), m_tableId, ret);
+				m_username.c_str(), m_tableId, ret);
 		}
 	}
 	break;
@@ -376,7 +378,7 @@ void UserTask::handleJoinTeam(JoinTeamRequest* req)
 	}
 	else
 		ztLoggerWrite(ZONE, e_Warning, "UserTask::cmdMsgParse() userId [%s] cannot join team. Table %d.", 
-					m_userId.c_str(), m_tableId);
+			m_username.c_str(), m_tableId);
 }
 
 void UserTask::handleBecomeLeader(BecomeLeaderResponse* res)
@@ -387,7 +389,7 @@ void UserTask::handleBecomeLeader(BecomeLeaderResponse* res)
 	}
 	else
 		ztLoggerWrite(ZONE, e_Warning, "UserTask::cmdMsgParse() userId [%s] cannot become leader. Table %d.", 
-					m_userId.c_str(), m_tableId);
+			m_username.c_str(), m_tableId);
 }
 
 bool UserTask::msgParse(const void *pstrMsg, const uint32_t nCmdLen)

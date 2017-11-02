@@ -218,11 +218,16 @@ message Gossip {
 message HeartBeat {
 }
 
+enum PollingType {
+    POLLING_FORCE_WAIT = 1;
+    POLLING_LEGAL_LEAVE = 2;
+    POLLING_MVP = 3;
+}
+
 message PollingRequest {
-    required string object = 1;
-	repeated string options = 2;
+    required PollingType type = 1;
 }
 
 message PollingResponse {
-    optional uint32 option = 1;
+    required uint32 option = 1;
 }

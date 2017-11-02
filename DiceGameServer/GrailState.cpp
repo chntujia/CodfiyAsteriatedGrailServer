@@ -13,31 +13,27 @@ int StateIdle::handle(GameGrail* engine)
 	return GE_SUCCESS;
 }
 
-int poll(string object, list<string> options, int threshold, GameGrail* engine)
+int poll(PollingType type, int optionSize, int threshold, GameGrail* engine)
 {
 	engine->resetReady(-1);
 	PollingRequest msg;
-	Coder::pollingMsg(object, options, msg);
-	PollingRequest * messages[MAXPLAYER];
+	msg.set_type(type);
 	int maxPlayer = engine->getGameMaxPlayers();
-	for (int i = 0; i < maxPlayer; i++) {
-		messages[i] = &msg;
-	}
-	int opSize = msg.options_size();
-	vector<int> counter(opSize, 0);
-	engine->waitForAll(MSG_POLLING_REQ, (void**)messages);
+
+	vector<int> counter(optionSize, 0);
+	engine->waitForAllConnected(MSG_POLLING_REQ, msg);
 	void* reply;
 	for (int i = 0; i < maxPlayer; i++) {
 		if (GE_SUCCESS == engine->getReply(i, reply)) {
 			PollingResponse *respond = (PollingResponse*)reply;
 			int opt = respond->option();
-			if (opt >= 0 && opt < opSize) {
+			if (opt >= 0 && opt < optionSize) {
 				counter[opt]++;
 			}
 		}
 	}
 	int maxOpt = 0;
-	for (int i = 0; i < opSize; i++) {
+	for (int i = 0; i < optionSize; i++) {
 		if (counter[i] > counter[maxOpt]) {
 			maxOpt = i;
 		}
@@ -48,53 +44,56 @@ int poll(string object, list<string> options, int threshold, GameGrail* engine)
 
 int StatePollingDisconnected::handle(GameGrail* engine)
 {
-	if (engine->getGameNowPlayers() < engine->getGameMaxPlayers()) {
-		int opt = poll("这次忍了，下次还等吗？", list<string> {"当然是选择原谅她啊", "不等"}, threshold, engine);
-		if (opt == 0) {
-			Gossip gossip;
-			Coder::noticeMsg("绿色的光芒充斥着房间，大伙决定再给他一次机会", gossip);
-			engine->sendMessage(-1, MSG_GOSSIP, gossip);
-		}
-		else if (opt == 1) {
-			for (int i = 0; i < engine->getGameMaxPlayers(); i++) {
-				if (!engine->getPlayerContext(i)->isConnected()) {
-					DBInstance.userAccountDAO->gameFlee(engine->getUserId(i));
-				}
-			}
-			engine->discarded = true;
+	if (engine->getGameNowPlayers() == engine->getGameMaxPlayers()) {
+		engine->popGameState();
+		return GE_SUCCESS;
+	}
 
-			Gossip gossip;
-			Coder::noticeMsg("房间已废，可有序离开，愿外面没有始乱终弃的人", gossip);
-			engine->sendMessage(-1, MSG_GOSSIP, gossip);
-			engine->popGameState();
-			engine->pushGameState(new StateIdle);
+	int waitTime = 60 - time(NULL) + beginTime;
+	if (waitTime > 0) {
+		PollingRequest msg;
+		msg.set_type(PollingType::POLLING_FORCE_WAIT);
+		PollingRequest * messages[MAXPLAYER];
+		int maxPlayer = engine->getGameMaxPlayers();
+		for (int i = 0; i < maxPlayer; i++) {
+			messages[i] = &msg;
 		}
+		engine->resetReady(-1);
+		engine->waitForAll(MSG_POLLING_REQ, (void**)messages, waitTime);
+	}
+	
+	int opt = poll(PollingType::POLLING_LEGAL_LEAVE, 2, threshold, engine);
+	PollingResponse rep;
+	rep.set_option(opt);
+	engine->sendMessage(-1, MSG_POLLING_REP, rep);
+
+	if (opt == 1) {
+		for (int i = 0; i < engine->getGameMaxPlayers(); i++) {
+			if (!engine->getPlayerContext(i)->isConnected()) {
+				DBInstance.userAccountDAO->gameFlee(engine->getUserId(i));
+			}
+		}
+		engine->discarded = true;	
+		engine->popGameState();
+		engine->pushGameState(new StateIdle);
 	}
 	else {
-		engine->popGameState();
+		beginTime = time(NULL);
 	}
 	return GE_SUCCESS;
 }
 
 int StatePollingGameover::handle(GameGrail* engine)
 {
-	list<string> names;
 	int maxPlayer = engine->getGameMaxPlayers();
-	for (int i = 0; i < maxPlayer; i++) {
-		names.push_back(engine->getPlayerContext(i)->getName());
-	}
-	int opt = poll("本场的mvp由你决定", names, maxPlayer / 2, engine);	
+
+	int opt = poll(PollingType::POLLING_MVP, maxPlayer, maxPlayer / 2, engine);
 	engine->m_tableLog.mvp = opt;
 	DBInstance.statisticDAO->insert(engine->m_tableLog);
 
-	Gossip gossip;
-	if (opt != -1) {
-		Coder::noticeMsg("恭喜" + engine->getPlayerContext(opt)->getName() + "成为本场的mvp", gossip);
-	}
-	else {
-		Coder::noticeMsg("没人获得过半的票，本场mvp空缺", gossip);
-	}
-	engine->sendMessage(-1, MSG_GOSSIP, gossip);
+	PollingResponse rep;
+	rep.set_option(opt);
+	engine->sendMessage(-1, MSG_POLLING_REP, rep);
 
 	engine->popGameState();
 	engine->pushGameState(new StateIdle);	
