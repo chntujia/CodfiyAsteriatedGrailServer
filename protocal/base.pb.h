@@ -2316,6 +2316,13 @@ class SinglePlayerInfo : public ::google::protobuf::Message /* @@protoc_insertio
   ::google::protobuf::uint32 leader() const;
   void set_leader(::google::protobuf::uint32 value);
 
+  // optional bool online = 21;
+  bool has_online() const;
+  void clear_online();
+  static const int kOnlineFieldNumber = 21;
+  bool online() const;
+  void set_online(bool value);
+
   // @@protoc_insertion_point(class_scope:network.SinglePlayerInfo)
  private:
   inline void set_has_id();
@@ -2348,6 +2355,8 @@ class SinglePlayerInfo : public ::google::protobuf::Message /* @@protoc_insertio
   inline void clear_has_ready();
   inline void set_has_leader();
   inline void clear_has_leader();
+  inline void set_has_online();
+  inline void clear_has_online();
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   ::google::protobuf::uint32 _has_bits_[1];
@@ -2366,10 +2375,11 @@ class SinglePlayerInfo : public ::google::protobuf::Message /* @@protoc_insertio
   ::google::protobuf::uint32 covered_count_;
   ::google::protobuf::RepeatedField< ::google::protobuf::uint32 > hands_;
   ::google::protobuf::RepeatedField< ::google::protobuf::uint32 > covereds_;
+  ::google::protobuf::internal::ArenaStringPtr nickname_;
+  ::google::protobuf::uint32 max_hand_;
   bool is_knelt_;
   bool ready_;
-  ::google::protobuf::uint32 max_hand_;
-  ::google::protobuf::internal::ArenaStringPtr nickname_;
+  bool online_;
   ::google::protobuf::RepeatedPtrField< ::std::string> delete_field_;
   ::google::protobuf::uint32 leader_;
   friend void  protobuf_AddDesc_base_2eproto();
@@ -5277,6 +5287,30 @@ inline void SinglePlayerInfo::set_leader(::google::protobuf::uint32 value) {
   set_has_leader();
   leader_ = value;
   // @@protoc_insertion_point(field_set:network.SinglePlayerInfo.leader)
+}
+
+// optional bool online = 21;
+inline bool SinglePlayerInfo::has_online() const {
+  return (_has_bits_[0] & 0x00100000u) != 0;
+}
+inline void SinglePlayerInfo::set_has_online() {
+  _has_bits_[0] |= 0x00100000u;
+}
+inline void SinglePlayerInfo::clear_has_online() {
+  _has_bits_[0] &= ~0x00100000u;
+}
+inline void SinglePlayerInfo::clear_online() {
+  online_ = false;
+  clear_has_online();
+}
+inline bool SinglePlayerInfo::online() const {
+  // @@protoc_insertion_point(field_get:network.SinglePlayerInfo.online)
+  return online_;
+}
+inline void SinglePlayerInfo::set_online(bool value) {
+  set_has_online();
+  online_ = value;
+  // @@protoc_insertion_point(field_set:network.SinglePlayerInfo.online)
 }
 
 // -------------------------------------------------------------------

@@ -1165,6 +1165,13 @@ void GameGrail::onPlayerEnter(int playerId)
 		Gossip gossip;		
 		Coder::noticeMsg("玩家" + std::to_string(playerId) + "回来了", gossip);
 		sendMessageExcept(playerId, MSG_GOSSIP, gossip);
+		GameInfo whosback;
+		SinglePlayerInfo *player;
+		player = whosback.add_player_infos();
+		player->set_id(playerId);
+		player->set_online(true);
+		sendMessageExcept(playerId, MSG_GAME, whosback);
+
 		GameInfo game_info;
 		toProtoAs(playerId, game_info);
 		sendMessage(playerId, MSG_GAME, game_info);
@@ -1249,6 +1256,7 @@ void GameGrail::toProtoAs(int playerId, GameInfo& game_info)
 		int id = room_info.player_infos(i).id();
 		PlayerEntity* player = getPlayerEntity(id);
 		player->toProto(player_info);
+		player_info->set_online(m_playerContexts[id]->isConnected());
 		player_info->set_nickname(m_playerContexts[id]->getName());
 		player_info->set_leader(room_info.player_infos(i).leader());
 		if(id == playerId){
