@@ -213,7 +213,7 @@ GameGrail::GameGrail(GameGrailConfig *config) : playing(false), roleInited(false
 	m_responseTime = 60;
 	m_maxAttempts = 1;
 	m_teamArea = NULL;
-	pile = discard = NULL;
+	initDecks();
 	room_info.set_room_id(m_gameId);
 	pushGameState(new StateWaitForEnter);
 }
@@ -1136,7 +1136,8 @@ void GameGrail::initPlayerEntities()
 	m_playerEntities[id]->setPost(m_playerEntities[post]);
 	m_playerEntities[id]->setPre(m_playerEntities[pre]);
 	m_teamArea = new TeamArea;
-
+	m_firstPlayerID = room_info.player_infos().begin()->id();
+	m_currentPlayerID = m_firstPlayerID;
 	roleInited = true;
 }
 
@@ -1249,12 +1250,14 @@ void GameGrail::toProtoAs(int playerId, GameInfo& game_info)
 	game_info.set_is_started(true);
 	game_info.set_player_id(playerId);
 
-	for(int i = 0; i < m_maxPlayers; i++)
+	for(int i = 0; i < room_info.player_infos_size(); i++)
 	{
 		SinglePlayerInfo* player_info = game_info.add_player_infos();
 		//按座次顺序
 		int id = room_info.player_infos(i).id();
 		PlayerEntity* player = getPlayerEntity(id);
+		if (!player)
+			continue;
 		player->toProto(player_info);
 		player_info->set_online(m_playerContexts[id]->isConnected());
 		player_info->set_nickname(m_playerContexts[id]->getName());

@@ -748,11 +748,7 @@ int StateRoleStrategyCM::handle(GameGrail* engine)
 int StateGameStart::handle(GameGrail* engine)
 {	
 	if(!isSet){		
-		ztLoggerWrite(ZONE, e_Information, "[Table %d] RoomInfo: %s", engine->getGameId(), engine->room_info.DebugString().c_str());
-		isSet=true;
-		engine->initDecks();
-		engine->m_firstPlayerID = engine->room_info.player_infos().begin()->id();
-		engine->m_currentPlayerID = engine->m_firstPlayerID;
+		isSet=true;		
 		Sleep(1000);
 	}
 	int ret;
