@@ -7,12 +7,6 @@
 #include "boost/date_time/posix_time/posix_time.hpp"
 #include "boost/format.hpp"
 
-int StateIdle::handle(GameGrail* engine)
-{
-	Sleep(60 * 1000);
-	return GE_SUCCESS;
-}
-
 int poll(PollingType type, int optionSize, int threshold, GameGrail* engine)
 {
 	engine->resetReady(-1);
@@ -48,6 +42,11 @@ int StatePollingDisconnected::handle(GameGrail* engine)
 		engine->popGameState();
 		return GE_SUCCESS;
 	}
+	if (engine->getGameNowPlayers() < threshold) {
+		engine->dying = true;
+		engine->popGameState();
+		return GE_SUCCESS;
+	}
 
 	int waitTime = 60 - time(NULL) + beginTime;
 	if (waitTime > 0) {
@@ -73,9 +72,8 @@ int StatePollingDisconnected::handle(GameGrail* engine)
 				DBInstance.userAccountDAO->gameFlee(engine->getUserId(i));
 			}
 		}
-		engine->discarded = true;	
+		engine->dying = true;
 		engine->popGameState();
-		engine->pushGameState(new StateIdle);
 	}
 	else {
 		beginTime = time(NULL);
@@ -95,8 +93,9 @@ int StatePollingGameover::handle(GameGrail* engine)
 	rep.set_option(opt);
 	engine->sendMessage(-1, MSG_POLLING_REP, rep);
 
+	Sleep(5 * 60 * 1000);
+	engine->dying = true;
 	engine->popGameState();
-	engine->pushGameState(new StateIdle);	
 	return GE_SUCCESS;
 }
 
@@ -2412,5 +2411,6 @@ int StateGameOver::handle(GameGrail* engine)
 			engine->m_tableLog.tableDetail[i].result = RESULT_LOSE;
 		DBInstance.userAccountDAO->gameComplete(engine->m_tableLog.tableDetail[i].playerID);
 	}
+	engine->pushGameState(new StatePollingGameover);
 	return GE_SUCCESS;
 }

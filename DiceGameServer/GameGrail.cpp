@@ -194,7 +194,7 @@ void TeamArea::setMorale(int color, int value)
         this->moraleBLUE = value;
 }
 
-GameGrail::GameGrail(GameGrailConfig *config) : playing(false), roleInited(false), interrupted(false), discarded(false), gameover(false), dead(false)
+GameGrail::GameGrail(GameGrailConfig *config) : playing(false), roleInited(false), interrupted(false), dying(false), gameover(false), dead(false)
 {
 	m_gameId = config->getTableId();
 	m_gameName = config->getTableName();
@@ -406,7 +406,7 @@ bool GameGrail::waitForAllConnected(uint16_t proto_type, google::protobuf::Messa
 
 bool GameGrail::falseNotify(int id)
 {
-	if (id == m_token || topGameState()->state == STATE_POLLING_DISCONNECTED) {
+	if (id == m_token || -1 == m_token) {
 		interrupted = true;
 		m_condition_for_wait.notify_one();
 		return true;
@@ -934,7 +934,7 @@ void GameGrail::GameRun()
 	ztLoggerWrite(ZONE, e_Information, "[Table %d] %s created", m_gameId, m_gameName.c_str());
 	int mvpElected = false;
 	int error = 0;
-	while(true)
+	while(!dying)
 	{		
 		try{
 			if (error > 3) {
@@ -946,18 +946,14 @@ void GameGrail::GameRun()
 			if (nowPlayer == 0) {
 				break;
 			}
-			
-			if (roleInited) {				
-				if (!gameover && !discarded && nowPlayer < m_maxPlayers && topGameState()->state != STATE_POLLING_DISCONNECTED) {
-					pushGameState(new StatePollingDisconnected(nowPlayer / 2));
-				}
-				if (gameover && !mvpElected) {
-					pushGameState(new StatePollingGameover);
-					mvpElected = true;
+
+			if (roleInited) {
+				if (!gameover && nowPlayer < m_maxPlayers && topGameState()->state != STATE_POLLING_DISCONNECTED) {
+					pushGameState(new StatePollingDisconnected(m_maxPlayers / 2));
 				}
 			}
 
-			GrailState* currentState = topGameState();
+			GrailState* currentState = topGameState();						
 			
 			if (currentState->state != STATE_WAIT_FOR_ENTER) {
 				ztLoggerWrite(ZONE, e_Information, "[Table %d] Enter %s", m_gameId, currentState->type());

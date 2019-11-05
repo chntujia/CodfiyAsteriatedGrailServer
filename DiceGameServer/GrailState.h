@@ -163,13 +163,6 @@ public:
 	const char* type() const { return typeid(*this).name(); }
 };
 
-class StateIdle : public GrailState
-{
-public:
-	StateIdle() : GrailState(STATE_IDLE) {}
-	int handle(GameGrail* engine);
-};
-
 class StatePollingDisconnected : public GrailState
 {
 public:

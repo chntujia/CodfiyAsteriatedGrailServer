@@ -145,7 +145,7 @@ public:
 	bool playing;
 	bool roleInited;
 	bool interrupted;
-	bool discarded;
+	bool dying;
 	bool gameover;
 	bool dead;	
 
