@@ -205,6 +205,7 @@ int WuNv::XueZhiAiShang(int &step, int currentPlayerID)
 	if(step != XUE_ZHI_AI_SHANG)
 	{
 		step = XUE_ZHI_AI_SHANG;
+		aiShangChoose = 0;
 		CommandRequest cmd_req;
 		Coder::askForSkill(id, XUE_ZHI_AI_SHANG, cmd_req);
 		//有限等待，由UserTask调用tryNotify唤醒
@@ -328,6 +329,9 @@ int WuNv::XueZhiAiShang(int &step, int currentPlayerID)
 			step =STEP_DONE;
 			return GE_URGENT;
 		}
+		//断线重连跳过
+		step = STEP_DONE;
+		return GE_TIMEOUT;
 	}
 }
 

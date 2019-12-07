@@ -28,7 +28,6 @@ private:
 	int BuQuYiZhi();
 	int JianQiZhan(CONTEXT_TIMELINE_2_HIT *con);
 	int TianShiZhiHun();
-	int TianShiZhiHun_EffectHit();
 	int TianShiZhiHun_EffectMiss();
 	int EMoZhiHun();
 	int EMoZhiHun_EffectMiss();

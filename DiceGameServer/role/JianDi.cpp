@@ -143,7 +143,15 @@ int JianDi::p_timeline_2_hit(int &step, CONTEXT_TIMELINE_2_HIT *con)
 		if(used_TIAN_SHI_ZHI_HUN)
 		{
 			//若命中，剑帝+2治疗
-			ret = TianShiZhiHun_EffectHit();
+			network::SkillMsg skill;
+			Coder::skillNotice(id, id, TIAN_SHI_ZHI_HUN, skill);
+			engine->sendMessage(-1, MSG_SKILL, skill);
+			//+2【治疗】
+			addCrossNum(2);
+			GameInfo update_info;
+			Coder::crossNotice(id, getCrossNum(), update_info);
+			engine->sendMessage(-1, MSG_GAME, update_info);
+
 			used_TIAN_SHI_ZHI_HUN=false;
 		}
 		step = STEP_DONE;
@@ -217,11 +225,13 @@ int JianDi::p_after_attack(int &step, int playerID)
 int JianDi::p_additional_action(int chosen)
 {
 	int ret = GE_INVALID_STEP;
-	PlayerEntity::p_additional_action(chosen);
 	if(chosen == BU_QU_YI_ZHI)
 	{
 		ret = BuQuYiZhi();
 	}
+	else
+		ret = PlayerEntity::p_additional_action(chosen);
+	
 	return ret;
 }
 
@@ -394,20 +404,6 @@ int JianDi::TianShiZhiHun()
 	}
 
 }
-
-int JianDi::TianShiZhiHun_EffectHit()
-{
-	network::SkillMsg skill;
-	Coder::skillNotice(id, id,TIAN_SHI_ZHI_HUN, skill);
-	engine->sendMessage(-1, MSG_SKILL, skill);
-	//+2【治疗】
-	addCrossNum(2);
-	GameInfo update_info;
-	Coder::crossNotice(id, getCrossNum(), update_info);
-	engine->sendMessage(-1, MSG_GAME, update_info);
-	return GE_SUCCESS;
-}
-
 int JianDi::TianShiZhiHun_EffectMiss()
 {
 	//+1【士气】

@@ -25,6 +25,6 @@ private:
 	int LiuXue(int playerID);
 
 	int tongShengID;
-	int aiShangChoose;
+	int aiShangChoose=0;
 	int aiShangDst;
 };
