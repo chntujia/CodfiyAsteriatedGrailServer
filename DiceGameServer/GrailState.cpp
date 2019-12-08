@@ -101,12 +101,16 @@ int StatePollingGameover::handle(GameGrail* engine)
 
 int StateWaitForEnter::handle(GameGrail* engine)
 {
+	Sleep(1000);
+
 	if(engine->isAllStartReady())
 	{
 		engine->popGameState();
 		engine->pushGameState(new StateSeatArrange);		
 	}
-	Sleep(1000);
+	if (time(NULL) - beginTime > 30 * 60 * 1000) {
+		engine->dying = true;
+	}
 	return GE_SUCCESS;
 }
 

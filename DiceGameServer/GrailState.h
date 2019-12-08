@@ -183,8 +183,10 @@ public:
 class StateWaitForEnter : public GrailState
 {
 public:
-	StateWaitForEnter(): GrailState(STATE_WAIT_FOR_ENTER){}
+	StateWaitForEnter(): beginTime(time(NULL)), GrailState(STATE_WAIT_FOR_ENTER){}
 	int handle(GameGrail* engine);
+private:
+	int beginTime;
 };
 
 class StateSeatArrange : public GrailState
