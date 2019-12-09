@@ -227,6 +227,7 @@ int JianDi::p_additional_action(int chosen)
 	int ret = GE_INVALID_STEP;
 	if(chosen == BU_QU_YI_ZHI)
 	{
+		PlayerEntity::p_additional_action(chosen);
 		ret = BuQuYiZhi();
 	}
 	else
