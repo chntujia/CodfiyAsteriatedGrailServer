@@ -1,0 +1,16 @@
+diff a/DiceGameServer/role/TianShi.cpp b/DiceGameServer/role/TianShi.cpp	(rejected hunks)
+@@ -287,13 +287,8 @@
+ 		if (GE_SUCCESS == (ret = engine->getReply(id, reply)))
+ 		{
+ 			Respond* respond = (Respond*)reply;
++			if (respond->args(0) == 1) {
+ 				dstID = respond->dst_ids(0);
+-		}
+-	}
+-	else{
+-		dstID = id;
+-	}
+-
+ 				SkillMsg skill_msg;
+ 				Coder::skillNotice(id, dstID, TIAN_SHI_JI_BAN, skill_msg);
+ 				engine->sendMessage(-1, MSG_SKILL, skill_msg);

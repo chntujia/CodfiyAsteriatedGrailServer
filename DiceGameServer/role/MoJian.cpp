@@ -335,6 +335,7 @@ int MoJian::AnYingNingJu()
 				tap = true;
 				GameInfo game_info;
 				Coder::tapNotice(id, true, game_info);
+				CONTEXT_TAP *con = new CONTEXT_TAP; con->id = id; con->tap = tap; engine->pushGameState(new StateTap(con));
 				engine->sendMessage(-1, MSG_GAME, game_info);
 				HARM harm;
 				harm.type=HARM_MAGIC;
@@ -414,21 +415,43 @@ int MoJian::HeiAnZhenChanNoReattack(CONTEXT_TIMELINE_1 *con)
 //命中则补手牌
 int MoJian::HeiAnZhenChanBuPai(CONTEXT_TIMELINE_2_HIT* con)
 {
-	//获取需要补充的手牌数量
-	int num=getHandCardMax()-getHandCardNum();
-	//补手牌，待补充
-	vector<int> cards;
-	HARM harm;
-	harm.srcID = id;
-	harm.type = HARM_NONE;
-	harm.point =num;                  //最大手牌减去当前手牌
-	harm.cause = HEI_AN_ZHEN_CHAN;
-	engine->setStateMoveCardsToHand(-1, DECK_PILE, con->harm.srcID, DECK_HAND, num, cards, harm, false);
 	SkillMsg skill_msg;
-	Coder::skillNotice(id, con->harm.srcID, HEI_AN_ZHEN_CHAN, skill_msg);
+	Coder::skillNotice(id, id, HEI_AN_ZHEN_CHAN, skill_msg);
 	engine->sendMessage(-1, MSG_SKILL, skill_msg);
-	using_HeiAnZhenChan=false;  //当前【黑暗震颤】环节处理完毕
-	return GE_URGENT;
+	using_HeiAnZhenChan = false;
+	//获取需要补充的手牌数量
+	int num=getHandCardNum()-4;
+	//补手牌，待补充
+	if (num > 0)
+	{
+		HARM qipai;
+		qipai.cause = HEI_AN_ZHEN_CHAN;
+		qipai.point = num;
+		qipai.srcID = id;
+		qipai.type = HARM_NONE;
+		engine->pushGameState(new StateRequestHand(id, qipai, -1, DECK_DISCARD, false, false));
+
+		SkillMsg skill_msg;
+		Coder::skillNotice(id, id, HEI_AN_ZHEN_CHAN, skill_msg);
+		engine->sendMessage(-1, MSG_SKILL, skill_msg);
+		using_HeiAnZhenChan = false;  //当前【黑暗震颤】环节处理完毕
+		return GE_URGENT;
+	}
+	else if (num < 0)
+	{
+		vector<int> cards;
+		HARM harm;
+		harm.srcID = id;
+		harm.type = HARM_NONE;
+		harm.point = -num;                  //最大手牌减去当前手牌
+		harm.cause = HEI_AN_ZHEN_CHAN;
+		engine->setStateMoveCardsToHand(-1, DECK_PILE, con->harm.srcID, DECK_HAND, -num, cards, harm, false);
+	  //当前【黑暗震颤】环节处理完毕
+		return GE_URGENT;
+	}
+	else
+		return GE_SUCCESS;
+
 }
 
 int MoJian::AnYingLiuXing(Action* action)

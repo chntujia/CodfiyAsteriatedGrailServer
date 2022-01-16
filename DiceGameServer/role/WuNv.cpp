@@ -124,7 +124,7 @@ int WuNv::p_magic_skill(int &step, Action* action)
 	switch(action->action_id())
 	{
 	case TONG_SHENG_GONG_SI:
-		ret = TongShengGongSi(step, action);
+		ret = TongShengQiangSi(step, action);
 		break;
 	case NI_LIU:
 		ret = NiLiu(step, action);
@@ -144,7 +144,7 @@ int WuNv::p_magic_skill(int &step, Action* action)
 	return ret;
 }
 
-int WuNv::TongShengGongSi(int &step, Action *action)
+int WuNv::TongShengQiangSi(int &step, Action *action)
 {
 	if(step == STEP_INIT)
 	{
@@ -469,7 +469,7 @@ int WuNv::ToLiuXueXingTai(CONTEXT_LOSE_MORALE *con)
 		Coder::tapNotice(id, true, game_info);
 		Coder::crossNotice(id, getCrossNum(), game_info);
 		engine->sendMessage(-1, MSG_GAME, game_info);
-
+		CONTEXT_TAP *con = new CONTEXT_TAP; con->id = id; con->tap = tap; engine->pushGameState(new StateTap(con));
 		if(tongShengID != -1)
 		{
 			if(tongShengID == id)
@@ -481,8 +481,8 @@ int WuNv::ToLiuXueXingTai(CONTEXT_LOSE_MORALE *con)
 				engine->setStateChangeMaxHand(tongShengID, false, false, 6,3);
 				engine->setStateChangeMaxHand(id, false, false, 6,3);
 			}
-			return GE_URGENT;
 		}
+		return GE_URGENT;
 	}
 	return GE_SUCCESS;
 }

@@ -128,6 +128,7 @@ int MoNv::MoNvZhiNu()
 
 				GameInfo game_info;
 				Coder::tapNotice(id, tap, game_info);
+				CONTEXT_TAP *con = new CONTEXT_TAP; con->id = id; con->tap = tap; engine->pushGameState(new StateTap(con));
 				engine->sendMessage(-1, MSG_GAME, game_info);
 
 				engine->setStateChangeMaxHand(id, false, false, 6, token[0]-2);

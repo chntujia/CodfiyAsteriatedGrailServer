@@ -97,7 +97,8 @@ int QiDao::QiDong()
 				Coder::tapNotice(id, true, game_info);
 				Coder::energyNotice(id, gem, crystal, game_info);
 				engine->sendMessage(-1, MSG_GAME, game_info);
-				return ret;
+				CONTEXT_TAP *con = new CONTEXT_TAP; con->id = id; con->tap = tap; engine->pushGameState(new StateTap(con));
+				return GE_URGENT;
 			}
 			else
 				return ret;

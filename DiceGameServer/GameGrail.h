@@ -161,9 +161,9 @@ public:
 	GameInfo room_info;
 	list< int > teamA, teamB;
 	tableLogData m_tableLog;
-
-protected:
 	int m_roundId;
+protected:
+	
 	int m_maxPlayers;
 	int m_token;
 	int m_responseTime;	
@@ -317,7 +317,7 @@ public:
 	int setStateTimeline2Hit(int cardID, int dstID, int srcID, HARM harm, bool isActive);
 	int setStateTimeline3(int dstID, HARM harm);
 	int setStateTimeline6(int dstID, HARM harm); //added by Tony
-	int setStateStartLoseMorale(int howMany, int dstID, HARM harm);
+	int setStateStartLoseMorale(int howMany, int dstID, HARM harm, vector<int> toDiscard = {});
     int setStateRoleStrategy();
 	int setStateCurrentPlayer(int playerID);
 	int setStateCheckTurnEnd();

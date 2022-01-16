@@ -5,12 +5,12 @@
 ShiRen::ShiRen(GameGrail *engine, int id, int color) : PlayerEntity(engine, id, color)
 {
 
-	tokenMax[0] = 4;
-	YueZhangDst = id;
-	GameInfo update_info;
-	this->addExclusiveEffect(EX_YONG_HENG_YUE_ZHANG);
-	Coder::exclusiveNotice(id, this->getExclusiveEffect(), update_info);
-	engine->sendMessage(-1, MSG_GAME, update_info);
+	tokenMax[0] = 3;
+	YueZhangDst = -1;
+	//GameInfo update_info;
+	//this->addExclusiveEffect(EX_YONG_HENG_YUE_ZHANG);
+	//Coder::exclusiveNotice(id, this->getExclusiveEffect(), update_info);
+	//engine->sendMessage(-1, MSG_GAME, update_info);
 };
 
 bool ShiRen::ShiRenParse(UserTask* session, int playerID, ::google::protobuf::Message *proto)
@@ -18,16 +18,8 @@ bool ShiRen::ShiRenParse(UserTask* session, int playerID, ::google::protobuf::Me
 	Respond* respond = (Respond*)proto;
 	switch (respond->respond_id())
 	{
-	case JI_ANG_KUANG_XIANG_QU:
-		session->tryNotify(playerID, STATE_TURN_BEGIN_SHIREN, JI_ANG_KUANG_XIANG_QU, respond);
-		return true;
-		break;
 	case JI_ANG_KUANG_XIANG_QU_2:
 		session->tryNotify(playerID, STATE_TURN_BEGIN_SHIREN, JI_ANG_KUANG_XIANG_QU_2, respond);
-		return true;
-		break;
-	case SHENG_LI_JIAO_XIANG_SHI:
-		session->tryNotify(playerID, STATE_TURN_END, SHENG_LI_JIAO_XIANG_SHI, respond);
 		return true;
 		break;
 	case SHENG_LI_JIAO_XIANG_SHI_2:
@@ -50,10 +42,6 @@ bool ShiRen::cmdMsgParse(UserTask* session, uint16_t type, ::google::protobuf::M
 			session->tryNotify(id, STATE_HARM_END, CHEN_LUN_XIE_ZOU_QU, respond);
 			return true;
 			break;
-		case BAO_FENG_QIAN_ZOU_QU:
-			session->tryNotify(id, STATE_BEFORE_TURN_BEGIN, BAO_FENG_QIAN_ZOU_QU, respond);
-			return true;
-			break;
 
 		case XI_WANG_FU_GE_QU:
 			session->tryNotify(id, STATE_BOOT, XI_WANG_FU_GE_QU, respond);
@@ -71,50 +59,8 @@ int ShiRen::p_before_turn_begin(int &step, int currentPlayerID)
 	for (int i = 0; i<6; i++)
 		ChenLunNum[i] = false;
 	ChenLunUsed = false;
-	BaoFengUsed = false;
-	YueZhangReturn = false;
-	if (id != currentPlayerID)
-		return GE_SUCCESS;
-	step = BAO_FENG_QIAN_ZOU_QU;
-	int ret = BaoFengQianZouQu();
-	if (toNextStep(ret) || ret == GE_URGENT) {
-		//全部走完后，请把step设成STEP_DONE
-		step = STEP_DONE;
-	}
-	return ret;
-}
-
-int ShiRen::BaoFengQianZouQu()
-{
-	if (getToken(0) < 1)
-		return GE_SUCCESS;
-	int ret;
-	CommandRequest cmd_req;
-	Coder::askForSkill(id, BAO_FENG_QIAN_ZOU_QU, cmd_req);
-	if (engine->waitForOne(id, network::MSG_CMD_REQ, cmd_req))
-	{
-		void* reply;
-		if (GE_SUCCESS == (ret = engine->getReply(id, reply)))
-		{
-			Respond* respond = (Respond*)reply;
-			if (respond->args(0) == 1) {
-				//确认发动，宣告技能
-				SkillMsg skill;
-				Coder::skillNotice(id, id, BAO_FENG_QIAN_ZOU_QU, skill);
-				engine->sendMessage(-1, MSG_SKILL, skill);
-				setToken(0, token[0] - 1);
-				GameInfo game_info;
-				Coder::tokenNotice(id, 0, token[0], game_info);
-				engine->sendMessage(-1, MSG_GAME, game_info);
-				BaoFengUsed = true;
-			}
-			return GE_SUCCESS;
-		}
-		return ret;
-	}
-	else {
-		return GE_TIMEOUT;
-	}
+	useYueZhang = false;
+	return GE_SUCCESS;
 }
 
 int ShiRen::p_turn_begin_shiren(int &step, int currentPlayerID)
@@ -122,120 +68,30 @@ int ShiRen::p_turn_begin_shiren(int &step, int currentPlayerID)
 	int ret = GE_INVALID_STEP;
 	if (step == STEP_INIT)
 	{
-		step = JI_ANG_KUANG_XIANG_QU;
+		step = JI_ANG_KUANG_XIANG_QU_2;
 	}
-	if (step == JI_ANG_KUANG_XIANG_QU)
-	{
-		ret = JiAngKuangXiangQu(step, currentPlayerID);
-		if (ret == GE_URGENT)
-			return ret;
-	}
+
 	if (step == JI_ANG_KUANG_XIANG_QU_2)
 	{
 		ret = JiAngKuangXiangQu2(step, currentPlayerID);
+		step = GE_YONG_TIAN_FU;
+		if (ret == GE_URGENT)
+			return ret;
 	}
-	return ret;
-}
-
-int ShiRen::JiAngKuangXiangQu(int &step, int  currentPlayerID)
-{
-	if (YueZhangDst != currentPlayerID)
-		return GE_SUCCESS;
-	if (YueZhangDst == id && !BaoFengUsed)
-		return GE_SUCCESS;
-	int choice = 0;
-	PlayerEntity *owner = engine->getPlayerEntity(currentPlayerID);
-	TeamArea *team = engine->getTeamArea();
-	if (team->getEnergy(owner->getColor()) > 1)
-		choice += 1;
-	if (YueZhangDst != id)
-		choice += 2;
-	if (choice <= 0)
-		return GE_SUCCESS;
-	CommandRequest cmd_req;
-	Coder::askForSkill(currentPlayerID, JI_ANG_KUANG_XIANG_QU, cmd_req);
-	Command *cmd = (Command*)(&cmd_req.commands(cmd_req.commands_size() - 1));
-	cmd->add_args(choice);
-	if (engine->waitForOne(currentPlayerID, network::MSG_CMD_REQ, cmd_req))
+	if (step == GE_YONG_TIAN_FU)
 	{
-		void* reply;
-		int ret;
-		if (GE_SUCCESS == (ret = engine->getReply(currentPlayerID, reply)))
-		{
-			Respond* respond = (Respond*)reply;
-
-			int choice = respond->args(0);
-			if (choice == 1)
-			{
-				SkillMsg skill;
-				Coder::skillNotice(currentPlayerID, currentPlayerID, JI_ANG_KUANG_XIANG_QU, skill);
-				engine->sendMessage(-1, MSG_SKILL, skill);
-
-				GeYongTianFu();
-
-				GameInfo game_info;
-				PlayerEntity *self = engine->getPlayerEntity(currentPlayerID);
-				TeamArea *team = engine->getTeamArea();
-				int color = self->getColor();
-				int gem = respond->args(1);
-				int crystal = respond->args(2);
-				team->setGem(color, team->getGem(color) - gem);
-				team->setCrystal(color, team->getCrystal(color) - crystal);
-				if (color == RED) {
-					game_info.set_red_gem(team->getGem(color));
-					game_info.set_red_crystal(team->getCrystal(color));
-				}
-				else {
-					game_info.set_blue_gem(team->getGem(color));
-					game_info.set_blue_crystal(team->getCrystal(color));
-				}
-				engine->sendMessage(-1, MSG_GAME, game_info);
-				step = JI_ANG_KUANG_XIANG_QU_2;
-				return GE_SUCCESS;
-			}
-			else if (choice == 2)
-			{
-				if (id == currentPlayerID)
-					return GE_INVALID_ARGUMENT;
-
-				SkillMsg skill;
-				Coder::skillNotice(currentPlayerID, currentPlayerID, JI_ANG_KUANG_XIANG_QU, skill);
-				engine->sendMessage(-1, MSG_SKILL, skill);
-
-				GeYongTianFu();
-
-				GameInfo update_info;
-				PlayerEntity* dst = engine->getPlayerEntity(YueZhangDst);
-				dst->removeExclusiveEffect(EX_YONG_HENG_YUE_ZHANG);
-				Coder::exclusiveNotice(YueZhangDst, dst->getExclusiveEffect(), update_info);
-				YueZhangReturn = true;
-				this->addExclusiveEffect(EX_YONG_HENG_YUE_ZHANG);
-				Coder::exclusiveNotice(id, this->getExclusiveEffect(), update_info);
-				engine->sendMessage(-1, MSG_GAME, update_info);
-				step = JI_ANG_KUANG_XIANG_QU_2;
-				return GE_SUCCESS;
-			}
-			else
-			{
-				step = STEP_DONE;
-				return GE_SUCCESS;
-			}
-		}
-		return ret;
-	}
-	else {
+		if (useYueZhang)
+			ret = GeYongTianFu();
 		step = STEP_DONE;
-		return GE_TIMEOUT;
 	}
+
+	return ret;
 }
 
 int ShiRen::JiAngKuangXiangQu2(int &step, int currentPlayerID)
 {
 	if (YueZhangDst != currentPlayerID)
 		return GE_SUCCESS;
-	if (YueZhangDst == id && !BaoFengUsed)
-		return GE_SUCCESS;
-
 	CommandRequest cmd_req;
 	Coder::askForSkill(currentPlayerID, JI_ANG_KUANG_XIANG_QU_2, cmd_req);
 	if (engine->waitForOne(currentPlayerID, network::MSG_CMD_REQ, cmd_req))
@@ -249,16 +105,17 @@ int ShiRen::JiAngKuangXiangQu2(int &step, int currentPlayerID)
 			int choice = respond->args(0);
 			if (choice == 1)
 			{
+				useYueZhang = true;
 				int dst1ID = respond->dst_ids(0);
 				int dst2ID = respond->dst_ids(1);
 				//填写伤害结构
 				HARM harm;
 				harm.cause = JI_ANG_KUANG_XIANG_QU;
 				harm.point = 1;
-				harm.srcID = YueZhangDst;
+				harm.srcID = id;
 				harm.type = HARM_MAGIC;
 				//先进后出，所以逆出牌顺序压
-				PlayerEntity* self = engine->getPlayerEntity(YueZhangDst);
+				PlayerEntity* self = engine->getPlayerEntity(currentPlayerID);
 				PlayerEntity* start = self->getPre();
 				PlayerEntity* it = start;
 				do {
@@ -267,47 +124,28 @@ int ShiRen::JiAngKuangXiangQu2(int &step, int currentPlayerID)
 					}
 					it = it->getPre();
 				} while (it != start);
-				if (YueZhangReturn)
-					YueZhangDst = id;
-				step = STEP_DONE;
+				useYueZhang = true;
 				return GE_URGENT;
 			}
 			else if (choice == 2)
 			{
+				useYueZhang = true;
 				PlayerEntity* self = engine->getPlayerEntity(currentPlayerID);
 				int cardNum = (self->getHandCardNum()>2) ? 2 : self->getHandCardNum();
 				HARM qipai;
 				qipai.point = cardNum;
-				qipai.srcID = YueZhangDst;
+				qipai.srcID = currentPlayerID;
 				qipai.type = HARM_NONE;
 				qipai.cause = JI_ANG_KUANG_XIANG_QU;
-				engine->pushGameState(new StateRequestHand(YueZhangDst, qipai, -1, DECK_DISCARD, false, false));
-				if (YueZhangReturn)
-					YueZhangDst = id;
-				step = STEP_DONE;
+				engine->pushGameState(new StateRequestHand(currentPlayerID, qipai, -1, DECK_DISCARD, false, false));
+				useYueZhang = true;
 				return GE_URGENT;
 			}
 			else
-				return GE_INVALID_ARGUMENT;
+				return GE_SUCCESS;
 		}
-		return ret;
 	}
-	else {
-		int cardNum = (getHandCardNum()>2) ? 2 : getHandCardNum();
-		HARM qipai;
-		qipai.point = cardNum;
-		qipai.srcID = YueZhangDst;
-		qipai.type = HARM_NONE;
-		qipai.cause = JI_ANG_KUANG_XIANG_QU;
-		if (cardNum != 0)
-		{
-			engine->pushGameState(new StateRequestHand(YueZhangDst, qipai, -1, DECK_DISCARD, false));
-		}
-		if (YueZhangReturn)
-			YueZhangDst = id;
-		step = STEP_DONE;
-		return GE_TIMEOUT;
-	}
+	return GE_TIMEOUT;
 }
 
 int ShiRen::p_boot(int &step, int currentPlayerID)
@@ -326,7 +164,7 @@ int ShiRen::p_boot(int &step, int currentPlayerID)
 
 int ShiRen::XiWangFuGeQu()
 {
-	if (getGem() < 1)
+	if (getEnergy() < 1 || YueZhangDst != -1)
 		return GE_SUCCESS;
 	do
 	{
@@ -373,10 +211,17 @@ int ShiRen::XiWangFuGeQu()
 				engine->sendMessage(-1, MSG_SKILL, skill);
 
 				GameInfo update_info;
-				setGem(gem - 1);
+				if (crystal > 0)
+					setCrystal(--crystal);
+				else if (gem > 0)
+					setGem(--gem);
 				Coder::energyNotice(id, gem, crystal, update_info);
-				this->removeExclusiveEffect(EX_YONG_HENG_YUE_ZHANG);
-				Coder::exclusiveNotice(YueZhangDst, this->getExclusiveEffect(), update_info);
+				if (YueZhangDst != -1)
+				{
+					PlayerEntity* player = engine->getPlayerEntity(YueZhangDst);
+					player->removeExclusiveEffect(EX_YONG_HENG_YUE_ZHANG);
+					Coder::exclusiveNotice(YueZhangDst, player->getExclusiveEffect(), update_info);
+				}
 				YueZhangDst = dstID;
 				PlayerEntity* dst = engine->getPlayerEntity(dstID);
 				dst->addExclusiveEffect(EX_YONG_HENG_YUE_ZHANG);
@@ -396,103 +241,27 @@ int ShiRen::p_turn_end(int &step, int currentPlayerID)
 	int ret = GE_INVALID_STEP;
 	if (step == STEP_INIT)
 	{
-		step = SHENG_LI_JIAO_XIANG_SHI;
-	}
-	if (step == SHENG_LI_JIAO_XIANG_SHI)
-	{
-		ret = ShengLiJiaoXiangShi(step, currentPlayerID);
-		if (ret == GE_URGENT)
-			return ret;
+		step = SHENG_LI_JIAO_XIANG_SHI_2;
 	}
 	if (step == SHENG_LI_JIAO_XIANG_SHI_2)
 	{
 		ret = ShengLiJiaoXiangShiStone(step, currentPlayerID);
+		step = GE_YONG_TIAN_FU;
+		if (ret == GE_URGENT)
+			return ret;
+	}
+	if (step == GE_YONG_TIAN_FU)
+	{
+		if(useYueZhang)
+			ret = GeYongTianFu();
+		step = STEP_DONE;
 	}
 	return ret;
-}
-
-int ShiRen::ShengLiJiaoXiangShi(int &step, int currentPlayerID)
-{
-	if (YueZhangDst != currentPlayerID)
-		return GE_SUCCESS;
-	if (YueZhangDst == id && !BaoFengUsed)
-		return GE_SUCCESS;
-	int choice = 0;
-	choice += 1;
-	if (YueZhangDst != id)
-		choice += 2;
-	CommandRequest cmd_req;
-	Coder::askForSkill(currentPlayerID, SHENG_LI_JIAO_XIANG_SHI, cmd_req);
-	Command *cmd = (Command*)(&cmd_req.commands(cmd_req.commands_size() - 1));
-	cmd->add_args(choice);
-	if (engine->waitForOne(currentPlayerID, network::MSG_CMD_REQ, cmd_req))
-	{
-		void* reply;
-		int ret;
-		if (GE_SUCCESS == (ret = engine->getReply(currentPlayerID, reply)))
-		{
-			Respond* respond = (Respond*)reply;
-
-			GameInfo game_info;
-			int choice = respond->args(0);
-			if (choice == 1)
-			{
-				SkillMsg skill;
-				Coder::skillNotice(currentPlayerID, currentPlayerID, SHENG_LI_JIAO_XIANG_SHI, skill);
-				engine->sendMessage(-1, MSG_SKILL, skill);
-
-				GeYongTianFu();
-
-				HARM harm;
-				harm.cause = SHENG_LI_JIAO_XIANG_SHI;
-				harm.point = 3;
-				harm.srcID = YueZhangDst;
-				harm.type = HARM_MAGIC;
-				engine->setStateTimeline3(id, harm);
-				step = SHENG_LI_JIAO_XIANG_SHI_2;
-				return GE_URGENT;
-			}
-			else if (choice == 2)
-			{
-				if (id == currentPlayerID)
-					return GE_SUCCESS;
-
-				SkillMsg skill;
-				Coder::skillNotice(currentPlayerID, currentPlayerID, SHENG_LI_JIAO_XIANG_SHI, skill);
-				engine->sendMessage(-1, MSG_SKILL, skill);
-
-				GeYongTianFu();
-
-				GameInfo update_info;
-				PlayerEntity* dst = engine->getPlayerEntity(YueZhangDst);
-				dst->removeExclusiveEffect(EX_YONG_HENG_YUE_ZHANG);
-				Coder::exclusiveNotice(YueZhangDst, dst->getExclusiveEffect(), update_info);
-				YueZhangReturn = true;
-				this->addExclusiveEffect(EX_YONG_HENG_YUE_ZHANG);
-				Coder::exclusiveNotice(id, this->getExclusiveEffect(), update_info);
-				engine->sendMessage(-1, MSG_GAME, update_info);
-				step = SHENG_LI_JIAO_XIANG_SHI_2;
-				return GE_SUCCESS;
-			}
-			else
-			{
-				step = STEP_DONE;
-				return GE_SUCCESS;
-			}
-		}
-		return ret;
-	}
-	else {
-		step = STEP_DONE;
-		return GE_TIMEOUT;
-	}
 }
 
 int ShiRen::ShengLiJiaoXiangShiStone(int &step, int currentPlayerID)
 {
 	if (YueZhangDst != currentPlayerID)
-		return GE_SUCCESS;
-	if (YueZhangDst == id && !BaoFengUsed)
 		return GE_SUCCESS;
 	int choice = 2;
 	PlayerEntity *owner = engine->getPlayerEntity(currentPlayerID);
@@ -536,6 +305,7 @@ int ShiRen::ShengLiJiaoXiangShiStone(int &step, int currentPlayerID)
 
 				Coder::stoneNotice(color, team->getGem(color), team->getCrystal(color), update_info);
 				engine->sendMessage(-1, MSG_GAME, update_info);
+				useYueZhang = true;
 			}
 			if (choice == 2)
 			{
@@ -549,26 +319,14 @@ int ShiRen::ShengLiJiaoXiangShiStone(int &step, int currentPlayerID)
 				self->addCrossNum(1);
 				Coder::crossNotice(YueZhangDst, self->getCrossNum(), update_info);
 				engine->sendMessage(-1, MSG_GAME, update_info);
+				useYueZhang = true;
 			}
-			if (YueZhangReturn)
-				YueZhangDst = id;
-			step = STEP_DONE;
+
 			return GE_SUCCESS;
 		}
 	}
 	else
 	{
-		GameInfo update_info;
-		PlayerEntity *self = engine->getPlayerEntity(currentPlayerID);
-
-		TeamArea* team = engine->getTeamArea();
-		team->setGem(color, team->getGem(color) + 1);
-		Coder::stoneNotice(color, team->getGem(color), team->getCrystal(color), update_info);
-
-		self->addCrossNum(1);
-		Coder::crossNotice(YueZhangDst, self->getCrossNum(), update_info);
-		engine->sendMessage(-1, MSG_GAME, update_info);
-		step = STEP_DONE;
 		return GE_TIMEOUT;
 	}
 }
@@ -629,6 +387,13 @@ int ShiRen::BuXieZhiXian(Action* action)
 	Coder::tokenNotice(id, 0, token[0], game_info);
 	engine->sendMessage(-1, MSG_GAME, game_info);
 
+	if (tap)
+	{
+		tap = false;
+		GameInfo game_info;
+		Coder::tapNotice(id, false, game_info);
+		engine->sendMessage(-1, MSG_GAME, game_info);
+	}
 	if (choice == 1)
 	{
 		vector<int> cards;
@@ -675,7 +440,7 @@ int ShiRen::ChenLunXieZouQu(CONTEXT_HARM_END *con)
 	int srcID = con->harm.srcID;
 	if (engine->getPlayerEntity(srcID)->getColor() != this->getColor())
 		return GE_SUCCESS;
-	if (ChenLunUsed)
+	if (ChenLunUsed || tap)
 		return GE_SUCCESS;
 	ChenLunNum[dstID] = true;
 	int ChenLunFlag = 0;
@@ -741,16 +506,37 @@ int ShiRen::ChenLunXieZouQu(CONTEXT_HARM_END *con)
 
 int ShiRen::GeYongTianFu()
 {
-	if (!BaoFengUsed)
+	SkillMsg skill;
+	Coder::skillNotice(id, id, GE_YONG_TIAN_FU, skill);
+	engine->sendMessage(-1, MSG_SKILL, skill);
+	useYueZhang = false;
+	if (token[0] < tokenMax[0])
 	{
-		SkillMsg skill;
-		Coder::skillNotice(id, id, GE_YONG_TIAN_FU, skill);
-		engine->sendMessage(-1, MSG_SKILL, skill);
-
+		PlayerEntity * player = engine->getPlayerEntity(YueZhangDst);
 		setToken(0, token[0] + 1);
+		player->removeExclusiveEffect(EX_YONG_HENG_YUE_ZHANG);
 		GameInfo game_info;
 		Coder::tokenNotice(id, 0, token[0], game_info);
+		Coder::exclusiveNotice(YueZhangDst, player->getExclusiveEffect(), game_info);
 		engine->sendMessage(-1, MSG_GAME, game_info);
+		YueZhangDst = -1;
+	}
+	else
+	{
+		if (!tap)
+		{
+			tap = true;
+			GameInfo game_info;
+			Coder::tapNotice(id, true, game_info);
+			engine->sendMessage(-1, MSG_GAME, game_info);
+		}
+		HARM harm;
+		harm.cause = GE_YONG_TIAN_FU;
+		harm.point = 3;
+		harm.srcID = id;
+		harm.type = HARM_MAGIC;
+		engine->setStateTimeline3(id, harm);
+		return GE_URGENT;
 	}
 	return GE_SUCCESS;
 }

@@ -255,6 +255,7 @@ int YongZhe::JingPiLiJie(){
 	tap = true;
 	GameInfo game_info;
 	Coder::tapNotice(id, true, game_info);
+	CONTEXT_TAP *con = new CONTEXT_TAP; con->id = id; con->tap = tap; engine->pushGameState(new StateTap(con));
 
 	addAction(ACTION_ATTACK, JING_PI_LI_JIE);
 
@@ -262,7 +263,7 @@ int YongZhe::JingPiLiJie(){
 	Coder::handcardMaxNotice(id, this->getHandCardMax(), game_info);
 	engine->sendMessage(-1, MSG_GAME, game_info);
 	
-	return GE_SUCCESS;
+	return GE_URGENT;
 }
 
 int YongZhe::JinDuanZhiLiHit(CONTEXT_TIMELINE_2_HIT *con)//[响应]A 【禁断之力】：【能量】×1 （主动攻击命中或未命中后发动②）弃掉你所有手牌【展示】，其中每有1张法术牌，你+1点【怒气】；若命中②，其中每有1张火系牌，本次攻击伤害额外+1，并对自己造成等同于火系牌数量的法术伤害③

@@ -376,8 +376,9 @@ int GeDou::BaiShiDouShen(int PlayerID)
 				Coder::tokenNotice(id, 0, token[0], game_info);
 				tap = true;
 				Coder::tapNotice(id, tap, game_info);
+				CONTEXT_TAP *con = new CONTEXT_TAP; con->id = id; con->tap = tap; engine->pushGameState(new StateTap(con));
 				engine->sendMessage(-1, MSG_GAME, game_info);
-				return GE_SUCCESS;
+				return GE_URGENT;
 			}
 			if(respond->args(0)==2)
 			{

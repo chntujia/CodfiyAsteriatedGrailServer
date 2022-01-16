@@ -19,16 +19,12 @@ private:
 	int ChenLunXieZouQu(CONTEXT_HARM_END *con);
 	int BuXieZhiXian(Action* action);
 	int GeYongTianFu();
-	int BaoFengQianZouQu();
-	int JiAngKuangXiangQu(int &step, int currentPlayerID);
 	int JiAngKuangXiangQu2(int &step, int currentPlayerID);
-	int ShengLiJiaoXiangShi(int &step, int currentPlayerID);
 	int ShengLiJiaoXiangShiStone(int &step, int currentPlayerID);
 	int XiWangFuGeQu();
 
 	int YueZhangDst;
-	bool YueZhangReturn;
-	bool BaoFengUsed;
+	bool useYueZhang;
 	bool ChenLunNum[6];
 	bool ChenLunUsed;
 };

@@ -40,7 +40,12 @@
 #include "role\YingLingRenXing.h"
 #include "role\MoNv.h"
 #include "role\ShiRen.h"
-
+#include "role\JingLingSheShou.h"
+#include "role\YinYang.h"
+#include "role\XueJian.h"
+#include "role\YueNv.h"
+#include "role\ShouLing.h"
+#include "role\ShengGong.h"
 using namespace boost;
 
 PlayerEntity* GameGrail::createRole(int id, int roleID, int color)
@@ -143,6 +148,24 @@ PlayerEntity* GameGrail::createRole(int id, int roleID, int color)
 		break;
 	case 31:
 		return new ShiRen(this, id, color);
+		break;
+	case 32:
+		return new JingLingSheShou(this, id, color);
+		break;
+	case 33:
+		return new YinYang(this, id, color);
+		break;
+	case 34:
+		return new XueJian(this, id, color);
+		break;
+	case 35:
+		return new YueNv(this, id, color);
+		break;
+	case 36:
+		return new ShouLing(this, id, color);
+		break;
+	case 37:
+		return new ShengGong(this, id, color);
 		break;
 	}
 	throw GE_INVALID_ROLEID;
@@ -634,10 +657,8 @@ int GameGrail::setStateHandOverLoad(int dstID, HARM harm)
 	if (overNum <= 0){
 		return GE_SUCCESS;
 	}
-	setStateStartLoseMorale(overNum, dstID, harm);
 	harm.point = overNum;
-	harm.cause = CAUSE_OVERLOAD;
-	pushGameState(new StateRequestHand(dstID, harm));
+	pushGameState(new StateRequestHand(dstID, harm,-1,2,false,false,true));
 	return GE_URGENT;
 }
 
@@ -666,6 +687,15 @@ int GameGrail::setStateUseCard(int cardID, int dstID, int srcID, bool stay, bool
 	Coder::useCardNotice(cardID, dstID, srcID, use_card, realCard);
 	sendMessage(-1, MSG_CARD, use_card);
 	if(realCard){	
+		if(getPlayerEntity(srcID)->getRoleID()==32)//精灵射手特殊处理
+		{
+			list <int> covers = getPlayerEntity(srcID)->getCoverCards();
+			std::list<int>::iterator findIter = std::find(covers.begin(), covers.end(), cardID);
+			if (findIter != covers.end()) {
+				return stay ? setStateMoveOneCardNotToHand(srcID, DECK_COVER, dstID, DECK_BASIC_EFFECT, cardID, srcID, CAUSE_USE, true)
+					: setStateMoveOneCardNotToHand(srcID, DECK_COVER, -1, DECK_DISCARD, cardID, srcID, CAUSE_USE, true);
+			}
+		}
 		return stay ? setStateMoveOneCardNotToHand(srcID, DECK_HAND, dstID, DECK_BASIC_EFFECT, cardID, srcID, CAUSE_USE, true)
 			        : setStateMoveOneCardNotToHand(srcID, DECK_HAND, -1, DECK_DISCARD, cardID, srcID, CAUSE_USE, true);			        
 	}
@@ -772,7 +802,6 @@ int GameGrail::setStateTimeline1(int cardID, int dstID, int srcID, bool isActive
 	con->harm.type = HARM_ATTACK;
 	con->harm.cause = CAUSE_ATTACK;
 	con->hitRate = RATE_NORMAL;
-	con->checkShield = true;
 
 	// 暗灭
 	if(getCardByID(cardID)->getElement() == ELEMENT_DARKNESS){
@@ -854,13 +883,14 @@ int GameGrail::setStateTimeline6(int dstID, HARM harm)
 	return GE_SUCCESS;
 }
 
-int GameGrail::setStateStartLoseMorale(int howMany, int dstID, HARM harm)
+int GameGrail::setStateStartLoseMorale(int howMany, int dstID, HARM harm,vector<int> toDiscard)
 {
 	if(howMany>0){
 		CONTEXT_LOSE_MORALE *con = new CONTEXT_LOSE_MORALE;
 		con->dstID = dstID;
 		con->harm = harm;
 		con->howMany = howMany;
+		con->toDiscard = toDiscard;
 		pushGameState(new StateBeforeLoseMorale(con));
 	}
 	return GE_SUCCESS;

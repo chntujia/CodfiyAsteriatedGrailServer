@@ -24,11 +24,11 @@ using namespace std;
 class GameGrailPlayerContext;
 typedef map< int, GameGrailPlayerContext* > PlayerContextList;
 
-const int SUMMON[] = {1, 2, 3, 4, 5, 6, 7, 8, 9,10,
+const int SUMMON[] = {32,33,34,35,36,37,1, 2, 3, 4, 5, 6, 7, 8, 9,10,
 	                 11,12,13,14,15,16,17,18,19,20,
 			         21,22,23,24,25,26,27,28,29,30,
 					 31,108};
-const int BASIC_ROLE[] = {1, 2, 3, 4, 5, 6, 7, 9,10,
+const int BASIC_ROLE[] = { 32,33,34,35,36,37,1, 2, 3, 4, 5, 6, 7, 9,10,
 	                 11,12,13,14,15,16,17,18,19,20,
 					 21,22,23,24};
 const int MO_DAO[] ={8};
@@ -297,7 +297,52 @@ enum CAUSE{
 	SHENG_LI_JIAO_XIANG_SHI=3106,
 	SHENG_LI_JIAO_XIANG_SHI_2=31061,
 	SHENG_LI_JIAO_XIANG_SHI_STONE=31062,
-	XI_WANG_FU_GE_QU=3107
+	XI_WANG_FU_GE_QU=3107,
+	YUAN_SU_SHE_JI=3201,
+	YUAN_SU_SHE_JI_HIT = 32011,
+	DONG_WU_HUO_BAN=3202,
+	JING_LING_MI_YI=3203,
+	JING_LING_MI_YI_BOOT = 32031,
+	SHI_SHEN_ZHOU_SHU=3301,
+	HEI_AN_JI_LI = 3302,
+	SHI_SHEN_JIANG_LIN=3303,
+	SHENG_MING_JIE_JIE=3304,
+	SHI_SHEN_ZHUAN_HUAN=3305,
+	YIN_YANG_ZHUAN_HUAN = 3306,
+	XUE_SE_JING_JI=3401,
+	CHI_SE_YI_SHAN=3402,
+	XUE_RAN_QIANG_WEI=3403,
+	XUE_QI_PING_ZHANG=3404,
+	XUE_QIANG_WEI_BOOT=3405,
+	XIN_YUE_BI_HU=3501,
+	AN_YUE_ZU_ZHOU=3502,
+	MEI_DU_SHA=3503,
+	YUE_ZHI_LUN_HUI=3504,
+	YUE_DU=3505,
+	AN_YUE_ZHAN=3506,
+	CANG_BAI_ZHI_YUE=3507,
+	WU_ZHE_CAN_XIN = 3601,
+	YI_JI_WU_NIAN = 3602,
+	YI_JI_ATK = 36021,
+	SHOU_HUN_YI_NIAN = 3603,
+	SHOU_HUN_JING_JIE = 3604,
+	SHOU_FAN = 3605,
+	NI_FAN_ZHAN = 3606,
+	NI_FAN_ATK = 36061,
+	NI_FAN_HIT = 36062,
+	YU_HUN_BOOT = 3607,
+	YU_HUN_ATK = 36071,
+	TIAN_ZHI_GONG = 3701,
+	SHENG_XIE_JU_BAO = 3702,
+	SHENG_XIE_MISS = 37021,
+	SHENG_HUANG_MO_SHI = 3703,
+	SHENG_GUANG_BAO_LIE = 3704,
+	SHENG_LIU_XING_DAN = 3705,
+	SHENG_LIU_XING_ATK = 37051,
+	SHENG_LIU_XING_HIT = 37052,
+	HUI_GUANG_PAO = 3706,
+	ZI_DONG_TIAN_CHONG = 3707
+
 };
 
 enum CHANGE{
@@ -435,7 +480,7 @@ public:
 		rep.set_state(state);
 		rep.set_nickname(nickname);
 	}
-    static void askForReBat(int type,int cardID,int dstID,int srcID, CommandRequest& cmd_req)
+    static void askForReBat(int type,int cardID,int dstID,int srcID,bool canlight, CommandRequest& cmd_req)
 	{
 		cmd_req.set_cmd_type(CMD_RESPOND);
 		Command *cmd;
@@ -446,6 +491,7 @@ public:
 		cmd->add_args(cardID);
 		cmd->add_args(dstID);
 		cmd->add_args(srcID);
+		cmd->add_args(canlight);
 	}
     static void askForDiscard(int ID, int sum, int cause, bool show, CommandRequest& cmd_req)
 	{

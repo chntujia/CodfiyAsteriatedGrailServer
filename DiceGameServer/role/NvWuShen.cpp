@@ -330,11 +330,9 @@ int NvWuShen::YingLingZhaoHuan(CONTEXT_TIMELINE_2_HIT *con)
 				engine->sendMessage(-1, MSG_SKILL, skill);
 				game_info.Clear();
 				Coder::tapNotice(id, tap, game_info);
+				CONTEXT_TAP *con = new CONTEXT_TAP; con->id = id; con->tap = tap; engine->pushGameState(new StateTap(con));
 				engine->sendMessage(-1, MSG_GAME, game_info);
-				if(respond->args(1)==1)
-					return GE_URGENT;
-				else
-					return GE_SUCCESS;
+				return GE_URGENT;
 			}
 			//取消直接返回
 			return GE_SUCCESS;

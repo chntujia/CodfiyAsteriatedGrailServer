@@ -202,6 +202,7 @@ int AnSha::QianXingBoot()
 				Coder::tapNotice(id, true, game_info);
 				Coder::energyNotice(id, gem, crystal, game_info);
 				engine->sendMessage(-1, MSG_GAME, game_info);
+				CONTEXT_TAP *con = new CONTEXT_TAP; con->id = id; con->tap = tap; engine->pushGameState(new StateTap(con));
 				engine->setStateChangeMaxHand(id, false, false, 6, -1);
 				return GE_URGENT;
 			}

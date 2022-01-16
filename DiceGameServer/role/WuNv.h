@@ -14,7 +14,7 @@ public:
 	int v_magic_skill(Action *action);
 	int p_magic_skill(int &step, Action* action);
 private:
-	int TongShengGongSi(int &step, Action* action);
+	int TongShengQiangSi(int &step, Action* action);
 	int XueZhiAiShang(int &step, int srcID);
 	int XueZhiAiShangJudge(CONTEXT_TIMELINE_4 *con);
 	int NiLiu(int &step, Action* action);

@@ -337,6 +337,7 @@ int MoQiang::AnZhiHuanYing()
 				tap = true;
 				GameInfo game_info;
 				Coder::tapNotice(id, tap, game_info);
+				CONTEXT_TAP *con = new CONTEXT_TAP; con->id = id; con->tap = tap; engine->pushGameState(new StateTap(con));
 				engine->sendMessage(-1, MSG_GAME, game_info);
 	            //手牌上限设定为5
 				 engine->setStateChangeMaxHand(id, true, true, 5);

@@ -137,7 +137,16 @@ int PlayerEntity::checkHandCards(int howMany, vector<int> cards)
 int PlayerEntity::checkOneHandCard(int cardID)
 {
 	std::list<int>::iterator findIter = std::find(handCards.begin(), handCards.end(), cardID);
-	if(findIter == handCards.end()){
+	//精灵射手特殊处理
+	std::list<int>::iterator findIter2 = std::find(coverCards.begin(), coverCards.end(), cardID);
+	if(this->getRoleID()==32)
+	{
+	if(findIter == handCards.end() && findIter2 == coverCards.end())
+		{
+		return GE_HANDCARD_NOT_FOUND;
+		}
+	}
+	else if (findIter == handCards.end()) {
 		return GE_HANDCARD_NOT_FOUND;
 	}
 	return GE_SUCCESS;

@@ -36,6 +36,7 @@ enum STATE{
 	STATE_AFTER_SPECIAL,
 	STATE_ADDITIONAL_ACTION,
 	STATE_TURN_END,
+	STATE_AFTER_TURN_END,
 	STATE_TIMELINE_1,
 	STATE_TIMELINE_2_MISS,
 	STATE_TIMELINE_2_HIT,
@@ -53,10 +54,12 @@ enum STATE{
 	STATE_REQUEST_HAND,
 	STATE_REQUEST_COVER,
 	STATE_BEFORE_LOSE_MORALE,
+	STATE_XIN_YUE,  //十周年，月女
 	STATE_LOSE_MORALE,
 	STATE_FIX_MORALE,
 	STATE_TRUE_LOSE_MORALE,
-	STATE_GAME_OVER
+	STATE_GAME_OVER,
+	STATE_TAP      //十周年，兽灵
 };
 
 //Contexts
@@ -79,7 +82,8 @@ typedef struct{
 	CONTEXT_ATTACK_ACTION attack;
 	HARM harm;
 	int hitRate;
-    bool checkShield;
+    bool checkShield = true;
+	bool canLight = true;
 }CONTEXT_TIMELINE_1;
 
 typedef struct{
@@ -122,7 +126,13 @@ typedef struct{
 	int howMany;
 	HARM harm;
 	int dstID;
+	vector<int> toDiscard;
 }CONTEXT_LOSE_MORALE;
+
+typedef struct {
+	int id;
+	int tap;
+}CONTEXT_TAP;
 
 //Reply
 typedef struct{
@@ -504,6 +514,13 @@ public:
 	int handle(GameGrail* engine);
 };
 
+class StateAfterTurnEnd : public GrailState
+{
+public:
+	StateAfterTurnEnd() : GrailState(STATE_AFTER_TURN_END) {}
+	int handle(GameGrail* engine);
+};
+
 class StateTimeline1 : public GrailState
 {
 public:
@@ -642,8 +659,8 @@ public:
 class StateRequestHand : public GrailState
 {
 public:
-	StateRequestHand(int targetID, HARM harm, int dstOwner = -1, int dstArea = DECK_DISCARD, bool isShown = false, bool canGiveUp = false): GrailState(STATE_REQUEST_HAND),
-		targetID(targetID), harm(harm), dstOwner(dstOwner), dstArea(dstArea), isShown(isShown), canGiveUp(canGiveUp){}
+	StateRequestHand(int targetID, HARM harm, int dstOwner = -1, int dstArea = DECK_DISCARD, bool isShown = false, bool canGiveUp = false, bool overLoad = false) : GrailState(STATE_REQUEST_HAND),
+		targetID(targetID), harm(harm), dstOwner(dstOwner), dstArea(dstArea), isShown(isShown), canGiveUp(canGiveUp),overLoad(overLoad) {}
 	int handle(GameGrail* engine);
 	int targetID;
 	HARM harm;
@@ -651,6 +668,7 @@ public:
 	int dstArea;
 	bool isShown;
 	bool canGiveUp;
+	bool overLoad;
 };
 
 class StateRequestCover : public GrailState
@@ -672,6 +690,15 @@ class StateBeforeLoseMorale: public GrailState
 public:
 	StateBeforeLoseMorale(CONTEXT_LOSE_MORALE *con): GrailState(STATE_BEFORE_LOSE_MORALE), context(con){}
 	~StateBeforeLoseMorale(){ SAFE_DELETE(context); }
+	int handle(GameGrail* engine);
+	CONTEXT_LOSE_MORALE *context;
+};
+
+class StateXinYue : public GrailState
+{
+public:
+	StateXinYue(CONTEXT_LOSE_MORALE *con) : GrailState(STATE_XIN_YUE), context(con) {}
+	~StateXinYue() { SAFE_DELETE(context); }
 	int handle(GameGrail* engine);
 	CONTEXT_LOSE_MORALE *context;
 };
@@ -722,4 +749,14 @@ public:
 	int getcolor(){ return color; }
 private:
 	int color;
+};
+
+class StateTap : public GrailState
+{
+public:
+	StateTap(CONTEXT_TAP *con) : GrailState(STATE_TAP), context(con) {
+	}
+	~StateTap() { SAFE_DELETE(context); }
+	int handle(GameGrail* engine);
+	CONTEXT_TAP *context;
 };

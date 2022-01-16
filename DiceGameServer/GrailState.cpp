@@ -332,12 +332,12 @@ int StateRoleStrategy31::handle(GameGrail* engine)
 {
 	int ret;	
 	if(!isSet){
-		int options[3];
+		int options[5];
 		Deck* roles = engine->initRoles();
 		for(int i = 0; i < engine->getGameMaxPlayers(); i++){
-			if(GE_SUCCESS == (ret = roles->pop(3, options))){
+			if(GE_SUCCESS == (ret = roles->pop(5, options))){
 				messages[i] = new RoleRequest;
-				Coder::askForRole(i, 3, options, *messages[i]);
+				Coder::askForRole(i, 5, options, *messages[i]);
 			}
 			else{
 				return ret;
@@ -1322,14 +1322,24 @@ int StateAttacked::handle(GameGrail* engine)
 		engine->popGameState();
 		return engine->setStateTimeline2Hit(temp.attack.cardID, temp.attack.dstID, temp.attack.srcID, temp.harm, temp.attack.isActive);
 	}
+
+	int ret = GE_FATAL_ERROR;
+	PlayerEntity *handler = NULL;
+	while (iterator < engine->getGameMaxPlayers()) {
+		handler = engine->getNextPlayerEntity(handler, iterator, step);
+		ret = handler->p_attacked(step, context);
+		moveIterator(ret);
+		if (GE_SUCCESS != ret) {
+			return ret;
+		}
+	}
+
 	CommandRequest cmd_req;
-	Coder::askForReBat(context->hitRate, context->attack.cardID, context->attack.dstID, context->attack.srcID, cmd_req);
+	Coder::askForReBat(context->hitRate, context->attack.cardID, context->attack.dstID, context->attack.srcID,context->canLight, cmd_req);
 
 	if(engine->waitForOne(context->attack.dstID, MSG_CMD_REQ, cmd_req))
 	{
 		void* reply;
-		int ret;
-
 		CONTEXT_TIMELINE_1 temp = *context;
 		if(GE_SUCCESS == (ret = engine->getReply(context->attack.dstID, reply))){
 			Respond *reply_attack = (Respond*) reply;
@@ -1662,10 +1672,30 @@ int StateTurnEnd::handle(GameGrail* engine)
 	}
 
 	if(GE_SUCCESS == (ret = engine->popGameState_if(STATE_TURN_END))){
+		engine->pushGameState(new StateAfterTurnEnd);
+	}
+	return ret;	
+}
+
+int StateAfterTurnEnd::handle(GameGrail* engine)
+{
+	int ret = GE_FATAL_ERROR;
+	int m_currentPlayerID = engine->getCurrentPlayerID();
+	PlayerEntity *handler = NULL;
+	while (iterator < engine->getGameMaxPlayers()) {
+		handler = engine->getNextPlayerEntity(handler, iterator, step);
+		ret = handler->p_after_turn_end(step, m_currentPlayerID);
+		moveIterator(ret);
+		if (GE_SUCCESS != ret) {
+			return ret;
+		}
+	}
+
+	if (GE_SUCCESS == (ret = engine->popGameState_if(STATE_AFTER_TURN_END))) {
 		PlayerEntity* player = engine->getPlayerEntity(m_currentPlayerID);
 		return engine->setStateCurrentPlayer(player->getPost()->getID());
 	}
-	return ret;	
+	return ret;
 }
 
 int StateTimeline1::handle(GameGrail* engine)
@@ -1768,33 +1798,18 @@ int StateTimeline3::handle(GameGrail* engine)
 
 	PlayerEntity* player = engine->getPlayerEntity(context->dstID);
 	int cross = player->getCrossNum();
-	if(cross > 0){
-		CONTEXT_TIMELINE_4* newCon = new CONTEXT_TIMELINE_4;
-		newCon->harm = context->harm;
-		newCon->dstID = context->dstID;
-		newCon->crossAvailable = cross;
-		if(GE_SUCCESS == (ret = engine->popGameState_if(STATE_TIMELINE_3))){
-			engine->pushGameState(new StateHarmEnd(endCon));
-			engine->pushGameState(new StateTimeline4(newCon));
-		}
-		else{
-			SAFE_DELETE(endCon);
-			SAFE_DELETE(newCon);
-		}
+	CONTEXT_TIMELINE_4* newCon = new CONTEXT_TIMELINE_4;
+	newCon->harm = context->harm;
+	newCon->dstID = context->dstID;
+	newCon->crossAvailable = cross;
+	if (GE_SUCCESS == (ret = engine->popGameState_if(STATE_TIMELINE_3))) {
+		engine->pushGameState(new StateHarmEnd(endCon));
+		engine->pushGameState(new StateTimeline4(newCon));
 	}
-	else{
-		CONTEXT_TIMELINE_5* newCon = new CONTEXT_TIMELINE_5;
-		newCon->dstID = context->dstID;
-		newCon->harm = context->harm;
-		if(GE_SUCCESS == (ret = engine->popGameState_if(STATE_TIMELINE_3))){
-			engine->pushGameState(new StateHarmEnd(endCon));
-			engine->pushGameState(new StateTimeline5(newCon));
-		}
-		else{
-			SAFE_DELETE(endCon);
-			SAFE_DELETE(newCon);
-		}
-	}
+	else {
+		SAFE_DELETE(endCon);
+		SAFE_DELETE(newCon);
+	}	
 	return ret;
 }
 
@@ -2124,7 +2139,11 @@ int StateRequestHand::handle(GameGrail* engine)
 					engine->sendMessage(-1, MSG_CARD, show_card);
 				}
 				engine->popGameState();
+				if (overLoad) {
+					engine->setStateStartLoseMorale(harm.point, targetID, harm, toDiscard);
+				}
 				if(dstArea_t != DECK_HAND){
+					
 					return engine->setStateMoveCardsNotToHand(targetID_t, DECK_HAND, dstOwner_t, dstArea_t, harm_t.point, toDiscard, harm_t.srcID, harm_t.cause, isShown_t);
 				}
 				else{
@@ -2158,6 +2177,9 @@ int StateRequestHand::handle(GameGrail* engine)
 				engine->sendMessage(-1, MSG_CARD, show_card);
 			}
 			engine->popGameState();
+			if (overLoad) {
+				engine->setStateStartLoseMorale(harm.point, targetID, harm, toDiscard);
+			}
 			if(dstArea != DECK_HAND){
 				engine->setStateMoveCardsNotToHand(targetID_t, DECK_HAND, dstOwner_t, dstArea_t, harm_t.point, toDiscard, harm_t.srcID, harm_t.cause, isShown_t);
 			}
@@ -2287,10 +2309,37 @@ int StateBeforeLoseMorale::handle(GameGrail* engine)
 	newCon->howMany = context->howMany;
 	newCon->dstID = context->dstID;
 	newCon->harm = context->harm;
+	newCon->toDiscard = context->toDiscard;
 	if(GE_SUCCESS == (ret = engine->popGameState_if(STATE_BEFORE_LOSE_MORALE))){
-		engine->pushGameState(new StateLoseMorale(newCon));
+		engine->pushGameState(new StateXinYue(newCon));
 	}
 	else{
+		SAFE_DELETE(newCon);
+	}
+	return ret;
+}
+
+int StateXinYue::handle(GameGrail* engine)
+{
+	int ret = GE_FATAL_ERROR;
+	PlayerEntity *handler = NULL;
+	while (iterator < engine->getGameMaxPlayers()) {
+		handler = engine->getNextPlayerEntity(handler, iterator, step);
+		ret = handler->p_xin_yue(step, context);
+		moveIterator(ret);
+		if (GE_SUCCESS != ret) {
+			return ret;
+		}
+	}
+
+	CONTEXT_LOSE_MORALE* newCon = new CONTEXT_LOSE_MORALE;
+	newCon->howMany = context->howMany;
+	newCon->dstID = context->dstID;
+	newCon->harm = context->harm;
+	if (GE_SUCCESS == (ret = engine->popGameState_if(STATE_XIN_YUE))) {
+		engine->pushGameState(new StateLoseMorale(newCon));
+	}
+	else {
 		SAFE_DELETE(newCon);
 	}
 	return ret;
@@ -2417,4 +2466,19 @@ int StateGameOver::handle(GameGrail* engine)
 	}
 	engine->pushGameState(new StatePollingGameover);
 	return GE_SUCCESS;
+}
+
+int StateTap::handle(GameGrail* engine)
+{
+	int ret = GE_FATAL_ERROR;
+	PlayerEntity *handler = NULL;
+	while (iterator < engine->getGameMaxPlayers()) {
+		handler = engine->getNextPlayerEntity(handler, iterator, step);
+		ret = handler->p_tap(step, context);
+		moveIterator(ret);
+		if (GE_SUCCESS != ret) {
+			return ret;
+		}
+	}
+	return engine->popGameState_if(STATE_TAP);
 }

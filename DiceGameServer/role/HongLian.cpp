@@ -440,8 +440,9 @@ int HongLian::ReXueFeiTeng(CONTEXT_LOSE_MORALE *con)
 		GameInfo game_info;
 		Coder::tapNotice(id, true, game_info);
 		engine->sendMessage(-1, MSG_GAME, game_info);
+		CONTEXT_TAP *con = new CONTEXT_TAP; con->id = id; con->tap = tap; engine->pushGameState(new StateTap(con));
 	}
-	return GE_SUCCESS;
+	return GE_URGENT;
 }
 
 int HongLian::ReXueFeiTengLoseNoMorale(CONTEXT_LOSE_MORALE *con)
