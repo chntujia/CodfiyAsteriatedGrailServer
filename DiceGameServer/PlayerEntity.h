@@ -56,7 +56,9 @@ public:
 	void setRoleID(int id) { roleID = id; }
     //设置横置
     void setTap(bool tap){this->tap = tap;}
-    void setToken(int id,int howMany){if(howMany<0)howMany=0;token[id]=howMany<=tokenMax[id]?howMany:tokenMax[id];}
+    void setToken(int id,int howMany){
+		if(howMany<0)howMany=0;
+		token[id]= howMany<=tokenMax[id] ? howMany: (token[id] >tokenMax[id]? token[id]: tokenMax[id]);}
     //设置下一个玩家
     void setPost(PlayerEntity* nextPlayer){this->postPlayer = nextPlayer;}
 	void setPre(PlayerEntity* pre){ prePlayer = pre; }
@@ -119,7 +121,9 @@ public:
 	virtual int p_before_special(int &step, int srcID) { return GE_SUCCESS; }
 	virtual int p_after_special(int &step, int srcID) { return GE_SUCCESS; }
 	virtual int p_turn_end(int &step, int playerID) { return GE_SUCCESS; }
+	virtual int p_after_turn_end(int &step, int playerID) { return GE_SUCCESS; }
 	virtual int p_timeline_1(int &step, CONTEXT_TIMELINE_1 *con) { return GE_SUCCESS; }
+	virtual int p_attacked(int &step, CONTEXT_TIMELINE_1 *con) { return GE_SUCCESS; }
 	virtual int p_timeline_2_hit(int &step, CONTEXT_TIMELINE_2_HIT *con) { return GE_SUCCESS; }
 	virtual int p_timeline_2_miss(int &step, CONTEXT_TIMELINE_2_MISS *con) { return GE_SUCCESS; }
 	virtual int p_harm_end(int &step, CONTEXT_HARM_END *con) { return GE_SUCCESS; }
@@ -130,6 +134,7 @@ public:
 	virtual int p_timeline_6_drawn(int &step, CONTEXT_TIMELINE_6_DRAWN *con) { return GE_SUCCESS; }
 	virtual int p_before_lose_morale(int &step, CONTEXT_LOSE_MORALE *con) { return GE_SUCCESS; }
 	virtual int p_lose_morale(int &step, CONTEXT_LOSE_MORALE *con) { return GE_SUCCESS; }
+	virtual int p_xin_yue(int &step, CONTEXT_LOSE_MORALE *con) { return GE_SUCCESS; }
 	virtual int p_fix_morale(int &step, CONTEXT_LOSE_MORALE *con) { return GE_SUCCESS; }
 	virtual int p_true_lose_morale(int &step, CONTEXT_LOSE_MORALE *con) { return GE_SUCCESS; }
 	virtual int p_hand_change(int &step, int playerID) { return GE_SUCCESS; }
@@ -143,6 +148,7 @@ public:
 	virtual int p_request_hand_give_up(int &step, int targetID, int cause) { return GE_SUCCESS; }
     virtual int p_request_cover_give_up(int &step, int targetID, int cause) { return GE_SUCCESS; }
 	virtual int p_reattack(int &step, int &cardID, int doerID, int targetID, bool &realCard) { return GE_SUCCESS; }
+	virtual int p_tap(int &step, CONTEXT_TAP *con) { return GE_SUCCESS; }
 
 	virtual int v_allow_action(Action* action, int allow, bool canGiveUp);
 	virtual int v_unactional() { return GE_SUCCESS; }
